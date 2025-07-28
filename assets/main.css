@@ -3,6 +3,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  margin: 0;
 }
 
 html {
@@ -150,6 +151,12 @@ h6,
   font-size: calc(13 * var(--font-unit));
   line-height: calc(16 * var(--font-unit));
   letter-spacing: calc(0.002 * var(--font-unit));
+}
+
+.fs-14-lh-16-ls-0 {
+  font-size: calc(14 * var(--font-unit));
+  line-height: calc(16 * var(--font-unit));
+  letter-spacing: 0;
 }
 
 .fs-14-lh-20-ls-0 {

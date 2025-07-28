@@ -77,7 +77,9 @@
           <div class="swiper-slide {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
                {{ block.shopify_attributes }}
                data-block-id="{{ block.id }}"
-               data-block-type="{{ block.type }}">
+               data-block-type="{{ block.type }}"
+              id="shopify-block-{{ block.id }}"
+              >
             
             {% comment %} Desktop Image {% endcomment %}
             {% if block.settings.image != blank %}
@@ -131,7 +133,24 @@
   </div>
 </slideshow-component>
 
-<script src="{{ 'slideshow.js' | asset_url }}" defer="defer"></script>
+<script>
+  document.addEventListener('shopify:block:select', function(event) {
+  const blockId = event.detail.blockId;
+  const targetSlide = document.querySelector(`#shopify-block-${blockId}`);
+  if (targetSlide) {
+    const parentSlideshow = targetSlide.closest('slideshow-component');
+    if (parentSlideshow && parentSlideshow.swiper) {
+      const index = Array.from(
+        parentSlideshow.querySelectorAll('.swiper-slide')
+      ).indexOf(targetSlide);
+
+      if (index !== -1) {
+        parentSlideshow.swiper.slideToLoop(index);
+      }
+    }
+  }
+});
+</script>
 
 {% schema %}
 {
