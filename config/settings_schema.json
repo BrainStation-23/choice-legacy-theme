@@ -66,8 +66,8 @@
         "type": "text",
         "id": "logo_text",
         "label": "Logo alt text",
-        "default": "Brand logo",
-        "info": "This is applied when brand logo is not set. "
+        "default": "Logo",
+        "info": "This is applied when logo is not set. "
       },
       {
         "type": "text",
