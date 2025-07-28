@@ -7,9 +7,7 @@
     const sectionId = container.dataset.sectionId;
     const productId = container.dataset.productId;
     const shopDomain = container.dataset.shopDomain;
-    const customerId = container.dataset.customerId;
     const customerName = container.dataset.customerName || "Anonymous";
-    const customerEmail = container.dataset.customerEmail || "";
     const starColorFilled = container.dataset.starFilledColor || "#FFD700";
     const starColorEmpty = container.dataset.starEmptyColor || "#CCCCCC";
     const showEmptyReviewsSetting = container.dataset.showEmpty === "true";
@@ -306,7 +304,6 @@
           rating: currentRating,
           productId: productId,
           customerName: customerName,
-          customerEmail: customerEmail,
           reviewImage: uploadedImageUrl,
         };
 

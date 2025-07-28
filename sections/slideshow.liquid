@@ -21,42 +21,42 @@
   }
 
   @media screen and (max-width: 1024px) {
-    .slideshow-nav-button-prev {
+    .slideshow .slideshow-nav-button-prev {
       left: calc(11% - 52px);
     }
 
-    .slideshow-nav-button-next {
+    .slideshow .slideshow-nav-button-next {
       right: calc(11% - 52px);
     }
   }
 
   @media (max-width: 768px) {
-    .slide-content {
+    .slideshow .slide-content {
       max-width: 300px;
       padding: 0 15px;
     }
 
-    .slide-content.align-left {
+    .slideshow .slide-content.align-left {
       left: 20px;
     }
 
-    .slide-content.align-right {
+    .slideshow .slide-content.align-right {
       right: 20px;
     }
 
-    .slide-content.card {
+    .slideshow .slide-content.card {
       padding: 20px;
     }
 
-    .slideshow-nav-button-prev {
-      left: 8px;
+    .slideshow .slideshow-nav-button-prev {
+      left: 8px !important;
     }
 
-    .slideshow-nav-button-next {
-      right: 8px;
+    .slideshow .slideshow-nav-button-next {
+      right: 8px !important;
     }
 
-    .slideshow-{{ section.id }} .swiper-slide {
+    .slideshow .slideshow-{{ section.id }} .swiper-slide {
       border-radius: 0;
     }
   }
@@ -67,6 +67,7 @@
   data-autoplay="{{ section.settings.enable_autoplay }}"
   data-autoplay-delay="{{ section.settings.autoplay_delay | times: 1000 }}"
   data-pause-on-hover="{{ section.settings.pause_on_hover }}"
+  data-show-partial-slides="true"
 >
   <div class="slideshow-container">
     <div class="swiper-container">
@@ -76,14 +77,16 @@
           <div class="swiper-slide {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
                {{ block.shopify_attributes }}
                data-block-id="{{ block.id }}"
-               data-block-type="{{ block.type }}">
+               data-block-type="{{ block.type }}"
+              id="shopify-block-{{ block.id }}"
+              >
             
             {% comment %} Desktop Image {% endcomment %}
             {% if block.settings.image != blank %}
               {% if block.settings.link != blank %}
                 <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
               {% endif %}
-              {{ block.settings.image | image_url: width: 1200 | image_tag: alt: block.settings.image.alt, class: 'slide-image slide-image-desktop' }}
+              {% render 'image', image: block.settings.image, width: 1200, css_classes: 'slide-image slide-image-desktop' %}
               {% if block.settings.link != blank %}</a>{% endif %}
             {% else %}
              {% assign image_number = forloop.index0 | modulo: 2 | plus: 1 %}
@@ -95,13 +98,13 @@
               {% if block.settings.link != blank %}
                 <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
               {% endif %}
-              {{ block.settings.mobile_image | image_url: width: 800 | image_tag: alt: block.settings.mobile_image.alt, class: 'slide-image slide-image-mobile' }}
+              {% render 'image', image: block.settings.mobile_image, width: 800, css_classes: 'slide-image slide-image-mobile' %}
               {% if block.settings.link != blank %}</a>{% endif %}
             {% elsif block.settings.image != blank %}
               {% if block.settings.link != blank %}
                 <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
               {% endif %}
-              {{ block.settings.image | image_url: width: 800 | image_tag: alt: block.settings.image.alt, class: 'slide-image slide-image-mobile' }}
+              {% render 'image', image: block.settings.image, width: 800, css_classes: 'slide-image slide-image-mobile' %}
               {% if block.settings.link != blank %}</a>{% endif %}
             {% else %}
               {{ "lifestyle-1" | placeholder_svg_tag: "placeholder-svg slide-image-mobile" }}
@@ -130,7 +133,24 @@
   </div>
 </slideshow-component>
 
-<script src="{{ 'slideshow.js' | asset_url }}" defer="defer"></script>
+<script>
+  document.addEventListener('shopify:block:select', function(event) {
+  const blockId = event.detail.blockId;
+  const targetSlide = document.querySelector(`#shopify-block-${blockId}`);
+  if (targetSlide) {
+    const parentSlideshow = targetSlide.closest('slideshow-component');
+    if (parentSlideshow && parentSlideshow.swiper) {
+      const index = Array.from(
+        parentSlideshow.querySelectorAll('.swiper-slide')
+      ).indexOf(targetSlide);
+
+      if (index !== -1) {
+        parentSlideshow.swiper.slideToLoop(index);
+      }
+    }
+  }
+});
+</script>
 
 {% schema %}
 {
