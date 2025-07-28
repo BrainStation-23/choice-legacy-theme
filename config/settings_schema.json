@@ -112,5 +112,43 @@
         "label": "Page width"
       }
     ]
+  },
+  {
+    "name": "Product Card",
+    "settings": [
+      {
+        "type": "range",
+        "id": "product_card_border_radius",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "default": 0,
+        "label": "Border radius"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_product_card_box_shadow",
+        "default": true,
+        "label": "Box shadow"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_product_type",
+        "default": true,
+        "label": "Show product type"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_product_rating",
+        "default": true,
+        "label": "Show rating"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_product_weight",
+        "default": true,
+        "label": "Show product weight"
+      }
+    ]
   }
 ]

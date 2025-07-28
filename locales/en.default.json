@@ -1,5 +1,13 @@
 {
   "sections": {
+    "header": {
+      "account": "My Account",
+      "cart": "Cart",
+      "search": "Search products, categories"
+    },
+    "collections_list": {
+      "default_title": "Collections"
+    },
     "product_video_carousel": {
       "placeholder": {
         "no_product": "Select a product to display",
@@ -8,8 +16,18 @@
         "product_title": "Product Title"
       }
     },
-    "collections_list": {
-      "default_title": "Collections"
+    "product": {
+      "placeholder": {
+        "product_title": "Product Title",
+        "price": "$0.00",
+        "product_type": "Product Type",
+        "avg_rating": "5.0",
+        "rating_cnt": "2154",
+        "off": "OFF",
+        "weight": "30g",
+        "kg": "kg",
+        "lb": "lb"
+      }
     }
   }
 }

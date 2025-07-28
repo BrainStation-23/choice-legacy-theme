@@ -225,11 +225,7 @@
       loginButtonExternal.addEventListener('click', async () => {
         const phone = phoneInput ? phoneInput.value.trim() : '';
         try {
-          const response = await fetch(`${API_BASE_URL}/login`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phone: `+88${phone}` }),
-          });
+          const response = await fetch(`${API_BASE_URL}/login/+88${phone}`);
 
           const data = await response.json();
           if (!response.ok) {
