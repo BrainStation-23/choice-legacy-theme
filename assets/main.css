@@ -315,6 +315,10 @@ h6,
   font-weight: 900;
 }
 
+.box-shadow {
+  box-shadow: 0 2px 14px 0 rgba(3, 11, 26, 0.1);
+}
+
 /* icon arrow */
 .icon-arrow-left {
   transform: rotate(180deg);
