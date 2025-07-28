@@ -77,6 +77,10 @@
       width: 100%;
     }
 
+    .featured-collections .collection-img {
+      object-fit: contain;
+    }
+
     .featured-collections .mobile-carousel {
       display: none;
     }
@@ -86,11 +90,16 @@
   @media screen and (min-width: 1024px) and (max-width: 1439px) {
     .featured-collections-grid {
       grid-template-columns: repeat(4, 1fr);
+      gap: 10px !important;
     }
 
     .featured-collection-item {
       width: 100% !important;
       height: 280px !important;
+    }
+
+    .featured-collections .collection-img {
+      object-fit: contain;
     }
 
     .featured-collections .mobile-carousel {
