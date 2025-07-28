@@ -11,6 +11,14 @@
     align-items: center;
     justify-content: center;
   }
+
+  .slideshow-nav-button-prev,
+  .slideshow-nav-button-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+  }
 </style>
 
 <button class="{{ cls }} nav-button" aria-label="Next slide">

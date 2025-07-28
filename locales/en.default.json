@@ -4,6 +4,17 @@
       "account": "My Account",
       "cart": "Cart",
       "search": "Search products, categories"
+    },
+    "collections_list": {
+      "default_title": "Collections"
+    },
+    "product_video_carousel": {
+      "placeholder": {
+        "no_product": "Select a product to display",
+        "no_image": "No image",
+        "price": "$0.00",
+        "product_title": "Product Title"
+      }
     }
   }
 }
