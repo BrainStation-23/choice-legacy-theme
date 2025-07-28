@@ -655,6 +655,9 @@ address {
 .gap-32 {
   gap: calc(32 * var(--space-unit));
 }
+.gap-40 {
+  gap: calc(40 * var(--space-unit));
+}
 
 .gap-36 {
   gap: calc(36 * var(--space-unit));

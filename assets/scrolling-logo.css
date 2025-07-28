@@ -1,0 +1,35 @@
+.scrolling-logo {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.scrolling-logo__items-container {
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+}
+
+.scrolling-logo__item {
+  flex-shrink: 0;
+  text-align: center;
+}
+
+@keyframes scroll-normal {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.scrolling-logo__items--normal {
+  animation: scroll-normal linear infinite;
+}
+
+@media screen and (max-width: 768px) {
+  .scrolling-logo__items {
+    gap: 0px !important;
+  }
+}
