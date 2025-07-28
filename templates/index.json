@@ -25,7 +25,131 @@
         }
       },
       "block_order": ["slide-1", "slide-2", "slide-3"]
+    },
+    "offer_banner_section_1": {
+      "type": "offer-banner",
+      "settings": {
+        "slide_border_radius": 6,
+        "enable_autoplay": false,
+        "autoplay_delay": 4,
+        "pause_on_hover": true,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "banner_height_desktop": "508",
+        "banner_height_mobile": "164",
+        "show_navigation": false
+      },
+      "blocks": {
+        "block_one_slide": {
+          "type": "banner",
+          "settings": {}
+        }
+      },
+      "block_order": ["block_one_slide"]
+    },
+    "offer_banner_section_2": {
+      "type": "offer-banner",
+      "settings": {
+        "slide_border_radius": 6,
+        "enable_autoplay": true,
+        "autoplay_delay": 4,
+        "pause_on_hover": true,
+        "padding_top": 0,
+        "padding_bottom": 0,
+        "banner_height_desktop": "225",
+        "banner_height_mobile": "164",
+        "show_navigation": true
+      },
+      "blocks": {
+        "block_multi_slide_1": {
+          "type": "banner",
+          "settings": {}
+        },
+        "block_multi_slide_2": {
+          "type": "banner",
+          "settings": {}
+        },
+        "block_multi_slide_3": {
+          "type": "banner",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "block_multi_slide_1",
+        "block_multi_slide_2",
+        "block_multi_slide_3"
+      ]
+    },
+    "product-video-carousel": {
+      "type": "product-video-carousel",
+      "settings": {
+        "heading": "Watch & Shop",
+        "card_border_radius": 8,
+        "slides_per_view": 4,
+        "autoplay": false,
+        "autoplay_delay": 5000,
+        "pause_on_hover": true,
+        "padding_top": 0,
+        "padding_bottom": 0
+      },
+      "blocks": {
+        "product_video_1": {
+          "type": "product_video",
+          "settings": {
+            "product": null,
+            "video_type": "youtube",
+            "youtube_url": "",
+            "video_url": "",
+            "main_text": "Choice Legacy",
+            "sub_text": "Skincare heroes this summer!"
+          }
+        },
+        "product_video_2": {
+          "type": "product_video",
+          "settings": {
+            "product": null,
+            "video_type": "youtube",
+            "youtube_url": "",
+            "video_url": "",
+            "main_text": "Choice Legacy",
+            "sub_text": "Skincare heroes this summer!"
+          }
+        },
+        "product_video_3": {
+          "type": "product_video",
+          "settings": {
+            "product": null,
+            "video_type": "youtube",
+            "youtube_url": "",
+            "video_url": "",
+            "main_text": "Choice Legacy",
+            "sub_text": "Skincare heroes this summer!"
+          }
+        },
+        "product_video_4": {
+          "type": "product_video",
+          "settings": {
+            "product": null,
+            "video_type": "youtube",
+            "youtube_url": "",
+            "video_url": "",
+            "main_text": "Choice Legacy",
+            "sub_text": "Skincare heroes this summer!"
+          }
+        }
+      },
+      "block_order": [
+        "product_video_1",
+        "product_video_2",
+        "product_video_3",
+        "product_video_4"
+      ]
     }
   },
-  "order": ["slideshow"]
+  "order": [
+    "slideshow",
+    "offer_banner_section_1",
+    "offer_banner_section_2",
+    "product-video-carousel"
+  ]
 }
