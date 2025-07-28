@@ -1,5 +1,31 @@
 {
   "sections": {
+    "slideshow": {
+      "type": "slideshow",
+      "settings": {
+        "slide_border_radius": 6,
+        "enable_autoplay": true,
+        "autoplay_delay": 4,
+        "pause_on_hover": true,
+        "padding_top": 0,
+        "padding_bottom": 0
+      },
+      "blocks": {
+        "slide-1": {
+          "type": "slide",
+          "settings": {}
+        },
+        "slide-2": {
+          "type": "slide",
+          "settings": {}
+        },
+        "slide-3": {
+          "type": "slide",
+          "settings": {}
+        }
+      },
+      "block_order": ["slide-1", "slide-2", "slide-3"]
+    },
     "recommended-products": {
       "type": "recommended-products",
       "settings": {
@@ -72,31 +98,44 @@
         "product_8"
       ]
     },
-    "slideshow": {
-      "type": "slideshow",
-      "settings": {
-        "slide_border_radius": 6,
-        "enable_autoplay": true,
-        "autoplay_delay": 4,
-        "pause_on_hover": true,
-        "padding_top": 0,
-        "padding_bottom": 0
-      },
+    "promotional-banner": {
+      "type": "promotional-banner",
+      "settings": {},
       "blocks": {
-        "slide-1": {
-          "type": "slide",
-          "settings": {}
+        "banner-1": {
+          "type": "banner_item",
+          "settings": {
+            "banner_image": "",
+            "mobile_banner_image": "",
+            "link": ""
+          }
         },
-        "slide-2": {
-          "type": "slide",
-          "settings": {}
+        "banner-2": {
+          "type": "banner_item",
+          "settings": {
+            "banner_image": "",
+            "mobile_banner_image": "",
+            "link": ""
+          }
         },
-        "slide-3": {
-          "type": "slide",
-          "settings": {}
+        "banner-3": {
+          "type": "banner_item",
+          "settings": {
+            "banner_image": "",
+            "mobile_banner_image": "",
+            "link": ""
+          }
+        },
+        "banner-4": {
+          "type": "banner_item",
+          "settings": {
+            "banner_image": "",
+            "mobile_banner_image": "",
+            "link": ""
+          }
         }
       },
-      "block_order": ["slide-1", "slide-2", "slide-3"]
+      "block_order": ["banner-1", "banner-2", "banner-3", "banner-4"]
     },
     "offer_banner_section_1": {
       "type": "offer-banner",
@@ -270,8 +309,9 @@
     }
   },
   "order": [
-    "recommended-products",
     "slideshow",
+    "recommended-products",
+    "promotional-banner",
     "offer_banner_section_1",
     "offer_banner_section_2",
     "product-video-carousel",
