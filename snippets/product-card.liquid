@@ -225,11 +225,11 @@
 
           {% if show_rating %}
             <div class="product-card__rating flex items-center flex gap-4">
-              <span class="fw-500 fs-14-lh-20-ls-0_1">4.3</span>
+              <span class="fw-500 fs-14-lh-20-ls-0_1">{{ product.metafields.choice_legacy_reviews.avg_rating }}</span>
               {% render "icon-star" %}
             </div>
 
-            <span class="product-card__rating-cnt fw-400 fs-14-lh-20-ls-0">(2154)</span>
+            <span class="product-card__rating-cnt fw-400 fs-14-lh-20-ls-0">({{ product.metafields.choice_legacy_reviews.rating_count }})</span>
           {% endif %}
         </div>
       </div>
