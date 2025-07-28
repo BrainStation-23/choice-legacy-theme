@@ -3,6 +3,17 @@
     "footer": {
       "social_media": "Social media",
       "payment_methods_alt": "Payment methods"
+    },
+    "product_video_carousel": {
+      "placeholder": {
+        "no_product": "Select a product to display",
+        "no_image": "No image",
+        "price": "$0.00",
+        "product_title": "Product Title"
+      }
+    },
+    "collections_list": {
+      "default_title": "Collections"
     }
   }
 }

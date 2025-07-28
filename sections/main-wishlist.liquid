@@ -16,13 +16,19 @@
             {% else %}
               {% assign selected_variant = product.selected_or_first_available_variant %}
             {% endif %}
-            
+
             <li id="wishlist-item-{{ item.productHandle }}{% if item.variantId %}-{{ item.variantId }}{% endif %}">
               <h3>{{ product.title }}</h3>
               {% if product.featured_image %}
-                <img src="{{ product.featured_image | image_url: width: 200 }}" alt="{{ product.title }}" width="200" height="200" style="max-width: 100px;">
+                <img
+                  src="{{ product.featured_image | image_url: width: 200 }}"
+                  alt="{{ product.title }}"
+                  width="200"
+                  height="200"
+                  style="max-width: 100px;"
+                >
               {% endif %}
-              
+
               {% if selected_variant %}
                 <p>Price: {{ selected_variant.price | money }}</p>
                 {% if selected_variant.title != 'Default Title' %}
@@ -41,21 +47,24 @@
                   <p class="stock-status" style="color: red;">Out of Stock</p>
                 {% endif %}
               {% endif %}
-              
-              <p>Added On: {{ item.addedAt | date: "%Y-%m-%d %H:%M" }}</p>
-              
+
+              <p>Added On: {{ item.addedAt | date: '%Y-%m-%d %H:%M' }}</p>
+
               <a href="/products/{{ item.productHandle }}{% if item.variantId %}?variant={{ item.variantId }}{% endif %}">
                 View Product
               </a>
 
               <div style="display:inline-block; margin-left: 10px;">
-                <button type="button"
-                        class="remove-wishlist-button"
-                        data-customer-id="{{ customer.id | split: '/' | last }}"
-                        data-shop-domain="{{ shop.permanent_domain }}"
-                        data-product-handle="{{ item.productHandle }}"
-                        {% if item.variantId %}data-variant-id="{{ item.variantId }}"{% endif %}
-                        data-item-id="wishlist-item-{{ item.productHandle }}{% if item.variantId %}-{{ item.variantId }}{% endif %}"
+                <button
+                  type="button"
+                  class="remove-wishlist-button"
+                  data-customer-id="{{ customer.id | split: '/' | last }}"
+                  data-shop-domain="{{ shop.permanent_domain }}"
+                  data-product-handle="{{ item.productHandle }}"
+                  {% if item.variantId %}
+                    data-variant-id="{{ item.variantId }}"
+                  {% endif %}
+                  data-item-id="wishlist-item-{{ item.productHandle }}{% if item.variantId %}-{{ item.variantId }}{% endif %}"
                 >
                   Remove
                 </button>
@@ -63,20 +72,26 @@
             </li>
           {% else %}
             <!-- Product not found, might be deleted -->
-            <li id="wishlist-item-{{ item.productHandle }}{% if item.variantId %}-{{ item.variantId }}{% endif %}" style="opacity: 0.5;">
+            <li
+              id="wishlist-item-{{ item.productHandle }}{% if item.variantId %}-{{ item.variantId }}{% endif %}"
+              style="opacity: 0.5;"
+            >
               <h3>Product Not Found</h3>
               <p>Handle: {{ item.productHandle }}</p>
-              <p>Added On: {{ item.addedAt | date: "%Y-%m-%d %H:%M" }}</p>
+              <p>Added On: {{ item.addedAt | date: '%Y-%m-%d %H:%M' }}</p>
               <p style="color: red;">This product may have been deleted or is no longer available.</p>
-              
+
               <div style="display:inline-block; margin-left: 10px;">
-                <button type="button"
-                        class="remove-wishlist-button"
-                        data-customer-id="{{ customer.id | split: '/' | last }}"
-                        data-shop-domain="{{ shop.permanent_domain }}"
-                        data-product-handle="{{ item.productHandle }}"
-                        {% if item.variantId %}data-variant-id="{{ item.variantId }}"{% endif %}
-                        data-item-id="wishlist-item-{{ item.productHandle }}{% if item.variantId %}-{{ item.variantId }}{% endif %}"
+                <button
+                  type="button"
+                  class="remove-wishlist-button"
+                  data-customer-id="{{ customer.id | split: '/' | last }}"
+                  data-shop-domain="{{ shop.permanent_domain }}"
+                  data-product-handle="{{ item.productHandle }}"
+                  {% if item.variantId %}
+                    data-variant-id="{{ item.variantId }}"
+                  {% endif %}
+                  data-item-id="wishlist-item-{{ item.productHandle }}{% if item.variantId %}-{{ item.variantId }}{% endif %}"
                 >
                   Remove
                 </button>
@@ -99,93 +114,94 @@
 
 <div id="wishlist-status" style="margin-top: 15px; color: green;"></div>
 <div id="wishlist-error" style="margin-top: 15px; color: red;"></div>
-{% comment %} 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const removeButtons = document.querySelectorAll('.remove-wishlist-button');
-    const wishlistStatus = document.getElementById('wishlist-status');
-    const wishlistError = document.getElementById('wishlist-error');
-    const wishlistItemsList = document.getElementById('customer-wishlist-items');
-    const emptyMessage = document.getElementById('empty-wishlist-message');
+{% comment %}
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const removeButtons = document.querySelectorAll('.remove-wishlist-button');
+      const wishlistStatus = document.getElementById('wishlist-status');
+      const wishlistError = document.getElementById('wishlist-error');
+      const wishlistItemsList = document.getElementById('customer-wishlist-items');
+      const emptyMessage = document.getElementById('empty-wishlist-message');
 
-    if (!removeButtons.length) {
-      return; // No remove buttons found, exit
-    }
+      if (!removeButtons.length) {
+        return; // No remove buttons found, exit
+      }
 
-    removeButtons.forEach(button => {
-      button.addEventListener('click', async (event) => {
-        // Clear previous messages
-        wishlistStatus.textContent = '';
-        wishlistError.textContent = '';
+      removeButtons.forEach(button => {
+        button.addEventListener('click', async (event) => {
+          // Clear previous messages
+          wishlistStatus.textContent = '';
+          wishlistError.textContent = '';
 
-        const productHandle = button.dataset.productHandle;
-        const variantId = button.dataset.variantId; // Will be undefined if not present
-        const customerId = button.dataset.customerId;
-        const shopDomain = button.dataset.shopDomain;
-        const itemId = button.dataset.itemId; // The ID of the <li> element to remove
+          const productHandle = button.dataset.productHandle;
+          const variantId = button.dataset.variantId; // Will be undefined if not present
+          const customerId = button.dataset.customerId;
+          const shopDomain = button.dataset.shopDomain;
+          const itemId = button.dataset.itemId; // The ID of the <li> element to remove
 
-        button.disabled = true; // Disable button to prevent multiple clicks
-        button.textContent = 'Removing...'; // Provide feedback
+          button.disabled = true; // Disable button to prevent multiple clicks
+          button.textContent = 'Removing...'; // Provide feedback
 
-        try {
-          const response = await fetch(`/apps/${APP_SUB_PATH}/customer/wishlist/remove`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              productHandle: productHandle,
-              variantId: variantId,
-            }),
-          });
+          try {
+            const response = await fetch(`/apps/${APP_SUB_PATH}/customer/wishlist/remove`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                productHandle: productHandle,
+                variantId: variantId,
+              }),
+            });
 
-          const result = await response.json();
+            const result = await response.json();
 
-          if (response.ok && result.success) {
-            wishlistStatus.textContent = result.message || 'Product removed successfully.';
+            if (response.ok && result.success) {
+              wishlistStatus.textContent = result.message || 'Product removed successfully.';
 
-            // Remove the item visually from the list
-            const listItem = document.getElementById(itemId);
-            if (listItem) {
-              listItem.remove();
-            }
-
-            // If wishlist is now empty, show the empty message
-            if (wishlistItemsList && wishlistItemsList.children.length === 0) {
-              if (emptyMessage) {
-                 emptyMessage.style.display = 'block'; // Show if hidden
-              } else {
-                 // Create and append if it doesn't exist
-                 const newEmptyMessage = document.createElement('p');
-                 newEmptyMessage.id = 'empty-wishlist-message';
-                 newEmptyMessage.textContent = 'Your wishlist is empty.';
-                 wishlistItemsList.parentNode.insertBefore(newEmptyMessage, wishlistItemsList.nextSibling);
+              // Remove the item visually from the list
+              const listItem = document.getElementById(itemId);
+              if (listItem) {
+                listItem.remove();
               }
-              wishlistItemsList.style.display = 'none'; // Hide the UL
+
+              // If wishlist is now empty, show the empty message
+              if (wishlistItemsList && wishlistItemsList.children.length === 0) {
+                if (emptyMessage) {
+                   emptyMessage.style.display = 'block'; // Show if hidden
+                } else {
+                   // Create and append if it doesn't exist
+                   const newEmptyMessage = document.createElement('p');
+                   newEmptyMessage.id = 'empty-wishlist-message';
+                   newEmptyMessage.textContent = 'Your wishlist is empty.';
+                   wishlistItemsList.parentNode.insertBefore(newEmptyMessage, wishlistItemsList.nextSibling);
+                }
+                wishlistItemsList.style.display = 'none'; // Hide the UL
+              }
+
+            } else {
+              const errorMessage = result.message || 'Failed to remove product from wishlist.';
+              wishlistError.textContent = errorMessage + (result.details ? ' Details: ' + result.details.join(', ') : '');
+              // Re-enable button if there was an error
+              button.disabled = false;
+              button.textContent = 'Remove';
             }
 
-          } else {
-            const errorMessage = result.message || 'Failed to remove product from wishlist.';
-            wishlistError.textContent = errorMessage + (result.details ? ' Details: ' + result.details.join(', ') : '');
-            // Re-enable button if there was an error
-            button.disabled = false;
+          } catch (fetchError) {
+            console.error('Error calling remove API:', fetchError);
+            wishlistError.textContent = 'An unexpected error occurred. Please try again.';
+            button.disabled = false; // Re-enable button on fetch error
             button.textContent = 'Remove';
           }
-
-        } catch (fetchError) {
-          console.error('Error calling remove API:', fetchError);
-          wishlistError.textContent = 'An unexpected error occurred. Please try again.';
-          button.disabled = false; // Re-enable button on fetch error
-          button.textContent = 'Remove';
-        }
+        });
       });
     });
-  });
-</script> {% endcomment %}
+  </script>
+{% endcomment %}
 
 {% schema %}
-  {
-    "name": "Wishlist",
-    "settings": []
-  }
+{
+  "name": "Wishlist",
+  "settings": []
+}
 {% endschema %}

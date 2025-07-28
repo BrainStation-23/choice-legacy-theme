@@ -1,0 +1,22 @@
+.offer-banner .slide-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.offer-banner .slide-image-desktop {
+  display: none;
+}
+
+.offer-banner .slide-image-mobile {
+  display: block;
+}
+
+.offer-banner .slideshow-nav-button-prev {
+  left: 24px;
+}
+
+.offer-banner .slideshow-nav-button-next {
+  right: 24px;
+}
