@@ -1,0 +1,197 @@
+{{ 'home-page-review.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .homepage-product-review__section-{{ section.id }} {
+    background-color: rgb(var(--color-secondary-brand));
+    position: relative;
+    overflow: hidden;
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+  }
+</style>
+
+<section class="homepage-product-review__section homepage-product-review__section-{{ section.id }}">
+  <div class="homepage-product-review__container page-width gap-48">
+    {% if section.settings.title != blank %}
+      <h2 class="homepage-product-review__title ff-bebas-neue ft-400 fs-36-lh-40-ls-0pct">
+        {{ section.settings.title }}
+      </h2>
+    {% endif %}
+
+    <div id="homepage-product-review__reviews-content">
+      <div class="homepage-product-review__loading">
+        <div class="homepage-product-review__spinner"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const reviewsContent = document.getElementById('homepage-product-review__reviews-content');
+    const reviewLimit = {{ section.settings.review_limit }};
+
+    const allProducts = {
+      {% for product in collections.all.products limit: 250 %}
+        "{{ product.id }}": {
+          "title": "{{ product.title | escape }}",
+          "handle": "{{ product.handle }}"
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    };
+
+    function createStarRating(rating) {
+      let starsHtml = '';
+      for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+          starsHtml += '<span class="homepage-product-review__star">★</span>';
+        } else {
+          starsHtml += '<span class="homepage-product-review__star homepage-product-review__star--empty">★</span>';
+        }
+      }
+      return starsHtml;
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
+      return date.toLocaleDateString('en-US', options);
+    }
+
+    function getProductTitle(productId) {
+      const product = allProducts[productId];
+      return product ? product.title : 'Title is not available';
+    }
+
+    async function fetchReviews() {
+      try {
+        const response = await fetch(`/apps/generic-name/customer/product-review/show-home?limit=${reviewLimit}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const data = await response.json();
+
+        if (data.success && data.data && data.data.length > 0) {
+          displayReviews(data.data);
+        } else {
+          displayNoReviews();
+        }
+      } catch (error) {
+        console.error('Error fetching reviews:', error);
+        displayError();
+      }
+    }
+
+    function displayReviews(reviews) {
+      const reviewsHtml = reviews.map(review => {
+        const productTitle = getProductTitle(review.productId);
+        const imageHtml = review.reviewImage
+          ? `<img src="${review.reviewImage}" alt="${productTitle}" class="homepage-product-review__image" loading="lazy">`
+          : `<div class="homepage-product-review__image" style="background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 0.8rem;">No Image</div>`;
+
+        return `
+          <div class="homepage-product-review__card gap-16 box-shadow">
+            <div class="homepage-product-review__image-container homepage-product-review__content-top">
+              ${imageHtml}
+              <div class="homepage-product-review__rating box-shadow gap-4">
+                ${createStarRating(review.rating)}
+              </div>
+            </div>
+            <div class="homepage-product-review__content-middle gap-8">
+              <div class="homepage-product-review__product-title fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
+                ${productTitle}
+              </div>
+              <div class="homepage-product-review__text ff-general-sans fs-14-lh-20-ls-0 fw-400">
+                ${review.reviewText}
+              </div>
+            </div>
+            <div class="homepage-product-review__content-bottom gap-8">
+              <span class="homepage-product-review__review-date fs-12-lh-16-ls-0_6pct ff-general-sans fw-400">
+                ${formatDate(review.reviewPlacedAt)}
+              </span>
+              <span class="homepage-product-review__customer-name fs-12-lh-16-ls-0_6pct ff-general-sans fw-400">
+                {{ 'sections.product_review.by' | t }} ${review.customerName}
+              </span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      reviewsContent.innerHTML = `<div class="homepage-product-review__grid gap-16">${reviewsHtml}</div>`;
+    }
+
+    function displayNoReviews() {
+      reviewsContent.innerHTML = '<div class="homepage-product-review__empty fs-36-lh-40-ls-0pct fw-500">No reviews available at the moment.</div>';
+    }
+
+    function displayError() {
+      reviewsContent.innerHTML = '<div class="homepage-product-review__error fs-36-lh-40-ls-0pct fw-500">Unable to load reviews. Please try again later.</div>';
+    }
+
+    fetchReviews();
+    document.addEventListener("shopify:section:load", (event) => {
+      if (event.target.classList.contains("homepage-product-review__section")) {
+        fetchReviews();
+      }
+    });
+
+    document.addEventListener("shopify:section:select", (event) => {
+      if (event.target.classList.contains("homepage-product-review__section")) {
+        fetchReviews();
+      }
+    });
+
+ });
+</script>
+
+{% schema %}
+{
+  "name": "Product Reviews",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "range",
+      "id": "review_limit",
+      "label": "Number of reviews to show",
+      "min": 1,
+      "max": 20,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Section Title",
+      "default": "SEE WHAT OUR CUSTOMERS ARE SAYING"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 88,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 2,
+      "default": 88,
+      "unit": "px"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Product Reviews",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}
