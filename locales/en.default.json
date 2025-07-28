@@ -4,6 +4,14 @@
       "social_media": "Social media",
       "payment_methods_alt": "Payment methods"
     },
+    "header": {
+      "account": "My Account",
+      "cart": "Cart",
+      "search": "Search products, categories"
+    },
+    "collections_list": {
+      "default_title": "Collections"
+    },
     "product_video_carousel": {
       "placeholder": {
         "no_product": "Select a product to display",
@@ -11,9 +19,6 @@
         "price": "$0.00",
         "product_title": "Product Title"
       }
-    },
-    "collections_list": {
-      "default_title": "Collections"
     }
   }
 }
