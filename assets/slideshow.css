@@ -5,55 +5,55 @@
   overflow: hidden;
 }
 
-.slideshow-container {
+.slideshow .slideshow-container {
   margin: 0 auto;
   position: relative;
 }
 
-.swiper-container {
+.slideshow .swiper-container {
   width: 100%;
   height: 410px;
   overflow: visible;
 }
 
-.slide-image {
+.slideshow .slide-image {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-.slide-image-desktop {
+.slideshow .slide-image-desktop {
   display: block;
 }
 
-.slide-image-mobile {
+.slideshow .slide-image-mobile {
   display: none;
 }
 
 @media screen and (max-width: 768px) {
-  .slide-image-desktop {
+  .slideshow .slide-image-desktop {
     display: none;
   }
 
-  .slide-image-mobile {
+  .slideshow .slide-image-mobile {
     display: block;
   }
 
-  .slide-no-mobile-image .slide-image-desktop {
+  .slideshow .slide-no-mobile-image .slide-image-desktop {
     display: block;
   }
 
-  .slide-no-mobile-image .slide-image-mobile {
+  .slideshow .slide-no-mobile-image .slide-image-mobile {
     display: none;
   }
 
-  .swiper-container {
+  .slideshow .swiper-container {
     height: 186px;
   }
 }
 
-.slide-content {
+.slideshow .slide-content {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -62,52 +62,43 @@
   padding: 0 20px;
 }
 
-.slide-content.align-left {
+.slideshow .slide-content.align-left {
   left: 40px;
   text-align: left;
 }
 
-.slide-content.align-center {
+.slideshow .slide-content.align-center {
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
 }
 
-.slide-content.align-right {
+.slideshow .slide-content.align-right {
   right: 40px;
   text-align: right;
 }
 
-.slide-content.card {
+.slideshow .slide-content.card {
   background: rgba(var(--color-background));
   backdrop-filter: blur(10px);
   border-radius: 12px;
   padding: 30px;
 }
 
-.slide-title {
-  font-weight: 700;
+.slideshow .slide-title {
   margin-bottom: 12px;
 }
 
-.swiper-pagination {
+.slideshow .swiper-pagination {
   display: none;
 }
 
-.slideshow-nav-button-prev,
-.slideshow-nav-button-next {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
+.slideshow .slideshow-nav-button-prev {
+  left: calc(10% - 52px);
 }
 
-.slideshow-nav-button-prev {
-  left: calc(14% - 52px);
-}
-
-.slideshow-nav-button-next {
-  right: calc(14% - 52px);
+.slideshow .slideshow-nav-button-next {
+  right: calc(10% - 52px);
 }
 
 .swiper-button-prev,

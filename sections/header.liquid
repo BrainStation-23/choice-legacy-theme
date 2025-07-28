@@ -1,7 +1,6 @@
 {{ 'header.css' | asset_url | stylesheet_tag }}
 
 <style>
-  /* -- DESKTOP STYLES (Default) -- */
   .header-{{ section.id }} {
     padding-top: {{ section.settings.padding_top }}px;
     padding-bottom: {{ section.settings.padding_bottom }}px;
@@ -205,7 +204,7 @@
 
 <header class="header header-{{ section.id }}">
   <div class="header__container">
-    <div class="header__inner">
+    <div class="header__inner gap-36">
       <div class="header__left header__item-container">
         <button class="header__menu-toggle" aria-label="Open menu">
           {% render 'menu-icon' %}
@@ -246,8 +245,8 @@
             <input
               type="search"
               name="q"
-              class="header__search-input"
-              placeholder="Search products, categories"
+              class="header__search-input ff-general-sans fs-14-lh-20-ls-0_1 fw-500"
+              placeholder="{{ 'sections.header.search' | t }}"
               aria-label="Search"
             >
             <button type="submit" class="header__search-button" aria-label="Submit search">
@@ -257,16 +256,20 @@
         </div>
       </div>
 
-      <div class="header__right header__item-container">
-        <a href="{{ routes.account_url }}" class="header__icon-link">
+      <div class="header__right header__item-container gap-24">
+        <a href="{{ routes.account_url }}" class="header__icon-link gap-4">
           {% render 'accounts-icon' %}
-          <span class="header__icon-link-title">My Account</span>
+          <span class="header__icon-link-title ff-general-sans fs-14-lh-100pct-ls-0pct fw-600">
+            {{- 'sections.header.account' | t -}}
+          </span>
         </a>
-        <a href="{{ routes.cart_url }}" class="header__icon-link">
+        <a href="{{ routes.cart_url }}" class="header__icon-link gap-4">
           {% render 'cart-icon' %}
-          <span class="header__icon-link-title">Cart</span>
+          <span class="header__icon-link-title ff-general-sans fs-14-lh-100pct-ls-0pct fw-600">
+            {{- 'sections.header.cart' | t -}}
+          </span>
         </a>
-        <div class="header__social-icons">
+        <div class="header__social-icons gap-10">
           <a href="#" class="header__icon-link" aria-label="Chat on WhatsApp">{% render 'whatsapp-icon' %}</a>
           <a href="#" class="header__icon-link" aria-label="Chat on Messenger">{% render 'message-icon' %}</a>
           <a href="#" class="header__icon-link" aria-label="Call us">{% render 'phone-icon' %}</a>
@@ -280,7 +283,7 @@
           type="search"
           name="q"
           class="header__search-input"
-          placeholder="Search products, categories"
+          placeholder="{{ 'sections.header.search' | t }}"
           aria-label="Search"
         >
         <button type="submit" class="header__search-button" aria-label="Submit search">
