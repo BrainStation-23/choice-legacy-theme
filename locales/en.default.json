@@ -1,5 +1,9 @@
 {
   "sections": {
+    "footer": {
+      "social_media": "Social media",
+      "payment_methods_alt": "Payment methods"
+    },
     "header": {
       "account": "My Account",
       "cart": "Cart",
@@ -14,6 +18,19 @@
         "no_image": "No image",
         "price": "$0.00",
         "product_title": "Product Title"
+      }
+    },
+    "product": {
+      "placeholder": {
+        "product_title": "Product Title",
+        "price": "$0.00",
+        "product_type": "Product Type",
+        "avg_rating": "5.0",
+        "rating_cnt": "2154",
+        "off": "OFF",
+        "weight": "30g",
+        "kg": "kg",
+        "lb": "lb"
       }
     }
   }

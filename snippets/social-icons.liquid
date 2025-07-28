@@ -1,0 +1,106 @@
+<style>
+  .social-icons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    list-style: none;
+    gap: 16px;
+    padding: 0;
+    margin: 0;
+  }
+</style>
+
+<ul class="social-icons">
+  {%- if settings.social_twitter != blank -%}
+    <li>
+      <a
+        href="{{ settings.social_twitter }}"
+        class="social-icon flex-row"
+        aria-label="social-icon-twitter"
+      >
+        {%- render 'icon-twitter' -%}
+      </a>
+    </li>
+  {%- endif -%}
+  {%- if settings.social_facebook != blank -%}
+    <li>
+      <a
+        href="{{ settings.social_facebook }}"
+        class="social-icon flex-row"
+        aria-label="social-icon-facebook"
+      >
+        {%- render 'icon-facebook' -%}
+      </a>
+    </li>
+  {%- endif -%}
+  {%- if settings.social_linkedin != blank -%}
+    <li>
+      <a
+        href="{{ settings.social_linkedin }}"
+        class="social-icon flex-row"
+        aria-label="social-icon-linkedin"
+      >
+        {%- render 'icon-linkedin' -%}
+      </a>
+    </li>
+  {%- endif -%}
+  {%- if settings.social_instagram != blank -%}
+    <li>
+      <a
+        href="{{ settings.social_instagram }}"
+        class="social-icon flex-row"
+        aria-label="social-icon-instagram"
+      >
+        {%- render 'icon-instagram' -%}
+      </a>
+    </li>
+  {%- endif -%}
+
+  {%- if settings.social_youtube != blank -%}
+    <li>
+      <a
+        href="{{ settings.social_youtube }}"
+        class="social-icon flex-row"
+        aria-label="social-icon-youtube"
+      >
+        {%- render 'icon-youtube' -%}
+      </a>
+    </li>
+  {%- endif -%}
+
+  {%- if settings.social_tiktok != blank -%}
+    <li>
+      <a
+        href="{{ settings.social_tiktok }}"
+        class="social-icon flex-row"
+        aria-label="social-icon-tiktok"
+      >
+        {%- render 'icon-tiktok' -%}
+      </a>
+    </li>
+  {%- endif -%}
+
+  {%- if settings.social_snapchat != blank -%}
+    <li>
+      <a
+        href="{{ settings.social_snapchat }}"
+        class="social-icon flex-row"
+        aria-label="social-icon-snapchat"
+      >
+        {%- render 'icon-snapchat' -%}
+      </a>
+    </li>
+  {%- endif -%}
+
+  {%- if settings.social_pinterest != blank -%}
+    <li>
+      <a
+        href="{{ settings.social_pinterest }}"
+        class="social-icon flex-row"
+        aria-label="social-icon-pinterest"
+      >
+        {%- render 'icon-pinterest' -%}
+      </a>
+    </li>
+  {%- endif -%}
+</ul>

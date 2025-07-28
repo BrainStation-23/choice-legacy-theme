@@ -20,6 +20,17 @@
     border-radius: {{ section.settings.slide_border_radius }}px;
   }
 
+  /* Video Styles */
+  .slide-video,
+  .slide-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+
+
   @media screen and (max-width: 1024px) {
     .slideshow .slideshow-nav-button-prev {
       left: calc(11% - 52px);
@@ -77,10 +88,30 @@
           <div class="swiper-slide {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
                {{ block.shopify_attributes }}
                data-block-id="{{ block.id }}"
-               data-block-type="{{ block.type }}">
+               data-block-type="{{ block.type }}"
+              id="shopify-block-{{ block.id }}"
+              >
             
-            {% comment %} Desktop Image {% endcomment %}
-            {% if block.settings.image != blank %}
+            {% comment %} Desktop Media (Video has priority over Image) {% endcomment %}
+            {% if block.settings.video_url != blank %}
+              {% comment %} Video {% endcomment %}
+              {% if block.settings.link != blank %}
+                <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
+              {% endif %}
+              <video 
+                class="slide-video"
+                {% if block.settings.video_autoplay %}autoplay{% endif %}
+                {% if block.settings.video_muted %}muted{% endif %}
+                {% if block.settings.video_loop %}loop{% endif %}
+                {% if block.settings.video_controls %}controls{% endif %}
+                preload="metadata"
+                playsinline>
+                <source src="{{ block.settings.video_url }}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              {% if block.settings.link != blank %}</a>{% endif %}
+            {% elsif block.settings.image != blank %}
+              {% comment %} Desktop Image {% endcomment %}
               {% if block.settings.link != blank %}
                 <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
               {% endif %}
@@ -91,14 +122,33 @@
              {{ "lifestyle-" | append: image_number | placeholder_svg_tag: "placeholder-svg slide-image-desktop" }}
             {% endif %}
             
-            {% comment %} Mobile Image {% endcomment %}
-            {% if block.settings.mobile_image != blank %}
+            {% comment %} Mobile Media (Video has priority over Image) {% endcomment %}
+            {% if block.settings.video_url != blank %}
+              {% comment %} Use same video for mobile {% endcomment %}
+              {% if block.settings.link != blank %}
+                <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
+              {% endif %}
+              <video 
+                class="slide-video slide-image-mobile"
+                {% if block.settings.video_autoplay %}autoplay{% endif %}
+                {% if block.settings.video_muted %}muted{% endif %}
+                {% if block.settings.video_loop %}loop{% endif %}
+                {% if block.settings.video_controls %}controls{% endif %}
+                preload="metadata"
+                playsinline>
+                <source src="{{ block.settings.video_url }}" type="video/mp4">
+                Your browser does not support the video tag.
+              </video>
+              {% if block.settings.link != blank %}</a>{% endif %}
+            {% elsif block.settings.mobile_image != blank %}
+              {% comment %} Mobile Image {% endcomment %}
               {% if block.settings.link != blank %}
                 <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
               {% endif %}
               {% render 'image', image: block.settings.mobile_image, width: 800, css_classes: 'slide-image slide-image-mobile' %}
               {% if block.settings.link != blank %}</a>{% endif %}
             {% elsif block.settings.image != blank %}
+              {% comment %} Use desktop image for mobile if no mobile image {% endcomment %}
               {% if block.settings.link != blank %}
                 <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
               {% endif %}
@@ -131,11 +181,28 @@
   </div>
 </slideshow-component>
 
-<script src="{{ 'slideshow.js' | asset_url }}" defer="defer"></script>
+<script>
+  document.addEventListener('shopify:block:select', function(event) {
+  const blockId = event.detail.blockId;
+  const targetSlide = document.querySelector(`#shopify-block-${blockId}`);
+  if (targetSlide) {
+    const parentSlideshow = targetSlide.closest('slideshow-component');
+    if (parentSlideshow && parentSlideshow.swiper) {
+      const index = Array.from(
+        parentSlideshow.querySelectorAll('.swiper-slide')
+      ).indexOf(targetSlide);
+
+      if (index !== -1) {
+        parentSlideshow.swiper.slideToLoop(index);
+      }
+    }
+  }
+});
+</script>
 
 {% schema %}
 {
-  "name": "Image Slideshow",
+  "name": "Slideshow",
   "tag": "section",
   "class": "section",
   "disabled_on": {
@@ -218,13 +285,50 @@
       "settings": [
         {
           "type": "header",
+          "content": "Video Settings"
+        },
+        {
+          "type": "url",
+          "id": "video_url",
+          "label": "Video URL",
+          "info": "Video will take priority over image if both are set. Use MP4 format for best compatibility."
+        },
+        {
+          "type": "checkbox",
+          "id": "video_autoplay",
+          "label": "Autoplay video",
+          "default": true,
+          "info": "Videos must be muted to autoplay in most browsers"
+        },
+        {
+          "type": "checkbox",
+          "id": "video_muted",
+          "label": "Mute video",
+          "default": true,
+          "info": "Required for autoplay to work"
+        },
+        {
+          "type": "checkbox",
+          "id": "video_loop",
+          "label": "Loop video",
+          "default": true
+        },
+        {
+          "type": "checkbox",
+          "id": "video_controls",
+          "label": "Show video controls",
+          "default": false,
+          "info": "Display play/pause controls"
+        },
+        {
+          "type": "header",
           "content": "Images"
         },
         {
           "type": "image_picker",
           "id": "image",
           "label": "Desktop Image",
-          "info": "Recommended size: 1200x400px"
+          "info": "Recommended size: 1200x400px. Will be used as fallback if no video is set."
         },
         {
           "type": "image_picker",
@@ -290,13 +394,13 @@
             }
           ],
           "default": "left"
-        },
+        }
       ]
     }
   ],
   "presets": [
     {
-      "name": "Image Slideshow",
+      "name": "Slideshow",
       "blocks": [
         {
           "type": "slide",

@@ -1,6 +1,21 @@
 {
+  "name": "Footer group",
   "type": "footer",
-  "name": "Footer Group",
-  "sections": {},
-  "order": []
+  "sections": {
+    "footer": {
+      "type": "footer",
+      "blocks": {
+        "link-list-1": { "type": "link_list", "settings": {} },
+        "link-list-2": { "type": "link_list", "settings": {} },
+        "link-list-3": { "type": "link_list", "settings": {} }
+      },
+      "block_order": ["link-list-1", "link-list-2", "link-list-3"],
+      "settings": {}
+    },
+    "copyright-content": {
+      "type": "copyright-content",
+      "settings": {}
+    }
+  },
+  "order": ["footer", "copyright-content"]
 }

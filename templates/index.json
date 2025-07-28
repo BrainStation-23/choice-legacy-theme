@@ -26,6 +26,117 @@
       },
       "block_order": ["slide-1", "slide-2", "slide-3"]
     },
+    "recommended-products": {
+      "type": "recommended-products",
+      "settings": {
+        "heading": "RECOMMENDED FOR YOU",
+        "products_to_show": 8,
+        "autoplay": false,
+        "autoplay_delay": 5000,
+        "pause_on_hover": true,
+        "padding_top": 36,
+        "padding_bottom": 36
+      },
+      "blocks": {
+        "product_1": {
+          "type": "product",
+          "settings": {
+            "product": null
+          }
+        },
+        "product_2": {
+          "type": "product",
+          "settings": {
+            "product": null
+          }
+        },
+        "product_3": {
+          "type": "product",
+          "settings": {
+            "product": null
+          }
+        },
+        "product_4": {
+          "type": "product",
+          "settings": {
+            "product": null
+          }
+        },
+        "product_5": {
+          "type": "product",
+          "settings": {
+            "product": null
+          }
+        },
+        "product_6": {
+          "type": "product",
+          "settings": {
+            "product": null
+          }
+        },
+        "product_7": {
+          "type": "product",
+          "settings": {
+            "product": null
+          }
+        },
+        "product_8": {
+          "type": "product",
+          "settings": {
+            "product": null
+          }
+        }
+      },
+      "block_order": [
+        "product_1",
+        "product_2",
+        "product_3",
+        "product_4",
+        "product_5",
+        "product_6",
+        "product_7",
+        "product_8"
+      ]
+    },
+    "promotional-banner": {
+      "type": "promotional-banner",
+      "settings": {},
+      "blocks": {
+        "banner-1": {
+          "type": "banner_item",
+          "settings": {
+            "banner_image": "",
+            "mobile_banner_image": "",
+            "link": ""
+          }
+        },
+        "banner-2": {
+          "type": "banner_item",
+          "settings": {
+            "banner_image": "",
+            "mobile_banner_image": "",
+            "link": ""
+          }
+        },
+        "banner-3": {
+          "type": "banner_item",
+          "settings": {
+            "banner_image": "",
+            "mobile_banner_image": "",
+            "link": ""
+          }
+        },
+        "banner-4": {
+          "type": "banner_item",
+          "settings": {
+            "banner_image": "",
+            "mobile_banner_image": "",
+            "link": ""
+          }
+        }
+      },
+      "block_order": ["banner-1", "banner-2", "banner-3", "banner-4"]
+    },
     "offer_banner_section_1": {
       "type": "offer-banner",
       "settings": {
@@ -144,12 +255,66 @@
         "product_video_3",
         "product_video_4"
       ]
+    },
+    "featured-collections": {
+      "type": "featured-collections",
+      "settings": {
+        "item_border_radius": 0,
+        "autoplay": false,
+        "autoplay_delay": 5000,
+        "pause_on_hover": true,
+        "padding_top": 36,
+        "padding_bottom": 36
+      },
+      "blocks": {
+        "collection_1": {
+          "type": "collection",
+          "settings": {
+            "collection": null,
+            "custom_image": null,
+            "custom_url": null
+          }
+        },
+        "collection_2": {
+          "type": "collection",
+          "settings": {
+            "collection": null,
+            "custom_image": null,
+            "custom_url": null
+          }
+        },
+        "collection_3": {
+          "type": "collection",
+          "settings": {
+            "collection": null,
+            "custom_image": null,
+            "custom_url": null
+          }
+        },
+        "collection_4": {
+          "type": "collection",
+          "settings": {
+            "collection": null,
+            "custom_image": null,
+            "custom_url": null
+          }
+        }
+      },
+      "block_order": [
+        "collection_1",
+        "collection_2",
+        "collection_3",
+        "collection_4"
+      ]
     }
   },
   "order": [
     "slideshow",
+    "recommended-products",
+    "promotional-banner",
     "offer_banner_section_1",
     "offer_banner_section_2",
-    "product-video-carousel"
+    "product-video-carousel",
+    "featured-collections"
   ]
 }
