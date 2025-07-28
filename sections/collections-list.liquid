@@ -6,7 +6,6 @@
 {% endif %}
 
 <style>
-  /* -- DESKTOP STYLES (Default) -- */
   .collections-list-{{ section.id }} {
     padding-top: {{ section.settings.padding_top }}px;
     padding-bottom: {{ section.settings.padding_bottom }}px;
@@ -15,29 +14,28 @@
   .collections-list__grid {
     display: grid;
     grid-template-columns: repeat({{ minShown }}, 1fr);
-    gap: 24px;
     justify-items: center;
     align-items: stretch;
   }
 
-  /* Hide Swiper container on desktop by default */
   .collections-list__swiper-wrapper {
     display: none;
   }
 
-  /* -- MOBILE STYLES -- */
   @media screen and (max-width: 768px) {
     .collections-list-{{ section.id }} {
       padding-top: {{ section.settings.padding_top }}px;
       padding-bottom: {{ section.settings.padding_bottom }}px;
     }
 
-    /* Hide grid on mobile */
+     .collections-list__swiper-wrapper .swiper-container{
+      gap:24px !important
+     }
+
     .collections-list__grid {
       display: none;
     }
 
-    /* Show Swiper container on mobile */
     .collections-list__swiper-wrapper {
       display: block;
     }
@@ -58,18 +56,18 @@
 </style>
 
 <section class="collections-list collections-list-{{ section.id }}">
-  <div class="collections-list__container page-width">
+  <div class="collections-list__container page-width gap-64">
     {% if section.settings.title != blank %}
-      <h2 class="collections-list__title">{{ section.settings.title }}</h2>
+      <h2 class="collections-list__title ff-bebas-neue fw-400 fs-36-lh-40-ls-0pct">{{ section.settings.title }}</h2>
     {% endif %}
 
-    <div class="collections-list__grid">
+    <div class="collections-list__grid gap-24">
       {% for block in section.blocks %}
         {% if block.settings.collection %}
           <div class="collections-list__item" {{ block.shopify_attributes }}>
             <a href="{{ block.settings.collection.url }}" class="collections-list__link">
               {% if block.settings.collection.featured_image %}
-                {% render 'image', 
+                {% render 'image',
                   image: block.settings.collection.featured_image,
                   width: 300,
                   alt_text: block.settings.collection.title,
@@ -84,7 +82,13 @@
               {% endif %}
 
               <div class="collections-list__content">
-                <h3 class="collections-list__name">{{ block.settings.collection.title | default: 'Collection' }}</h3>
+                <h3 class="collections-list__name ff-bebas-neue fw-400 fs-26-lh-26-ls-1_2pct">
+                  {% if block.settings.collection.title %}
+                    {{ block.settings.collection.title }}
+                  {% else %}
+                    {{ 'sections.collections_list.default_title' | t }}
+                  {% endif %}
+                </h3>
               </div>
             </a>
           </div>
@@ -106,13 +110,13 @@
                 <div class="swiper-slide collections-list__item" {{ block.shopify_attributes }}>
                   <a href="{{ block.settings.collection.url }}" class="collections-list__link">
                     {% if block.settings.collection.featured_image %}
-                     {% render 'image', 
+                      {% render 'image',
                         image: block.settings.collection.featured_image,
                         width: 300,
                         alt_text: block.settings.collection.title,
                         css_classes: 'collections-list__image',
                         width_attr: '298px',
-                        height_attr: '234px' 
+                        height_attr: '234px'
                       %}
                     {% else %}
                       <div class="collections-list__image">
@@ -121,14 +125,16 @@
                     {% endif %}
 
                     <div class="collections-list__content">
-                      <h3 class="collections-list__name">{{ block.settings.collection.title | default: 'Collection' }}</h3>
+                      <h3 class="collections-list__name">
+                        {{ block.settings.collection.title | default: 'Collection' }}
+                      </h3>
                     </div>
                   </a>
                 </div>
               {% endif %}
             {% endfor %}
           </div>
-          {% render "slideshow-progress-bar" %}
+          {% render 'slideshow-progress-bar' %}
         </div>
       </slideshow-component>
     </div>
