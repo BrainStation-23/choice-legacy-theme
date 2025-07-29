@@ -48,8 +48,8 @@
     transform: translateX(-50%);
     background: rgb(var(--color-background));
     border-radius: 6px;
-    opacity: 0;
-    visibility: hidden;
+    {% comment %} opacity: 0; {% endcomment %}
+    {% comment %} visibility: hidden; {% endcomment %}
     transition: all 0.3s ease;
     z-index: 1001;
     margin-top: 8px;
@@ -174,12 +174,20 @@
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     .mega-menu__dropdown {
-      max-width: 700px;
+      max-width: 750px;
       padding: 16px;
     }
 
+    .mega-menu__columns-wrapper {
+      gap: 32px;
+    }
+
+    .mega-menu__column {
+      min-width: auto;
+    }
+
     .mega-menu__dropdown--4-plus-columns {
-      width: 700px;
+      width: 750px;
     }
 
     .mega-menu__dropdown--1-column {
@@ -191,7 +199,8 @@
     }
 
     .mega-menu__dropdown--3-columns {
-      max-width: 600px;
+      max-width: 750px;
+      min-width: 750px;
     }
 
     .mega-menu__image {

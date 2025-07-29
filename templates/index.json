@@ -85,6 +85,18 @@
           "settings": {
             "product": null
           }
+        },
+        "product_9": {
+          "type": "product",
+          "settings": {
+            "product": null
+          }
+        },
+        "product_10": {
+          "type": "product",
+          "settings": {
+            "product": null
+          }
         }
       },
       "block_order": [
@@ -95,7 +107,9 @@
         "product_5",
         "product_6",
         "product_7",
-        "product_8"
+        "product_8",
+        "product_9",
+        "product_10"
       ]
     },
     "promotional-banner": {
