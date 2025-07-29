@@ -66,8 +66,8 @@
         "type": "text",
         "id": "logo_text",
         "label": "Logo alt text",
-        "default": "Brand logo",
-        "info": "This is applied when brand logo is not set. "
+        "default": "Logo",
+        "info": "This is applied when logo is not set. "
       },
       {
         "type": "text",
@@ -110,6 +110,98 @@
         "default": 1264,
         "unit": "px",
         "label": "Page width"
+      }
+    ]
+  },
+  {
+    "name": "Social media",
+    "settings": [
+      {
+        "type": "text",
+        "id": "social_facebook",
+        "label": "Facebook",
+        "placeholder": "https://facebook.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_instagram",
+        "label": "Instagram",
+        "placeholder": "https://instagram.com/shopify"
+      },
+
+      {
+        "type": "text",
+        "id": "social_linkedin",
+        "label": "LinkedIn",
+        "placeholder": "https://linkedin.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_youtube",
+        "label": "YouTube",
+        "placeholder": "https://youtube.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_tiktok",
+        "label": "TikTok",
+        "placeholder": "https://tiktok.com/@shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_twitter",
+        "label": "X / Twitter",
+        "placeholder": "https://x.com/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_snapchat",
+        "label": "Snapchat",
+        "placeholder": "https://www.snapchat.com/add/shopify"
+      },
+      {
+        "type": "text",
+        "id": "social_pinterest",
+        "label": "Pinterest",
+        "placeholder": "https://pinterest.com/shopify"
+      }
+    ]
+  },
+  {
+    "name": "Product Card",
+    "settings": [
+      {
+        "type": "range",
+        "id": "product_card_border_radius",
+        "min": 0,
+        "max": 20,
+        "step": 1,
+        "default": 0,
+        "label": "Border radius"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_product_card_box_shadow",
+        "default": true,
+        "label": "Box shadow"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_product_type",
+        "default": true,
+        "label": "Show product type"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_product_rating",
+        "default": true,
+        "label": "Show rating"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_product_weight",
+        "default": true,
+        "label": "Show product weight"
       }
     ]
   }

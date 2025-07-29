@@ -3,6 +3,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  margin: 0;
 }
 
 html {
@@ -46,7 +47,8 @@ mark {
 :root {
   --fluid-vw: 100vw;
   --fluid-max-vw: 1536;
-  --fluid-calc: (var(--fluid-vw) - 32rem) / (var(--fluid-max-vw) / 10 - 32) + 0.1rem;
+  --fluid-calc: (var(--fluid-vw) - 32rem) / (var(--fluid-max-vw) / 10 - 32) +
+    0.1rem;
   --fluid-1-065: ((1.065 / 10 - 0.1) * var(--fluid-calc));
   --fluid-1-125: ((1.125 / 10 - 0.1) * var(--fluid-calc));
   --fluid-1-2: ((1.2 / 10 - 0.1) * var(--fluid-calc));
@@ -140,7 +142,12 @@ h6,
 }
 
 /* Desktop styles */
-.fs-12-lh-16-ls-0_6pct {
+:root {
+  --font-unit: 0.1rem; /* 1px */
+}
+
+/* Desktop Typography */
+.fs-12-lh-16-ls-0_6 {
   font-size: calc(12 * var(--font-unit));
   line-height: calc(16 * var(--font-unit));
   letter-spacing: calc(0.006 * var(--font-unit));
@@ -150,6 +157,12 @@ h6,
   font-size: calc(13 * var(--font-unit));
   line-height: calc(16 * var(--font-unit));
   letter-spacing: calc(0.002 * var(--font-unit));
+}
+
+.fs-14-lh-16-ls-0 {
+  font-size: calc(14 * var(--font-unit));
+  line-height: calc(16 * var(--font-unit));
+  letter-spacing: 0;
 }
 
 .fs-14-lh-20-ls-0 {
@@ -164,10 +177,16 @@ h6,
   letter-spacing: calc(0.001 * var(--font-unit));
 }
 
-.fs-14-lh-100pct-ls-0pct {
+.fs-14-lh-100pct-ls-0 {
   font-size: calc(14 * var(--font-unit));
   line-height: 100%;
   letter-spacing: 0;
+}
+
+.fs-14-lh-100pct-ls-2pct {
+  font-size: calc(14 * var(--font-unit));
+  line-height: 100%;
+  letter-spacing: calc(2 * var(--font-unit));
 }
 
 .fs-16-lh-16-ls-0 {
@@ -176,7 +195,7 @@ h6,
   letter-spacing: 0;
 }
 
-.fs-16-lh-100pct-ls-0pct {
+.fs-16-lh-100pct-ls-0 {
   font-size: calc(16 * var(--font-unit));
   line-height: 100%;
   letter-spacing: 0;
@@ -186,6 +205,12 @@ h6,
   font-size: calc(16 * var(--font-unit));
   line-height: calc(24 * var(--font-unit));
   letter-spacing: 0;
+}
+
+.fs-21-lh-24-ls-1_2 {
+  font-size: calc(21 * var(--font-unit));
+  line-height: calc(24 * var(--font-unit));
+  letter-spacing: calc(1.2 * var(--font-unit));
 }
 
 .fs-21-lh-24-ls-1_2pct {
@@ -200,13 +225,13 @@ h6,
   letter-spacing: 0;
 }
 
-.fs-26-lh-26-ls-1_2pct {
+.fs-26-lh-26-ls-1_2 {
   font-size: calc(26 * var(--font-unit));
   line-height: calc(26 * var(--font-unit));
   letter-spacing: calc(0.012 * var(--font-unit));
 }
 
-.fs-36-lh-40-ls-0pct {
+.fs-36-lh-40-ls-0 {
   font-size: calc(36 * var(--font-unit));
   line-height: calc(40 * var(--font-unit));
   letter-spacing: 0;
@@ -250,13 +275,13 @@ h6,
     letter-spacing: calc(-0.012 * var(--font-unit));
   }
 
-  .mobile-fs-16-ls-16-ls-0 {
+  .mobile-fs-16-lh-16-ls-0 {
     font-size: calc(16 * var(--font-unit));
     line-height: calc(16 * var(--font-unit));
     letter-spacing: 0;
   }
 
-  .mobile-fs-16-lh-24-lh-0 {
+  .mobile-fs-16-lh-24-ls-0 {
     font-size: calc(16 * var(--font-unit));
     line-height: calc(24 * var(--font-unit));
     letter-spacing: 0;
@@ -630,6 +655,14 @@ address {
 .gap-32 {
   gap: calc(32 * var(--space-unit));
 }
+.gap-40 {
+  gap: calc(40 * var(--space-unit));
+}
+
+.gap-36 {
+  gap: calc(36 * var(--space-unit));
+}
+
 .gap-48 {
   gap: calc(48 * var(--space-unit));
 }
@@ -978,12 +1011,15 @@ address {
   text-decoration-line: underline;
 }
 .transition {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
-    transform, filter, -webkit-backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
-    transform, filter, backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
-    transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -1367,7 +1403,9 @@ select {
 }
 
 input[type="date"] {
-  min-height: calc((var(--input-padding-y, 11px) + var(--input-border-width)) * 2 + 1.2em);
+  min-height: calc(
+    (var(--input-padding-y, 11px) + var(--input-border-width)) * 2 + 1.2em
+  );
   -webkit-appearance: none;
 }
 

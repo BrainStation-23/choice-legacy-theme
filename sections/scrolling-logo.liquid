@@ -1,0 +1,193 @@
+{{ 'scrolling-logo.css' | asset_url | stylesheet_tag }}
+
+<style>
+  .scrolling-logo-{{ section.id }} {
+    padding-top: {{ section.settings.padding_top }}px;
+    padding-bottom: {{ section.settings.padding_bottom }}px;
+    background-color: rgb(var(--color-primary-brand));
+  }
+
+  .scrolling-logo-{{ section.id }} .scrolling-logo__image-img {
+    width: {{ section.settings.image_width }}px;
+    height: {{ section.settings.image_height }}px;
+  }
+
+  .scrolling-logo-{{ section.id }} .scrolling-logo__items {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+  }
+
+  .scrolling-logo-{{ section.id }} .scrolling-logo-placeholder-image {
+    width: {{ section.settings.image_width }}px;
+    height: {{ section.settings.image_height }}px;
+  }
+</style>
+
+<section
+  class="scrolling-logo scrolling-logo-{{ section.id }}  color-{{ section.settings.color_scheme }}"
+  data-section-type="scrolling-logo"
+  data-speed="{{ section.settings.speed }}"
+  data-pausable="{{ section.settings.pausable }}"
+>
+  <div class="scrolling-logo__items-container ">
+    {% assign img_height = section.settings.image_height | default: 60 %}
+    {% assign img_width = section.settings.image_width | default: 60 %}
+    {% assign repeat_times = 2 %}
+    {% for i in (1..repeat_times) %}
+      <div class="scrolling-logo__items scrolling-logo__items--normal gap-40" aria-hidden="true">
+        {% for block in section.blocks %}
+          <div class="scrolling-logo__item" id="block-{{ block.id }}" {{ block.shopify_attributes }}>
+            {% if block.settings.image != blank %}
+              {% if block.settings.link != blank %}
+                <a href="{{ block.settings.link }}" class="scrolling-logo__image ">
+              {% else %}
+                <div class="scrolling-logo__image flex-row">
+              {% endif %}
+              {% render 'image',
+                image: block.settings.image,
+                width: img_width,
+                alt_text: block.settings.image.alt,
+                height_attr: img_height,
+                width_attr: img_width,
+                css_classes: 'scrolling-logo__image-img'
+              %}
+
+              {% if block.settings.link != blank %}
+                </a>
+              {% else %}
+                </div>
+              {% endif %}
+
+            {% else %}
+              <div class="scrolling-logo__image flex-row">
+                {{ 'collection-1' | placeholder_svg_tag: 'scrolling-logo-placeholder-image' }}
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+<script src="{{ 'scrolling-logo.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Scrolling logo",
+  "tag": "section",
+  "class": "scrolling-logo",
+  "max_blocks": 10,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+
+    {
+      "type": "checkbox",
+      "id": "show_divider",
+      "label": "Show divider between logos",
+      "default": true
+    },
+    {
+      "type": "range",
+      "id": "image_height",
+      "min": 50,
+      "max": 100,
+      "step": 2,
+      "unit": "px",
+      "label": "Image height",
+      "default": 56
+    },
+    {
+      "type": "range",
+      "id": "image_width",
+      "min": 50,
+      "max": 120,
+      "step": 2,
+      "unit": "px",
+      "label": "Image width",
+      "default": 120
+    },
+    {
+      "type": "header",
+      "content": "Scrolling"
+    },
+    {
+      "type": "range",
+      "id": "speed",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "unit": "s",
+      "label": "Speed",
+      "default": 40
+    },
+    {
+      "type": "checkbox",
+      "id": "pausable",
+      "label": "Pause on hover",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Padding"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "default": 16,
+      "unit": "px"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image_text_block",
+      "name": "Image block",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "url",
+          "id": "link",
+          "label": "Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Scrolling logo",
+      "blocks": [
+        { "type": "image_text_block" },
+        { "type": "image_text_block" },
+        { "type": "image_text_block" },
+        { "type": "image_text_block" },
+        { "type": "image_text_block" },
+        { "type": "image_text_block" },
+        { "type": "image_text_block" },
+        { "type": "image_text_block" }
+      ]
+    }
+  ]
+}
+{% endschema %}
