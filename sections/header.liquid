@@ -48,8 +48,8 @@
     transform: translateX(-50%);
     background: rgb(var(--color-background));
     border-radius: 6px;
-    {% comment %} opacity: 0; {% endcomment %}
-    {% comment %} visibility: hidden; {% endcomment %}
+    opacity: 0;
+    visibility: hidden;
     transition: all 0.3s ease;
     z-index: 1001;
     margin-top: 8px;
@@ -145,6 +145,173 @@
     object-fit: cover;
   }
 
+  /* MOBILE MEGA MENU STYLES */
+  .mobile-mega-menu {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 325px;
+    height: 86vh;
+    z-index: 9999;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    background: rgb(var(--color-background));
+  }
+
+  .mobile-mega-menu.active {
+    transform: translateX(0);
+  }
+
+  .mobile-mega-menu__content {
+    padding: 24px 16px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .mobile-mega-menu__categories {
+    flex: 1;
+  }
+
+  /* CollapsibleContent Web Component Styles */
+  collapsible-content {
+    display: block;
+  }
+
+  collapsible-content .mobile-mega-menu__category-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  collapsible-content .mobile-mega-menu__category-title {
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 0;
+  }
+
+  collapsible-content .mobile-mega-menu__category-toggle {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+  }
+
+  collapsible-content .mobile-mega-menu__category-toggle svg {
+    width: 12px;
+    height: 12px;
+    fill: currentColor;
+  }
+
+  collapsible-content.expanded .mobile-mega-menu__category-toggle {
+    transform: rotate(180deg);
+  }
+
+  collapsible-content.expanded .mobile-mega-menu__category-toggle svg path {
+    stroke: rgb(var(--color-primary-brand));
+    fill: rgb(var(--color-primary-brand));
+  }
+
+  collapsible-content .mobile-mega-menu__subcategory-list {
+    list-style: none;
+    margin: 0;
+    padding: 0px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+
+  collapsible-content.expanded .mobile-mega-menu__subcategory-list {
+    min-height: 550px;
+    padding: 16px 0;
+  }
+
+  .mobile-mega-menu__subcategory-link {
+    text-decoration: none;
+    display: block;
+    transition: color 0.3s ease;
+  }
+
+  .mobile-mega-menu__subcategory-item:hover {
+    color: rgb(var(--color-primary-brand));
+  }
+
+  .mobile-mega-menu__promo {
+    margin-top: auto;
+  }
+
+  .mobile-mega-menu__promo-image {
+    width: 293px;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  .mobile-mega-menu__promo-image img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+
+  /* Menu Toggle Button Styles */
+  .header__menu-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: none; /* Hidden by default on desktop */
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+  }
+
+  /* Show menu toggle only on mobile */
+  @media screen and (max-width: 767px) {
+    .header__menu-toggle {
+      display: flex;
+    }
+  }
+
+  /* Alternative: Hide menu icon and show close icon when active */
+  .header__menu-toggle .close-icon {
+    display: none;
+  }
+
+  .header__menu-toggle.active .menu-icon {
+    display: none;
+  }
+
+  .header__menu-toggle.active .close-icon {
+    display: block;
+  }
+
+  .header__menu-toggle .close-icon svg {
+    stroke: rgb(var(--color-primary-brand));
+    fill: rgb(var(--color-primary-brand));
+  }
+
+  .mobile-mega-menu .icon-arrow {
+    transform: rotate(90deg);
+  }
+
+  /* Hide desktop mega menu on mobile */
+  @media screen and (max-width: 767px) {
+    .mega-menu {
+      display: none;
+    }
+  }
+
+  /* Hide mobile menu on desktop */
+  @media screen and (min-width: 768px) {
+    .mobile-mega-menu {
+      display: none;
+    }
+  }
+
   @media screen and (min-width: 1024px) and (max-width: 1280px) {
     .mega-menu__dropdown {
       max-width: 900px;
@@ -176,6 +343,8 @@
     .mega-menu__dropdown {
       max-width: 720px;
       padding: 16px;
+      opacity: 1;
+      visibility: visible;
     }
 
     .mega-menu__columns-wrapper {
@@ -215,8 +384,13 @@
   <div class="header__container">
     <div class="header__inner gap-36">
       <div class="header__left header__item-container">
-        <button class="header__menu-toggle" aria-label="Open menu">
-          {% render 'menu-icon' %}
+        <button id="menuIcon" class="header__menu-toggle" aria-label="Open menu" onclick="toggleMobileMenu()">
+          <div class="menu-icon">
+            {% render 'menu-icon' %}
+          </div>
+          <div class="close-icon">
+            {% render "icon-close" %}
+          </div>
         </button>
         <a href="{{ routes.root_url }}" class="header__logo-link--desktop">
           {%- if settings.brand_logo != blank -%}
@@ -300,10 +474,64 @@
         </button>
       </form>
     </div>
+
+    <!-- Mobile Mega Menu -->
+    <div class="mobile-mega-menu box-shadow" id="mobileMegaMenu">
+      <div class="mobile-mega-menu__content flex flex-col gap-32">
+        <!-- Categories Section -->
+        <div class="mobile-mega-menu__categories flex flex-col gap-16">
+          {%- if section.settings.main_menu != blank -%}
+            {%- for link in linklists[section.settings.main_menu].links -%}
+              <collapsible-content class="mobile-mega-menu__category">
+                <div class="mobile-mega-menu__category-header">
+                  <h3 class="mobile-mega-menu__category-title fw-400 fs-21-lh-24-ls-1_2pct">{{ link.title }}</h3>
+                  <div class="mobile-mega-menu__category-toggle">
+                    {% render "icon-arrow", cls: "icon-arrow" %}
+                  </div>
+                </div>
+                {%- if link.links != blank -%}
+                  <ul class="mobile-mega-menu__subcategory-list flex flex-col gap-16">
+                    {%- for child_link in link.links -%}
+                      {%- if child_link.links != blank -%}
+                        {%- for grandchild_link in child_link.links -%}
+                          <li class="mobile-mega-menu__subcategory-item">
+                            <a href="{{ grandchild_link.url }}" class="mobile-mega-menu__subcategory-link fw-500 fs-14-lh-20-ls-0_1">{{ grandchild_link.title }}</a>
+                          </li>
+                        {%- endfor -%}
+                      {%- else -%}
+                        <li class="mobile-mega-menu__subcategory-item">
+                          <a href="{{ child_link.url }}" class="mobile-mega-menu__subcategory-link fw-500 fs-14-lh-20-ls-0_1">{{ child_link.title }}</a>
+                        </li>
+                      {%- endif -%}
+                    {%- endfor -%}
+                  </ul>
+                {%- endif -%}
+              </collapsible-content>
+            {%- endfor -%}
+          {%- endif -%}
+        </div>
+
+        <!-- Promotional Section -->
+        {%- if section.settings.mega_menu_image != blank -%}
+          <div class="mobile-mega-menu__promo">
+            <div class="mobile-mega-menu__promo-image">
+              <img
+                src="{{ section.settings.mega_menu_image | image_url: width: 400 }}"
+                alt="{{ section.settings.mega_menu_image_alt | default: 'Featured products' | escape }}"
+                loading="lazy"
+                class="mega-menu__image"
+                width="400"
+                height="300"
+              />
+            </div>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
   </div>
 </header>
 
-<!-- Mega Menu Navigation -->
+<!-- Desktop Mega Menu Navigation -->
 <nav class="mega-menu">
   <div class="mega-menu__nav page-width">
     <div class="mega-menu__container">
@@ -410,6 +638,105 @@
     </div>
   </div>
 </nav>
+
+<script>
+// CollapsibleContent Web Component
+class CollapsibleContent extends HTMLElement {
+  constructor() {
+    super();
+    this.isExpanded = false;
+  }
+
+  connectedCallback() {
+    this.setupEventListeners();
+  }
+
+  setupEventListeners() {
+    const header = this.querySelector('.mobile-mega-menu__category-header');
+    if (header) {
+      header.addEventListener('click', (e) => {
+        e.preventDefault();
+        this.toggle();
+      });
+    }
+  }
+
+  toggle() {
+    // Close all other collapsible content elements first (accordion behavior)
+    const allCollapsibles = document.querySelectorAll('collapsible-content');
+    allCollapsibles.forEach(collapsible => {
+      if (collapsible !== this && collapsible.isExpanded) {
+        collapsible.collapse();
+      }
+    });
+
+    // Toggle this one
+    this.isExpanded = !this.isExpanded;
+    
+    if (this.isExpanded) {
+      this.classList.add('expanded');
+    } else {
+      this.classList.remove('expanded');
+    }
+  }
+
+  expand() {
+    this.isExpanded = true;
+    this.classList.add('expanded');
+  }
+
+  collapse() {
+    this.isExpanded = false;
+    this.classList.remove('expanded');
+  }
+}
+
+// Register the web component
+customElements.define('collapsible-content', CollapsibleContent);
+
+function toggleMobileMenu() {
+  const mobileMenu = document.getElementById('mobileMegaMenu');
+  const menuButton = document.getElementById('menuIcon');
+  
+  mobileMenu.classList.toggle('active');
+  menuButton.classList.toggle('active');
+  
+  // Prevent body scroll when menu is open
+  if (mobileMenu.classList.contains('active')) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = '';
+    
+    // Collapse all categories when menu closes
+    const collapsibleElements = document.querySelectorAll('collapsible-content');
+    collapsibleElements.forEach(el => el.collapse());
+  }
+}
+
+// Close menu when clicking outside or on links
+document.addEventListener('click', function(event) {
+  const mobileMenu = document.getElementById('mobileMegaMenu');
+  const menuToggle = document.querySelector('.header__menu-toggle');
+  
+  if (mobileMenu && mobileMenu.classList.contains('active') && 
+      !mobileMenu.contains(event.target) && 
+      !menuToggle.contains(event.target)) {
+    toggleMobileMenu();
+  }
+});
+
+// Close menu when clicking on menu links
+document.addEventListener('DOMContentLoaded', function() {
+  // Wait a bit for the custom elements to be defined
+  setTimeout(() => {
+    document.querySelectorAll('.mobile-mega-menu__subcategory-link').forEach(link => {
+      link.addEventListener('click', function() {
+        toggleMobileMenu();
+      });
+    });
+  }, 100);
+});
+</script>
 
 {% schema %}
 {
