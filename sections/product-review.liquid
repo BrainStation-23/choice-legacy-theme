@@ -10,7 +10,7 @@
   }
 
   /* Desktop: Show grid, hide swiper */
-  @media  (min-width: 769px) {
+  @media (min-width: 769px) {
     .homepage-product-review__desktop-only {
       display: grid;
     }
@@ -20,11 +20,7 @@
   }
 
   /* Tablet and Mobile: Hide grid, show swiper */
-  @media  (max-width: 768px) {
-
-
-    /* Mobile review card width */
-
+  @media (max-width: 768px) {
     .homepage-product-review__desktop-only {
       display: none;
     }
@@ -43,6 +39,24 @@
 
     .homepage-product-review__mobile-tablet-only .swiper-container .swiper-wrapper {
       gap: 16px !important;
+    }
+
+    /* Product review carousel mode styles */
+    .swiper-container[data-carousel-mode="true"] .homepage-product-review__card {
+      width: var(--slide-width-mobile, 220px);
+      flex-shrink: 0;
+    }
+  }
+
+  @media screen and (min-width: 768px) and (max-width: 768px) {
+    .swiper-container[data-carousel-mode="true"] .homepage-product-review__card {
+      width: var(--slide-width-tablet, 220px);
+    }
+  }
+
+  @media screen and (min-width: 1024px) {
+    .swiper-container[data-carousel-mode="true"] .homepage-product-review__card {
+      width: var(--slide-width-desktop, 220px);
     }
   }
 </style>
@@ -67,7 +81,9 @@
       <slideshow-component
         data-autoplay="false"
         data-show-progress-bar="true"
-        data-slides-per-view-desktop="2"
+        data-slides-per-view-desktop="3"
+        data-slides-per-view-tablet="2"
+        data-slides-per-view-mobile="2"
         data-single-slide-view="true"
         data-carousel-mode="true"
         data-slide-width-mobile="220px"
@@ -190,7 +206,7 @@
           : `<div class="homepage-product-review__image" style="background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 0.8rem;">No Image</div>`;
 
         return `
-          <div class="homepage-product-review__card swiper-slide gap-16 box-shadow">
+          <div class="swiper-slide homepage-product-review__card gap-16 box-shadow">
             <div class="homepage-product-review__image-container homepage-product-review__content-top">
               ${imageHtml}
               <div class="homepage-product-review__rating box-shadow gap-4">
@@ -223,20 +239,25 @@
       // Update mobile slideshow content
       mobileSlidesContainer.innerHTML = mobileSlidesHtml;
 
-      // Trigger slideshow initialization
+      // Reinitialize slideshow component after content update
       const slideshowComponent = document.querySelector('slideshow-component');
       if (slideshowComponent) {
-        // Dispatch a custom event to reinitialize the slideshow
-        const event = new CustomEvent('slideshow:reinit', { bubbles: true });
-        slideshowComponent.dispatchEvent(event);
+        // Destroy existing swiper instance
+        if (slideshowComponent.swiper) {
+          slideshowComponent.swiper.destroy(true, true);
+          slideshowComponent.swiper = null;
+        }
         
-        // Try direct method calls if available
-        if (typeof slideshowComponent.init === 'function') {
-          slideshowComponent.init();
-        }
-        if (typeof slideshowComponent.update === 'function') {
-          slideshowComponent.update();
-        }
+        // Small delay to ensure DOM is ready
+        setTimeout(() => {
+          // Reinitialize the slideshow component
+          slideshowComponent.initializeSwiper();
+          
+          // Update custom bullets if they exist
+          if (typeof slideshowComponent.initializeCustomBullets === 'function') {
+            slideshowComponent.initializeCustomBullets();
+          }
+        }, 100);
       }
     }
 
@@ -299,6 +320,7 @@
       "label": "Enable autoplay (Mobile & Tablet only)",
       "default": false
     },
+
     {
       "type": "header",
       "content": "Spacing"
