@@ -54,11 +54,11 @@
     z-index: 1001;
     margin-top: 8px;
     padding: 24px 40px;
-    box-shadow: 0px 2px 14px 0px rgba(3, 11, 26, 0.10);
     white-space: nowrap;
     width: max-content;
     max-width: 1134px;
     min-width: 200px;
+    margin-left: 50%;
   }
 
   /* Column-specific width adjustments */
@@ -147,17 +147,17 @@
 
   @media screen and (min-width: 1024px) and (max-width: 1280px) {
     .mega-menu__dropdown {
-      max-width: 950px;
+      max-width: 900px;
       padding: 20px 32px;
       left: 100%;
     }
 
     .mega-menu__dropdown--3-columns {
-      min-width: 950px;
+      min-width: 900px;
     }
 
     .mega-menu__dropdown--4-plus-columns {
-      width: 950px;
+      width: 900px;
     }
 
     .mega-menu__column {
@@ -174,7 +174,7 @@
 
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     .mega-menu__dropdown {
-      max-width: 750px;
+      max-width: 720px;
       padding: 16px;
     }
 
@@ -187,7 +187,7 @@
     }
 
     .mega-menu__dropdown--4-plus-columns {
-      width: 750px;
+      width: 720px;
     }
 
     .mega-menu__dropdown--1-column {
@@ -199,8 +199,8 @@
     }
 
     .mega-menu__dropdown--3-columns {
-      max-width: 750px;
-      min-width: 750px;
+      max-width: 720px;
+      min-width: 720px;
     }
 
     .mega-menu__image {
@@ -350,7 +350,7 @@
                   {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--4-plus-columns' -%}
                 {%- endif -%}
                 
-                <div class="{{ dropdown_class }}">
+                <div class="{{ dropdown_class }} box-shadow">
                   <div class="mega-menu__dropdown-inner">
                     <div class="mega-menu__columns-wrapper">
                       {%- assign column_rendered = false -%}
