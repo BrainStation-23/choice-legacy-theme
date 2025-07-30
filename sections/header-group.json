@@ -14,8 +14,14 @@
     "header": {
       "type": "header",
       "settings": {
+        "padding_top": 16,
+        "padding_bottom": 16,
+        "brand_logo": "shopify://shop_images/logo.png",
         "logo_text": "",
-        "logo_width": 150
+        "logo_alt_text": "Choice LEGACY Logo",
+        "logo_width": 150,
+        "main_menu": "",
+        "mega_menu_image_alt": "Featured products"
       }
     }
   },

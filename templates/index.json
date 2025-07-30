@@ -20,6 +20,7 @@
             "video_muted": true,
             "video_loop": true,
             "video_controls": false,
+            "image": "shopify://shop_images/3c26d49f72200316623e81b33c06da1f317da4e5.jpg",
             "link": "",
             "link_target": false,
             "title": "",
@@ -36,6 +37,7 @@
             "video_muted": true,
             "video_loop": true,
             "video_controls": false,
+            "image": "shopify://shop_images/Offer_banner_1_2f40093e-8090-4439-898d-f0c6060031c9.png",
             "link": "",
             "link_target": false,
             "title": "",
@@ -52,6 +54,7 @@
             "video_muted": true,
             "video_loop": true,
             "video_controls": false,
+            "image": "shopify://shop_images/image_23_1.png",
             "link": "",
             "link_target": false,
             "title": "",
@@ -81,31 +84,31 @@
         "collection_item_iFEQpC": {
           "type": "collection_item",
           "settings": {
-            "collection": ""
+            "collection": "skin-care"
           }
         },
         "collection_item_BJ46j7": {
           "type": "collection_item",
           "settings": {
-            "collection": ""
+            "collection": "k-beauty"
           }
         },
         "collection_item_LFkJNf": {
           "type": "collection_item",
           "settings": {
-            "collection": ""
+            "collection": "mekup"
           }
         },
         "collection_item_FXhj4Y": {
           "type": "collection_item",
           "settings": {
-            "collection": ""
+            "collection": "undergarment"
           }
         },
         "collection_item_b8Twrj": {
           "type": "collection_item",
           "settings": {
-            "collection": ""
+            "collection": "eye-makeup"
           }
         }
       },
@@ -129,48 +132,56 @@
         "image_text_block_9yYNEi": {
           "type": "image_text_block",
           "settings": {
+            "image": "shopify://shop_images/brand-image_2403a4c2-4bd2-4028-936b-98ba87ba7bd0.png",
             "link": ""
           }
         },
         "image_text_block_wBd4RJ": {
           "type": "image_text_block",
           "settings": {
+            "image": "shopify://shop_images/brand-image_1_570b220b-dc85-4b4e-b9b2-15ea69b9cb86.png",
             "link": ""
           }
         },
         "image_text_block_LVAhbP": {
           "type": "image_text_block",
           "settings": {
+            "image": "shopify://shop_images/brand-image_2_16acbde7-8aa6-4446-9bae-e88feb373636.png",
             "link": ""
           }
         },
         "image_text_block_HQCBTJ": {
           "type": "image_text_block",
           "settings": {
+            "image": "shopify://shop_images/brand-image_2403a4c2-4bd2-4028-936b-98ba87ba7bd0.png",
             "link": ""
           }
         },
         "image_text_block_RwH3fR": {
           "type": "image_text_block",
           "settings": {
+            "image": "shopify://shop_images/brand-image_1_570b220b-dc85-4b4e-b9b2-15ea69b9cb86.png",
             "link": ""
           }
         },
         "image_text_block_fpghcH": {
           "type": "image_text_block",
           "settings": {
+            "image": "shopify://shop_images/brand-image_2_16acbde7-8aa6-4446-9bae-e88feb373636.png",
             "link": ""
           }
         },
         "image_text_block_MKLk6M": {
           "type": "image_text_block",
           "settings": {
+            "image": "shopify://shop_images/brand-image_2403a4c2-4bd2-4028-936b-98ba87ba7bd0.png",
             "link": ""
           }
         },
         "image_text_block_6ajNwT": {
           "type": "image_text_block",
           "settings": {
+            "image": "shopify://shop_images/brand-image_1_570b220b-dc85-4b4e-b9b2-15ea69b9cb86.png",
             "link": ""
           }
         }
@@ -202,43 +213,49 @@
         "product_1": {
           "type": "product",
           "settings": {
-            "product": ""
+            "product": "lip-makeup"
           }
         },
         "product_2": {
           "type": "product",
           "settings": {
-            "product": ""
+            "product": "facewash-3"
           }
         },
         "product_3": {
           "type": "product",
           "settings": {
-            "product": ""
+            "product": "facewash-4"
           }
         },
         "product_4": {
           "type": "product",
           "settings": {
-            "product": ""
+            "product": "etude-my-lash-eye-makeup-9g"
+          }
+        },
+        "product_3GMNYL": {
+          "type": "product",
+          "settings": {
+            "product": "w7-prime-magic-clear-face-primer"
           }
         },
         "product_5": {
           "type": "product",
           "settings": {
-            "product": ""
+            "product": "axis-y-dark-spot-correcting-glow-serum-5ml"
           }
         },
         "product_6": {
           "type": "product",
           "settings": {
-            "product": ""
+            "product": "beta-glucan-barrier-sunscreen"
           }
         },
         "product_7": {
           "type": "product",
           "settings": {
-            "product": ""
+            "product": "better-than-palette-the-secret-garden-9-types"
           }
         },
         "product_8": {
@@ -265,6 +282,7 @@
         "product_2",
         "product_3",
         "product_4",
+        "product_3GMNYL",
         "product_5",
         "product_6",
         "product_7",
@@ -298,7 +316,7 @@
         "block_one_slide"
       ],
       "settings": {
-        "banner_height_desktop": "508",
+        "banner_height_desktop": "400",
         "banner_height_mobile": "164",
         "desktop_nav": "both",
         "mobile_nav": "dots",
@@ -316,24 +334,28 @@
         "banner-1": {
           "type": "banner_item",
           "settings": {
+            "banner_image": "shopify://shop_images/undergarmensts_offer.png",
             "link": ""
           }
         },
         "banner-2": {
           "type": "banner_item",
           "settings": {
+            "banner_image": "shopify://shop_images/undergarments_2.png",
             "link": ""
           }
         },
         "banner-3": {
           "type": "banner_item",
           "settings": {
+            "banner_image": "shopify://shop_images/undergarments_3.png",
             "link": ""
           }
         },
         "banner-4": {
           "type": "banner_item",
           "settings": {
+            "banner_image": "shopify://shop_images/undergarments_4.png",
             "link": ""
           }
         }
@@ -379,6 +401,7 @@
         "block_multi_slide_3": {
           "type": "banner",
           "settings": {
+            "image": "shopify://shop_images/Silder-smaller_5f2c32f4-2186-4469-b234-48c9cf3e22f5.png",
             "link": "",
             "link_target": false
           }
@@ -408,9 +431,9 @@
         "product_video_1": {
           "type": "product_video",
           "settings": {
-            "product": "",
+            "product": "facewash-1",
             "video_type": "youtube",
-            "youtube_url": "",
+            "youtube_url": "https://www.youtube.com/watch?v=_nuUtmhaUEc",
             "video_url": "",
             "main_text": "Choice Legacy",
             "sub_text": "Skincare heroes this summer!"
@@ -419,9 +442,9 @@
         "product_video_2": {
           "type": "product_video",
           "settings": {
-            "product": "",
+            "product": "facewash-2",
             "video_type": "youtube",
-            "youtube_url": "",
+            "youtube_url": "https://www.youtube.com/watch?v=_nuUtmhaUEc",
             "video_url": "",
             "main_text": "Choice Legacy",
             "sub_text": "Skincare heroes this summer!"
@@ -430,9 +453,9 @@
         "product_video_3": {
           "type": "product_video",
           "settings": {
-            "product": "",
+            "product": "facewash-4",
             "video_type": "youtube",
-            "youtube_url": "",
+            "youtube_url": "https://www.youtube.com/watch?v=fPlumnuhTco",
             "video_url": "",
             "main_text": "Choice Legacy",
             "sub_text": "Skincare heroes this summer!"
@@ -441,9 +464,9 @@
         "product_video_4": {
           "type": "product_video",
           "settings": {
-            "product": "",
+            "product": "lip-makeup",
             "video_type": "youtube",
-            "youtube_url": "",
+            "youtube_url": "https://www.youtube.com/watch?v=fPlumnuhTco",
             "video_url": "",
             "main_text": "Choice Legacy",
             "sub_text": "Skincare heroes this summer!"
@@ -473,6 +496,7 @@
         "banner_Mifqyk": {
           "type": "banner",
           "settings": {
+            "image": "shopify://shop_images/Silder-smaller_5f2c32f4-2186-4469-b234-48c9cf3e22f5.png",
             "link": "",
             "link_target": false
           }
@@ -501,28 +525,32 @@
         "collection_1": {
           "type": "collection",
           "settings": {
-            "collection": "",
+            "collection": "mekup",
+            "custom_image": "shopify://shop_images/offer-img_ec95cfb1-7a86-49b1-bfa8-faeb912721cb.png",
             "custom_url": ""
           }
         },
         "collection_2": {
           "type": "collection",
           "settings": {
-            "collection": "",
+            "collection": "eye-makeup",
+            "custom_image": "shopify://shop_images/offer-img_1_4eb00381-799a-44a2-9dce-8ccd23d354ac.png",
             "custom_url": ""
           }
         },
         "collection_3": {
           "type": "collection",
           "settings": {
-            "collection": "",
+            "collection": "lip-elegance",
+            "custom_image": "shopify://shop_images/offer-img_1.png",
             "custom_url": ""
           }
         },
         "collection_4": {
           "type": "collection",
           "settings": {
-            "collection": "",
+            "collection": "mens-care",
+            "custom_image": "shopify://shop_images/offer-img_3_3c1a0c2b-1897-4158-b9b5-a14a97aa909f.png",
             "custom_url": ""
           }
         }
