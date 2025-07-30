@@ -40,5 +40,26 @@
         "lb": "lb"
       }
     }
+  },
+  "customer": {
+    "addresses": {
+      "title": "My Addresses"
+    },
+    "account": {
+      "log_out": "Log out",
+      "account_title": "Account Information",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email",
+      "phone": "Contact Number",
+      "myaccount": "My Account",
+      "my_beauties_profile": "My Beauties Profile",
+      "orders": "My Orders",
+      "addresses": "Addresses",
+      "rewards": "Rewards Points",
+      "wishlist": "My Wishlist",
+      "reviews": "Reviews",
+      "logout": "Logout"
+    }
   }
 }

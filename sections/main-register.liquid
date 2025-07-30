@@ -282,7 +282,7 @@
 
       otpInput.addEventListener('input', () => {
         if (correctOtpCode) {
-          if (otpInput.value === correctOtpCode) {
+          if (Number(otpInput.value) === correctOtpCode) {
             otpMessage.textContent = 'OTP matched!';
             otpMessage.classList.remove('text-error-text');
             otpMessage.classList.add('text-success-text');

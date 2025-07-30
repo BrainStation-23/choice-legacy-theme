@@ -1,0 +1,74 @@
+<style>
+  .customer-account__information {
+    flex: 3;
+    display: flex;
+  }
+
+  .customer-account__information-empty {
+    flex: 1;
+  }
+
+  .account-information__container {
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+  }
+
+  .account-information__title {
+    margin: 0 !important;
+  }
+
+  .account-information__form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    flex-wrap: wrap;
+  }
+
+  .account-information__field .input-box {
+    border: 1px solid rgba(var(--color-secondary-text), 0.1);
+    border-radius: 12px;
+    padding: 10px 16px;
+  }
+
+  .account-information__field .input-label {
+    margin: 0 !important;
+    color: rgba(var(--color-secondary-text), 0.65);
+  }
+</style>
+
+<div class="customer-account__information">
+  <div class="account-information__container gap-24">
+    <h1 class="account-information__title ff-general-sans fs-23-lh-24-ls-0 fw-500 ">
+      {{ 'customer.account.account_title' | t }}
+    </h1>
+
+    <div class="account-information__form gap-16">
+      <div class="account-information__field">
+        <div class="input-box">
+          <h2 class="input-label ff-general-sans fs-12-lh-16-ls-0_6 fw-400">{{ 'customer.account.first_name' | t }}</h2>
+          <div class="input-value ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.first_name }}</div>
+        </div>
+      </div>
+
+      <div class="account-information__field">
+        <div class="input-box">
+          <h2 class="input-label ff-general-sans fs-12-lh-16-ls-0_6 fw-400">{{ 'customer.account.last_name' | t }}</h2>
+          <div class="input-value ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.last_name }}</div>
+        </div>
+      </div>
+      <div class="account-information__field">
+        <div class="input-box">
+          <h2 class="input-label ff-general-sans fs-12-lh-16-ls-0_6 fw-400">{{ 'customer.account.email' | t }}</h2>
+          <div class="input-value ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.email }}</div>
+        </div>
+      </div>
+      <div class="account-information__field">
+        <div class="input-box">
+          <h2 class="input-label ff-general-sans fs-12-lh-16-ls-0_6 fw-400">{{ 'customer.account.phone' | t }}</h2>
+          <div class="input-value ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.phone }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="customer-account__information-empty"></div>
+</div>

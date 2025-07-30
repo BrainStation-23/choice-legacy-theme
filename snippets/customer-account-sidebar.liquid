@@ -1,0 +1,88 @@
+<style>
+  .customer-account__sidebar {
+    flex: 1 0 0;
+    padding: 16px;
+    border: 1px solid rgba(var(--color-secondary-text), 0.1);
+    border-radius: 6px;
+  }
+  .customer-account__sidebar-items {
+    padding: 0 !important;
+  }
+  .customer-account__sidebar-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0px !important;
+    color: rgba(var(--color-primary-text), 0.9);
+  }
+
+  .customer-account__sidebar-item:hover {
+    border-bottom: 2px solid rgb(var(--color-primary-brand));
+    cursor: pointer;
+    color: rgb(var(--color-primary-brand)); /* hover icon + text color */
+  }
+  .customer-account__sidebar-item:hover .account-sidebar-item-title {
+    color: rgb(var(--color-primary-brand));
+  }
+  .customer-account__sidebar-item:hover .customer-account__sidebar-item svg {
+    height: 28px !important;
+    width: 28px !important;
+  }
+
+  .account-sidebar-item-title {
+    margin: 0 !important;
+    color: rgba(var(--color-primary-text), 0.9);
+  }
+</style>
+
+<aside class="customer-account__sidebar">
+  <ul class="customer-account__sidebar-items">
+    <div class="customer-account__sidebar-item gap-8">
+      {% render 'accounts-icon' %}
+      <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0  fw-500">
+        {{ 'customer.account.myaccount' | t }}
+      </h2>
+    </div>
+    <div class="customer-account__sidebar-item gap-8">
+      {% render 'brash-icon' %}
+      <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0  fw-500">
+        {{ 'customer.account.my_beauties_profile' | t }}
+      </h2>
+    </div>
+    <div class="customer-account__sidebar-item gap-8">
+      {% render 'order-menu-icon' %}
+      <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0  fw-500">
+        {{ 'customer.account.orders' | t }}
+      </h2>
+    </div>
+    <div class="customer-account__sidebar-item gap-8">
+      {% render 'address-icon' %}
+      <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0  fw-500">
+        {{ 'customer.account.addresses' | t }}
+      </h2>
+    </div>
+    <div class="customer-account__sidebar-item gap-8">
+      {% render 'reward-icon' %}
+      <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0  fw-500">
+        {{ 'customer.account.rewards' | t }}
+      </h2>
+    </div>
+    <div class="customer-account__sidebar-item gap-8">
+      {% render 'love-icon' %}
+      <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0  fw-500">
+        {{ 'customer.account.wishlist' | t }}
+      </h2>
+    </div>
+    <div class="customer-account__sidebar-item gap-8">
+      {% render 'star-icon' %}
+      <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0  fw-500">
+        {{ 'customer.account.reviews' | t }}
+      </h2>
+    </div>
+    <div class="customer-account__sidebar-item  gap-8">
+      {% render 'logout-icon' %}
+      <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0  fw-500">
+        {{ 'customer.account.logout' | t }}
+      </h2>
+    </div>
+  </ul>
+</aside>
