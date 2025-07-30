@@ -3,18 +3,18 @@
     position: relative !important;
   }
 
-  .custom-pagination {
+  .progress-bar-pagination {
     position: absolute;
     bottom: 0;
     left: 50%;
-    height: 2px;
+    height: 2px !important;
     background: rgb(var(--color-secondary-brand));
     z-index: 10;
   }
 
-  .custom-pagination .swiper-pagination-progressbar-fill {
+  .progress-bar-pagination .swiper-pagination-progressbar-fill {
     background: rgb(var(--color-primary-brand));
   }
 </style>
 
-<div class="swiper-pagination custom-pagination {{ cls }}"></div>
+<div class="swiper-pagination progress-bar-pagination {{ cls }}"></div>

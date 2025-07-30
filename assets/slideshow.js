@@ -52,9 +52,9 @@ if (!customElements.get("slideshow-component")) {
           },
         };
 
-        if (showProgressBar && this.querySelector(".custom-pagination")) {
+        if (showProgressBar && this.querySelector(".progress-bar-pagination")) {
           swiperConfig.pagination = {
-            el: ".custom-pagination",
+            el: ".progress-bar-pagination",
             type: "progressbar",
           };
         }

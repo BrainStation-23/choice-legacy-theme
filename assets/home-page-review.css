@@ -106,7 +106,7 @@
 .homepage-product-review__container {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  text-align: center;
 }
 
 .homepage-product-review__content-middle,

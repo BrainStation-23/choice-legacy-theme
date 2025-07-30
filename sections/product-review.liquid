@@ -9,6 +9,10 @@
     padding-bottom: {{ section.settings.padding_bottom }}px;
   }
 
+  .homepage-product-review__section-{{ section.id }} .custom-pagination {
+    background: rgb(var(--color-background));
+  }
+
   /* Desktop: Show grid, hide swiper */
   @media (min-width: 769px) {
     .homepage-product-review__desktop-only {
@@ -46,17 +50,9 @@
       width: var(--slide-width-mobile, 220px);
       flex-shrink: 0;
     }
-  }
 
-  @media screen and (min-width: 768px) and (max-width: 768px) {
-    .swiper-container[data-carousel-mode="true"] .homepage-product-review__card {
-      width: var(--slide-width-tablet, 220px);
-    }
-  }
-
-  @media screen and (min-width: 1024px) {
-    .swiper-container[data-carousel-mode="true"] .homepage-product-review__card {
-      width: var(--slide-width-desktop, 220px);
+    .homepage-product-review__card {
+      text-align: left;
     }
   }
 </style>
@@ -86,9 +82,9 @@
         data-slides-per-view-mobile="2"
         data-single-slide-view="true"
         data-carousel-mode="true"
-        data-slide-width-mobile="220px"
-        data-slide-width-tablet="220px"
-        data-slide-width-desktop="220px"
+        data-slide-width-mobile="284px"
+        data-slide-width-tablet="284px"
+        data-slide-width-desktop="284px"
       >
         <div class="swiper-container flex flex-col gap-16">
           <div class="swiper-wrapper" id="mobile-slides-container">
@@ -206,28 +202,30 @@
           : `<div class="homepage-product-review__image" style="background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 0.8rem;">No Image</div>`;
 
         return `
-          <div class="swiper-slide homepage-product-review__card gap-16 box-shadow">
-            <div class="homepage-product-review__image-container homepage-product-review__content-top">
-              ${imageHtml}
-              <div class="homepage-product-review__rating box-shadow gap-4">
-                ${createStarRating(review.rating)}
+          <div class="swiper-slide">
+            <div class="homepage-product-review__card-items homepage-product-review__card gap-16 box-shadow" style="width: 284px;">
+              <div class="homepage-product-review__image-container homepage-product-review__content-top">
+                ${imageHtml}
+                <div class="homepage-product-review__rating box-shadow gap-4">
+                  ${createStarRating(review.rating)}
+                </div>
               </div>
-            </div>
-            <div class="homepage-product-review__content-middle gap-8">
-              <div class="homepage-product-review__product-title fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
-                ${productTitle}
+              <div class="homepage-product-review__content-middle gap-8">
+                <div class="homepage-product-review__product-title fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
+                  ${productTitle}
+                </div>
+                <div class="homepage-product-review__text ff-general-sans fs-14-lh-20-ls-0 fw-400">
+                  ${review.reviewText}
+                </div>
               </div>
-              <div class="homepage-product-review__text ff-general-sans fs-14-lh-20-ls-0 fw-400">
-                ${review.reviewText}
+              <div class="homepage-product-review__content-bottom gap-8">
+                <span class="homepage-product-review__review-date fs-12-lh-16-ls-0_6pct ff-general-sans fw-400">
+                  ${formatDate(review.reviewPlacedAt)}
+                </span>
+                <span class="homepage-product-review__customer-name fs-12-lh-16-ls-0_6pct ff-general-sans fw-400">
+                  By ${review.customerName}
+                </span>
               </div>
-            </div>
-            <div class="homepage-product-review__content-bottom gap-8">
-              <span class="homepage-product-review__review-date fs-12-lh-16-ls-0_6pct ff-general-sans fw-400">
-                ${formatDate(review.reviewPlacedAt)}
-              </span>
-              <span class="homepage-product-review__customer-name fs-12-lh-16-ls-0_6pct ff-general-sans fw-400">
-                By ${review.customerName}
-              </span>
             </div>
           </div>
         `;
