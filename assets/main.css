@@ -147,6 +147,24 @@ h6,
 }
 
 /* Desktop Typography */
+.fs-11-lh-11-ls--2_5 {
+  font-size: calc(11 * var(--font-unit));
+  line-height: calc(11 * var(--font-unit));
+  letter-spacing: calc(-0.025 * 11 * var(--font-unit));
+}
+
+.fs-11-lh-normal-ls-0_5 {
+  font-size: 11px;
+  line-height: normal;
+  letter-spacing: 0.5px;
+}
+
+.fs-11-lh-11-ls--0_275 {
+  font-size: 11px;
+  line-height: 11px;
+  letter-spacing: -0.275px;
+}
+
 .fs-12-lh-16-ls-0_6 {
   font-size: calc(12 * var(--font-unit));
   line-height: calc(16 * var(--font-unit));
