@@ -135,12 +135,11 @@
   }
 
   .mega-menu__image-column {
-    padding: 24px 0;
     flex-shrink: 0;
   }
 
   .mega-menu__image {
-    width: 100%;
+    width: 400px;
     height: 200px;
     object-fit: cover;
   }
@@ -407,14 +406,16 @@
       <div class="header__center header__item-container">
         <a href="{{ routes.root_url }}" class="header__logo-link--mobile">
           {%- if settings.brand_logo != blank -%}
-            <img
-              src="{{ settings.brand_logo | image_url: width: settings.logo_width }}"
-              alt="{{ settings.logo_alt_text | default: shop.name | escape }}"
-              loading="lazy"
-              class="header__logo-img"
-              width="{{ settings.logo_width }}"
-              height="{{ settings.logo_height }}"
-            >
+            {% render 'image',
+              image: section.settings.mega_menu_image,
+              width: 400,
+              alt_text: section.settings.mega_menu_image_alt,
+              title: 'Featured products',
+              css_classes: 'mega-menu__image',
+              loading: 'lazy',
+              width_attr: '400',
+              height_attr: '300' 
+            %}
           {%- else -%}
             <span class="header__logo-name">{{ settings.logo_text }}</span>
           {%- endif -%}
@@ -511,14 +512,16 @@
         {%- if section.settings.mega_menu_image != blank -%}
           <div class="mobile-mega-menu__promo">
             <div class="mobile-mega-menu__promo-image">
-              <img
-                src="{{ section.settings.mega_menu_image | image_url: width: 400 }}"
-                alt="{{ section.settings.mega_menu_image_alt | default: 'Featured products' | escape }}"
-                loading="lazy"
-                class="mega-menu__image"
-                width="400"
-                height="300"
-              />
+              {% render 'image',
+                image: section.settings.mega_menu_image,
+                width: 400,
+                alt_text: section.settings.mega_menu_image_alt,
+                title: 'Featured products',
+                css_classes: 'mega-menu__image',
+                loading: 'lazy',
+                width_attr: '400',
+                height_attr: '300' 
+              %}
             </div>
           </div>
         {%- endif -%}
