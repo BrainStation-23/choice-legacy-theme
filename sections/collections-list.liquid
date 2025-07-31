@@ -4,7 +4,7 @@
 {% if blockCount < minShown %}
   {% assign minShown = blockCount %}
 {% endif %}
-
+{% assign image_ratio = 1 %}
 <style>
   .collections-list-{{ section.id }} {
     padding-top: {{ section.settings.padding_top }}px;
@@ -65,21 +65,25 @@
       {% for block in section.blocks %}
         {% if block.settings.collection %}
           <div class="collections-list__item" {{ block.shopify_attributes }}>
-            <a href="{{ block.settings.collection.url }}" class="collections-list__link">
+            <a href="{{ block.settings.collection.url }}" class="collections-list__link" >
+            <div class="media block relative" style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;">
               {% if block.settings.collection.featured_image %}
+              {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 5 %}{% endcapture -%}
                 {% render 'image',
-                  image: block.settings.collection.featured_image,
-                  width: 300,
-                  alt_text: block.settings.collection.title,
-                  css_classes: 'collections-list__image',
-                  width_attr: '298px',
-                  height_attr: '234px'
-                %}
-              {% else %}
-                <div class="collections-list__image">
-                  {{ 'collection-1' | placeholder_svg_tag: 'collections-list__image' }}
-                </div>
-              {% endif %}
+                image: block.settings.collection.featured_image,
+                widths: '116, 234, 234, 234',
+                src_width: 234,
+                sizes: sizes,
+                class: 'img-fit',
+                quality: 1,
+              %}
+            {% else %}
+              <div class="collections-list__image">
+                {{ 'collection-1' | placeholder_svg_tag: 'collections-list__image' }}
+              </div>
+            {% endif %}
+            </div> 
+            
 
               <div class="collections-list__content">
                 <h3 class="collections-list__name ff-bebas-neue fw-400 fs-26-lh-26-ls-1_2pct">
@@ -110,14 +114,19 @@
                 <div class="swiper-slide collections-list__item" {{ block.shopify_attributes }}>
                   <a href="{{ block.settings.collection.url }}" class="collections-list__link">
                     {% if block.settings.collection.featured_image %}
+                      <div class="media block relative" style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;">
+                      {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 5 %}{% endcapture -%}
+                      
                       {% render 'image',
                         image: block.settings.collection.featured_image,
-                        width: 300,
                         alt_text: block.settings.collection.title,
-                        css_classes: 'collections-list__image',
-                        width_attr: '298px',
-                        height_attr: '234px'
+                        widths: '460, 700, 860, 1296',
+                        src_width: 116,
+                        sizes: sizes,
+                        class: 'img-fit',
+                        quality: 1,
                       %}
+                      </div>
                     {% else %}
                       <div class="collections-list__image">
                         {{ 'collection-1' | placeholder_svg_tag: 'collections-list__image' }}

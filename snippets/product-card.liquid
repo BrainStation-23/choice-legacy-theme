@@ -140,20 +140,25 @@
 {% assign image_height = image_height | default: 268 %}
 {% assign css_classes = css_classes | default: '' %}
 {% assign loading = loading | default: 'lazy' %}
+{% assign image_ratio = 1 %}
 
 <div class="product-card {{ css_classes }} {% if settings.show_product_card_box_shadow %}box-shadow{% endif %}" {% if product %}data-product-id="{{ product.id }}"{% endif %}>
   <div class="product-card__image-container">
     {% if product and product != empty %}
       {% if product.featured_image %}
+        <div class="media block relative" style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;">
+        {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 5 %}{% endcapture -%}
+
         {% render 'image',
           image: product.featured_image,
-          width: image_width,
-          height_attr: image_height,
+          src_width: image_width,
+          widths: '460, 700, 860, 1296',
           alt_text: product.title,
-          css_classes: 'product-card__image',
-          loading: loading,
-          width_attr: image_width
+          class: 'img-fit',
+          quality: 1,
+          sizes: sizes,
         %}
+        </div>
       {% else %}
         <div class="product-card__placeholder-image">
           {{ 'product-1' | placeholder_svg_tag: "placeholder-svg" }}
