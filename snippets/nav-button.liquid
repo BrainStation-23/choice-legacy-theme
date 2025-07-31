@@ -1,0 +1,26 @@
+<style>
+  .nav-button {
+    width: 44px;
+    height: 44px;
+    background: rgb(var(--color-secondary-brand, 0, 0, 0));
+    color: rgb(var(--color-primary-text, 255, 255, 255));
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .slideshow-nav-button-prev,
+  .slideshow-nav-button-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+  }
+</style>
+
+<button class="{{ cls }} nav-button" aria-label="Next slide">
+  {% render "icon-arrow", cls: icon_cls %}
+</button>

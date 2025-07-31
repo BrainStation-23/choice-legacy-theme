@@ -1,58 +1,31 @@
 // products-review.js
 (function () {
-  const reviewAppContainers = document.querySelectorAll(
-    ".review-extension-container"
-  );
+  const reviewAppContainers = document.querySelectorAll(".review-extension-container");
   reviewAppContainers.forEach((container) => {
     const sectionId = container.dataset.sectionId;
     const productId = container.dataset.productId;
     const shopDomain = container.dataset.shopDomain;
-    const customerId = container.dataset.customerId;
-    const customerName = container.dataset.customerName || "Anonymous";
-    const customerEmail = container.dataset.customerEmail || "";
     const starColorFilled = container.dataset.starFilledColor || "#FFD700";
     const starColorEmpty = container.dataset.starEmptyColor || "#CCCCCC";
     const showEmptyReviewsSetting = container.dataset.showEmpty === "true";
 
     const API_BASE_URL = `/apps/${APP_SUB_PATH}/customer/product-review`;
 
-    const reviewForm = container.querySelector(
-      `#review-submission-form-${sectionId}`
-    );
-    const reviewListContainer = container.querySelector(
-      `#reviews-list-${sectionId}`
-    );
+    const reviewForm = container.querySelector(`#review-submission-form-${sectionId}`);
+    const reviewListContainer = container.querySelector(`#reviews-list-${sectionId}`);
     const formMessage = container.querySelector(`#form-message-${sectionId}`);
-    const submitButton = container.querySelector(
-      `#submit-review-btn-${sectionId}`
-    );
-    const ratingStarsContainer = container.querySelector(
-      `#form-star-rating-${sectionId}`
-    );
-    const ratingValueInput = container.querySelector(
-      `#rating-value-${sectionId}`
-    );
-    const reviewsSpinner = container.querySelector(
-      `#reviews-spinner-${sectionId}`
-    );
-    const reviewSummaryContainer = container.querySelector(
-      `#review-summary-${sectionId}`
-    );
-    const reviewImageInput = container.querySelector(
-      `#reviewImage-${sectionId}`
-    );
+    const submitButton = container.querySelector(`#submit-review-btn-${sectionId}`);
+    const ratingStarsContainer = container.querySelector(`#form-star-rating-${sectionId}`);
+    const ratingValueInput = container.querySelector(`#rating-value-${sectionId}`);
+    const reviewsSpinner = container.querySelector(`#reviews-spinner-${sectionId}`);
+    const reviewSummaryContainer = container.querySelector(`#review-summary-${sectionId}`);
+    const reviewImageInput = container.querySelector(`#reviewImage-${sectionId}`);
     const reviewTextInput = container.querySelector(`#reviewText-${sectionId}`);
 
     // Error display elements
-    const imageErrorDiv = container.querySelector(
-      `#reviewImage-error-${sectionId}`
-    );
-    const ratingErrorDiv = container.querySelector(
-      `#rating-error-${sectionId}`
-    );
-    const reviewTextErrorDiv = container.querySelector(
-      `#reviewText-error-${sectionId}`
-    );
+    const imageErrorDiv = container.querySelector(`#reviewImage-error-${sectionId}`);
+    const ratingErrorDiv = container.querySelector(`#rating-error-${sectionId}`);
+    const reviewTextErrorDiv = container.querySelector(`#reviewText-error-${sectionId}`);
 
     let currentRating = 0;
     let uploadedImageUrl = null;
@@ -61,9 +34,7 @@
 
     // Validation functions
     function showFieldError(fieldName, message) {
-      const errorDiv = container.querySelector(
-        `#${fieldName}-error-${sectionId}`
-      );
+      const errorDiv = container.querySelector(`#${fieldName}-error-${sectionId}`);
       const formGroup = errorDiv?.closest(".form-group");
 
       if (errorDiv) {
@@ -74,9 +45,7 @@
     }
 
     function hideFieldError(fieldName) {
-      const errorDiv = container.querySelector(
-        `#${fieldName}-error-${sectionId}`
-      );
+      const errorDiv = container.querySelector(`#${fieldName}-error-${sectionId}`);
       const formGroup = errorDiv?.closest(".form-group");
 
       if (errorDiv) {
@@ -156,9 +125,7 @@
     }
 
     if (ratingStarsContainer) {
-      ratingStarsContainer
-        .querySelectorAll(".star")
-        .forEach((s) => (s.style.color = starColorEmpty));
+      ratingStarsContainer.querySelectorAll(".star").forEach((s) => (s.style.color = starColorEmpty));
     }
 
     // Star Rating Logic for Form
@@ -173,8 +140,7 @@
           stars.forEach((s) => {
             const sValue = parseInt(s.dataset.value);
             s.innerHTML = sValue <= currentRating ? "&#9733;" : "&#9734;";
-            s.style.color =
-              sValue <= currentRating ? starColorFilled : starColorEmpty;
+            s.style.color = sValue <= currentRating ? starColorFilled : starColorEmpty;
           });
         });
         star.addEventListener("mouseover", function () {
@@ -182,8 +148,7 @@
           stars.forEach((s) => {
             const sValue = parseInt(s.dataset.value);
             s.innerHTML = sValue <= hoverValue ? "&#9733;" : "&#9734;";
-            s.style.color =
-              sValue <= hoverValue ? starColorFilled : starColorEmpty;
+            s.style.color = sValue <= hoverValue ? starColorFilled : starColorEmpty;
           });
         });
       });
@@ -191,8 +156,7 @@
         stars.forEach((s) => {
           const sValue = parseInt(s.dataset.value);
           s.innerHTML = sValue <= currentRating ? "&#9733;" : "&#9734;";
-          s.style.color =
-            sValue <= currentRating ? starColorFilled : starColorEmpty;
+          s.style.color = sValue <= currentRating ? starColorFilled : starColorEmpty;
         });
       });
     }
@@ -207,12 +171,7 @@
 
         // Frontend validation for image
         const maxSize = 5 * 1024 * 1024; // 5MB
-        const allowedTypes = [
-          "image/jpeg",
-          "image/jpg",
-          "image/png",
-          "image/gif",
-        ];
+        const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
 
         if (file.size > maxSize) {
           showFieldError("reviewImage", "Image size must be less than 5MB");
@@ -221,10 +180,7 @@
         }
 
         if (!allowedTypes.includes(file.type)) {
-          showFieldError(
-            "reviewImage",
-            "Only JPEG, PNG, and GIF images are allowed"
-          );
+          showFieldError("reviewImage", "Only JPEG, PNG, and GIF images are allowed");
           this.value = "";
           return;
         }
@@ -246,9 +202,7 @@
             const errorData = await response.json().catch(() => ({
               message: "Image upload failed with status: " + response.status,
             }));
-            throw new Error(
-              errorData.message || `HTTP error! status: ${response.status}`
-            );
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
           }
 
           const result = await response.json();
@@ -287,8 +241,7 @@
         if (isUploadingImage) {
           if (formMessage) {
             formMessage.style.display = "block";
-            formMessage.textContent =
-              "Please wait, image is still uploading...";
+            formMessage.textContent = "Please wait, image is still uploading...";
             formMessage.style.color = "orange";
           }
           return;
@@ -305,8 +258,6 @@
           reviewText: reviewTextInput.value.trim(),
           rating: currentRating,
           productId: productId,
-          customerName: customerName,
-          customerEmail: customerEmail,
           reviewImage: uploadedImageUrl,
         };
 
@@ -326,20 +277,16 @@
               // Handle backend validation errors
               parseBackendErrors(result.details);
               if (formMessage) {
-                formMessage.textContent =
-                  result.message || "Please fix the errors above";
+                formMessage.textContent = result.message || "Please fix the errors above";
                 formMessage.style.color = "red";
               }
             } else {
-              throw new Error(
-                result.message || `HTTP error! status: ${response.status}`
-              );
+              throw new Error(result.message || `HTTP error! status: ${response.status}`);
             }
           } else {
             // Success
             if (formMessage) {
-              formMessage.textContent =
-                result.message || "Review submitted successfully!";
+              formMessage.textContent = result.message || "Review submitted successfully!";
               formMessage.style.color = "green";
             }
 
@@ -361,9 +308,7 @@
         } catch (error) {
           console.error("Error submitting review:", error);
           if (formMessage) {
-            formMessage.textContent = `Error: ${
-              error.message || "Could not submit review."
-            }`;
+            formMessage.textContent = `Error: ${error.message || "Could not submit review."}`;
             formMessage.style.color = "red";
           }
         } finally {
@@ -392,9 +337,7 @@
           const errorData = await response.json().catch(() => ({
             message: "Failed to fetch reviews with status: " + response.status,
           }));
-          throw new Error(
-            errorData.message || `HTTP error! status: ${response.status}`
-          );
+          throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
         const reviewResponse = await response?.json();
         console.log("Product review data:", reviewResponse?.data);
@@ -422,10 +365,7 @@
       }
 
       const totalReviews = reviewsArray.length;
-      const sumOfRatings = reviewsArray.reduce(
-        (sum, review) => sum + (review.rating || 0),
-        0
-      );
+      const sumOfRatings = reviewsArray.reduce((sum, review) => sum + (review.rating || 0), 0);
       const averageRating = totalReviews > 0 ? sumOfRatings / totalReviews : 0;
 
       const fullStars = Math.floor(averageRating);
@@ -463,8 +403,7 @@
 
       if (!reviewsArray || reviewsArray.length === 0) {
         if (showEmptyReviewsSetting) {
-          reviewListContainer.innerHTML =
-            '<p class="no-reviews">Be the first to review this product!</p>';
+          reviewListContainer.innerHTML = '<p class="no-reviews">Be the first to review this product!</p>';
         } else {
           reviewListContainer.innerHTML = "";
         }
@@ -479,27 +418,21 @@
           .fill(0)
           .map((_, i) => {
             const isFilled = i < review.rating;
-            return `<span class="star" style="color:${
-              isFilled ? starColorFilled : starColorEmpty
-            };">${isFilled ? "&#9733;" : "&#9734;"}</span>`;
+            return `<span class="star" style="color:${isFilled ? starColorFilled : starColorEmpty};">${
+              isFilled ? "&#9733;" : "&#9734;"
+            }</span>`;
           })
           .join("");
 
-        const reviewDate = review.reviewPlacedAt
-          ? new Date(review.reviewPlacedAt).toLocaleDateString()
-          : "N/A";
+        const reviewDate = review.reviewPlacedAt ? new Date(review.reviewPlacedAt).toLocaleDateString() : "N/A";
 
         reviewItem.innerHTML = `
                     <div class="review-header">
-                        <span class="reviewer-name">${escapeHTML(
-                          review.customerName || "Anonymous"
-                        )}</span>
+
                         <span class="review-date">${reviewDate}</span>
                     </div>
                     <div class="review-rating">${ratingStarsHTML}</div>
-                    <p class="review-text">${escapeHTML(
-                      review.reviewText || ""
-                    )}</p>
+                    <p class="review-text">${escapeHTML(review.reviewText || "")}</p>
                     ${
                       review.reviewImage
                         ? `<a href="${review.reviewImage}" target="_blank" rel="noopener noreferrer" class="review-image-link">
@@ -526,15 +459,12 @@
     if (productId && shopDomain) {
       fetchReviews();
     } else {
-      console.warn(
-        `[Product Reviews App ${sectionId}]: Missing productId or shopDomain. Cannot fetch reviews.`
-      );
+      console.warn(`[Product Reviews App ${sectionId}]: Missing productId or shopDomain. Cannot fetch reviews.`);
       if (reviewListContainer)
         reviewListContainer.innerHTML =
           '<p class="reviews-message">Configuration error (missing product/store data).</p>';
       if (reviewSummaryContainer)
-        reviewSummaryContainer.innerHTML =
-          "<p>Could not load review summary due to configuration error.</p>";
+        reviewSummaryContainer.innerHTML = "<p>Could not load review summary due to configuration error.</p>";
       if (reviewsSpinner) reviewsSpinner.style.display = "none";
     }
   });

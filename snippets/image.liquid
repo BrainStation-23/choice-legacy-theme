@@ -1,0 +1,35 @@
+{% comment %}
+  Simple Reusable Image Snippet
+  
+  Parameters:
+  - image: Image object (required)
+  - width: Image width (default: 800)
+  - alt_text: Alt text for image (optional, falls back to image.alt)
+  - css_classes: CSS classes (optional)
+  - loading: Loading attribute (default: 'lazy')
+  - width_attr: Width attribute for img tag (optional)
+  - height_attr: Height attribute for img tag (optional)
+  - title: Fallback title for alt text (optional)
+{% endcomment %}
+
+{% liquid
+  assign image_width = width | default: 800
+  assign loading_attr = loading | default: 'lazy'
+  
+  if alt_text
+    assign final_alt = alt_text
+  elsif image.alt
+    assign final_alt = image.alt
+  elsif title
+    assign final_alt = title
+  else
+    assign final_alt = ''
+  endif
+%}
+
+{{ image | image_url: width: image_width | image_tag: 
+   alt: final_alt, 
+   class: css_classes,
+   loading: loading_attr,
+   width: width_attr,
+   height: height_attr }}

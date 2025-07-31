@@ -202,10 +202,10 @@
       if (!phone || phone.trim() === '') {
         return '';
       }
-      
+
       // Remove spaces and dashes
       let cleanedPhone = phone.replace(/[\s-]/g, '');
-      
+
       // Always prepend +880 to whatever the user typed
       return '+880' + cleanedPhone;
     }
@@ -215,10 +215,10 @@
       if (!phone || phone.trim() === '') {
         return false;
       }
-      
+
       // Remove spaces and dashes
       let cleanedPhone = phone.replace(/[\s-]/g, '');
-      
+
       // Check if it's exactly 10 digits
       return /^\d{10}$/.test(cleanedPhone);
     }
@@ -263,7 +263,7 @@
             otpMessage.classList.add('text-success-text');
             otpMessageSendFail.textContent = '';
             otpMessageSendFail.classList.remove('text-error-text');
-            if (data.code) correctOtpCode = String(data.code);
+            if (data.otp) correctOtpCode = data.otp;
           } else {
             sendOtpButton.textContent = 'Send OTP';
             otpMessageSendFail.textContent = data.message || 'Failed to send OTP. Please try again.';
@@ -318,6 +318,7 @@
           phone: cleanPhoneNumber(phoneInput.value),
           email: emailInput.value,
           password: passwordInput.value,
+          otp: correctOtpCode,
         };
 
         try {

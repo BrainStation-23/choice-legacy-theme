@@ -1,0 +1,67 @@
+<style>
+  .dot-pagination {
+    position: absolute;
+    bottom: 24px !important;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+    z-index: 10;
+    align-items: center;
+    justify-content: center;
+    background: transparent !important;
+    height: auto !important;
+  }
+
+  .custom-bullet {
+    position: relative;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgb(var(--color-secondary-brand));
+    cursor: pointer;
+    transition: background-color 0.3s ease, width 0.3s ease, height 0.3s ease;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .custom-bullet.active {
+    width: 10px;
+    height: 10px;
+    background: rgb(var(--color-primary-brand));
+  }
+
+  .custom-bullet__dashed-ring {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border: 1px dashed rgb(var(--color-primary-brand));
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+  }
+
+  .custom-bullet.active .custom-bullet__dashed-ring {
+    opacity: 1;
+  }
+
+  .custom-bullet:not(.active):hover {
+    background: rgba(var(--color-secondary-brand), 0.8);
+  }
+</style>
+
+<div class="dot-pagination flex justify-center items-center gap-6">
+  {% for item in items %}
+    <div class="custom-bullet{% if forloop.first %} active{% endif %}" 
+          data-slide="{{ forloop.index0 }}"
+          aria-label="Go to slide {{ forloop.index }}">
+      <div class="custom-bullet__dashed-ring"></div> 
+    </div>
+  {% endfor %}
+</div>
