@@ -9,6 +9,16 @@
   .customer-account__information-empty {
     flex: 1;
   }
+
+  @media screen and (max-width: 768px) {
+    .customer-account__container {
+      flex-direction: column;
+      gap:16px !important;
+    }
+    .customer-account__information-empty {
+      display: none;
+    }
+  }
 </style>
 
 <div class="customer-account">
@@ -20,6 +30,7 @@
 
 {% schema %}
 {
+  "name": "Main Account",
   "settings": [
     {
       "type": "header",
