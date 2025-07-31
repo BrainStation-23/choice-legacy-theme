@@ -57,10 +57,26 @@
       text-align: left !important;
     }
   }
+
+  .recommended-products .mobile-carousel .swiper-wrapper {
+    align-items: stretch;
+  }
+
+  .recommended-products .mobile-carousel .swiper-slide {
+    height: auto;
+  }
+
+  .recommended-products .mobile-carousel .swiper-slide > div {
+    flex: 1;
+  }
+
+  .recommended-products .mobile-carousel .product-card__content {
+    flex: 1;
+  }
 {%- endstyle -%}
 
 <div class="recommended-products recommended-products-{{ section.id }}">
-  <div class="recommended-products__container page-width flex gap-24 flex-col mobile-gap-16">
+  <div class="recommended-products__container page-width flex gap-16 flex-col mobile-gap-16">
     {% if section.settings.heading != blank %}
       <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0pct mobile-fs-21-lh-24-ls-1_2pct text-center">{{ section.settings.heading }}</h2>
     {% endif %}
@@ -91,21 +107,15 @@
     <!-- Mobile Carousel -->
     <div class="mobile-carousel">
       <slideshow-component 
-        data-autoplay="{{ section.settings.autoplay }}"
-        data-autoplay-delay="{{ section.settings.autoplay_delay | default: 5000 }}"
-        data-pause-on-hover="{{ section.settings.pause_on_hover }}"
-        data-slides-per-view-desktop="4"
-        data-show-partial-slides="true"
-        data-show-progress-bar="false"
-        data-carousel-mode="true"
-        data-slide-width-mobile="240px"
-        data-slide-width-tablet="240px"
-        data-slide-width-desktop="240px"
+        data-autoplay="false"
+        data-show-progress-bar="true"
+        data-slides-per-view-desktop="2"
+        data-single-slide-view="true"
       >
         <div class="swiper-container">
-          <div class="swiper-wrapper flex gap-24">
+          <div class="swiper-wrapper flex">
             {% for block in section.blocks limit: section.settings.products_to_show %}
-              <div class="swiper-slide">
+              <div class="swiper-slide flex flex-col">
                 <div data-block-id="{{ block.id }}">
                   {% if block.settings.product != blank %}
                     {% assign product = all_products[block.settings.product] %}
