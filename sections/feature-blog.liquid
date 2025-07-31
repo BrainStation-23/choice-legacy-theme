@@ -5,7 +5,7 @@
 {% if articleCount < minShown %}
   {% assign minShown = articleCount %}
 {% endif %}
-
+{% assign image_ratio = 1 %}
 <style>
   .blog-section-{{ section.id }} {
     padding-top: {{ section.settings.padding_top }}px;
@@ -44,9 +44,9 @@
       gap:16px !important
     }
 
-    .blog-card__image {
+    /* .blog-card__image {
       height: 124px;
-    }
+    } */
   }
 </style>
 
@@ -62,15 +62,20 @@
     <div class="blog-section__content-grid">
       {% for article in section.settings.blog.articles limit: section.settings.blog_post_limit %}
         <div class="blog-card gap-16">
-          <div class="blog-card__image">
+          <div
+            class="blog-card__image media relative"
+            style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;"
+          >
             {% if article.image %}
+              {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
+
               {% render 'image',
                 image: article.image,
-                width: 800,
-                alt_text: article.image.alt,
-                css_classes: 'blog-card__image',
-                width_attr: '800',
-                height_attr: '154'
+                widths: '304, 304, 304, 304',
+                src_width: 304,
+                sizes: sizes,
+                class: 'img-fit',
+                quality: 1
               %}
             {% else %}
               {{ 'image' | placeholder_svg_tag: 'blog-card__image' }}
