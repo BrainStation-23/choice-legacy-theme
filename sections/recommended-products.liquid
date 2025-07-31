@@ -73,12 +73,22 @@
   .recommended-products .mobile-carousel .product-card__content {
     flex: 1;
   }
+
+  .recommended-products .nav-button {
+    background: transparent;
+    position: static;
+    width: 28px;
+    height: 28px;
+    transform: none;
+  }
 {%- endstyle -%}
 
 <div class="recommended-products recommended-products-{{ section.id }}">
   <div class="recommended-products__container page-width flex gap-16 flex-col mobile-gap-16">
     {% if section.settings.heading != blank %}
-      <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0pct mobile-fs-21-lh-24-ls-1_2pct text-center">{{ section.settings.heading }}</h2>
+      <div class="desktop-grid">
+        <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0pct mobile-fs-21-lh-24-ls-1_2pct text-center">{{ section.settings.heading }}</h2>
+      </div>
     {% endif %}
 
     <!-- Desktop Grid (4 per row) -->
@@ -111,7 +121,19 @@
         data-show-progress-bar="true"
         data-slides-per-view-desktop="2"
         data-single-slide-view="true"
+        class="flex flex-col gap-24"
       >
+        {% if section.settings.heading != blank %}
+          <div class="flex justify-between items-end relative">
+            <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0pct mobile-fs-21-lh-24-ls-1_2pct text-center">{{ section.settings.heading }}</h2>
+            
+            <div class="flex justify-end gap-24">
+              {% render "nav-button", cls: "slideshow-nav-button-prev", icon_cls: "icon-arrow-left" %}
+              {% render "nav-button", cls: "slideshow-nav-button-next" %}
+            </div>
+          </div>
+        {% endif %}
+
         <div class="swiper-container">
           <div class="swiper-wrapper flex">
             {% for block in section.blocks limit: section.settings.products_to_show %}
