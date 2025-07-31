@@ -70,7 +70,7 @@
                 alt_text: article.image.alt,
                 css_classes: 'blog-card__image',
                 width_attr: '800',
-                height_attr: '154',
+                height_attr: '154'
               %}
             {% else %}
               {{ 'image' | placeholder_svg_tag: 'blog-card__image' }}
@@ -137,6 +137,9 @@
 {% schema %}
 {
   "name": "Blog",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
   "settings": [
     {
       "type": "blog",
@@ -181,8 +184,7 @@
   ],
   "presets": [
     {
-      "name": "Blog",
-      "category": "Content"
+      "name": "Blog"
     }
   ]
 }

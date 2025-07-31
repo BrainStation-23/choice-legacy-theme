@@ -20,6 +20,13 @@
         "product_title": "Product Title"
       }
     },
+
+    "product_review": {
+      "by": "by",
+      "product_title": "Title not found",
+      "no_reviews_available": "No reviews available at the moment.",
+      "unable_to_load_reviews": "Unable to load reviews. Please try again later."
+    },
     "product": {
       "placeholder": {
         "product_title": "Product Title",
