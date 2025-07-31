@@ -138,6 +138,8 @@
   .header__right {
     flex: 1 0 0;
     gap: 16px !important;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
   }
 
   .header__logo-link--mobile,
