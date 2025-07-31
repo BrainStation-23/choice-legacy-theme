@@ -114,15 +114,15 @@
 
                   -%}
                  {%- render 'image-desktop-and-mobile',
-                  class: 'img-fit img-fit--contain',
+                  class: 'img-fit',
                   desktop_image: img,
                   mobile_image: m_img,
                   src_width_mobile: 980,
                   widths_mobile: '480, 980, 1200, 1400',
-                  src_width_desktop: 1400,
-                  widths_desktop: '480, 980, 1200, 1400, 1600, 1920, 2560, 3200',
-                  lazy_load: lazy_load,
-                  fetchpriority: fetchpriority,
+                  src_width_desktop: 1440,
+                  widths_desktop: '480, 980, 1200, 1440, 1600, 1920, 2560, 3200',
+                  lazy_load: true,
+                  fetchpriority: "high",
                   sizes: sizes,
                   block: block
                 -%}
@@ -150,9 +150,7 @@
             {% endif %}
           </div>
         {% endfor %}
-      </div>
-      
-      {% render "dot-buttons", items: section.blocks %}      
+      </div>   
     </div>
 
     <!-- Navigation arrows -->

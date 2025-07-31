@@ -29,11 +29,16 @@
             
             {%- if desktop_image != blank or mobile_image != blank -%}
               {%- comment -%} Desktop Image {%- endcomment -%}
-              <div class="promotional-banner-desktop">
-                {% render 'image', 
-                   image: desktop_image, 
-                   width: 600, 
-                   css_classes: 'promotional-banner-img' %}
+              <div class="promotional-banner-desktop media w-full" style="padding-top: {{ 1 | divided_by: 1 | times: 100 }}%;">
+              {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
+                
+              {% render 'image', 
+                        image: desktop_image, 
+                        widths: '602, 602, 602, 602',
+                        src_width: 602,
+                        sizes: sizes,
+                        class: 'img-fit',
+                        quality: 1, %}
               </div>
               
               {%- comment -%} Mobile Image (fallback to desktop if mobile not set) {%- endcomment -%}

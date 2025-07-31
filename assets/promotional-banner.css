@@ -46,11 +46,6 @@
   height: 100%;
 }
 
-.promotional-banner-desktop {
-  display: block;
-  height: 100%;
-}
-
 @media screen and (max-width: 768px) {
   .promotional-banner-item {
     height: 88px;
