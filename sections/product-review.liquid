@@ -103,7 +103,6 @@
   document.addEventListener('DOMContentLoaded', function () {
     const desktopContent = document.getElementById('homepage-product-review__desktop-content');
     const mobileSlidesContainer = document.getElementById('mobile-slides-container');
-    const reviewLimit = {{ section.settings.review_limit }};
 
     const allProducts = {
       {% for product in collections.all.products limit: 250 %}
@@ -139,7 +138,7 @@
 
     async function fetchReviews() {
       try {
-        const response = await fetch(`/apps/generic-name/customer/product-review/show-home?limit=${reviewLimit}`, {
+        const response = await fetch(`/apps/generic-name/customer/product-review/show-home`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' }
         });
@@ -293,15 +292,6 @@
   "name": "Product Reviews",
   "tag": "section",
   "settings": [
-    {
-      "type": "range",
-      "id": "review_limit",
-      "label": "Number of reviews to show",
-      "min": 1,
-      "max": 20,
-      "step": 1,
-      "default": 4
-    },
     {
       "type": "text",
       "id": "title",
