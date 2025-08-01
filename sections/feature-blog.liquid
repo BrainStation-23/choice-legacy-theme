@@ -51,9 +51,9 @@
 </style>
 
 <article class="blog-section blog-section-{{ section.id }}">
-  <div class="blog-section__container page-width gap-48">
+  <div class="blog-section__container page-width gap-48 mobile-gap-16">
     {% if section.settings.blog_title != blank %}
-      <div class="blog-section__title fs-36-lh-40-ls-0pct ff-bebas-neue fw-400 mobile-fs-21-lh-24-ls-1_2pct">
+      <div class="blog-section__title fs-36-lh-40-ls-0 ff-bebas-neue fw-400 mobile-fs-21-lh-24-ls-1_2pct">
         {{ section.settings.blog_title }}
       </div>
     {% endif %}

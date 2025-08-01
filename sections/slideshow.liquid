@@ -188,7 +188,7 @@
             {% if block.settings.title != blank or block.settings.description != blank or block.settings.button_text != blank %}
               <div class="slide-content {% if block.settings.show_card %}card{% endif %} align-{{ block.settings.content_alignment | default: 'left' }}">
                 {% if block.settings.title != blank %}
-                  <h3 class="slide-title fs-36-lh-40-ls-0pct mobile-fs-21-lh-24-ls-1_2pct">{{ block.settings.title }}</h3>
+                  <h3 class="slide-title fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct">{{ block.settings.title }}</h3>
                 {% endif %}
                 
                 {% if block.settings.description != blank %}
@@ -206,25 +206,6 @@
     {% render "nav-button", cls: "slideshow-nav-button-next" %}
   </div>
 </slideshow-component>
-
-<script>
-  document.addEventListener('shopify:block:select', function(event) {
-  const blockId = event.detail.blockId;
-  const targetSlide = document.querySelector(`#shopify-block-${blockId}`);
-  if (targetSlide) {
-    const parentSlideshow = targetSlide.closest('slideshow-component');
-    if (parentSlideshow && parentSlideshow.swiper) {
-      const index = Array.from(
-        parentSlideshow.querySelectorAll('.swiper-slide')
-      ).indexOf(targetSlide);
-
-      if (index !== -1) {
-        parentSlideshow.swiper.slideToLoop(index);
-      }
-    }
-  }
-});
-</script>
 
 {% schema %}
 {
@@ -290,7 +271,7 @@
       "step": 4,
       "unit": "px",
       "label": "Top padding",
-      "default": 0
+      "default": 12
     },
     {
       "type": "range",
@@ -300,7 +281,7 @@
       "step": 4,
       "unit": "px",
       "label": "Bottom padding",
-      "default": 0
+      "default": 12
     }
   ],
   "blocks": [

@@ -84,10 +84,10 @@
 {%- endstyle -%}
 
 <div class="recommended-products recommended-products-{{ section.id }}">
-  <div class="recommended-products__container page-width flex gap-16 flex-col mobile-gap-16">
+  <div class="recommended-products__container page-width flex flex-col gap-48 mobile-gap-16">
     {% if section.settings.heading != blank %}
       <div class="desktop-grid">
-        <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0pct mobile-fs-21-lh-24-ls-1_2pct text-center">{{ section.settings.heading }}</h2>
+        <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct text-center">{{ section.settings.heading }}</h2>
       </div>
     {% endif %}
 
@@ -125,7 +125,7 @@
       >
         {% if section.settings.heading != blank %}
           <div class="flex justify-between items-end relative">
-            <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0pct mobile-fs-21-lh-24-ls-1_2pct text-center">{{ section.settings.heading }}</h2>
+            <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct text-center">{{ section.settings.heading }}</h2>
             
             <div class="flex justify-end gap-24">
               {% render "nav-button", cls: "slideshow-nav-button-prev", icon_cls: "icon-arrow-left" %}

@@ -60,7 +60,7 @@
 <section class="homepage-product-review__section homepage-product-review__section-{{ section.id }}">
   <div class="homepage-product-review__container page-width gap-48">
     {% if section.settings.title != blank %}
-      <h2 class="homepage-product-review__title ff-bebas-neue ft-400 fs-36-lh-40-ls-0pct">
+      <h2 class="homepage-product-review__title ff-bebas-neue ft-400 fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct">
         {{ section.settings.title }}
       </h2>
     {% endif %}
@@ -181,7 +181,7 @@
                 ${review.reviewText}
               </div>
             </div>
-            <div class="homepage-product-review__content-bottom gap-8">
+            <div class="homepage-product-review__content-bottom gap-4">
               <span class="homepage-product-review__review-date fs-12-lh-16-ls-0_6pct ff-general-sans fw-400">
                 ${formatDate(review.reviewPlacedAt)}
               </span>
@@ -217,8 +217,8 @@
                   ${review.reviewText}
                 </div>
               </div>
-              <div class="homepage-product-review__content-bottom gap-8">
-                <span class="homepage-product-review__review-date fs-12-lh-16-ls-0_6pct ff-general-sans fw-400">
+              <div class="homepage-product-review__content-bottom gap-4">
+                <span class="homepage-product-review__review-date fs-12-lh-16-ls-0_6 ff-general-sans fw-400">
                   ${formatDate(review.reviewPlacedAt)}
                 </span>
                 <span class="homepage-product-review__customer-name fs-12-lh-16-ls-0_6pct ff-general-sans fw-400">
