@@ -1,7 +1,5 @@
 {{ "offer-banner.css" | asset_url | stylesheet_tag }}
 
-{% assign image_ratio = 1 %}
-
 <style>
   .offer-banner-{{ section.id }} {
     padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
@@ -50,11 +48,11 @@
     {% if section.settings.desktop_nav == 'none' %}
       .offer-banner-{{ section.id }} .slideshow-nav-button-prev,
       .offer-banner-{{ section.id }} .slideshow-nav-button-next,
-      .offer-banner-{{ section.id }} .custom-pagination {
+      .offer-banner-{{ section.id }} .dot-pagination {
         display: none !important;
       }
     {% elsif section.settings.desktop_nav == 'nav' %}
-      .offer-banner-{{ section.id }} .custom-pagination {
+      .offer-banner-{{ section.id }} .dot-pagination {
         display: none !important;
       }
     {% elsif section.settings.desktop_nav == 'dots' %}
@@ -70,11 +68,11 @@
     {% if section.settings.mobile_nav == 'none' %}
       .offer-banner-{{ section.id }} .slideshow-nav-button-prev,
       .offer-banner-{{ section.id }} .slideshow-nav-button-next,
-      .offer-banner-{{ section.id }} .custom-pagination {
+      .offer-banner-{{ section.id }} .dot-pagination {
         display: none !important;
       }
     {% elsif section.settings.mobile_nav == 'nav' %}
-      .offer-banner-{{ section.id }} .custom-pagination {
+      .offer-banner-{{ section.id }} .dot-pagination {
         display: none !important;
       }
     {% elsif section.settings.mobile_nav == 'dots' %}
@@ -130,34 +128,44 @@
               {% assign image_number = forloop.index0 | modulo: 2 | plus: 1 %}
               {{ "lifestyle-" | append: image_number | placeholder_svg_tag: "placeholder-svg slide-image-desktop" }}
               {% endif %}
-            
-            {% comment %} Mobile Image {% endcomment %}
-            {% comment %} {% if block.settings.mobile_image != blank %}
-              {% if block.settings.link != blank %}
-                <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
-              {% endif %}
-              {% render 'image', image: block.settings.mobile_image, width: 800, css_classes: 'slide-image slide-image-mobile' %}
-              {% if block.settings.link != blank %}</a>{% endif %}
-            {% elsif block.settings.image != blank %}
-              {% if block.settings.link != blank %}
-                <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
-              {% endif %}
-              {% render 'image', image: block.settings.image, width: 800, css_classes: 'slide-image slide-image-mobile' %}
-              {% if block.settings.link != blank %}</a>{% endif %}
-            {% else %}
-              {{ "lifestyle-1" | placeholder_svg_tag: "placeholder-svg slide-image-mobile" }}
-            {% endif %} {% endcomment %}
           </div>
         {% endfor %}
       </div>
 
-      {% if section.settings.show_navigation_buttons %}
+      {% comment %} Render dots only when needed {% endcomment %}
+      {% liquid
+        assign show_dots_desktop = false
+        assign show_dots_mobile = false
+        
+        if section.settings.desktop_nav == 'dots' or section.settings.desktop_nav == 'both'
+          assign show_dots_desktop = true
+        endif
+        
+        if section.settings.mobile_nav == 'dots' or section.settings.mobile_nav == 'both'
+          assign show_dots_mobile = true
+        endif
+      %}
+      
+      {% if show_dots_desktop or show_dots_mobile %}
         {% render "dot-buttons", items: section.blocks %}
-      {%  endif %}
+      {% endif %}
     </div>
 
     <!-- Navigation arrows -->
-    {% if section.settings.show_navigation_buttons %}
+    {% liquid
+      assign show_arrows_desktop = false
+      assign show_arrows_mobile = false
+      
+      if section.settings.desktop_nav == 'nav' or section.settings.desktop_nav == 'both'
+        assign show_arrows_desktop = true
+      endif
+      
+      if section.settings.mobile_nav == 'nav' or section.settings.mobile_nav == 'both'
+        assign show_arrows_mobile = true
+      endif
+    %}
+    
+    {% if show_arrows_desktop or show_arrows_mobile %}
       {% render "nav-button", cls: "slideshow-nav-button-prev", icon_cls: "icon-arrow-left" %}
       {% render "nav-button", cls: "slideshow-nav-button-next" %}
     {% endif %}
@@ -176,12 +184,6 @@
     {
       "type": "header",
       "content": "Navigation Settings"
-    },
-    {
-      "type": "checkbox",
-      "id": "show_navigation_buttons",
-      "label": "Show navigation buttons",
-      "default": false
     },
     {
       "type": "select",
