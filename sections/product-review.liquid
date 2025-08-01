@@ -3,8 +3,7 @@
 <style>
   .homepage-product-review__section-{{ section.id }} {
     background-color: rgb(var(--color-secondary-brand));
-    position: relative;
-    overflow: hidden;
+
     padding-top: {{ section.settings.padding_top }}px;
     padding-bottom: {{ section.settings.padding_bottom }}px;
   }
@@ -166,8 +165,8 @@
           : `<div class="homepage-product-review__image" style="background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 0.8rem;">No Image</div>`;
 
         return `
-          <div class="homepage-product-review__card gap-16 box-shadow">
-            <div class="homepage-product-review__image-container homepage-product-review__content-top">
+          <div class="homepage-product-review__card gap-16 box-shadow" >
+          <div class="homepage-product-review__image-container homepage-product-review__content-top">
               ${imageHtml}
               <div class="homepage-product-review__rating box-shadow gap-4">
                 ${createStarRating(review.rating)}
@@ -186,9 +185,10 @@
                 ${formatDate(review.reviewPlacedAt)}
               </span>
               <span class="homepage-product-review__customer-name fs-12-lh-16-ls-0_6pct ff-general-sans fw-400">
-                By ${review.customerName}
+                {{ section.product_review.by }} ${review.customerName}
               </span>
             </div>
+          
           </div>
         `;
       }).join('');
@@ -221,8 +221,8 @@
                 <span class="homepage-product-review__review-date fs-12-lh-16-ls-0_6 ff-general-sans fw-400">
                   ${formatDate(review.reviewPlacedAt)}
                 </span>
-                <span class="homepage-product-review__customer-name fs-12-lh-16-ls-0_6pct ff-general-sans fw-400">
-                  {{ 'sections.product_review.by' | t }} ${review.customerName}
+                <span class="homepage-product-review__customer-name fs-12-lh-16-ls-0_6 ff-general-sans fw-400">
+                  By ${review.customerName}
                 </span>
               </div>
             </div>
@@ -232,7 +232,7 @@
 
       // Update desktop content
       desktopContent.innerHTML = `<div class="homepage-product-review__grid gap-16">${desktopReviewsHtml}</div>`;
-      
+
       // Update mobile slideshow content
       mobileSlidesContainer.innerHTML = mobileSlidesHtml;
 

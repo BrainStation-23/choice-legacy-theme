@@ -760,7 +760,6 @@
 </script>
 
 <script>
-  // Calculate and set header height
 function setHeaderHeight() {
   const header = document.querySelector('.header');
   if (header) {
@@ -773,8 +772,8 @@ function setHeaderHeight() {
       mobileMenu.style.top = `${headerHeight}px`;
     }
   }
+}
 
-// Call on load and resize
 document.addEventListener('DOMContentLoaded', setHeaderHeight);
 window.addEventListener('resize', setHeaderHeight);
 </script>
