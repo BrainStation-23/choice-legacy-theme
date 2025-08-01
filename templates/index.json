@@ -21,6 +21,7 @@
             "video_loop": true,
             "video_controls": false,
             "image": "shopify://shop_images/3c26d49f72200316623e81b33c06da1f317da4e5.jpg",
+            "mobile_image": "shopify://shop_images/image_23_mobile_banner.png",
             "link": "",
             "link_target": false,
             "title": "",
@@ -64,18 +65,14 @@
           }
         }
       },
-      "block_order": [
-        "slide-1",
-        "slide-2",
-        "slide-3"
-      ],
+      "block_order": ["slide-1", "slide-2", "slide-3"],
       "settings": {
         "slide_border_radius": 6,
         "enable_autoplay": true,
         "autoplay_delay": 4,
         "pause_on_hover": true,
-        "padding_top": 0,
-        "padding_bottom": 0
+        "padding_top": 12,
+        "padding_bottom": 12
       }
     },
     "collections_list_Xyrebi": {
@@ -312,9 +309,7 @@
           }
         }
       },
-      "block_order": [
-        "banner_YhRMrw"
-      ],
+      "block_order": ["banner_YhRMrw"],
       "name": "Combo Banner",
       "settings": {
         "slide_border_radius": 0,
@@ -358,12 +353,7 @@
           }
         }
       },
-      "block_order": [
-        "banner-1",
-        "banner-2",
-        "banner-3",
-        "banner-4"
-      ],
+      "block_order": ["banner-1", "banner-2", "banner-3", "banner-4"],
       "settings": {
         "padding_top": 88,
         "padding_bottom": 88
@@ -392,9 +382,7 @@
           }
         }
       },
-      "block_order": [
-        "block_multi_slide_3"
-      ],
+      "block_order": ["block_multi_slide_3"],
       "settings": {
         "desktop_nav": "nav",
         "mobile_nav": "nav",
@@ -496,9 +484,7 @@
           }
         }
       },
-      "block_order": [
-        "banner_Mifqyk"
-      ],
+      "block_order": ["banner_Mifqyk"],
       "name": "Offer Banner",
       "settings": {
         "desktop_nav": "none",
