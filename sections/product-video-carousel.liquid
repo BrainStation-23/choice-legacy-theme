@@ -40,7 +40,7 @@
       data-autoplay="{{ section.settings.autoplay }}"
       data-autoplay-delay="{{ section.settings.autoplay_delay | default: 5000 }}"
       data-pause-on-hover="{{ section.settings.pause_on_hover }}"
-      data-slides-per-view-desktop="{{ section.settings.slides_per_view | default: 4 }}"
+      data-slides-per-view-desktop="4"
       data-show-partial-slides="true"
       data-show-progress-bar="false"
       data-carousel-mode="true"
@@ -109,8 +109,17 @@
                       <div class="product-video-item__top-overlay">
                         <div class="product-video-item__top-text flex flex-col gap-9">
                           <div class="flex items-center flex-wrap gap-9">
-                            <div class="choice-legacy-logo">
-                              {% render "logo", padding_left: 40, padding_bottom: 40, logo_width: 40  %}
+                            <div class="choice-legacy-overlay-image media block relative" style="padding-left: 40px; padding-bottom: 40px">
+                              {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
+                
+                              {% render 'image', 
+                                  image: section.settings.image, 
+                                  widths: '40, 40, 40, 40',
+                                  src_width: 40,
+                                  sizes: sizes,
+                                  class: 'img-fit',
+                                  quality: 1, 
+                              %}
                             </div>
                             <p class="product-video-item__main-text fw-500 fs-13-lh-16-ls-0_2">{{ block.settings.main_text | default: "Check out this amazing product!" }}</p>
                           </div>
@@ -275,13 +284,9 @@ document.addEventListener('DOMContentLoaded', function() {
       "default": 8
     },
     {
-      "type": "range",
-      "id": "slides_per_view",
-      "min": 2,
-      "max": 6,
-      "step": 1,
-      "default": 4,
-      "label": "Slides per view (desktop)"
+      "type": "image_picker",
+      "id": "image",
+      "label": "Card overlay image"
     },
     {
       "type": "checkbox",

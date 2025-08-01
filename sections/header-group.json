@@ -16,12 +16,10 @@
       "settings": {
         "padding_top": 16,
         "padding_bottom": 16,
-        "brand_logo": "shopify://shop_images/logo.png",
-        "logo_text": "",
-        "logo_alt_text": "Choice LEGACY Logo",
-        "logo_width": 150,
-        "main_menu": "",
-        "mega_menu_image_alt": "Featured products"
+        "main_menu": "choice-legacy-menu",
+        "mega_menu_image": "shopify://shop_images/offer-image_5.png",
+        "mega_menu_image_alt": "Featured products",
+        "undergarments_bg_color": "#030b1a"
       }
     }
   },

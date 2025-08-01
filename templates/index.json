@@ -21,6 +21,7 @@
             "video_loop": true,
             "video_controls": false,
             "image": "shopify://shop_images/3c26d49f72200316623e81b33c06da1f317da4e5.jpg",
+            "mobile_image": "shopify://shop_images/image_23_mobile_banner.png",
             "link": "",
             "link_target": false,
             "title": "",
@@ -70,8 +71,8 @@
         "enable_autoplay": true,
         "autoplay_delay": 4,
         "pause_on_hover": true,
-        "padding_top": 0,
-        "padding_bottom": 0
+        "padding_top": 12,
+        "padding_bottom": 12
       }
     },
     "collections_list_Xyrebi": {
@@ -83,16 +84,16 @@
             "collection": "skin-care"
           }
         },
-        "collection_item_BJ46j7": {
-          "type": "collection_item",
-          "settings": {
-            "collection": "k-beauty"
-          }
-        },
         "collection_item_LFkJNf": {
           "type": "collection_item",
           "settings": {
             "collection": "mekup"
+          }
+        },
+        "collection_item_BJ46j7": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "k-beauty"
           }
         },
         "collection_item_FXhj4Y": {
@@ -104,14 +105,14 @@
         "collection_item_b8Twrj": {
           "type": "collection_item",
           "settings": {
-            "collection": "eye-makeup"
+            "collection": "hairi-care"
           }
         }
       },
       "block_order": [
         "collection_item_iFEQpC",
-        "collection_item_BJ46j7",
         "collection_item_LFkJNf",
+        "collection_item_BJ46j7",
         "collection_item_FXhj4Y",
         "collection_item_b8Twrj"
       ],
@@ -194,7 +195,6 @@
       ],
       "name": "Scrolling logo",
       "settings": {
-        "show_divider": true,
         "image_height": 56,
         "image_width": 120,
         "speed": 40,
@@ -296,28 +296,23 @@
         "padding_bottom": 36
       }
     },
-    "offer_banner_section_1": {
-      "type": "offer-banner",
+    "combo_banner_bHzniW": {
+      "type": "combo-banner",
       "blocks": {
-        "block_one_slide": {
+        "banner_YhRMrw": {
           "type": "banner",
           "settings": {
-            "image": "shopify://shop_images/Offer_banner_1_2f40093e-8090-4439-898d-f0c6060031c9.png",
+            "image": "shopify://shop_images/2.1.jpg",
+            "mobile_image": "shopify://shop_images/Offer_banner_2_mobile.png",
             "link": "",
             "link_target": false
           }
         }
       },
-      "block_order": ["block_one_slide"],
+      "block_order": ["banner_YhRMrw"],
+      "name": "Combo Banner",
       "settings": {
-        "banner_height_desktop": "400",
-        "banner_height_mobile": "164",
-        "desktop_nav": "both",
-        "mobile_nav": "dots",
-        "slide_border_radius": 6,
-        "enable_autoplay": false,
-        "autoplay_delay": 4,
-        "pause_on_hover": true,
+        "slide_border_radius": 0,
         "padding_top": 0,
         "padding_bottom": 0
       }
@@ -329,6 +324,7 @@
           "type": "banner_item",
           "settings": {
             "banner_image": "shopify://shop_images/undergarmensts_offer.png",
+            "mobile_banner_image": "shopify://shop_images/offer-image_8170ccf8-eddb-47f3-ac87-6a65a23bec83.png",
             "link": ""
           }
         },
@@ -336,6 +332,7 @@
           "type": "banner_item",
           "settings": {
             "banner_image": "shopify://shop_images/undergarments_2.png",
+            "mobile_banner_image": "shopify://shop_images/offer-image_1_df6d8e45-9de7-4731-bb72-3b3eef8cb684.png",
             "link": ""
           }
         },
@@ -343,6 +340,7 @@
           "type": "banner_item",
           "settings": {
             "banner_image": "shopify://shop_images/undergarments_3.png",
+            "mobile_banner_image": "shopify://shop_images/offer-image_3_86c1c3fb-513a-4fb4-a4f8-15842cf7309c.png",
             "link": ""
           }
         },
@@ -350,22 +348,23 @@
           "type": "banner_item",
           "settings": {
             "banner_image": "shopify://shop_images/undergarments_4.png",
+            "mobile_banner_image": "shopify://shop_images/offer-image_4_194d022d-a29f-4830-b58d-44f8b1dc0d85.png",
             "link": ""
           }
         }
       },
       "block_order": ["banner-1", "banner-2", "banner-3", "banner-4"],
       "settings": {
-        "padding_top": 0,
-        "padding_bottom": 0
+        "padding_top": 88,
+        "padding_bottom": 88
       }
     },
     "product_review_BbnWnJ": {
       "type": "product-review",
       "name": "Product Reviews",
       "settings": {
-        "review_limit": 4,
         "title": "SEE WHAT OUR CUSTOMERS ARE SAYING",
+        "autoplay": false,
         "padding_top": 88,
         "padding_bottom": 88
       }
@@ -373,41 +372,23 @@
     "offer_banner_section_2": {
       "type": "offer-banner",
       "blocks": {
-        "block_multi_slide_1": {
-          "type": "banner",
-          "settings": {
-            "link": "",
-            "link_target": false
-          }
-        },
-        "block_multi_slide_2": {
-          "type": "banner",
-          "settings": {
-            "link": "",
-            "link_target": false
-          }
-        },
         "block_multi_slide_3": {
           "type": "banner",
           "settings": {
-            "image": "shopify://shop_images/Silder-smaller_5f2c32f4-2186-4469-b234-48c9cf3e22f5.png",
+            "image": "shopify://shop_images/Silder-smaller_1.png",
+            "mobile_image": "shopify://shop_images/Silder-smaller_1_mobile_banner_small_b728d451-d45a-4eee-874d-bfd11d76ca3e.png",
             "link": "",
             "link_target": false
           }
         }
       },
-      "block_order": [
-        "block_multi_slide_1",
-        "block_multi_slide_2",
-        "block_multi_slide_3"
-      ],
+      "block_order": ["block_multi_slide_3"],
       "settings": {
-        "banner_height_desktop": "225",
-        "banner_height_mobile": "164",
+        "show_navigation_buttons": false,
         "desktop_nav": "both",
         "mobile_nav": "dots",
         "slide_border_radius": 6,
-        "enable_autoplay": true,
+        "enable_autoplay": false,
         "autoplay_delay": 4,
         "pause_on_hover": true,
         "padding_top": 0,
@@ -460,18 +441,30 @@
             "main_text": "Choice Legacy",
             "sub_text": "Skincare heroes this summer!"
           }
+        },
+        "product_video_cLAPNg": {
+          "type": "product_video",
+          "settings": {
+            "product": "axis-y-dark-spot-correcting-glow-serum-5ml",
+            "video_type": "youtube",
+            "youtube_url": "",
+            "video_url": "",
+            "main_text": "Choice Legacy",
+            "sub_text": "Skincare heroes this summer!"
+          }
         }
       },
       "block_order": [
         "product_video_1",
         "product_video_2",
         "product_video_3",
-        "product_video_4"
+        "product_video_4",
+        "product_video_cLAPNg"
       ],
       "settings": {
         "heading": "Watch & Shop",
         "card_border_radius": 8,
-        "slides_per_view": 4,
+        "image": "shopify://shop_images/d942d0b5eefcf34277e90a42c67e1deafe1c9d75.png",
         "autoplay": false,
         "autoplay_delay": 5000,
         "pause_on_hover": true,
@@ -485,7 +478,8 @@
         "banner_Mifqyk": {
           "type": "banner",
           "settings": {
-            "image": "shopify://shop_images/Silder-smaller_5f2c32f4-2186-4469-b234-48c9cf3e22f5.png",
+            "image": "shopify://shop_images/e435a10dc65e7e31114e1a4f95e4d41a9bbb9861.jpg",
+            "mobile_image": "shopify://shop_images/image_23_4e2a8e4b-5fed-4da6-8b6a-e6df224f4b53.png",
             "link": "",
             "link_target": false
           }
@@ -494,10 +488,9 @@
       "block_order": ["banner_Mifqyk"],
       "name": "Offer Banner",
       "settings": {
-        "banner_height_desktop": "225",
-        "banner_height_mobile": "150",
-        "desktop_nav": "both",
-        "mobile_nav": "dots",
+        "show_navigation_buttons": true,
+        "desktop_nav": "nav",
+        "mobile_nav": "nav",
         "slide_border_radius": 0,
         "enable_autoplay": false,
         "autoplay_delay": 5,
@@ -561,7 +554,7 @@
       "type": "feature-blog",
       "name": "Blog",
       "settings": {
-        "blog": "news",
+        "blog": "our-blog",
         "blog_title": "Our Blog",
         "blog_post_limit": 4,
         "padding_top": 0,
@@ -574,7 +567,7 @@
     "collections_list_Xyrebi",
     "scrolling_logo_bEiWUD",
     "recommended-products",
-    "offer_banner_section_1",
+    "combo_banner_bHzniW",
     "promotional-banner",
     "product_review_BbnWnJ",
     "offer_banner_section_2",

@@ -153,10 +153,10 @@
   /* MOBILE MEGA MENU STYLES */
   .mobile-mega-menu {
     position: fixed;
-    bottom: 0;
+    top: 0;
     left: 0;
     width: 325px;
-    height: 86vh;
+    height: calc(100vh - var(--header-height, 80px));
     z-index: 9999;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
@@ -521,17 +521,15 @@
         <!-- Promotional Section -->
         {%- if section.settings.mega_menu_image != blank -%}
           <div class="mobile-mega-menu__promo">
-            <div class="mobile-mega-menu__promo-image">
-              {% render 'image',
-                image: section.settings.mega_menu_image,
-                width: 400,
-                alt_text: section.settings.mega_menu_image_alt,
-                title: 'Featured products',
-                css_classes: 'mega-menu__image',
-                loading: 'lazy',
-                width_attr: '400',
-                height_attr: '300'
-              %}
+            <div class="mobile-mega-menu__promo-image media block relative"  style="padding-top: 200px; padding-left: 293px;">
+              {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
+              {% render 'image', 
+                image: section.settings.mega_menu_image, 
+                widths: '293, 293, 293, 293',
+                src_width: 293,
+                sizes: sizes,
+                class: 'img-fit',
+                quality: 1, %}
             </div>
           </div>
         {%- endif -%}
@@ -636,15 +634,16 @@
 
                     <!-- Image Column - Only show when column count >= 2 -->
                     {%- if section.settings.mega_menu_image != blank and show_image -%}
-                      <div class="mega-menu__image-column flex flex-start">
-                        <img
-                          src="{{ section.settings.mega_menu_image | image_url: width: 400 }}"
-                          alt="{{ section.settings.mega_menu_image_alt | default: 'Featured products' | escape }}"
-                          loading="lazy"
-                          class="mega-menu__image"
-                          width="400"
-                          height="300"
-                        >
+                      <div class="mega-menu__image-column flex flex-start media relative block" style="padding-top: 200px; padding-left: 402px;">
+                        {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
+                
+                        {% render 'image', 
+                          image: section.settings.mega_menu_image, 
+                          widths: '400, 400, 400, 400',
+                          src_width: 400,
+                          sizes: sizes,
+                          class: 'img-fit',
+                          quality: 1, %}
                       </div>
                     {%- endif -%}
                   </div>
@@ -758,6 +757,26 @@
       });
     }, 100);
   });
+</script>
+
+<script>
+  // Calculate and set header height
+function setHeaderHeight() {
+  const header = document.querySelector('.header');
+  if (header) {
+    const headerHeight = header.offsetHeight;
+    document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+    
+    // Also update the mobile menu top position
+    const mobileMenu = document.getElementById('mobileMegaMenu');
+    if (mobileMenu) {
+      mobileMenu.style.top = `${headerHeight}px`;
+    }
+  }
+
+// Call on load and resize
+document.addEventListener('DOMContentLoaded', setHeaderHeight);
+window.addEventListener('resize', setHeaderHeight);
 </script>
 
 {% schema %}

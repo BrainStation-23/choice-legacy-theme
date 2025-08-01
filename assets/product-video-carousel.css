@@ -112,11 +112,16 @@
   height: 412px;
 }
 
-.choice-legacy-logo {
+.choice-legacy-overlay-image {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   object-fit: cover;
+  border: 2px solid rgb(var(--color-background));
+}
+
+.choice-legacy-overlay-image img {
+  border-radius: 50%;
 }
 
 .visually-hidden {
