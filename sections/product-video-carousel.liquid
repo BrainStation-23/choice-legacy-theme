@@ -31,9 +31,9 @@
 {%- endstyle -%}
 
 <div class="product-video-carousel product-video-carousel-{{ section.id }}">
-  <div class="product-video-carousel__container page-width flex gap-24 flex-col mobile-gap-16">
+  <div class="product-video-carousel__container page-width flex gap-48 flex-col mobile-gap-16">
     {% if section.settings.heading != blank %}
-      <h2 class="product-video-carousel__title fw-400 fs-36-lh-40-ls-0pct mobile-fs-21-lh-24-ls-1_2pct text-center">{{ section.settings.heading }}</h2>
+      <h2 class="product-video-carousel__title fw-400 fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct text-center">{{ section.settings.heading }}</h2>
     {% endif %}
 
     <slideshow-component 
@@ -108,7 +108,7 @@
                     {% if has_video %}
                       <div class="product-video-item__top-overlay">
                         <div class="product-video-item__top-text flex flex-col gap-9">
-                          <div class="flex flex-wrap gap-9">
+                          <div class="flex items-center flex-wrap gap-9">
                             {% comment %} TODO: Add logo {% endcomment %}
                             {% comment %} {% render 'image',
                               image: 'https://placehold.co/600x400',
@@ -134,15 +134,16 @@
 
                   <div class="product-video-item__product-info">
                     {% if product.featured_image %}
-                      {% render 'image',
-                        image: product.featured_image,
-                        width: 100,
-                        height_attr: 100,
-                        alt_text: product.title,
-                        css_classes: 'product-video-item__product-image',
-                        loading: 'lazy',
-                        width_attr: 100
-                      %}
+                      <div class="media block relative" style="padding-left: 56px; padding-bottom: 56px;">
+                        {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
+                        {% render 'image', 
+                          image: product.featured_image, 
+                          widths: '56, 56, 56, 56',
+                          src_width: 56,
+                          sizes: sizes,
+                          class: 'img-fit',
+                          quality: 1, %}
+                      </div>
                     {% endif %}
                     <div class="product-video-item__product-details flex flex-col justify-center gap-4">
                       {% if product.price %}
@@ -151,7 +152,7 @@
                         </p>
                       {% endif %}
 
-                      <h3 class="product-video-item__product-title fw-400 fs-12-lh-16-ls-0_6pct">{{ product.title }}</h3>
+                      <h3 class="product-video-item__product-title ff-general-sans fw-400 fs-12-lh-16-ls-0_6pct">{{ product.title }}</h3>
                     </div>
                   </div>
 
@@ -177,7 +178,7 @@
                       <p class="product-video-item__product-price">
                         {{ 'sections.product_video_carousel.placeholder.price' | t | default: '$0.00' }}
                       </p>
-                      <h3 class="product-video-item__product-title fw-400 fs-12-lh-16-ls-0_6pct">{{ 'sections.product_video_carousel.placeholder.product_title' | t | default: 'Product Title' }}</h3>
+                      <h3 class="product-video-item__product-title ff-general-sans fw-400 fs-12-lh-16-ls-0_6pct">{{ 'sections.product_video_carousel.placeholder.product_title' | t | default: 'Product Title' }}</h3>
                     </div>
                   </div>
                 </div>
@@ -320,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
       "step": 4,
       "unit": "px",
       "label": "Top padding",
-      "default": 0
+      "default": 88
     },
     {
       "type": "range",
@@ -330,7 +331,7 @@ document.addEventListener('DOMContentLoaded', function() {
       "step": 4,
       "unit": "px",
       "label": "Bottom padding",
-      "default": 0
+      "default": 88
     }
   ],
   "blocks": [
