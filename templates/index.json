@@ -396,9 +396,8 @@
         "block_multi_slide_3"
       ],
       "settings": {
-        "show_navigation_buttons": false,
-        "desktop_nav": "both",
-        "mobile_nav": "dots",
+        "desktop_nav": "nav",
+        "mobile_nav": "nav",
         "slide_border_radius": 6,
         "enable_autoplay": false,
         "autoplay_delay": 4,
@@ -502,9 +501,8 @@
       ],
       "name": "Offer Banner",
       "settings": {
-        "show_navigation_buttons": true,
-        "desktop_nav": "nav",
-        "mobile_nav": "nav",
+        "desktop_nav": "none",
+        "mobile_nav": "none",
         "slide_border_radius": 0,
         "enable_autoplay": false,
         "autoplay_delay": 5,
