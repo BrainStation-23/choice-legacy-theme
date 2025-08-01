@@ -1,0 +1,32 @@
+.service__container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.service__item {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.service__heading {
+  color: rgb(var(--color-background));
+}
+
+.service__subheading {
+  color: rgb(var(--color-background));
+}
+@media screen and (max-width: 767px) {
+  .service__container {
+    gap: 8px;
+  }
+
+  .service__item {
+    gap: 8px;
+  }
+
+  .service__image {
+    width: 32px;
+    height: 32px;
+  }
+}
