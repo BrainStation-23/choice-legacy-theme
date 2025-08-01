@@ -85,6 +85,11 @@
       <div class="swiper-wrapper">
         
         {% for block in section.blocks %}
+          {%- liquid
+          assign img = block.settings.image
+          assign m_img = block.settings.mobile_image
+
+          -%}
           <div class="swiper-slide {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
                {{ block.shopify_attributes }}
                data-block-id="{{ block.id }}"
@@ -115,7 +120,21 @@
               {% if block.settings.link != blank %}
                 <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
               {% endif %}
-              {% render 'image', image: block.settings.image, width: 1200, css_classes: 'slide-image slide-image-desktop' %}
+              {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}    
+                        
+              {%- render 'image-desktop-and-mobile',
+              class: 'img-fit',
+              desktop_image: img,
+              mobile_image: m_img,
+              src_width_mobile: 980,
+              widths_mobile: '480, 980, 1200, 1400',
+              src_width_desktop: 1400,
+              widths_desktop: '480, 980, 1200, 1400, 1600, 1920, 2560, 3200',
+              lazy_load: false,
+              fetchpriority: "high",
+              sizes: sizes,
+              block: block
+            -%}
               {% if block.settings.link != blank %}</a>{% endif %}
             {% else %}
              {% assign image_number = forloop.index0 | modulo: 2 | plus: 1 %}
@@ -140,19 +159,26 @@
                 Your browser does not support the video tag.
               </video>
               {% if block.settings.link != blank %}</a>{% endif %}
-            {% elsif block.settings.mobile_image != blank %}
+            {% elsif img != blank %}
               {% comment %} Mobile Image {% endcomment %}
               {% if block.settings.link != blank %}
                 <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
               {% endif %}
-              {% render 'image', image: block.settings.mobile_image, width: 800, css_classes: 'slide-image slide-image-mobile' %}
-              {% if block.settings.link != blank %}</a>{% endif %}
-            {% elsif block.settings.image != blank %}
-              {% comment %} Use desktop image for mobile if no mobile image {% endcomment %}
-              {% if block.settings.link != blank %}
-                <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
-              {% endif %}
-              {% render 'image', image: block.settings.image, width: 800, css_classes: 'slide-image slide-image-mobile' %}
+              {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}    
+                        
+              {%- render 'image-desktop-and-mobile',
+              class: 'img-fit',
+              desktop_image: img,
+              mobile_image: m_img,
+              src_width_mobile: 980,
+              widths_mobile: '480, 980, 1200, 1400',
+              src_width_desktop: 1400,
+              widths_desktop: '480, 980, 1200, 1400, 1600, 1920, 2560, 3200',
+              lazy_load: lazy_load,
+              fetchpriority: fetchpriority,
+              sizes: sizes,
+              block: block
+            -%}
               {% if block.settings.link != blank %}</a>{% endif %}
             {% else %}
               {{ "lifestyle-1" | placeholder_svg_tag: "placeholder-svg slide-image-mobile" }}

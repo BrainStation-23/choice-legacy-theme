@@ -1,4 +1,5 @@
 {{ 'scrolling-logo.css' | asset_url | stylesheet_tag }}
+{% assign image_ratio = 1 %}
 
 <style>
   .scrolling-logo-{{ section.id }} {
@@ -42,15 +43,16 @@
               {% if block.settings.link != blank %}
                 <a href="{{ block.settings.link }}" class="scrolling-logo__image ">
               {% else %}
-                <div class="scrolling-logo__image flex-row">
+                <div class="media block relative" style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;">
               {% endif %}
               {% render 'image',
                 image: block.settings.image,
-                width: img_width,
+                src_width: img_width,
+                widths: '460, 700, 860, 1296',
                 alt_text: block.settings.image.alt,
-                height_attr: img_height,
-                width_attr: img_width,
-                css_classes: 'scrolling-logo__image-img'
+                sizes: false,
+                class: 'img-fit',
+                quality: 1
               %}
 
               {% if block.settings.link != blank %}
