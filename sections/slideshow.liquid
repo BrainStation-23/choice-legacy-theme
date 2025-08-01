@@ -207,25 +207,6 @@
   </div>
 </slideshow-component>
 
-<script>
-  document.addEventListener('shopify:block:select', function(event) {
-  const blockId = event.detail.blockId;
-  const targetSlide = document.querySelector(`#shopify-block-${blockId}`);
-  if (targetSlide) {
-    const parentSlideshow = targetSlide.closest('slideshow-component');
-    if (parentSlideshow && parentSlideshow.swiper) {
-      const index = Array.from(
-        parentSlideshow.querySelectorAll('.swiper-slide')
-      ).indexOf(targetSlide);
-
-      if (index !== -1) {
-        parentSlideshow.swiper.slideToLoop(index);
-      }
-    }
-  }
-});
-</script>
-
 {% schema %}
 {
   "name": "Slideshow",

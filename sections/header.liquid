@@ -54,8 +54,8 @@
     transform: translateX(-50%);
     background: rgb(var(--color-background));
     border-radius: 6px;
-    {% comment %} opacity: 0; {% endcomment %}
-    {% comment %} visibility: hidden; {% endcomment %}
+    opacity: 0;
+    visibility: hidden;
     transition: all 0.3s ease;
     z-index: 1001;
     margin-top: 8px;
@@ -153,10 +153,10 @@
   /* MOBILE MEGA MENU STYLES */
   .mobile-mega-menu {
     position: fixed;
-    bottom: 0;
+    top: 0;
     left: 0;
     width: 325px;
-    height: 86vh;
+    height: calc(100vh - var(--header-height, 80px));
     z-index: 9999;
     transform: translateX(-100%);
     transition: transform 0.3s ease;
@@ -757,6 +757,27 @@
       });
     }, 100);
   });
+</script>
+
+<script>
+  // Calculate and set header height
+function setHeaderHeight() {
+  const header = document.querySelector('.header');
+  if (header) {
+    const headerHeight = header.offsetHeight;
+    document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+    
+    // Also update the mobile menu top position
+    const mobileMenu = document.getElementById('mobileMegaMenu');
+    if (mobileMenu) {
+      mobileMenu.style.top = `${headerHeight}px`;
+    }
+  }
+}
+
+// Call on load and resize
+document.addEventListener('DOMContentLoaded', setHeaderHeight);
+window.addEventListener('resize', setHeaderHeight);
 </script>
 
 {% schema %}
