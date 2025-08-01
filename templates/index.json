@@ -64,11 +64,7 @@
           }
         }
       },
-      "block_order": [
-        "slide-1",
-        "slide-2",
-        "slide-3"
-      ],
+      "block_order": ["slide-1", "slide-2", "slide-3"],
       "settings": {
         "slide_border_radius": 6,
         "enable_autoplay": true,
@@ -312,9 +308,7 @@
           }
         }
       },
-      "block_order": [
-        "block_one_slide"
-      ],
+      "block_order": ["block_one_slide"],
       "settings": {
         "banner_height_desktop": "400",
         "banner_height_mobile": "164",
@@ -360,12 +354,7 @@
           }
         }
       },
-      "block_order": [
-        "banner-1",
-        "banner-2",
-        "banner-3",
-        "banner-4"
-      ],
+      "block_order": ["banner-1", "banner-2", "banner-3", "banner-4"],
       "settings": {
         "padding_top": 0,
         "padding_bottom": 0
@@ -486,8 +475,8 @@
         "autoplay": false,
         "autoplay_delay": 5000,
         "pause_on_hover": true,
-        "padding_top": 0,
-        "padding_bottom": 0
+        "padding_top": 88,
+        "padding_bottom": 88
       }
     },
     "offer_banner_Uy36n7": {
@@ -502,9 +491,7 @@
           }
         }
       },
-      "block_order": [
-        "banner_Mifqyk"
-      ],
+      "block_order": ["banner_Mifqyk"],
       "name": "Offer Banner",
       "settings": {
         "banner_height_desktop": "225",
