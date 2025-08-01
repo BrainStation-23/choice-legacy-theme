@@ -20,10 +20,6 @@
     position: relative;
   }
 
-  .product-card:hover {
-    transform: translateY(-2px);
-  }
-
   .product-card__price {
     color: rgb(var(--color-primary-brand));
   }
@@ -45,10 +41,6 @@
     position: relative;
     z-index: 2;
     min-height: 24px;
-  }
-
-  .product-card__type:hover {
-    background: rgba(var(--color-secondary-brand), 0.8);
   }
 
   .product-card__image-container {
@@ -140,20 +132,25 @@
 {% assign image_height = image_height | default: 268 %}
 {% assign css_classes = css_classes | default: '' %}
 {% assign loading = loading | default: 'lazy' %}
+{% assign image_ratio = 1 %}
 
 <div class="product-card {{ css_classes }} {% if settings.show_product_card_box_shadow %}box-shadow{% endif %}" {% if product %}data-product-id="{{ product.id }}"{% endif %}>
   <div class="product-card__image-container">
     {% if product and product != empty %}
       {% if product.featured_image %}
+        <div class="media block relative" style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;">
+        {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 5 %}{% endcapture -%}
+
         {% render 'image',
           image: product.featured_image,
-          width: image_width,
-          height_attr: image_height,
+          src_width: image_width,
+          widths: '460, 700, 860, 1296',
           alt_text: product.title,
-          css_classes: 'product-card__image',
-          loading: loading,
-          width_attr: image_width
+          class: 'img-fit',
+          quality: 1,
+          sizes: sizes,
         %}
+        </div>
       {% else %}
         <div class="product-card__placeholder-image">
           {{ 'product-1' | placeholder_svg_tag: "placeholder-svg" }}
@@ -193,7 +190,7 @@
 
   <div class="product-card__content flex flex-col gap-4">
     {% if product and product != empty %}
-      {% if show_type and product.type %}
+      {% if show_type and product.type != blank %}
         {% assign collection_handle = product.type | handleize %}
         {% assign collection_url = routes.collections_url | append: '/' | append: collection_handle %}
         <a href="{{ collection_url }}" class="product-card__type-link flex items-center" onclick="event.stopPropagation();">
@@ -201,7 +198,7 @@
         </a>
       {% endif %}
 
-      <h3 class="product-card__title fw-400 fs-14-lh-20-ls-0">{{ product.title }}</h3>
+      <h3 class="product-card__title ff-general-sans fw-400 fs-14-lh-20-ls-0">{{ product.title }}</h3>
       
       <div class="flex flex-col gap-8">
         {% if product.price %}
@@ -245,7 +242,7 @@
         </a>
       {% endif %}
 
-      <h3 class="product-card__title fw-400 fs-14-lh-20-ls-0">
+      <h3 class="product-card__title ff-general-sans fw-400 fs-14-lh-20-ls-0">
         {{ 'sections.product.placeholder.product_title' | t }}
       </h3>
       

@@ -25,15 +25,9 @@
 
   .featured-collections-{{ section.id }} .featured-collection-item {
     position: relative;
-    overflow: hidden;
     border-radius: {{ section.settings.item_border_radius }}px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    width: 304px;
-    height: 304px;
-  }
-
-  .featured-collection-item:hover {
-    transform: translateY(-5px);
+   
   }
 
   .featured-collection-link {
@@ -50,35 +44,11 @@
     object-fit: contain;
   }
 
-  .featured-collections .collection-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-  }
-
-  .featured-collection-item:hover .collection-img {
-    transform: scale(1.05);
-  }
-
   /* Tablet: 768px to 1023px */
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     .featured-collections-grid {
       grid-template-columns: repeat(4, 1fr);
       gap: 10px !important;
-    }
-
-    .featured-collection-item {
-      width: 100% !important;
-      height: 220px !important;
-    }
-
-    .featured-collection-item {
-      width: 100%;
-    }
-
-    .featured-collections .collection-img {
-      object-fit: contain;
     }
 
     .featured-collections .mobile-carousel {
@@ -91,15 +61,6 @@
     .featured-collections-grid {
       grid-template-columns: repeat(4, 1fr);
       gap: 10px !important;
-    }
-
-    .featured-collection-item {
-      width: 100% !important;
-      height: 280px !important;
-    }
-
-    .featured-collections .collection-img {
-      object-fit: contain;
     }
 
     .featured-collections .mobile-carousel {
@@ -126,9 +87,17 @@
     .featured-collections .mobile-carousel {
       display: block;
     }
+
+    .featured-collection-item {
+      width: 304px;
+      height: 304px;
+    }
   }
 </style>
 
+{% liquid
+  assign image_ratio = 1
+%}
 {%- if section.blocks.size > 0 -%}
   <section class="featured-collections featured-collections-{{ section.id }}" data-section-type="featured-collections" data-section-id="{{ section.id }}">
     <div class="page-width">
@@ -143,15 +112,17 @@
           
           <div class="featured-collection-item" {{ block.shopify_attributes }}>
             <a href="{{ collection_url }}" class="featured-collection-link" aria-label="{{ collection_title }}">
-              <div class="featured-collection-image">
+              <div class="featured-collection-image media block relative" style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;">
                 {%- if collection and collection_image -%}
-                  {%- render 'image', 
-                      image: collection_image,
-                      width: 304,
-                      height: 304
-                      alt_text: collection_title,
-                      css_classes: 'collection-img',
-                      loading: 'lazy' -%}
+                  {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 4 %}{% endcapture -%}
+                  {% render 'image',
+                    image: collection_image,
+                    widths: '304, 304, 304, 304',
+                    src_width: 304,
+                    sizes: sizes,
+                    class: 'img-fit',
+                    quality: 1,
+                  %}
                 {%- else -%}
                   <div class="featured-collection-image">
                     {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg collection-img' }}
@@ -189,15 +160,17 @@
                   
                   <div class="featured-collection-item" {{ block.shopify_attributes }}>
                     <a href="{{ collection_url }}" class="featured-collection-link" aria-label="{{ collection_title }}">
-                      <div class="featured-collection-image">
+                      <div class="featured-collection-image media block relative">
                         {%- if collection and collection_image -%}
-                          {%- render 'image', 
-                              image: collection_image,
-                              width: 304,
-                              height: 304
-                              alt_text: collection_title,
-                              css_classes: 'collection-img',
-                              loading: 'lazy' -%}
+                          {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 4 %}{% endcapture -%}
+                          {% render 'image',
+                            image: collection_image,
+                            widths: '304, 304, 304, 304',
+                            src_width: 304,
+                            sizes: sizes,
+                            class: 'img-fit',
+                            quality: 1,
+                          %}
                         {%- else -%}
                           <div class="featured-collection-image">
                             {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg collection-img' }}

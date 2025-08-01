@@ -1,0 +1,30 @@
+<a href="{{ routes.root_url }}" class="header__logo-link--desktop media border relative" style="padding-left: {{ padding_left }}px; padding-bottom: {{ padding_bottom }}px">
+  {%- if settings.brand_logo != blank -%}
+    {% comment %} <img
+      src="{{ settings.brand_logo | image_url: width: settings.logo_width }}"
+      alt="{{ settings.logo_alt_text  }}"
+      loading="lazy"
+      class="header__logo-img"
+      width="{{ settings.logo_width }}"
+      height="{{ settings.logo_height }}"
+    > {% endcomment %}
+    {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
+        
+    {% assign logo_width = settings.logo_width | default: 138 %}
+
+    {%- capture widths_param -%}
+      {{ logo_width }}, {{ logo_width }}, {{ logo_width }}, {{ logo_width }}
+    {%- endcapture -%}
+
+    {% render 'image', 
+      image: settings.brand_logo, 
+      widths: widths_param,
+      src_width: logo_width,
+      sizes: sizes,
+      class: 'img-fit',
+      quality: 1 
+    %}
+  {%- else -%}
+    <span class="header__logo-name">{{ settings.logo_text }}</span>
+  {%- endif -%}
+</a>

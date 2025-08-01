@@ -20,7 +20,7 @@
     z-index: 1000;
     background: rgb(var(--color-primary-brand));
   }
-  
+
   .mega-menu__container {
     padding: 20px 0;
   }
@@ -30,14 +30,20 @@
     margin: 0;
     padding: 0;
   }
-  
+
   .mega-menu__item {
     position: relative;
   }
-  
+
   .mega-menu__link {
     color: rgb(var(--color-background));
     text-decoration: none;
+  }
+
+  .mega-menu__link--undergarments {
+    background: {{ section.settings.undergarments_bg_color }};
+    padding: 4px 8px;
+    border-radius: 5px;
   }
 
   /* Mega Menu Dropdown - Base styles */
@@ -104,11 +110,11 @@
   }
 
   .mega-menu__column {
-    min-width: 198px;  
+    min-width: 198px;
   }
 
   .mega-menu__dropdown--1-column .mega-menu__column {
-    min-width: 100px;  
+    min-width: 100px;
   }
 
   .mega-menu__column:last-child {
@@ -305,7 +311,17 @@
     .mobile-mega-menu {
       display: none;
     }
+    .header__icon-link-title {
+      display: block;
+    }
   }
+
+  @media screen and  (max-width: 1280px) {
+    .header__icon-link-title {
+      display: none;
+    }
+  }
+
 
   @media screen and (min-width: 1024px) and (max-width: 1280px) {
     .mega-menu__dropdown {
@@ -323,7 +339,7 @@
     }
 
     .mega-menu__column {
-      min-width: 150px;  
+      min-width: 150px;
     }
 
     .mega-menu__dropdown--1-column {
@@ -383,38 +399,23 @@
             {% render 'menu-icon' %}
           </div>
           <div class="close-icon">
-            {% render "icon-close" %}
+            {% render 'icon-close' %}
           </div>
         </button>
-        <a href="{{ routes.root_url }}" class="header__logo-link--desktop">
-          {%- if settings.brand_logo != blank -%}
-            <img
-              src="{{ settings.brand_logo | image_url: width: settings.logo_width }}"
-              alt="{{ settings.logo_alt_text | default: shop.name | escape }}"
-              loading="lazy"
-              class="header__logo-img"
-              width="{{ settings.logo_width }}"
-              height="{{ settings.logo_height }}"
-            >
-          {%- else -%}
-            <span class="header__logo-name">{{ settings.logo_text }}</span>
-          {%- endif -%}
-        </a>
+        {% render "logo", padding_left: 138, padding_bottom: 40, logo_width: 138 %}
       </div>
 
       <div class="header__center header__item-container">
         <a href="{{ routes.root_url }}" class="header__logo-link--mobile">
           {%- if settings.brand_logo != blank -%}
-            {% render 'image',
-              image: section.settings.mega_menu_image,
-              width: 400,
-              alt_text: section.settings.mega_menu_image_alt,
-              title: 'Featured products',
-              css_classes: 'mega-menu__image',
-              loading: 'lazy',
-              width_attr: '400',
-              height_attr: '300' 
-            %}
+            <img
+              src="{{ settings.brand_logo | image_url: width: settings.logo_width }}"
+              alt="{{ settings.logo_alt_text  }}"
+              loading="lazy"
+              class="header__logo-img"
+              width="{{ settings.logo_width }}"
+              height="{{ settings.logo_height }}"
+            >
           {%- else -%}
             <span class="header__logo-name">{{ settings.logo_text }}</span>
           {%- endif -%}
@@ -438,13 +439,13 @@
       <div class="header__right header__item-container gap-24">
         <a href="{{ routes.account_url }}" class="header__icon-link gap-4">
           {% render 'accounts-icon' %}
-          <span class="header__icon-link-title ff-general-sans fs-14-lh-100pct-ls-0pct fw-600">
+          <span class="header__icon-link-title ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
             {{- 'sections.header.account' | t -}}
           </span>
         </a>
         <a href="{{ routes.cart_url }}" class="header__icon-link gap-4">
           {% render 'cart-icon' %}
-          <span class="header__icon-link-title ff-general-sans fs-14-lh-100pct-ls-0pct fw-600">
+          <span class="header__icon-link-title ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
             {{- 'sections.header.cart' | t -}}
           </span>
         </a>
@@ -482,7 +483,7 @@
                 <div class="mobile-mega-menu__category-header">
                   <h3 class="mobile-mega-menu__category-title fw-400 fs-21-lh-24-ls-1_2pct">{{ link.title }}</h3>
                   <div class="mobile-mega-menu__category-toggle">
-                    {% render "icon-arrow", cls: "icon-arrow" %}
+                    {% render 'icon-arrow', cls: 'icon-arrow' %}
                   </div>
                 </div>
                 {%- if link.links != blank -%}
@@ -491,12 +492,22 @@
                       {%- if child_link.links != blank -%}
                         {%- for grandchild_link in child_link.links -%}
                           <li class="mobile-mega-menu__subcategory-item">
-                            <a href="{{ grandchild_link.url }}" class="mobile-mega-menu__subcategory-link fw-500 fs-14-lh-20-ls-0_1">{{ grandchild_link.title }}</a>
+                            <a
+                              href="{{ grandchild_link.url }}"
+                              class="mobile-mega-menu__subcategory-link fw-500 fs-14-lh-20-ls-0_1"
+                            >
+                              {{- grandchild_link.title -}}
+                            </a>
                           </li>
                         {%- endfor -%}
                       {%- else -%}
                         <li class="mobile-mega-menu__subcategory-item">
-                          <a href="{{ child_link.url }}" class="mobile-mega-menu__subcategory-link fw-500 fs-14-lh-20-ls-0_1">{{ child_link.title }}</a>
+                          <a
+                            href="{{ child_link.url }}"
+                            class="mobile-mega-menu__subcategory-link fw-500 fs-14-lh-20-ls-0_1"
+                          >
+                            {{- child_link.title -}}
+                          </a>
                         </li>
                       {%- endif -%}
                     {%- endfor -%}
@@ -519,7 +530,7 @@
                 css_classes: 'mega-menu__image',
                 loading: 'lazy',
                 width_attr: '400',
-                height_attr: '300' 
+                height_attr: '300'
               %}
             </div>
           </div>
@@ -537,10 +548,11 @@
         {%- if section.settings.main_menu != blank -%}
           {%- for link in linklists[section.settings.main_menu].links -%}
             <li class="mega-menu__item">
-              <a href="{{ link.url }}" class="mega-menu__link fw-600 fs-14-lh-100pct-ls-2pct uppercase">
+              {% assign undergarments_link = link.title | downcase %}
+              <a href="{{ link.url }}" class="mega-menu__link fw-600 fs-14-lh-100pct-ls-2pct uppercase {% if undergarments_link contains "undergarments" %}mega-menu__link--undergarments{% endif %}">
                 {{ link.title }}
               </a>
-              
+
               {%- if link.links != blank -%}
                 {%- comment -%} Count columns for dynamic layout {%- endcomment -%}
                 {%- assign column_count = 0 -%}
@@ -552,12 +564,12 @@
                     {%- assign has_2level_items = true -%}
                   {%- endif -%}
                 {%- endfor -%}
-                
+
                 {%- comment -%} If we have 2-level items, they count as one column {%- endcomment -%}
                 {%- if has_2level_items -%}
                   {%- assign column_count = column_count | plus: 1 -%}
                 {%- endif -%}
-                
+
                 {%- comment -%} Determine if we should show image (2+ columns) {%- endcomment -%}
                 {%- assign show_image = false -%}
                 {%- if column_count >= 2 -%}
@@ -575,7 +587,7 @@
                 {%- else -%}
                   {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--4-plus-columns' -%}
                 {%- endif -%}
-                
+
                 <div class="{{ dropdown_class }} box-shadow">
                   <div class="mega-menu__dropdown-inner">
                     <div class="mega-menu__columns-wrapper">
@@ -584,11 +596,18 @@
                         {%- if child_link.links != blank -%}
                           <!-- 3-level menu: child has grandchildren -->
                           <div class="mega-menu__column flex flex-col gap-16">
-                            <h3 class="mega-menu__column-title uppercase fs-21-lh-24-ls-1_2pct fw-400">{{ child_link.title }}</h3>
+                            <h3 class="mega-menu__column-title uppercase fs-21-lh-24-ls-1_2pct fw-400">
+                              {{ child_link.title }}
+                            </h3>
                             <ul class="mega-menu__column-list flex flex-col gap-16">
                               {%- for grandchild_link in child_link.links -%}
                                 <li class="mega-menu__column-item">
-                                  <a href="{{ grandchild_link.url }}" class="mega-menu__column-link fs-14-lh-20-ls-0_1 fw-500">{{ grandchild_link.title }}</a>
+                                  <a
+                                    href="{{ grandchild_link.url }}"
+                                    class="mega-menu__column-link fs-14-lh-20-ls-0_1 fw-500"
+                                  >
+                                    {{- grandchild_link.title -}}
+                                  </a>
                                 </li>
                               {%- endfor -%}
                             </ul>
@@ -598,21 +617,23 @@
                           {%- unless column_rendered -%}
                             <div class="mega-menu__column flex flex-col gap-16">
                               <ul class="mega-menu__column-list flex flex-col gap-16">
-                            {%- assign column_rendered = true -%}
+                                {%- assign column_rendered = true -%}
                           {%- endunless -%}
-                                <li class="mega-menu__column-item">
-                                  <a href="{{ child_link.url }}" class="mega-menu__column-link fs-14-lh-20-ls-0_1 fw-500">{{ child_link.title }}</a>
-                                </li>
+                          <li class="mega-menu__column-item">
+                            <a href="{{ child_link.url }}" class="mega-menu__column-link fs-14-lh-20-ls-0_1 fw-500">
+                              {{- child_link.title -}}
+                            </a>
+                          </li>
                         {%- endif -%}
                       {%- endfor -%}
-                      
+
                       {%- comment -%} Close the column if we had 2-level items {%- endcomment -%}
                       {%- if has_2level_items -%}
-                              </ul>
-                            </div>
+                        </ul>
+                        </div>
                       {%- endif -%}
                     </div>
-                    
+
                     <!-- Image Column - Only show when column count >= 2 -->
                     {%- if section.settings.mega_menu_image != blank and show_image -%}
                       <div class="mega-menu__image-column flex flex-start">
@@ -623,7 +644,7 @@
                           class="mega-menu__image"
                           width="400"
                           height="300"
-                        />
+                        >
                       </div>
                     {%- endif -%}
                   </div>
@@ -638,102 +659,105 @@
 </nav>
 
 <script>
-// CollapsibleContent Web Component
-class CollapsibleContent extends HTMLElement {
-  constructor() {
-    super();
-    this.isExpanded = false;
-  }
-
-  connectedCallback() {
-    this.setupEventListeners();
-  }
-
-  setupEventListeners() {
-    const header = this.querySelector('.mobile-mega-menu__category-header');
-    if (header) {
-      header.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.toggle();
-      });
+  // CollapsibleContent Web Component
+  class CollapsibleContent extends HTMLElement {
+    constructor() {
+      super();
+      this.isExpanded = false;
     }
-  }
 
-  toggle() {
-    // Close all other collapsible content elements first (accordion behavior)
-    const allCollapsibles = document.querySelectorAll('collapsible-content');
-    allCollapsibles.forEach(collapsible => {
-      if (collapsible !== this && collapsible.isExpanded) {
-        collapsible.collapse();
+    connectedCallback() {
+      this.setupEventListeners();
+    }
+
+    setupEventListeners() {
+      const header = this.querySelector('.mobile-mega-menu__category-header');
+      if (header) {
+        header.addEventListener('click', (e) => {
+          e.preventDefault();
+          this.toggle();
+        });
       }
-    });
+    }
 
-    // Toggle this one
-    this.isExpanded = !this.isExpanded;
-    
-    if (this.isExpanded) {
+    toggle() {
+      // Close all other collapsible content elements first (accordion behavior)
+      const allCollapsibles = document.querySelectorAll('collapsible-content');
+      allCollapsibles.forEach((collapsible) => {
+        if (collapsible !== this && collapsible.isExpanded) {
+          collapsible.collapse();
+        }
+      });
+
+      // Toggle this one
+      this.isExpanded = !this.isExpanded;
+
+      if (this.isExpanded) {
+        this.classList.add('expanded');
+      } else {
+        this.classList.remove('expanded');
+      }
+    }
+
+    expand() {
+      this.isExpanded = true;
       this.classList.add('expanded');
-    } else {
+    }
+
+    collapse() {
+      this.isExpanded = false;
       this.classList.remove('expanded');
     }
   }
 
-  expand() {
-    this.isExpanded = true;
-    this.classList.add('expanded');
+  // Register the web component
+  customElements.define('collapsible-content', CollapsibleContent);
+
+  function toggleMobileMenu() {
+    const mobileMenu = document.getElementById('mobileMegaMenu');
+    const menuButton = document.getElementById('menuIcon');
+
+    mobileMenu.classList.toggle('active');
+    menuButton.classList.toggle('active');
+
+    // Prevent body scroll when menu is open
+    if (mobileMenu.classList.contains('active')) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+
+      // Collapse all categories when menu closes
+      const collapsibleElements = document.querySelectorAll('collapsible-content');
+      collapsibleElements.forEach((el) => el.collapse());
+    }
   }
 
-  collapse() {
-    this.isExpanded = false;
-    this.classList.remove('expanded');
-  }
-}
+  // Close menu when clicking outside or on links
+  document.addEventListener('click', function (event) {
+    const mobileMenu = document.getElementById('mobileMegaMenu');
+    const menuToggle = document.querySelector('.header__menu-toggle');
 
-// Register the web component
-customElements.define('collapsible-content', CollapsibleContent);
+    if (
+      mobileMenu &&
+      mobileMenu.classList.contains('active') &&
+      !mobileMenu.contains(event.target) &&
+      !menuToggle.contains(event.target)
+    ) {
+      toggleMobileMenu();
+    }
+  });
 
-function toggleMobileMenu() {
-  const mobileMenu = document.getElementById('mobileMegaMenu');
-  const menuButton = document.getElementById('menuIcon');
-  
-  mobileMenu.classList.toggle('active');
-  menuButton.classList.toggle('active');
-  
-  // Prevent body scroll when menu is open
-  if (mobileMenu.classList.contains('active')) {
-    document.body.style.overflow = 'hidden';
-  } else {
-    document.body.style.overflow = '';
-    
-    // Collapse all categories when menu closes
-    const collapsibleElements = document.querySelectorAll('collapsible-content');
-    collapsibleElements.forEach(el => el.collapse());
-  }
-}
-
-// Close menu when clicking outside or on links
-document.addEventListener('click', function(event) {
-  const mobileMenu = document.getElementById('mobileMegaMenu');
-  const menuToggle = document.querySelector('.header__menu-toggle');
-  
-  if (mobileMenu && mobileMenu.classList.contains('active') && 
-      !mobileMenu.contains(event.target) && 
-      !menuToggle.contains(event.target)) {
-    toggleMobileMenu();
-  }
-});
-
-// Close menu when clicking on menu links
-document.addEventListener('DOMContentLoaded', function() {
-  // Wait a bit for the custom elements to be defined
-  setTimeout(() => {
-    document.querySelectorAll('.mobile-mega-menu__subcategory-link').forEach(link => {
-      link.addEventListener('click', function() {
-        toggleMobileMenu();
+  // Close menu when clicking on menu links
+  document.addEventListener('DOMContentLoaded', function () {
+    // Wait a bit for the custom elements to be defined
+    setTimeout(() => {
+      document.querySelectorAll('.mobile-mega-menu__subcategory-link').forEach((link) => {
+        link.addEventListener('click', function () {
+          toggleMobileMenu();
+        });
       });
-    });
-  }, 100);
-});
+    }, 100);
+  });
 </script>
 
 {% schema %}
@@ -766,37 +790,7 @@ document.addEventListener('DOMContentLoaded', function() {
       "default": 16,
       "unit": "px"
     },
-    {
-      "type": "header",
-      "content": "Logo Settings"
-    },
-    {
-      "type": "image_picker",
-      "id": "brand_logo",
-      "label": "Brand Logo"
-    },
-    {
-      "type": "text",
-      "id": "logo_text",
-      "label": "Logo Text (if no image)",
-      "default": "Choice LEGACY"
-    },
-    {
-      "type": "text",
-      "id": "logo_alt_text",
-      "label": "Logo Alt Text",
-      "default": "Choice LEGACY Logo"
-    },
-    {
-      "type": "range",
-      "id": "logo_width",
-      "label": "Logo Width",
-      "min": 50,
-      "max": 250,
-      "step": 5,
-      "default": 150,
-      "unit": "px"
-    },
+
     {
       "type": "header",
       "content": "Mega Menu Settings"
@@ -818,6 +812,12 @@ document.addEventListener('DOMContentLoaded', function() {
       "id": "mega_menu_image_alt",
       "label": "Mega Menu Image Alt Text",
       "default": "Featured products"
+    },
+    {
+      "type": "color",
+      "id": "undergarments_bg_color",
+      "label": "Undergarments background color",
+      "default": "#030B1A"
     }
   ]
 }
