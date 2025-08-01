@@ -40,6 +40,12 @@
     text-decoration: none;
   }
 
+  .mega-menu__link--undergarments {
+    background: {{ section.settings.undergarments_bg_color }};
+    padding: 4px 8px;
+    border-radius: 5px;
+  }
+
   /* Mega Menu Dropdown - Base styles */
   .mega-menu__dropdown {
     position: absolute;
@@ -396,20 +402,7 @@
             {% render 'icon-close' %}
           </div>
         </button>
-        <a href="{{ routes.root_url }}" class="header__logo-link--desktop">
-          {%- if settings.brand_logo != blank -%}
-            <img
-              src="{{ settings.brand_logo | image_url: width: settings.logo_width }}"
-              alt="{{ settings.logo_alt_text  }}"
-              loading="lazy"
-              class="header__logo-img"
-              width="{{ settings.logo_width }}"
-              height="{{ settings.logo_height }}"
-            >
-          {%- else -%}
-            <span class="header__logo-name">{{ settings.logo_text }}</span>
-          {%- endif -%}
-        </a>
+        {% render "logo", padding_left: 138, padding_bottom: 40, logo_width: 138 %}
       </div>
 
       <div class="header__center header__item-container">
@@ -555,7 +548,8 @@
         {%- if section.settings.main_menu != blank -%}
           {%- for link in linklists[section.settings.main_menu].links -%}
             <li class="mega-menu__item">
-              <a href="{{ link.url }}" class="mega-menu__link fw-600 fs-14-lh-100pct-ls-2pct uppercase">
+              {% assign undergarments_link = link.title | downcase %}
+              <a href="{{ link.url }}" class="mega-menu__link fw-600 fs-14-lh-100pct-ls-2pct uppercase {% if undergarments_link contains "undergarments" %}mega-menu__link--undergarments{% endif %}">
                 {{ link.title }}
               </a>
 
@@ -818,6 +812,12 @@
       "id": "mega_menu_image_alt",
       "label": "Mega Menu Image Alt Text",
       "default": "Featured products"
+    },
+    {
+      "type": "color",
+      "id": "undergarments_bg_color",
+      "label": "Undergarments background color",
+      "default": "#030B1A"
     }
   ]
 }
