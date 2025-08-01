@@ -10,23 +10,23 @@
 
 
   .service__image {
-    width: {{ section.settings.image_size }}px;
-    height: {{ section.settings.image_size }}px;
+    width: 48px;
+    height: 48px;
   }
 </style>
 
 <section class="service service-{{ section.id }}">
-  <div class="service__container  page-width">
+  <div class="service__container  page-width gap-16">
     {% for block in section.blocks %}
-      <div class="service__item" {{ block.shopify_attributes }}>
+      <div class="service__item gap-16" {{ block.shopify_attributes }}>
         {% if block.settings.image %}
           <img
             src="{{ block.settings.image | image_url: width: section.settings.image_size }}"
             alt="{{ block.settings.image.alt | default: block.settings.heading }}"
             class="service__image"
             loading="lazy"
-            height="{{ section.settings.image_size }}px"
-            width="{{ section.settings.image_size }}px"
+            height="48"
+            width="48"
           >
         {% else %}
           <div class="service__image">
@@ -35,11 +35,15 @@
         {% endif %}
 
         {% if block.settings.heading != blank %}
-          <h3 class="service__heading">{{ block.settings.heading }}</h3>
+          <h3 class="service__heading ff-bebas-neue fs-26-lh-26-ls-1_2 fw-400 mobile-fs-15-lh-16-ls--1_2pct">
+            {{ block.settings.heading }}
+          </h3>
         {% endif %}
 
         {% if block.settings.subheading != blank %}
-          <p class="service__subheading">{{ block.settings.subheading }}</p>
+          <p class="service__subheading ff-inter fs-16-lh-24-ls-0 fw-400 mobile-fs-12-lh-16-ls-0_6pct">
+            {{ block.settings.subheading }}
+          </p>
         {% endif %}
       </div>
     {% endfor %}
@@ -73,20 +77,6 @@
       "max": 100,
       "step": 2,
       "default": 88,
-      "unit": "px"
-    },
-    {
-      "type": "header",
-      "content": "Image Settings"
-    },
-    {
-      "type": "range",
-      "id": "image_size",
-      "label": "Image size",
-      "min": 40,
-      "max": 100,
-      "step": 2,
-      "default": 48,
       "unit": "px"
     }
   ],

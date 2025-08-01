@@ -1,33 +1,20 @@
 .service__container {
   display: flex;
   justify-content: space-between;
-  gap: 16px;
 }
 
 .service__item {
   display: flex;
   flex-direction: column;
-  gap: 16px;
   flex: 1;
 }
 
 .service__heading {
-  font-size: 26px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 26px;
-  letter-spacing: 0.312px;
   color: rgb(var(--color-background));
 }
 
 .service__subheading {
   color: rgb(var(--color-background));
-  font-family: Inter;
-  font-size: 16px;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 24px; /* 150% */
-  letter-spacing: 0px;
 }
 @media screen and (max-width: 767px) {
   .service__container {
@@ -36,5 +23,10 @@
 
   .service__item {
     gap: 8px;
+  }
+
+  .service__image {
+    width: 32px;
+    height: 32px;
   }
 }
