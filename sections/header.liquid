@@ -421,18 +421,23 @@
           {%- endif -%}
         </a>
         <div class="header__search--desktop">
-          <form action="{{ routes.search_url }}" method="get" class="header__search-form" role="search">
-            <input
-              type="search"
-              name="q"
-              class="header__search-input ff-general-sans fs-14-lh-20-ls-0_1 fw-500"
-              placeholder="{{ 'sections.header.search' | t }}"
-              aria-label="Search"
-            >
-            <button type="submit" class="header__search-button" aria-label="Submit search">
-              {% render 'search-icon' %}
-            </button>
-          </form>
+          <predictive-search
+            id="predictive-search"
+            class="predictive-search"
+          >
+            <form action="{{ routes.search_url }}" method="get" class="header__search-form" role="search">
+              <input
+                type="search"
+                name="q"
+                class="header__search-input ff-general-sans fs-14-lh-20-ls-0_1 fw-500"
+                placeholder="{{ 'sections.header.search' | t }}"
+                aria-label="Search"
+              >
+              <button type="submit" class="header__search-button" aria-label="Submit search">
+                {% render 'search-icon' %}
+              </button>
+            </form>
+          </predictive-search>
         </div>
       </div>
 
@@ -537,6 +542,7 @@
     </div>
   </div>
 </header>
+<div class="predictive-search-results"></div>
 
 <!-- Desktop Mega Menu Navigation -->
 <nav class="mega-menu">
@@ -777,6 +783,7 @@ function setHeaderHeight() {
 document.addEventListener('DOMContentLoaded', setHeaderHeight);
 window.addEventListener('resize', setHeaderHeight);
 </script>
+<script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
 
 {% schema %}
 {
