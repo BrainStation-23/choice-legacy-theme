@@ -63,7 +63,6 @@
       {% for article in section.settings.blog.articles limit: section.settings.blog_post_limit %}
         <div class="blog-card gap-16">
           <div class="blog-card__image__container">
-            {% comment %} <div class="blog-card__image"> {% endcomment %}
             {% if article.image %}
               {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
               <div
@@ -82,7 +81,6 @@
             {% else %}
               {{ 'image' | placeholder_svg_tag: 'blog-card__image' }}
             {% endif %}
-            {% comment %} </div> {% endcomment %}
           </div>
           <div class="blog-card__content gap-8">
             <h3 class="blog-card__title ff-general-sans fs-23-lh-24-ls-0 fw-500 mobile-fs-17-lh-24-ls-0 ">
@@ -112,16 +110,22 @@
           <div class="swiper-wrapper">
             {% for article in section.settings.blog.articles limit: section.settings.blog_post_limit %}
               <div class="swiper-slide blog-card gap-16">
-                <div class="blog-card__image">
+                <div class="blog-card__image__container">
                   {% if article.image %}
-                    <img
-                      src="{{ article.image | image_url: width: 533 }}"
-                      alt="{{ article.title | escape }}"
-                      loading="lazy"
-                      width="533"
-                      height="154px"
-                      class="blog-card__image"
+                    {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
+                    <div
+                      class="media w-full"
+                      style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;"
                     >
+                      {% render 'image',
+                        image: article.image,
+                        widths: '304, 304, 304, 304',
+                        src_width: 304,
+                        sizes: sizes,
+                        class: 'img-fit',
+                        quality: 1
+                      %}
+                    </div>
                   {% else %}
                     {{ 'image' | placeholder_svg_tag: 'blog-card__image' }}
                   {% endif %}
