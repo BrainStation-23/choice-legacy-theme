@@ -150,12 +150,18 @@
             {% endif %}
           </div>
         {% endfor %}
-      </div>   
+      </div>
+
+      {% if section.settings.show_navigation_buttons %}
+        {% render "dot-buttons", items: section.blocks %}
+      {%  endif %}
     </div>
 
     <!-- Navigation arrows -->
-    {% render "nav-button", cls: "slideshow-nav-button-prev", icon_cls: "icon-arrow-left" %}
-    {% render "nav-button", cls: "slideshow-nav-button-next" %}
+    {% if section.settings.show_navigation_buttons %}
+      {% render "nav-button", cls: "slideshow-nav-button-prev", icon_cls: "icon-arrow-left" %}
+      {% render "nav-button", cls: "slideshow-nav-button-next" %}
+    {% endif %}
   </div>
 </slideshow-component>
 
@@ -217,6 +223,12 @@
     {
       "type": "header",
       "content": "Navigation Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_navigation_buttons",
+      "label": "Show navigation buttons",
+      "default": false
     },
     {
       "type": "select",
