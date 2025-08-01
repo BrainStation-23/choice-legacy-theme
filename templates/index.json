@@ -87,16 +87,16 @@
             "collection": "skin-care"
           }
         },
-        "collection_item_BJ46j7": {
-          "type": "collection_item",
-          "settings": {
-            "collection": "k-beauty"
-          }
-        },
         "collection_item_LFkJNf": {
           "type": "collection_item",
           "settings": {
             "collection": "mekup"
+          }
+        },
+        "collection_item_BJ46j7": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "k-beauty"
           }
         },
         "collection_item_FXhj4Y": {
@@ -108,14 +108,14 @@
         "collection_item_b8Twrj": {
           "type": "collection_item",
           "settings": {
-            "collection": "eye-makeup"
+            "collection": "hairi-care"
           }
         }
       },
       "block_order": [
         "collection_item_iFEQpC",
-        "collection_item_BJ46j7",
         "collection_item_LFkJNf",
+        "collection_item_BJ46j7",
         "collection_item_FXhj4Y",
         "collection_item_b8Twrj"
       ],
