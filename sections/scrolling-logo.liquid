@@ -40,18 +40,16 @@
         {% for block in section.blocks %}
           <div class="scrolling-logo__item" id="block-{{ block.id }}" {{ block.shopify_attributes }}>
             {% if block.settings.image != blank %}
-              {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
+              {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 5 %}{% endcapture -%}
 
               {% if block.settings.link != blank %}
                 <a
                   href="{{ block.settings.link }}"
                   class="scrolling-logo__image  media block relative "
-                  style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;"
                 >
               {% else %}
                 <div
                   class="scrolling-logo__image media block relative "
-                  style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;"
                 >
               {% endif %}
               {% render 'image',
