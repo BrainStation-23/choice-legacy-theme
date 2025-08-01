@@ -40,6 +40,12 @@
     text-decoration: none;
   }
 
+  .mega-menu__link--undergarments {
+    background: {{ section.settings.undergarments_bg_color }};
+    padding: 4px 8px;
+    border-radius: 5px;
+  }
+
   /* Mega Menu Dropdown - Base styles */
   .mega-menu__dropdown {
     position: absolute;
@@ -555,7 +561,8 @@
         {%- if section.settings.main_menu != blank -%}
           {%- for link in linklists[section.settings.main_menu].links -%}
             <li class="mega-menu__item">
-              <a href="{{ link.url }}" class="mega-menu__link fw-600 fs-14-lh-100pct-ls-2pct uppercase">
+              {% assign undergarments_link = link.title | downcase %}
+              <a href="{{ link.url }}" class="mega-menu__link fw-600 fs-14-lh-100pct-ls-2pct uppercase {% if undergarments_link contains "undergarments" %}mega-menu__link--undergarments{% endif %}">
                 {{ link.title }}
               </a>
 
@@ -818,6 +825,12 @@
       "id": "mega_menu_image_alt",
       "label": "Mega Menu Image Alt Text",
       "default": "Featured products"
+    },
+    {
+      "type": "color",
+      "id": "undergarments_bg_color",
+      "label": "Undergarments background color",
+      "default": "#030B1A"
     }
   ]
 }
