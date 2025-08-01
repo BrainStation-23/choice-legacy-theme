@@ -14,7 +14,8 @@
     }
   }
   
-  .offer-banner-{{ section.id }} .swiper-slide {
+  .offer-banner-{{ section.id }} .swiper-slide,
+  .offer-banner-{{ section.id }} .static-slide {
     position: relative;
     transition: transform 0.3s ease;
     border-radius: {{ section.settings.slide_border_radius }}px;
@@ -22,7 +23,8 @@
   }
 
   @media screen and (min-width: 768px) {
-    .offer-banner-{{ section.id }} .swiper-slide {
+    .offer-banner-{{ section.id }} .swiper-slide,
+    .offer-banner-{{ section.id }} .static-slide {
       height: 225px;
     }
   }
@@ -38,9 +40,20 @@
   }
 
   @media (max-width: 768px) {
-    .offer-banner-{{ section.id }} .swiper-slide {
+    .offer-banner-{{ section.id }} .swiper-slide,
+    .offer-banner-{{ section.id }} .static-slide {
       border-radius: 0;
     }
+  }
+
+  /* Static banner styles when no navigation */
+  .offer-banner-{{ section.id }} .static-banner {
+    display: block;
+  }
+
+  .offer-banner-{{ section.id }} .static-slide {
+    width: 100%;
+    display: block;
   }
 
   /* Desktop Navigation Controls */
@@ -84,33 +97,84 @@
   }
 </style>
 
-<slideshow-component
-  class="offer-banner offer-banner-{{ section.id }}"
-  data-autoplay="{{ section.settings.enable_autoplay }}"
-  data-autoplay-delay="{{ section.settings.autoplay_delay | times: 1000 }}"
-  data-pause-on-hover="{{ section.settings.pause_on_hover }}"
-  data-single-slide-view="true"
->
-  <div class="slideshow-container">
-    <div class="swiper-container">
-      <div class="swiper-wrapper">
-        {% for block in section.blocks %}
-          <div class="swiper-slide {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
-               {{ block.shopify_attributes }}
-               data-block-id="{{ block.id }}"
-               data-block-type="{{ block.type }}">
-            
-            {% comment %} Desktop Image {% endcomment %}
+{% comment %} Check if both desktop and mobile navigation are set to 'none' {% endcomment %}
+{% liquid
+  assign both_nav_none = false
+  if section.settings.desktop_nav == 'none' and section.settings.mobile_nav == 'none'
+    assign both_nav_none = true
+  endif
+%}
+
+{% if both_nav_none %}
+  {% comment %} Render as static banner when both navigations are 'none' {% endcomment %}
+  <div class="offer-banner offer-banner-{{ section.id }}">
+    <div class="static-banner">
+      {% for block in section.blocks limit: 1 %}
+        <div class="static-slide {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
+             {{ block.shopify_attributes }}
+             data-block-id="{{ block.id }}"
+             data-block-type="{{ block.type }}">
+          
+          {% comment %} Desktop Image {% endcomment %}
+          {% if block.settings.image != blank %}
+            {% if block.settings.link != blank %}
+              <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
+            {% endif %}
+            {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
+            {%- liquid
+              assign img = block.settings.image
+              assign m_img = block.settings.mobile_image
+            -%}
+            {%- render 'image-desktop-and-mobile',
+              class: 'img-fit',
+              desktop_image: img,
+              mobile_image: m_img,
+              src_width_mobile: 980,
+              widths_mobile: '480, 980, 1200, 1400',
+              src_width_desktop: 1440,
+              widths_desktop: '480, 980, 1200, 1440, 1600, 1920, 2560, 3200',
+              lazy_load: true,
+              fetchpriority: "high",
+              sizes: sizes,
+              block: block
+            -%}
+            {% if block.settings.link != blank %}</a>{% endif %}
+          {% else %}
+            {{ "lifestyle-1" | placeholder_svg_tag: "placeholder-svg slide-image-desktop" }}
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% else %}
+  {% comment %} Render as slideshow component when navigation is enabled {% endcomment %}
+  <slideshow-component
+    class="offer-banner offer-banner-{{ section.id }}"
+    data-autoplay="{{ section.settings.enable_autoplay }}"
+    data-autoplay-delay="{{ section.settings.autoplay_delay | times: 1000 }}"
+    data-pause-on-hover="{{ section.settings.pause_on_hover }}"
+    data-single-slide-view="true"
+  >
+    <div class="slideshow-container">
+      <div class="swiper-container">
+        <div class="swiper-wrapper">
+          {% for block in section.blocks %}
+            <div class="swiper-slide {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
+                 {{ block.shopify_attributes }}
+                 data-block-id="{{ block.id }}"
+                 data-block-type="{{ block.type }}">
+              
+              {% comment %} Desktop Image {% endcomment %}
               {% if block.settings.image != blank %}
                 {% if block.settings.link != blank %}
                   <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
                 {% endif %}
                 {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
-                 {%- liquid
-                    assign img = block.settings.image
-                    assign m_img = block.settings.mobile_image
-                  -%}
-                 {%- render 'image-desktop-and-mobile',
+                {%- liquid
+                  assign img = block.settings.image
+                  assign m_img = block.settings.mobile_image
+                -%}
+                {%- render 'image-desktop-and-mobile',
                   class: 'img-fit',
                   desktop_image: img,
                   mobile_image: m_img,
@@ -125,52 +189,53 @@
                 -%}
                 {% if block.settings.link != blank %}</a>{% endif %}
               {% else %}
-              {% assign image_number = forloop.index0 | modulo: 2 | plus: 1 %}
-              {{ "lifestyle-" | append: image_number | placeholder_svg_tag: "placeholder-svg slide-image-desktop" }}
+                {% assign image_number = forloop.index0 | modulo: 2 | plus: 1 %}
+                {{ "lifestyle-" | append: image_number | placeholder_svg_tag: "placeholder-svg slide-image-desktop" }}
               {% endif %}
-          </div>
-        {% endfor %}
+            </div>
+          {% endfor %}
+        </div>
+
+        {% comment %} Render dots only when needed {% endcomment %}
+        {% liquid
+          assign show_dots_desktop = false
+          assign show_dots_mobile = false
+          
+          if section.settings.desktop_nav == 'dots' or section.settings.desktop_nav == 'both'
+            assign show_dots_desktop = true
+          endif
+          
+          if section.settings.mobile_nav == 'dots' or section.settings.mobile_nav == 'both'
+            assign show_dots_mobile = true
+          endif
+        %}
+        
+        {% if show_dots_desktop or show_dots_mobile %}
+          {% render "dot-buttons", items: section.blocks %}
+        {% endif %}
       </div>
 
-      {% comment %} Render dots only when needed {% endcomment %}
+      <!-- Navigation arrows -->
       {% liquid
-        assign show_dots_desktop = false
-        assign show_dots_mobile = false
+        assign show_arrows_desktop = false
+        assign show_arrows_mobile = false
         
-        if section.settings.desktop_nav == 'dots' or section.settings.desktop_nav == 'both'
-          assign show_dots_desktop = true
+        if section.settings.desktop_nav == 'nav' or section.settings.desktop_nav == 'both'
+          assign show_arrows_desktop = true
         endif
         
-        if section.settings.mobile_nav == 'dots' or section.settings.mobile_nav == 'both'
-          assign show_dots_mobile = true
+        if section.settings.mobile_nav == 'nav' or section.settings.mobile_nav == 'both'
+          assign show_arrows_mobile = true
         endif
       %}
       
-      {% if show_dots_desktop or show_dots_mobile %}
-        {% render "dot-buttons", items: section.blocks %}
+      {% if show_arrows_desktop or show_arrows_mobile %}
+        {% render "nav-button", cls: "slideshow-nav-button-prev", icon_cls: "icon-arrow-left" %}
+        {% render "nav-button", cls: "slideshow-nav-button-next" %}
       {% endif %}
     </div>
-
-    <!-- Navigation arrows -->
-    {% liquid
-      assign show_arrows_desktop = false
-      assign show_arrows_mobile = false
-      
-      if section.settings.desktop_nav == 'nav' or section.settings.desktop_nav == 'both'
-        assign show_arrows_desktop = true
-      endif
-      
-      if section.settings.mobile_nav == 'nav' or section.settings.mobile_nav == 'both'
-        assign show_arrows_mobile = true
-      endif
-    %}
-    
-    {% if show_arrows_desktop or show_arrows_mobile %}
-      {% render "nav-button", cls: "slideshow-nav-button-prev", icon_cls: "icon-arrow-left" %}
-      {% render "nav-button", cls: "slideshow-nav-button-next" %}
-    {% endif %}
-  </div>
-</slideshow-component>
+  </slideshow-component>
+{% endif %}
 
 {% schema %}
 {
