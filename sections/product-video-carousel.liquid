@@ -40,7 +40,7 @@
       data-autoplay="{{ section.settings.autoplay }}"
       data-autoplay-delay="{{ section.settings.autoplay_delay | default: 5000 }}"
       data-pause-on-hover="{{ section.settings.pause_on_hover }}"
-      data-slides-per-view-desktop="{{ section.settings.slides_per_view | default: 4 }}"
+      data-slides-per-view-desktop="4"
       data-show-partial-slides="true"
       data-show-progress-bar="false"
       data-carousel-mode="true"
@@ -287,15 +287,6 @@ document.addEventListener('DOMContentLoaded', function() {
       "type": "image_picker",
       "id": "image",
       "label": "Card overlay image"
-    },
-    {
-      "type": "range",
-      "id": "slides_per_view",
-      "min": 2,
-      "max": 6,
-      "step": 1,
-      "default": 4,
-      "label": "Slides per view (desktop)"
     },
     {
       "type": "checkbox",
