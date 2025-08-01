@@ -65,11 +65,7 @@
           }
         }
       },
-      "block_order": [
-        "slide-1",
-        "slide-2",
-        "slide-3"
-      ],
+      "block_order": ["slide-1", "slide-2", "slide-3"],
       "settings": {
         "slide_border_radius": 6,
         "enable_autoplay": true,
@@ -313,9 +309,7 @@
           }
         }
       },
-      "block_order": [
-        "banner_YhRMrw"
-      ],
+      "block_order": ["banner_YhRMrw"],
       "name": "Combo Banner",
       "settings": {
         "slide_border_radius": 0,
@@ -359,12 +353,7 @@
           }
         }
       },
-      "block_order": [
-        "banner-1",
-        "banner-2",
-        "banner-3",
-        "banner-4"
-      ],
+      "block_order": ["banner-1", "banner-2", "banner-3", "banner-4"],
       "settings": {
         "padding_top": 88,
         "padding_bottom": 88
@@ -393,9 +382,7 @@
           }
         }
       },
-      "block_order": [
-        "block_multi_slide_3"
-      ],
+      "block_order": ["block_multi_slide_3"],
       "settings": {
         "show_navigation_buttons": false,
         "desktop_nav": "both",
@@ -498,9 +485,7 @@
           }
         }
       },
-      "block_order": [
-        "banner_Mifqyk"
-      ],
+      "block_order": ["banner_Mifqyk"],
       "name": "Offer Banner",
       "settings": {
         "show_navigation_buttons": true,
