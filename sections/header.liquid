@@ -402,20 +402,7 @@
             {% render 'icon-close' %}
           </div>
         </button>
-        <a href="{{ routes.root_url }}" class="header__logo-link--desktop">
-          {%- if settings.brand_logo != blank -%}
-            <img
-              src="{{ settings.brand_logo | image_url: width: settings.logo_width }}"
-              alt="{{ settings.logo_alt_text  }}"
-              loading="lazy"
-              class="header__logo-img"
-              width="{{ settings.logo_width }}"
-              height="{{ settings.logo_height }}"
-            >
-          {%- else -%}
-            <span class="header__logo-name">{{ settings.logo_text }}</span>
-          {%- endif -%}
-        </a>
+        {% render "logo", padding_left: 138, padding_bottom: 40, logo_width: 138 %}
       </div>
 
       <div class="header__center header__item-container">
