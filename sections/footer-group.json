@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "name": "Footer group",
   "type": "footer",
@@ -5,17 +14,45 @@
     "footer": {
       "type": "footer",
       "blocks": {
-        "link-list-1": { "type": "link_list", "settings": {} },
-        "link-list-2": { "type": "link_list", "settings": {} },
-        "link-list-3": { "type": "link_list", "settings": {} }
+        "link-list-1": {
+          "type": "link_list",
+          "settings": {
+            "menu": "about"
+          }
+        },
+        "link-list-2": {
+          "type": "link_list",
+          "settings": {
+            "menu": "help"
+          }
+        },
+        "link-list-3": {
+          "type": "link_list",
+          "settings": {
+            "menu": "customer-policy"
+          }
+        }
       },
-      "block_order": ["link-list-1", "link-list-2", "link-list-3"],
-      "settings": {}
+      "block_order": [
+        "link-list-1",
+        "link-list-2",
+        "link-list-3"
+      ],
+      "settings": {
+        "padding_top": 36,
+        "padding_bottom": 36
+      }
     },
     "copyright-content": {
       "type": "copyright-content",
-      "settings": {}
+      "settings": {
+        "padding_top": 32,
+        "padding_bottom": 32
+      }
     }
   },
-  "order": ["footer", "copyright-content"]
+  "order": [
+    "footer",
+    "copyright-content"
+  ]
 }
