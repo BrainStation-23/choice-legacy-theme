@@ -402,7 +402,7 @@
             {% render 'icon-close' %}
           </div>
         </button>
-        {% render "logo", padding_left: 138, padding_bottom: 40, logo_width: 138 %}
+        {% render 'logo', padding_left: 138, padding_bottom: 40, logo_width: 138 %}
       </div>
 
       <div class="header__center header__item-container">
@@ -521,15 +521,19 @@
         <!-- Promotional Section -->
         {%- if section.settings.mega_menu_image != blank -%}
           <div class="mobile-mega-menu__promo">
-            <div class="mobile-mega-menu__promo-image media block relative"  style="padding-top: 200px; padding-left: 293px;">
+            <div
+              class="mobile-mega-menu__promo-image media block relative"
+              style="padding-top: 200px; padding-left: 293px;"
+            >
               {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
-              {% render 'image', 
-                image: section.settings.mega_menu_image, 
+              {% render 'image',
+                image: section.settings.mega_menu_image,
                 widths: '293, 293, 293, 293',
                 src_width: 293,
                 sizes: sizes,
                 class: 'img-fit',
-                quality: 1, %}
+                quality: 1
+              %}
             </div>
           </div>
         {%- endif -%}
@@ -547,7 +551,10 @@
           {%- for link in linklists[section.settings.main_menu].links -%}
             <li class="mega-menu__item">
               {% assign undergarments_link = link.title | downcase %}
-              <a href="{{ link.url }}" class="mega-menu__link fw-600 fs-14-lh-100pct-ls-2pct uppercase {% if undergarments_link contains "undergarments" %}mega-menu__link--undergarments{% endif %}">
+              <a
+                href="{{ link.url }}"
+                class="mega-menu__link fw-600 fs-14-lh-100pct-ls-2pct uppercase {% if undergarments_link contains "undergarments" %}mega-menu__link--undergarments{% endif %}"
+              >
                 {{ link.title }}
               </a>
 
@@ -634,16 +641,20 @@
 
                     <!-- Image Column - Only show when column count >= 2 -->
                     {%- if section.settings.mega_menu_image != blank and show_image -%}
-                      <div class="mega-menu__image-column flex flex-start media relative block" style="padding-top: 200px; padding-left: 402px;">
+                      <div
+                        class="mega-menu__image-column flex flex-start media relative block"
+                        style="padding-top: 200px; padding-left: 402px;"
+                      >
                         {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
-                
-                        {% render 'image', 
-                          image: section.settings.mega_menu_image, 
+
+                        {% render 'image',
+                          image: section.settings.mega_menu_image,
                           widths: '400, 400, 400, 400',
                           src_width: 400,
                           sizes: sizes,
                           class: 'img-fit',
-                          quality: 1, %}
+                          quality: 1
+                        %}
                       </div>
                     {%- endif -%}
                   </div>
@@ -761,23 +772,23 @@
 
 <script>
   // Calculate and set header height
-function setHeaderHeight() {
-  const header = document.querySelector('.header');
-  if (header) {
-    const headerHeight = header.offsetHeight;
-    document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
-    
-    // Also update the mobile menu top position
-    const mobileMenu = document.getElementById('mobileMegaMenu');
-    if (mobileMenu) {
-      mobileMenu.style.top = `${headerHeight}px`;
+  function setHeaderHeight() {
+    const header = document.querySelector('.header');
+    if (header) {
+      const headerHeight = header.offsetHeight;
+      document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+
+      // Also update the mobile menu top position
+      const mobileMenu = document.getElementById('mobileMegaMenu');
+      if (mobileMenu) {
+        mobileMenu.style.top = `${headerHeight}px`;
+      }
     }
   }
-}
 
-// Call on load and resize
-document.addEventListener('DOMContentLoaded', setHeaderHeight);
-window.addEventListener('resize', setHeaderHeight);
+  // Call on load and resize
+  document.addEventListener('DOMContentLoaded', setHeaderHeight);
+  window.addEventListener('resize', setHeaderHeight);
 </script>
 
 {% schema %}

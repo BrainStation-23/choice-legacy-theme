@@ -21,6 +21,7 @@
             "video_loop": true,
             "video_controls": false,
             "image": "shopify://shop_images/3c26d49f72200316623e81b33c06da1f317da4e5.jpg",
+            "mobile_image": "shopify://shop_images/image_23_mobile_banner.png",
             "link": "",
             "link_target": false,
             "title": "",
@@ -74,8 +75,8 @@
         "enable_autoplay": true,
         "autoplay_delay": 4,
         "pause_on_hover": true,
-        "padding_top": 0,
-        "padding_bottom": 0
+        "padding_top": 12,
+        "padding_bottom": 12
       }
     },
     "collections_list_Xyrebi": {
@@ -306,15 +307,13 @@
           "type": "banner",
           "settings": {
             "image": "shopify://shop_images/2.1.jpg",
-            "mobile_image": "shopify://shop_images/Offer_banner_e9ee461f-3511-4beb-ac2f-7a075f29a790.png",
+            "mobile_image": "shopify://shop_images/Offer_banner_2_mobile.png",
             "link": "",
             "link_target": false
           }
         }
       },
-      "block_order": [
-        "banner_YhRMrw"
-      ],
+      "block_order": ["banner_YhRMrw"],
       "name": "Combo Banner",
       "settings": {
         "slide_border_radius": 0,
@@ -386,15 +385,13 @@
           "type": "banner",
           "settings": {
             "image": "shopify://shop_images/Silder-smaller_1.png",
-            "mobile_image": "shopify://shop_images/Silder-smaller_009add0b-9888-4e54-984c-1443ec2e3bb8.png",
+            "mobile_image": "shopify://shop_images/Silder-smaller_1_mobile_banner_small_b728d451-d45a-4eee-874d-bfd11d76ca3e.png",
             "link": "",
             "link_target": false
           }
         }
       },
-      "block_order": [
-        "block_multi_slide_3"
-      ],
+      "block_order": ["block_multi_slide_3"],
       "settings": {
         "show_navigation_buttons": false,
         "desktop_nav": "both",
