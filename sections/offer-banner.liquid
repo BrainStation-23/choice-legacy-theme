@@ -133,7 +133,7 @@
               {% endif %}
             
             {% comment %} Mobile Image {% endcomment %}
-            {% if block.settings.mobile_image != blank %}
+            {% comment %} {% if block.settings.mobile_image != blank %}
               {% if block.settings.link != blank %}
                 <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
               {% endif %}
@@ -147,7 +147,7 @@
               {% if block.settings.link != blank %}</a>{% endif %}
             {% else %}
               {{ "lifestyle-1" | placeholder_svg_tag: "placeholder-svg slide-image-mobile" }}
-            {% endif %}
+            {% endif %} {% endcomment %}
           </div>
         {% endfor %}
       </div>   
