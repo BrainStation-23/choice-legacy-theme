@@ -42,17 +42,24 @@
               </div>
               
               {%- comment -%} Mobile Image (fallback to desktop if mobile not set) {%- endcomment -%}
-              <div class="promotional-banner-mobile">
-                {%- if mobile_image != blank -%}
-                  {% render 'image', 
+              <div class="promotional-banner-mobile media w-full" style="padding-top: {{ 1 | divided_by: 1 | times: 100 }}%;">
+              {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}  
+              {%- if mobile_image != blank -%}
+                     {% render 'image', 
                      image: mobile_image, 
-                     width: 600, 
-                     css_classes: 'promotional-banner-img' %}
+                     widths: '600, 600, 600, 600',
+                     src_width: 600,
+                     sizes: sizes,
+                     class: 'img-fit',
+                     quality: 1, %}
                 {%- else -%}
-                  {% render 'image', 
-                     image: desktop_image, 
-                     width: 600, 
-                     css_classes: 'promotional-banner-img' %}
+                {% render 'image', 
+                  image: desktop_image, 
+                  widths: '600, 600, 600, 600',
+                  src_width: 600,
+                  sizes: sizes,
+                  class: 'img-fit',
+                  quality: 1, %}
                 {%- endif -%}
               </div>
             {%- else -%}
