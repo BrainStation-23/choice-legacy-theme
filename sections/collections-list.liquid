@@ -27,6 +27,9 @@
         padding-top: {{ section.settings.padding_top }}px;
         padding-bottom: {{ section.settings.padding_bottom }}px;
       }
+      .collections-list__item {
+        width: 116px !important;
+      }
 
        .collections-list__swiper-wrapper .swiper-container{
         gap:24px !important
@@ -81,25 +84,27 @@
       {% for block in section.blocks %}
         {% if block.settings.collection %}
           <div class="collections-list__item" {{ block.shopify_attributes }}>
-            <a href="{{ block.settings.collection.url }}" class="collections-list__link" >
-            <div class="media block relative" style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;">
-              {% if block.settings.collection.featured_image %}
-              {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 5 %}{% endcapture -%}
-                {% render 'image',
-                image: block.settings.collection.featured_image,
-                widths: '116, 234, 234, 234',
-                src_width: 234,
-                sizes: sizes,
-                class: 'img-fit',
-                quality: 1,
-              %}
-            {% else %}
-              <div class="collections-list__image">
-                {{ 'collection-1' | placeholder_svg_tag: 'collections-list__image' }}
+            <a href="{{ block.settings.collection.url }}" class="collections-list__link">
+              <div
+                class="collection-list-image media block relative"
+                style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;"
+              >
+                {% if block.settings.collection.featured_image %}
+                  {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 5 %}{% endcapture -%}
+                  {% render 'image',
+                    image: block.settings.collection.featured_image,
+                    widths: '116, 234, 234, 234',
+                    src_width: 234,
+                    sizes: sizes,
+                    class: 'img-fit',
+                    quality: 1
+                  %}
+                {% else %}
+                  <div class="collections-list__image">
+                    {{ 'collection-1' | placeholder_svg_tag: 'collections-list__image' }}
+                  </div>
+                {% endif %}
               </div>
-            {% endif %}
-            </div> 
-            
 
               <div class="collections-list__content">
                 <h3 class="collections-list__name ff-bebas-neue fw-400 fs-26-lh-26-ls-1_2 mobile-fs-15-lh-16-ls--1_2pct">
@@ -122,6 +127,9 @@
         data-show-progress-bar="true"
         data-slides-per-view-desktop="3"
         data-single-slide-view="true"
+        data-slide-width-mobile="116px"
+        data-slide-width-tablet="116px"
+        data-slide-width-desktop="116px"
       >
         <div class="swiper-container flex flex-col gap-24">
           <div class="swiper-wrapper">
@@ -130,18 +138,21 @@
                 <div class="swiper-slide collections-list__item" {{ block.shopify_attributes }}>
                   <a href="{{ block.settings.collection.url }}" class="collections-list__link">
                     {% if block.settings.collection.featured_image %}
-                      <div class="media block relative" style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;">
-                      {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 5 %}{% endcapture -%}
-                      
-                      {% render 'image',
-                        image: block.settings.collection.featured_image,
-                        alt_text: block.settings.collection.title,
-                        widths: '460, 700, 860, 1296',
-                        src_width: 116,
-                        sizes: sizes,
-                        class: 'img-fit',
-                        quality: 1,
-                      %}
+                      <div
+                        class="collection-list-image media block relative"
+                        style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;"
+                      >
+                        {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 5 %}{% endcapture -%}
+
+                        {% render 'image',
+                          image: block.settings.collection.featured_image,
+                          alt_text: block.settings.collection.title,
+                          widths: '116, 234, 234, 234',
+                          src_width: 116,
+                          sizes: sizes,
+                          class: 'img-fit',
+                          quality: 1
+                        %}
                       </div>
                     {% else %}
                       <div class="collections-list__image">
