@@ -13,12 +13,6 @@
     height: {{ section.settings.image_height }}px;
   } */
 
-  .scrolling-logo__image-container {
-    height: 56px;
-    position: relative;
-    width: 100%;
-  }
-
   .scrolling-logo-{{ section.id }} .scrolling-logo__items {
     display: flex;
     flex-shrink: 0;
@@ -38,49 +32,46 @@
   data-pausable="{{ section.settings.pausable }}"
 >
   <div class="scrolling-logo__items-container ">
-    {% assign img_height = section.settings.image_height | default: 60 %}
     {% assign img_width = section.settings.image_width | default: 60 %}
     {% assign repeat_times = 2 %}
     {% for i in (1..repeat_times) %}
       <div class="scrolling-logo__items scrolling-logo__items--normal gap-40" aria-hidden="true">
         {% for block in section.blocks %}
           <div class="scrolling-logo__item" id="block-{{ block.id }}" {{ block.shopify_attributes }}>
-            <div class="scrolling-logo__image-container">
-              {% if block.settings.image != blank %}
-                {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
+            {% if block.settings.image != blank %}
+              {%- capture sizes %}{% render 'sizes-attribute'%}{% endcapture -%}
 
-                {% if block.settings.link != blank %}
-                  <a
-                    href="{{ block.settings.link }}"
-                    class="scrolling-logo__image  media w-full "
-                  >
-                {% else %}
-                  <div
-                    class="scrolling-logo__image media w-full"
-                  >
-                {% endif %}
-                {% render 'image',
-                  image: block.settings.image,
-                  src_width: img_width,
-                  alt_text: block.settings.image.alt,
-                  class: 'img-fit',
-                  widths: '120, 120, 120, 120',
-                  sizes: sizes,
-                  quality: 1
-                %}
-
-                {% if block.settings.link != blank %}
-                  </a>
-                {% else %}
-                  </div>
-                {% endif %}
-                </div>
+              {% if block.settings.link != blank %}
+                <a
+                  href="{{ block.settings.link }}"
+                  class="scrolling-logo__image  media w-full "
+                >
               {% else %}
-                <div class="scrolling-logo__image flex-row">
-                  {{ 'collection-1' | placeholder_svg_tag: 'scrolling-logo-placeholder-image' }}
+                <div
+                  class="scrolling-logo__image media  w-full "
+                >
+              {% endif %}
+              {% render 'image',
+                image: block.settings.image,
+                src_width: img_width,
+                alt_text: block.settings.image.alt,
+                class: 'img-fit--contain',
+                widths: '120, 120, 120, 120',
+                sizes: sizes,
+                quality: 1
+              %}
+
+              {% if block.settings.link != blank %}
+                </a>
+              {% else %}
                 </div>
               {% endif %}
-            </div>
+
+            {% else %}
+              <div class="scrolling-logo__image flex-row">
+                {{ 'collection-1' | placeholder_svg_tag: 'scrolling-logo-placeholder-image' }}
+              </div>
+            {% endif %}
           </div>
         {% endfor %}
       </div>
