@@ -299,31 +299,25 @@
         "padding_bottom": 36
       }
     },
-    "offer_banner_section_1": {
-      "type": "offer-banner",
+    "combo_banner_bHzniW": {
+      "type": "combo-banner",
       "blocks": {
-        "block_one_slide": {
+        "banner_YhRMrw": {
           "type": "banner",
           "settings": {
-            "image": "shopify://shop_images/Offer_banner_1_2f40093e-8090-4439-898d-f0c6060031c9.png",
+            "image": "shopify://shop_images/2.1.jpg",
+            "mobile_image": "shopify://shop_images/Offer_banner_e9ee461f-3511-4beb-ac2f-7a075f29a790.png",
             "link": "",
             "link_target": false
           }
         }
       },
       "block_order": [
-        "block_one_slide"
+        "banner_YhRMrw"
       ],
+      "name": "Combo Banner",
       "settings": {
-        "banner_height_desktop": "400",
-        "banner_height_mobile": "164",
-        "show_navigation_buttons": false,
-        "desktop_nav": "both",
-        "mobile_nav": "dots",
-        "slide_border_radius": 6,
-        "enable_autoplay": false,
-        "autoplay_delay": 4,
-        "pause_on_hover": true,
+        "slide_border_radius": 0,
         "padding_top": 0,
         "padding_bottom": 0
       }
@@ -391,7 +385,7 @@
         "block_multi_slide_3": {
           "type": "banner",
           "settings": {
-            "image": "shopify://shop_images/Silder-smaller_5f2c32f4-2186-4469-b234-48c9cf3e22f5.png",
+            "image": "shopify://shop_images/Silder-smaller_1.png",
             "mobile_image": "shopify://shop_images/Silder-smaller_009add0b-9888-4e54-984c-1443ec2e3bb8.png",
             "link": "",
             "link_target": false
@@ -402,8 +396,6 @@
         "block_multi_slide_3"
       ],
       "settings": {
-        "banner_height_desktop": "225",
-        "banner_height_mobile": "164",
         "show_navigation_buttons": false,
         "desktop_nav": "both",
         "mobile_nav": "dots",
@@ -461,18 +453,30 @@
             "main_text": "Choice Legacy",
             "sub_text": "Skincare heroes this summer!"
           }
+        },
+        "product_video_cLAPNg": {
+          "type": "product_video",
+          "settings": {
+            "product": "axis-y-dark-spot-correcting-glow-serum-5ml",
+            "video_type": "youtube",
+            "youtube_url": "",
+            "video_url": "",
+            "main_text": "Choice Legacy",
+            "sub_text": "Skincare heroes this summer!"
+          }
         }
       },
       "block_order": [
         "product_video_1",
         "product_video_2",
         "product_video_3",
-        "product_video_4"
+        "product_video_4",
+        "product_video_cLAPNg"
       ],
       "settings": {
         "heading": "Watch & Shop",
         "card_border_radius": 8,
-        "slides_per_view": 4,
+        "image": "shopify://shop_images/d942d0b5eefcf34277e90a42c67e1deafe1c9d75.png",
         "autoplay": false,
         "autoplay_delay": 5000,
         "pause_on_hover": true,
@@ -498,11 +502,9 @@
       ],
       "name": "Offer Banner",
       "settings": {
-        "banner_height_desktop": "225",
-        "banner_height_mobile": "150",
-        "show_navigation_buttons": false,
-        "desktop_nav": "both",
-        "mobile_nav": "dots",
+        "show_navigation_buttons": true,
+        "desktop_nav": "nav",
+        "mobile_nav": "nav",
         "slide_border_radius": 0,
         "enable_autoplay": false,
         "autoplay_delay": 5,
@@ -579,7 +581,7 @@
     "collections_list_Xyrebi",
     "scrolling_logo_bEiWUD",
     "recommended-products",
-    "offer_banner_section_1",
+    "combo_banner_bHzniW",
     "promotional-banner",
     "product_review_BbnWnJ",
     "offer_banner_section_2",
