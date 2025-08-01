@@ -12,18 +12,17 @@
   flex-direction: column;
 }
 
-.blog-card__image {
+.blog-card__image__container {
+  height: 154px;
+  position: relative;
   width: 100%;
-  /* height: 154px; */
-  overflow: hidden;
 }
 
-.blog-card__image img {
+/* .blog-card__image {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  display: block;
-}
+  overflow: hidden;
+} */
 
 .blog-card__title {
   margin: 0 !important;
@@ -32,11 +31,6 @@
 .blog-card__excerpt {
   color: rgba(var(--color-primary-label), 0.7);
   margin: 0 !important;
-}
-
-.blog-card__image {
-  /* height: 154px; */
-  width: 100%;
 }
 
 .blog-card__content {
