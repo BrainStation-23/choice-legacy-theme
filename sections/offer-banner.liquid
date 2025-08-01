@@ -20,12 +20,12 @@
     position: relative;
     transition: transform 0.3s ease;
     border-radius: {{ section.settings.slide_border_radius }}px;
-    height: {{ section.settings.banner_height_mobile }}px;
+    height: 164px;
   }
 
   @media screen and (min-width: 768px) {
     .offer-banner-{{ section.id }} .swiper-slide {
-      height: {{ section.settings.banner_height_desktop }}px;
+      height: 225px;
     }
   }
 
@@ -107,11 +107,10 @@
                 {% if block.settings.link != blank %}
                   <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
                 {% endif %}
-                {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 5 %}{% endcapture -%}
-                {%- liquid
+                {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
+                 {%- liquid
                     assign img = block.settings.image
                     assign m_img = block.settings.mobile_image
-
                   -%}
                  {%- render 'image-desktop-and-mobile',
                   class: 'img-fit',
@@ -176,52 +175,6 @@
   "settings": [
     {
       "type": "header",
-      "content": "Banner Height Settings"
-    },
-    {
-      "type": "select",
-      "id": "banner_height_desktop",
-      "label": "Desktop banner height",
-      "default": "508",
-      "info": "Height of banner on desktop devices",
-      "options": [
-        {
-          "value": "225",
-          "label": "Small (225px)"
-        },
-        {
-          "value": "400",
-          "label": "Medium (400px)"
-        },
-        {
-          "value": "508",
-          "label": "Large (508px)"
-        }
-      ]
-    },
-    {
-      "type": "select",
-      "id": "banner_height_mobile",
-      "label": "Mobile banner height",
-      "default": "164",
-      "info": "Height of banner on mobile devices",
-      "options": [
-        {
-          "value": "150",
-          "label": "Small (150px)"
-        },
-        {
-          "value": "164",
-          "label": "Medium (164px)"
-        },
-        {
-          "value": "180",
-          "label": "Large (180px)"
-        }
-      ]
-    },
-    {
-      "type": "header",
       "content": "Navigation Settings"
     },
     {
@@ -234,7 +187,7 @@
       "type": "select",
       "id": "desktop_nav",
       "label": "Desktop navigation",
-      "default": "both",
+      "default": "nav",
       "info": "Choose navigation style for desktop devices",
       "options": [
         {
@@ -259,7 +212,7 @@
       "type": "select",
       "id": "mobile_nav",
       "label": "Mobile navigation",
-      "default": "dots",
+      "default": "nav",
       "info": "Choose navigation style for mobile devices",
       "options": [
         {
