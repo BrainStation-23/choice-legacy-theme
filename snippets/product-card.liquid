@@ -20,10 +20,6 @@
     position: relative;
   }
 
-  .product-card:hover {
-    transform: translateY(-2px);
-  }
-
   .product-card__price {
     color: rgb(var(--color-primary-brand));
   }
@@ -45,10 +41,6 @@
     position: relative;
     z-index: 2;
     min-height: 24px;
-  }
-
-  .product-card__type:hover {
-    background: rgba(var(--color-secondary-brand), 0.8);
   }
 
   .product-card__image-container {
@@ -198,7 +190,7 @@
 
   <div class="product-card__content flex flex-col gap-4">
     {% if product and product != empty %}
-      {% if show_type and product.type %}
+      {% if show_type and product.type != blank %}
         {% assign collection_handle = product.type | handleize %}
         {% assign collection_url = routes.collections_url | append: '/' | append: collection_handle %}
         <a href="{{ collection_url }}" class="product-card__type-link flex items-center" onclick="event.stopPropagation();">
