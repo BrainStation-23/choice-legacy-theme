@@ -1,0 +1,106 @@
+<style>
+  .form-input-field {
+    position: relative;
+  }
+
+  .form-input-field .form-input {
+    width: 100%;
+    padding: 16px 12px 12px;
+    font-size: 14px;
+    border: 1px solid rgba(var(--color-primary-text), 0.2);
+    border-radius: 12px;
+    transition: all 0.2s ease;
+  }
+
+  .form-input-field .form-label {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: rgba(var(--color-primary-text), 0.5);
+    pointer-events: none;
+    transition: 0.2s ease all;
+  }
+
+  /* Float the label when input is focused or has content */
+  .form-input-field .form-input:focus + .form-label,
+  .form-input-field .form-input:not(:placeholder-shown) + .form-label {
+    top: 1px;
+    left: 8px;
+    font-size: 12px;
+    transform: translateY(0);
+    padding: 0 4px;
+  }
+  .form-input:focus {
+    outline: none;
+    border-color: rgba(var(--color-primary-text), 0.2);
+  }
+
+  /* Password toggle buttons */
+  .password-toggle-eye-open,
+  .password-toggle-eye-close {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    height: 28px;
+    width: 28px;
+    padding: 0px !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* color: rgba(var(--color-primary-text), 0.2); */
+  }
+
+  .password-toggle-eye-open svg,
+  .password-toggle-eye-close svg {
+    stroke: rgba(var(--color-primary-text), 0.7);
+  }
+
+  .password-toggle-eye-close {
+    display: none;
+  }
+
+  /* Adjust padding for password inputs */
+  .form-input-field input[type='password'],
+  .form-input-field input[data-password-field='true'] {
+    padding-right: 40px;
+  }
+</style>
+
+<div class="form-input-field {{ class }}">
+  <input
+    type="{{ type | default: 'text' }}"
+    id="{{ id }}"
+    name="{{ name }}"
+    value="{{ value }}"
+    placeholder=" "
+    class="form-input fs-14-lh-20-ls-0_1 ff-general-sans fw-500"
+    autocomplete="{{ autocomplete }}"
+    {% if type == 'password' %}
+      data-password-field="true"
+    {% endif %}
+    {% if required %}
+      required aria-required="true"
+    {% endif %}
+    {% if invalid %}
+      aria-invalid="true"
+    {% endif %}
+    {% if extra_attributes %}
+      {{ extra_attributes }}
+    {% endif %}
+  >
+  <label class="form-label fs-14-lh-20-ls-0_1 ff-general-sans fw-600" for="{{ id }}">{{ label }}</label>
+
+  {% if type == 'password' %}
+    <button type="button" class="password-toggle-eye-open toggle-password" data-target="{{ id }}">
+      {% render 'open-eye' %}
+    </button>
+    <button type="button" class="password-toggle-eye-close toggle-password" data-target="{{ id }}">
+      {% render 'close-eye' %}
+    </button>
+  {% endif %}
+</div>
