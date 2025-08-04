@@ -47,8 +47,9 @@
       data-slide-width-mobile="268px"
       data-slide-width-tablet="268px"
       data-slide-width-desktop="268px"
+      style="overflow: hidden !important"
     >
-      <div class="swiper-container">
+      <div class="swiper-container" style="overflow: hidden !important;">
         <div class="swiper-wrapper flex gap-16">
           {% for block in section.blocks %}
             {% if block.settings.product != blank %}
