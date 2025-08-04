@@ -135,7 +135,8 @@
 
                   <div class="product-video-item__product-info">
                     {% if product.featured_image %}
-                      <div class="media block relative" style="padding-left: 56px; padding-bottom: 56px;">
+                     <div class="relative" style="width: 56px; height: 56px;">
+                       <div class="media block" style="padding-top: 100%;">
                         {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
                         {% render 'image', 
                           image: product.featured_image, 
@@ -145,6 +146,7 @@
                           class: 'img-fit',
                           quality: 1, %}
                       </div>
+                     </div>
                     {% endif %}
                     <div class="product-video-item__product-details flex flex-col justify-center gap-4">
                       {% if product.price %}
