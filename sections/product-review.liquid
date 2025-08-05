@@ -3,9 +3,8 @@
 <style>
   .homepage-product-review__section-{{ section.id }} {
     background-color: rgb(var(--color-secondary-brand));
-
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
+    padding-top: 88px;
+    padding-bottom: 88px;
   }
 
   .homepage-product-review__section-{{ section.id }} .custom-pagination {
@@ -24,6 +23,10 @@
 
   /* Tablet and Mobile: Hide grid, show swiper */
   @media (max-width: 768px) {
+    .homepage-product-review__section-{{ section.id }} {
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
     .homepage-product-review__desktop-only {
       display: none;
     }
@@ -35,11 +38,9 @@
       position: relative;
       padding-bottom: 20px;
     }
-
     .swiper-slide:last-child {
       margin-right: 0;
     }
-
     .homepage-product-review__mobile-tablet-only .swiper-container .swiper-wrapper {
       gap: 16px !important;
     }
@@ -49,7 +50,6 @@
       width: var(--slide-width-mobile, 220px);
       flex-shrink: 0;
     }
-
     .homepage-product-review__card {
       text-align: left;
     }
@@ -310,31 +310,6 @@
       "id": "autoplay",
       "label": "Enable autoplay (Mobile & Tablet only)",
       "default": false
-    },
-
-    {
-      "type": "header",
-      "content": "Spacing"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "label": "Top padding",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "default": 88,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "label": "Bottom padding",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "default": 88,
-      "unit": "px"
     }
   ],
   "presets": [

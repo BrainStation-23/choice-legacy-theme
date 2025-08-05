@@ -1,18 +1,18 @@
-{{ "slideshow.css" | asset_url | stylesheet_tag }}
+{{ 'slideshow.css' | asset_url | stylesheet_tag }}
 
 <style>
   .slideshow-{{ section.id }} {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    padding-top: 12px;
+    padding-bottom: 12px;
   }
 
   @media screen and (min-width: 750px) {
     .slideshow-{{ section.id }} {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
+      padding-top: 12px;
+      padding-bottom: 12px;
     }
   }
-  
+
   .slideshow-{{ section.id }} .swiper-slide {
     position: relative;
     overflow: hidden;
@@ -42,6 +42,10 @@
   }
 
   @media (max-width: 768px) {
+    .slideshow-{{ section.id }} {
+      padding-top: 0px;
+      padding-bottom: 0px;
+    }
     .slideshow .slide-content {
       max-width: 300px;
       padding: 0 15px;
@@ -83,34 +87,46 @@
   <div class="slideshow-container">
     <div class="swiper-container">
       <div class="swiper-wrapper">
-        
         {% for block in section.blocks %}
           {%- liquid
-          assign img = block.settings.image
-          assign m_img = block.settings.mobile_image
-
+            assign img = block.settings.image
+            assign m_img = block.settings.mobile_image
           -%}
-          <div class="swiper-slide {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
-               {{ block.shopify_attributes }}
-               data-block-id="{{ block.id }}"
-               data-block-type="{{ block.type }}"
-              id="shopify-block-{{ block.id }}"
-              >
-            
+          <div
+            class="swiper-slide {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}"
+            {{ block.shopify_attributes }}
+            data-block-id="{{ block.id }}"
+            data-block-type="{{ block.type }}"
+            id="shopify-block-{{ block.id }}"
+          >
             {% comment %} Desktop Media (Video has priority over Image) {% endcomment %}
             {% if block.settings.video_url != blank %}
               {% comment %} Video {% endcomment %}
               {% if block.settings.link != blank %}
-                <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
+                <a
+                  href="{{ block.settings.link }}"
+                  {% if block.settings.link_target %}
+                    target="_blank" rel="noopener"
+                  {% endif %}
+                >
               {% endif %}
-              <video 
+              <video
                 class="slide-video"
-                {% if block.settings.video_autoplay %}autoplay{% endif %}
-                {% if block.settings.video_muted %}muted{% endif %}
-                {% if block.settings.video_loop %}loop{% endif %}
-                {% if block.settings.video_controls %}controls{% endif %}
+                {% if block.settings.video_autoplay %}
+                  autoplay
+                {% endif %}
+                {% if block.settings.video_muted %}
+                  muted
+                {% endif %}
+                {% if block.settings.video_loop %}
+                  loop
+                {% endif %}
+                {% if block.settings.video_controls %}
+                  controls
+                {% endif %}
                 preload="metadata"
-                playsinline>
+                playsinline
+              >
                 <source src="{{ block.settings.video_url }}" type="video/mp4">
                 Your browser does not support the video tag.
               </video>
@@ -118,43 +134,62 @@
             {% elsif block.settings.image != blank %}
               {% comment %} Desktop Image {% endcomment %}
               {% if block.settings.link != blank %}
-                <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
+                <a
+                  href="{{ block.settings.link }}"
+                  {% if block.settings.link_target %}
+                    target="_blank" rel="noopener"
+                  {% endif %}
+                >
               {% endif %}
-              {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}    
-                        
+              {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
+
               {%- render 'image-desktop-and-mobile',
-              class: 'img-fit',
-              desktop_image: img,
-              mobile_image: m_img,
-              src_width_mobile: 980,
-              widths_mobile: '480, 980, 1200, 1400',
-              src_width_desktop: 1400,
-              widths_desktop: '480, 980, 1200, 1400, 1600, 1920, 2560, 3200',
-              lazy_load: false,
-              fetchpriority: "high",
-              sizes: sizes,
-              block: block
-            -%}
+                class: 'img-fit',
+                desktop_image: img,
+                mobile_image: m_img,
+                src_width_mobile: 980,
+                widths_mobile: '480, 980, 1200, 1400',
+                src_width_desktop: 1400,
+                widths_desktop: '480, 980, 1200, 1400, 1600, 1920, 2560, 3200',
+                lazy_load: false,
+                fetchpriority: 'high',
+                sizes: sizes,
+                block: block
+              -%}
               {% if block.settings.link != blank %}</a>{% endif %}
             {% else %}
-             {% assign image_number = forloop.index0 | modulo: 2 | plus: 1 %}
-             {{ "lifestyle-" | append: image_number | placeholder_svg_tag: "placeholder-svg slide-image-desktop" }}
+              {% assign image_number = forloop.index0 | modulo: 2 | plus: 1 %}
+              {{ 'lifestyle-' | append: image_number | placeholder_svg_tag: 'placeholder-svg slide-image-desktop' }}
             {% endif %}
-            
+
             {% comment %} Mobile Media (Video has priority over Image) {% endcomment %}
             {% if block.settings.video_url != blank %}
               {% comment %} Use same video for mobile {% endcomment %}
               {% if block.settings.link != blank %}
-                <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
+                <a
+                  href="{{ block.settings.link }}"
+                  {% if block.settings.link_target %}
+                    target="_blank" rel="noopener"
+                  {% endif %}
+                >
               {% endif %}
-              <video 
+              <video
                 class="slide-video slide-image-mobile"
-                {% if block.settings.video_autoplay %}autoplay{% endif %}
-                {% if block.settings.video_muted %}muted{% endif %}
-                {% if block.settings.video_loop %}loop{% endif %}
-                {% if block.settings.video_controls %}controls{% endif %}
+                {% if block.settings.video_autoplay %}
+                  autoplay
+                {% endif %}
+                {% if block.settings.video_muted %}
+                  muted
+                {% endif %}
+                {% if block.settings.video_loop %}
+                  loop
+                {% endif %}
+                {% if block.settings.video_controls %}
+                  controls
+                {% endif %}
                 preload="metadata"
-                playsinline>
+                playsinline
+              >
                 <source src="{{ block.settings.video_url }}" type="video/mp4">
                 Your browser does not support the video tag.
               </video>
@@ -162,35 +197,43 @@
             {% elsif img != blank %}
               {% comment %} Mobile Image {% endcomment %}
               {% if block.settings.link != blank %}
-                <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
+                <a
+                  href="{{ block.settings.link }}"
+                  {% if block.settings.link_target %}
+                    target="_blank" rel="noopener"
+                  {% endif %}
+                >
               {% endif %}
-              {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}    
-                        
+              {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
+
               {%- render 'image-desktop-and-mobile',
-              class: 'img-fit',
-              desktop_image: img,
-              mobile_image: m_img,
-              src_width_mobile: 980,
-              widths_mobile: '480, 980, 1200, 1400',
-              src_width_desktop: 1400,
-              widths_desktop: '480, 980, 1200, 1400, 1600, 1920, 2560, 3200',
-              lazy_load: lazy_load,
-              fetchpriority: fetchpriority,
-              sizes: sizes,
-              block: block
-            -%}
+                class: 'img-fit',
+                desktop_image: img,
+                mobile_image: m_img,
+                src_width_mobile: 980,
+                widths_mobile: '480, 980, 1200, 1400',
+                src_width_desktop: 1400,
+                widths_desktop: '480, 980, 1200, 1400, 1600, 1920, 2560, 3200',
+                lazy_load: lazy_load,
+                fetchpriority: fetchpriority,
+                sizes: sizes,
+                block: block
+              -%}
               {% if block.settings.link != blank %}</a>{% endif %}
             {% else %}
-              {{ "lifestyle-1" | placeholder_svg_tag: "placeholder-svg slide-image-mobile" }}
+              {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg slide-image-mobile' }}
             {% endif %}
-            
+
             {% comment %} Slide Content {% endcomment %}
-            {% if block.settings.title != blank or block.settings.description != blank or block.settings.button_text != blank %}
+            {% if block.settings.title != blank
+              or block.settings.description != blank
+              or block.settings.button_text != blank
+            %}
               <div class="slide-content {% if block.settings.show_card %}card{% endif %} align-{{ block.settings.content_alignment | default: 'left' }}">
                 {% if block.settings.title != blank %}
                   <h3 class="slide-title fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct">{{ block.settings.title }}</h3>
                 {% endif %}
-                
+
                 {% if block.settings.description != blank %}
                   <p class="slide-description fs-16-lh-24-ls-0">{{ block.settings.description }}</p>
                 {% endif %}
@@ -201,9 +244,9 @@
       </div>
     </div>
 
-    {% render "nav-button", cls: "slideshow-nav-button-prev", icon_cls: "icon-arrow-left" %}
+    {% render 'nav-button', cls: 'slideshow-nav-button-prev', icon_cls: 'icon-arrow-left' %}
 
-    {% render "nav-button", cls: "slideshow-nav-button-next" %}
+    {% render 'nav-button', cls: 'slideshow-nav-button-next' %}
   </div>
 </slideshow-component>
 
@@ -258,30 +301,6 @@
       "label": "Pause autoplay on hover",
       "default": true,
       "info": "Pause slideshow when mouse hovers over it"
-    },
-    {
-      "type": "header",
-      "content": "Padding"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Top padding",
-      "default": 12
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Bottom padding",
-      "default": 12
     }
   ],
   "blocks": [
@@ -411,18 +430,15 @@
       "blocks": [
         {
           "type": "slide",
-          "settings": {
-          }
+          "settings": {}
         },
         {
           "type": "slide",
-          "settings": {
-          }
+          "settings": {}
         },
         {
           "type": "slide",
-          "settings": {
-          }
+          "settings": {}
         }
       ]
     }

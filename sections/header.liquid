@@ -2,15 +2,15 @@
 
 <style>
   .header-{{ section.id }} {
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
+    padding-top: 16px;
+    padding-bottom: 16px;
     background-color: rgb(var(--color-background));
   }
 
   /* -- MOBILE STYLES -- */
   @media screen and (max-width: 767px) {
     .header-{{ section.id }} {
-      padding: 10px 0;
+      padding: 16px 0;
     }
   }
 
@@ -795,31 +795,6 @@
   "tag": "header",
   "class": "shopify-section-header",
   "settings": [
-    {
-      "type": "header",
-      "content": "Desktop Padding"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "label": "Top padding",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "default": 16,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "label": "Bottom padding",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "default": 16,
-      "unit": "px"
-    },
-
     {
       "type": "header",
       "content": "Mega Menu Settings"
