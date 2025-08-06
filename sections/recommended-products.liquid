@@ -116,7 +116,9 @@
     <!-- Mobile Carousel -->
     <div class="mobile-carousel">
       <slideshow-component
-        data-autoplay="false"
+        data-autoplay="{{  section.settings.autoplay }}"
+        data-autoplay-delay="{{ section.settings.autoplay_delay | default: 5000 }}"
+        data-pause-on-hover="{{ section.settings.pause_on_hover }}"
         data-show-progress-bar="true"
         data-slides-per-view-desktop="2"
         data-single-slide-view="true"
