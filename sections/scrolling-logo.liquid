@@ -3,15 +3,16 @@
 
 <style>
   .scrolling-logo-{{ section.id }} {
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
+    padding-top: 16px;
+    padding-bottom: 16px;
     background-color: rgb(var(--color-primary-brand));
   }
-
-  /* .scrolling-logo-{{ section.id }} .scrolling-logo__image-img {
-    width: {{ section.settings.image_width }}px;
-    height: {{ section.settings.image_height }}px;
-  } */
+  @media screen and (max-width: 768px) {
+  .scrolling-logo-{{ section.id }} {
+      padding-top: 10px;
+      padding-bottom: 10px;
+    }
+  }
 
   .scrolling-logo-{{ section.id }} .scrolling-logo__items {
     display: flex;
@@ -79,7 +80,7 @@
   </div>
 </section>
 
-{% comment %} <script src="{{ 'scrolling-logo.js' | asset_url }}" defer></script> {% endcomment %}
+<script src="{{ 'scrolling-logo.js' | asset_url }}" defer></script>
 
 {% schema %}
 {
@@ -135,30 +136,6 @@
       "id": "pausable",
       "label": "Pause on hover",
       "default": true
-    },
-    {
-      "type": "header",
-      "content": "Padding"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "label": "Top padding",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "default": 16,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "label": "Bottom padding",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "default": 16,
-      "unit": "px"
     }
   ],
   "blocks": [

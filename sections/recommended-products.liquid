@@ -1,13 +1,13 @@
 {%- style -%}
   .recommended-products-{{ section.id }} {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    padding-top: 0px;
+    padding-bottom: 88px;
   }
 
   @media screen and (min-width: 750px) {
     .recommended-products-{{ section.id }} {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
+      padding-top: 0px;
+      padding-bottom: 88px;
     }
   }
 
@@ -45,6 +45,12 @@
   }
 
   @media screen and (max-width: 768px) {
+
+   .recommended-products-{{ section.id }} {
+      padding-top: 16px;
+      padding-bottom: 16px;
+    }
+
     .recommended-products-{{ section.id }} .desktop-grid {
       display: none;
     }
@@ -87,7 +93,9 @@
   <div class="recommended-products__container page-width flex flex-col gap-48 mobile-gap-16">
     {% if section.settings.heading != blank %}
       <div class="desktop-grid">
-        <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct text-center">{{ section.settings.heading }}</h2>
+        <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct text-center">
+          {{ section.settings.heading }}
+        </h2>
       </div>
     {% endif %}
 
@@ -97,18 +105,9 @@
         <div data-block-id="{{ block.id }}">
           {% if block.settings.product != blank %}
             {% assign product = all_products[block.settings.product] %}
-            {% render 'product-card', 
-              product: product, 
-              css_classes: '',
-              image_width: 268,
-              image_height: 268
-            %}
+            {% render 'product-card', product: product, css_classes: '', image_width: 268, image_height: 268 %}
           {% else %}
-            {% render 'product-card', 
-              css_classes: '',
-              image_width: 268,
-              image_height: 268
-            %}
+            {% render 'product-card', css_classes: '', image_width: 268, image_height: 268 %}
           {% endif %}
         </div>
       {% endfor %}
@@ -116,7 +115,7 @@
 
     <!-- Mobile Carousel -->
     <div class="mobile-carousel">
-      <slideshow-component 
+      <slideshow-component
         data-autoplay="false"
         data-show-progress-bar="true"
         data-slides-per-view-desktop="2"
@@ -125,11 +124,13 @@
       >
         {% if section.settings.heading != blank %}
           <div class="flex justify-between items-end relative">
-            <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct text-center">{{ section.settings.heading }}</h2>
-            
+            <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct text-center">
+              {{ section.settings.heading }}
+            </h2>
+
             <div class="flex justify-end gap-24">
-              {% render "nav-button", cls: "slideshow-nav-button-prev", icon_cls: "icon-arrow-left" %}
-              {% render "nav-button", cls: "slideshow-nav-button-next" %}
+              {% render 'nav-button', cls: 'slideshow-nav-button-prev', icon_cls: 'icon-arrow-left' %}
+              {% render 'nav-button', cls: 'slideshow-nav-button-next' %}
             </div>
           </div>
         {% endif %}
@@ -141,18 +142,9 @@
                 <div data-block-id="{{ block.id }}">
                   {% if block.settings.product != blank %}
                     {% assign product = all_products[block.settings.product] %}
-                    {% render 'product-card', 
-                      product: product, 
-                      css_classes: '',
-                      image_width: 268,
-                      image_height: 268
-                    %}
+                    {% render 'product-card', product: product, css_classes: '', image_width: 268, image_height: 268 %}
                   {% else %}
-                    {% render 'product-card', 
-                      css_classes: '',
-                      image_width: 268,
-                      image_height: 268
-                    %}
+                    {% render 'product-card', css_classes: '', image_width: 268, image_height: 268 %}
                   {% endif %}
                 </div>
               </div>
@@ -213,30 +205,6 @@
       "id": "pause_on_hover",
       "default": true,
       "label": "Pause on hover"
-    },
-    {
-      "type": "header",
-      "content": "Section padding"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Top padding",
-      "default": 36
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "unit": "px",
-      "label": "Bottom padding",
-      "default": 36
     }
   ],
   "blocks": [

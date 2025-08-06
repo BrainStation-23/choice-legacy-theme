@@ -3,8 +3,8 @@
 <style>
   /* -- DESKTOP STYLES (Default) -- */
   .service-{{ section.id }} {
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
+    padding-top: 88px;
+    padding-bottom: 88px;
     background-color: rgb(var( --color-primary-brand));
   }
 
@@ -12,6 +12,14 @@
   .service__image {
     width: 48px;
     height: 48px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .service-{{ section.id }} {
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+
   }
 </style>
 
@@ -54,32 +62,7 @@
 {
   "name": "Service",
   "tag": "section",
-  "settings": [
-    {
-      "type": "header",
-      "content": "Section Spacing"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "label": "Top padding",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "default": 88,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "label": "Bottom padding",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "default": 88,
-      "unit": "px"
-    }
-  ],
+  "settings": [],
   "blocks": [
     {
       "type": "service_item",

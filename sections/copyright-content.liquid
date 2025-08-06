@@ -1,7 +1,7 @@
 <style>
   .copyright__section-desktop {
-    padding-top: {{ section.settings.padding_top | default: 32 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | default: 32 }}px;
+    padding-top: 32px;
+    padding-bottom: 32px;
     background-color: rgba(var(--color-secondary-text), 0.02);
   }
   .copyright__content {
@@ -104,32 +104,7 @@
   "enabled_on": {
     "groups": ["footer"]
   },
-  "settings": [
-    {
-      "type": "header",
-      "content": "Padding"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 50,
-      "step": 2,
-      "unit": "px",
-      "label": "Top padding",
-      "default": 32
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 50,
-      "step": 2,
-      "unit": "px",
-      "label": "Bottom padding",
-      "default": 32
-    }
-  ],
+  "settings": [],
   "presets": [
     {
       "name": "Copyright Content"

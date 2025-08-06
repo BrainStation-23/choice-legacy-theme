@@ -7,8 +7,8 @@
 {% assign image_ratio = 1 %}
 <style>
     .collections-list-{{ section.id }} {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
+      padding-top: 88px;
+      padding-bottom: 88px;
     }
 
     .collections-list__grid {
@@ -24,8 +24,8 @@
 
     @media screen and (max-width: 768px) {
       .collections-list-{{ section.id }} {
-        padding-top: {{ section.settings.padding_top }}px;
-        padding-bottom: {{ section.settings.padding_bottom }}px;
+        padding-top: 23px;
+        padding-bottom: 16px;
       }
       .collections-list__item {
         width: 116px !important;
@@ -192,26 +192,6 @@
       "id": "title",
       "label": "Section Title",
       "default": "Shop Beauty Product By Category"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "label": "Top padding",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "default": 22,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "label": "Bottom padding",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "default": 18,
-      "unit": "px"
     }
   ],
   "blocks": [

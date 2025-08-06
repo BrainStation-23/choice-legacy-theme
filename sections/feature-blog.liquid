@@ -8,8 +8,8 @@
 {% assign image_ratio = 1 %}
 <style>
   .blog-section-{{ section.id }} {
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
+    padding-top: 0px;
+    padding-bottom: 88px;
   }
 
   .blog-section__content-grid {
@@ -23,6 +23,12 @@
   }
 
   @media screen and (max-width: 768px) {
+
+    .blog-section-{{ section.id }} {
+      padding-top: 16px;
+      padding-bottom: 16px;
+    }
+
     .blog-section__content-grid {
       display: none;
     }
@@ -172,26 +178,6 @@
       "max": 20,
       "step": 1,
       "default": 4
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "label": "Top Padding",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "default": 0,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "label": "Bottom Padding",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "default": 88,
-      "unit": "px"
     }
   ],
   "presets": [
