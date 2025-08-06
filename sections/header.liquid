@@ -2,15 +2,15 @@
 
 <style>
   .header-{{ section.id }} {
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
+    padding-top: 16px;
+    padding-bottom: 16px;
     background-color: rgb(var(--color-background));
   }
 
   /* -- MOBILE STYLES -- */
   @media screen and (max-width: 767px) {
     .header-{{ section.id }} {
-      padding: 10px 0;
+      padding: 16px 0;
     }
   }
 
@@ -402,7 +402,7 @@
             {% render 'icon-close' %}
           </div>
         </button>
-        {% render "logo", padding_left: 138, padding_bottom: 40, logo_width: 138 %}
+        {% render 'logo', padding_left: 138, padding_bottom: 40, logo_width: 138 %}
       </div>
 
       <div class="header__center header__item-container">
@@ -521,15 +521,25 @@
         <!-- Promotional Section -->
         {%- if section.settings.mega_menu_image != blank -%}
           <div class="mobile-mega-menu__promo">
-            <div class="mobile-mega-menu__promo-image media block relative"  style="padding-top: 200px; padding-left: 293px;">
+            <div
+              class="mobile-mega-menu__promo-image media block relative"
+              style="padding-top: 200px; padding-left: 293px;"
+            >
               {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
-              {% render 'image', 
-                image: section.settings.mega_menu_image, 
-                widths: '293, 293, 293, 293',
-                src_width: 293,
-                sizes: sizes,
-                class: 'img-fit',
-                quality: 1, %}
+              {%- if section.settings.mega_menu_image_link != blank -%}
+                <a href="{{ section.settings.mega_menu_image_link }}" class="mega-menu__image-link">
+              {%- endif -%}
+                {% render 'image',
+                  image: section.settings.mega_menu_image,
+                  widths: '400, 400, 400, 400',
+                  src_width: 400,
+                  sizes: sizes,
+                  class: 'img-fit',
+                  quality: 1
+                %}
+              {%- if section.settings.mega_menu_image_link != blank -%}
+                </a>
+              {%- endif -%}
             </div>
           </div>
         {%- endif -%}
@@ -547,7 +557,10 @@
           {%- for link in linklists[section.settings.main_menu].links -%}
             <li class="mega-menu__item">
               {% assign undergarments_link = link.title | downcase %}
-              <a href="{{ link.url }}" class="mega-menu__link fw-600 fs-14-lh-100pct-ls-2pct uppercase {% if undergarments_link contains "undergarments" %}mega-menu__link--undergarments{% endif %}">
+              <a
+                href="{{ link.url }}"
+                class="mega-menu__link fw-600 fs-14-lh-100pct-ls-2pct uppercase {% if undergarments_link contains "undergarments" %}mega-menu__link--undergarments{% endif %}"
+              >
                 {{ link.title }}
               </a>
 
@@ -634,16 +647,26 @@
 
                     <!-- Image Column - Only show when column count >= 2 -->
                     {%- if section.settings.mega_menu_image != blank and show_image -%}
-                      <div class="mega-menu__image-column flex flex-start media relative block" style="padding-top: 200px; padding-left: 402px;">
+                      <div
+                        class="mega-menu__image-column flex flex-start media relative block"
+                        style="padding-top: 200px; padding-left: 402px;"
+                      >
                         {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
-                
-                        {% render 'image', 
-                          image: section.settings.mega_menu_image, 
-                          widths: '400, 400, 400, 400',
-                          src_width: 400,
-                          sizes: sizes,
-                          class: 'img-fit',
-                          quality: 1, %}
+
+                        {%- if section.settings.mega_menu_image_link != blank -%}
+                          <a href="{{ section.settings.mega_menu_image_link }}" class="mobile-mega-menu__image-link">
+                        {%- endif -%}
+                          {% render 'image',
+                            image: section.settings.mega_menu_image,
+                            widths: '293, 293, 293, 293',
+                            src_width: 293,
+                            sizes: sizes,
+                            class: 'img-fit',
+                            quality: 1
+                          %}
+                        {%- if section.settings.mega_menu_image_link != blank -%}
+                          </a>
+                        {%- endif -%}
                       </div>
                     {%- endif -%}
                   </div>
@@ -760,22 +783,22 @@
 </script>
 
 <script>
-function setHeaderHeight() {
-  const header = document.querySelector('.header');
-  if (header) {
-    const headerHeight = header.offsetHeight;
-    document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
-    
-    // Also update the mobile menu top position
-    const mobileMenu = document.getElementById('mobileMegaMenu');
-    if (mobileMenu) {
-      mobileMenu.style.top = `${headerHeight}px`;
+  function setHeaderHeight() {
+    const header = document.querySelector('.header');
+    if (header) {
+      const headerHeight = header.offsetHeight;
+      document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+
+      // Also update the mobile menu top position
+      const mobileMenu = document.getElementById('mobileMegaMenu');
+      if (mobileMenu) {
+        mobileMenu.style.top = `${headerHeight}px`;
+      }
     }
   }
-}
 
-document.addEventListener('DOMContentLoaded', setHeaderHeight);
-window.addEventListener('resize', setHeaderHeight);
+  document.addEventListener('DOMContentLoaded', setHeaderHeight);
+  window.addEventListener('resize', setHeaderHeight);
 </script>
 
 {% schema %}
@@ -784,31 +807,6 @@ window.addEventListener('resize', setHeaderHeight);
   "tag": "header",
   "class": "shopify-section-header",
   "settings": [
-    {
-      "type": "header",
-      "content": "Desktop Padding"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "label": "Top padding",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "default": 16,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "label": "Bottom padding",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "default": 16,
-      "unit": "px"
-    },
-
     {
       "type": "header",
       "content": "Mega Menu Settings"
@@ -830,6 +828,12 @@ window.addEventListener('resize', setHeaderHeight);
       "id": "mega_menu_image_alt",
       "label": "Mega Menu Image Alt Text",
       "default": "Featured products"
+    },
+    {
+      "type": "url",
+      "id": "mega_menu_image_link",
+      "label": "Mega Menu Image Link",
+      "info": "Optional link for the mega menu image"
     },
     {
       "type": "color",

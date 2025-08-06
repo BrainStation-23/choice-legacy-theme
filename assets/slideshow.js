@@ -47,7 +47,14 @@ if (!customElements.get("slideshow-component")) {
           pagination: false,
           on: {
             slideChange: (swiper) => {
-              this.updateCustomBullets(swiper.realIndex);
+              // Use realIndex for looped sliders, activeIndex for non-looped
+              const carouselMode = this.dataset.carouselMode === "true";
+              const singleSlideView = this.dataset.singleSlideView === "true";
+              const activeIndex =
+                carouselMode || singleSlideView
+                  ? swiper.activeIndex
+                  : swiper.realIndex;
+              this.updateCustomBullets(activeIndex);
             },
           },
         };
@@ -69,12 +76,14 @@ if (!customElements.get("slideshow-component")) {
             momentumBounceRatio: 1,
           };
 
-          swiperConfig.loop = false;
+          swiperConfig.loop = false; // Loop disabled for carousel mode
           swiperConfig.grabCursor = true;
-          swiperConfig.resistanceRatio = 0.85;
+          swiperConfig.resistanceRatio = 0; // No resistance - prevents bouncing back
           swiperConfig.slidesPerView = "auto";
           swiperConfig.spaceBetween = 16;
           swiperConfig.centeredSlides = false;
+          swiperConfig.watchSlidesProgress = true;
+          swiperConfig.watchSlidesVisibility = true;
 
           swiperConfig.breakpoints = {
             320: {
@@ -138,6 +147,15 @@ if (!customElements.get("slideshow-component")) {
           );
           swiperContainer.setAttribute("data-carousel-mode", "true");
         } else {
+          // Regular slideshow mode
+          const singleSlideView = this.dataset.singleSlideView === "true";
+
+          if (singleSlideView) {
+            // For single slide view, disable loop and bounce-back but keep normal slide configuration
+            swiperConfig.loop = false;
+            swiperConfig.resistanceRatio = 0; // Prevent bounce-back to beginning
+          }
+
           swiperConfig.slidesPerView = slidesPerViewForFullSlides;
           swiperConfig.spaceBetween = 16;
           swiperConfig.centeredSlides = false;
@@ -173,7 +191,14 @@ if (!customElements.get("slideshow-component")) {
       this.customBullets.forEach((bullet, index) => {
         bullet.addEventListener("click", () => {
           if (this.swiper) {
-            this.swiper.slideToLoop(index);
+            // Use appropriate slide method based on loop setting
+            const carouselMode = this.dataset.carouselMode === "true";
+            const singleSlideView = this.dataset.singleSlideView === "true";
+            if (carouselMode || singleSlideView) {
+              this.swiper.slideTo(index); // For non-looped carousel/single slide view
+            } else {
+              this.swiper.slideToLoop(index); // For looped slideshow
+            }
           }
         });
       });
