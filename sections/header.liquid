@@ -526,14 +526,20 @@
               style="padding-top: 200px; padding-left: 293px;"
             >
               {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
-              {% render 'image',
-                image: section.settings.mega_menu_image,
-                widths: '293, 293, 293, 293',
-                src_width: 293,
-                sizes: sizes,
-                class: 'img-fit',
-                quality: 1
-              %}
+              {%- if section.settings.mega_menu_image_link != blank -%}
+                <a href="{{ section.settings.mega_menu_image_link }}" class="mega-menu__image-link">
+              {%- endif -%}
+                {% render 'image',
+                  image: section.settings.mega_menu_image,
+                  widths: '400, 400, 400, 400',
+                  src_width: 400,
+                  sizes: sizes,
+                  class: 'img-fit',
+                  quality: 1
+                %}
+              {%- if section.settings.mega_menu_image_link != blank -%}
+                </a>
+              {%- endif -%}
             </div>
           </div>
         {%- endif -%}
@@ -647,14 +653,20 @@
                       >
                         {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
 
-                        {% render 'image',
-                          image: section.settings.mega_menu_image,
-                          widths: '400, 400, 400, 400',
-                          src_width: 400,
-                          sizes: sizes,
-                          class: 'img-fit',
-                          quality: 1
-                        %}
+                        {%- if section.settings.mega_menu_image_link != blank -%}
+                          <a href="{{ section.settings.mega_menu_image_link }}" class="mobile-mega-menu__image-link">
+                        {%- endif -%}
+                          {% render 'image',
+                            image: section.settings.mega_menu_image,
+                            widths: '293, 293, 293, 293',
+                            src_width: 293,
+                            sizes: sizes,
+                            class: 'img-fit',
+                            quality: 1
+                          %}
+                        {%- if section.settings.mega_menu_image_link != blank -%}
+                          </a>
+                        {%- endif -%}
                       </div>
                     {%- endif -%}
                   </div>
@@ -816,6 +828,12 @@
       "id": "mega_menu_image_alt",
       "label": "Mega Menu Image Alt Text",
       "default": "Featured products"
+    },
+    {
+      "type": "url",
+      "id": "mega_menu_image_link",
+      "label": "Mega Menu Image Link",
+      "info": "Optional link for the mega menu image"
     },
     {
       "type": "color",

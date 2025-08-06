@@ -184,14 +184,16 @@
                       {% endif %}
 
                       <h3 class="product-video-item__product-title ff-general-sans fw-400 fs-12-lh-16-ls-0_6pct">
-                        {{ product.title }}
+                        <a href="{{ product.url }}" class="product-title-link" aria-label="View {{ product.title }}">
+                          {{ product.title }}
+                        </a>
                       </h3>
                     </div>
                   </div>
 
-                  <a href="{{ product.url }}" class="product-video-item__link" aria-label="View {{ product.title }}">
+                  {% comment %} <a href="{{ product.url }}" class="product-video-item__link" aria-label="View {{ product.title }}">
                     <span class="visually-hidden">{{ product.title }}</span>
-                  </a>
+                  </a> {% endcomment %}
                 </div>
               </div>
             {% else %}
