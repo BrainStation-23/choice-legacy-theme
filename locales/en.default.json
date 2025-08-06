@@ -60,6 +60,22 @@
       "success": "A verification code has been sent to your email address.",
       "submit": " Send verification code",
       "cancel": "Cancel"
+    },
+    "register": {
+      "title": "Create an account",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email",
+      "phone": "Phone Number",
+      "password": "Password",
+      "confirm_password": "Confirm Password",
+      "submit": "Submit",
+      "cancel": "Cancel",
+      "log_in": "Return to login",
+      "error_heading": "Error",
+      "phone_placeholder": "Enter your phone number",
+      "send_otp": "Send OTP",
+      "subtitle": "Use your credentials to access your account"
     }
   }
 }

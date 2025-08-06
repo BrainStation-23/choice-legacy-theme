@@ -1,239 +1,656 @@
-<div class="container">
-  <div class="section__header text-center">
-    <h1 class="h2">{{ 'customer.register.title' | t }}</h1>
-  </div>
+<style>
+  .register-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-top: 16px;
+    padding-bottom: 12px;
+  }
 
-  {%- form 'create_customer', class: 'form form-width mx-auto', novalidate: 'novalidate' -%}
-    {%- if form.errors -%}
-      <div class="alert mb-8 bg-error-bg text-error-text" tabindex="-1" autofocus>
-        <h2 class="h5 text-current">{{ 'contact.form.error_heading' | t }}</h2>
-        <ul class="styled-list">
-          {%- for field in form.errors -%}
-            <li>
-              {%- if field == 'form' -%}
-                {{ form.errors.messages[field] }}
-              {%- else -%}
-                <a class="link text-current" href="#register-{{ field }}">
-                  {{- form.errors.translated_fields[field] | capitalize }}
-                  {{ form.errors.messages[field] -}}
-                </a>
-              {%- endif -%}
-            </li>
-          {%- endfor -%}
-        </ul>
+  .register-input-phone-field-container {
+    display: flex;
+    gap: 16px;
+  }
+
+  .register-container .form-input-field .form-input {
+    height: 54px;
+  }
+
+  .register-form {
+    display: flex;
+    flex-direction: column;
+    min-width: 406px;
+  }
+
+  .register-header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .register-title {
+    text-transform: uppercase;
+  }
+
+  .register-subtitle {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+    gap: 12px;
+  }
+
+  .register-subtitle a {
+    color: rgb(var(--color-primary-brand));
+    text-decoration: none;
+  }
+
+  .register-form-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .register-form-container form,
+  .register-submit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .register-button {
+    width: 100%;
+    background: rgb(var(--color-primary-brand));
+    color: rgb(var(--color-background));
+    border: none;
+    padding: 14px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  .register-button:disabled {
+    background: rgb(var(--color-primary-brand));
+    cursor: not-allowed;
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #999;
+    cursor: pointer;
+    padding: 4px;
+    font-size: 18px;
+  }
+
+  .alert {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+  }
+
+  .alert-error {
+    background-color: #fee;
+    color: #c33;
+    border: 1px solid #fcc;
+  }
+
+  .alert-success {
+    background-color: #efe;
+    color: #363;
+    border: 1px solid #cfc;
+  }
+
+  .otp-container {
+    display: none;
+  }
+
+  .otp-container.active {
+    display: block;
+  }
+
+  .otp-message {
+    font-size: 14px;
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  .otp-message.success {
+    color: #363;
+  }
+
+  .otp-message.error {
+    color: #c33;
+  }
+
+  /* New OTP Styles */
+  .otp-inputs {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .otp-digit {
+    width: 55px;
+    text-align: center;
+    border: 2px solid #e1e5e9;
+    padding: 18px 16px;
+    border-radius: 6px;
+    transition: border-color 0.3s ease;
+    flex: 1;
+  }
+
+  .otp-digit:focus {
+    outline: none;
+    border-color: rgb(var(--color-primary-brand));
+  }
+
+  .otp-digit.filled {
+    border-color: rgb(var(--color-primary-brand));
+  }
+
+  .phone-input-wrapper {
+    flex: 1;
+  }
+  .h-captcha {
+    display: none;
+  }
+
+  .phone-input {
+    padding-left: 60px !important;
+  }
+
+  .send-otp-btn {
+    background: rgb(var(--color-primary-brand));
+    color: rgb(var(--color-background));
+    border: none;
+    padding: 18px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .send-otp-btn:disabled {
+    background: #999;
+    cursor: not-allowed;
+  }
+
+  .back-link {
+    text-align: center;
+  }
+
+  .back-link a {
+    color: rgb(var(--color-primary-brand));
+    text-decoration: none;
+    font-size: 14px;
+  }
+
+  .register-input-phone-field {
+    display: flex;
+    gap: 16px;
+  }
+
+  /* Response Message Styles */
+  .response-message {
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-top: 16px;
+    font-size: 14px;
+    text-align: center;
+    display: none;
+  }
+
+  .response-message.success {
+    background-color: #efe;
+    color: #363;
+    border: 1px solid #cfc;
+  }
+
+  .response-message.error {
+    background-color: #fee;
+    color: #c33;
+    border: 1px solid #fcc;
+  }
+
+  .response-message.show {
+    display: block;
+  }
+</style>
+
+<div class="register-container">
+  <div id="register" class="register-form gap-32 ">
+    <div class="register-header gap-8">
+      <h1 class="register-title ff-bebas-neue fs-36-lh-40-ls-0 fw-400">
+        {{ 'customer.register.title' | t | default: 'CREATE ACCOUNT' }}
+      </h1>
+      <div class="register-subtitle">
+        <h2 class="register-existing__customer ff-general-sans fs-16-lh-24-ls-0 fw-400">
+          {{ 'customer.register.subtitle' | t }}
+        </h2>
       </div>
-    {%- endif -%}
-
-    <div class="form__field required">
-      <label class="label" for="register-first-name">
-        {{- 'customer.register.first_name' | t -}}
-        <span style="color:red">*</span>
-      </label>
-      <input
-        type="text"
-        class="input w-full"
-        id="register-first-name"
-        name="customer[first_name]"
-        {%- if form.first_name %}
-          value="{{ form.first_name }}"
-        {%- endif %}
-        autocomplete="given-name"
-      >
     </div>
 
-    <div class="form__field required">
-      <label class="label" for="register-last-name">
-        {{- 'customer.register.last_name' | t -}}
-        <span style="color:red">*</span>
-      </label>
-      <input
-        type="text"
-        class="input w-full"
-        id="register-last-name"
-        name="customer[last_name]"
-        {%- if form.last_name %}
-          value="{{ form.last_name }}"
-        {%- endif %}
-        autocomplete="family-name"
-      >
-    </div>
+    <div class="register-form-container gap-16">
+      {%- form 'create_customer', class: 'register-submit-form', novalidate: 'novalidate' -%}
+        {%- if form.errors -%}
+          <div class="alert alert-error" tabindex="-1" autofocus>
+            <h2 class="alert__title">{{ 'customer.register.error_heading' | t }}</h2>
+            <ul class="alert__list">
+              {%- for field in form.errors -%}
+                <li>
+                  {%- if field == 'form' -%}
+                    {{ form.errors.messages[field] }}
+                  {%- else -%}
+                    {{ form.errors.translated_fields[field] | capitalize }}
+                    {{ form.errors.messages[field] }}
+                  {%- endif -%}
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- endif -%}
 
-    <div class="form__field required">
-      <label class="label" for="register-phone">
-        {{- 'customer.register.phone' | t -}}
-        <span style="color:red">*</span>
-      </label>
-      <div class="input-with-icon-and-button">
-        <span class="input-icon">+880</span>
-        <input
-          type="text"
-          class="input w-full"
-          id="register-phone"
-          name="customer[phone]"
-          {%- if form.phone %}
-            value="{{ form.phone }}"
-          {%- endif %}
-          autocomplete="tel"
-          {%- if form.errors contains 'phone' %}
-            aria-invalid="true" aria-describedby="register-phone-error"
-          {%- endif %}
-          aria-required="true"
-          required
+        <!-- First Name -->
+        {%- assign firstNameLabel = 'customer.register.first_name' | t -%}
+        {%- assign firstNamePlaceholder = 'customer.register.first_name' | t -%}
+        {%
+          render 'input',
+          type: 'text',
+          id: 'customer-first-name',
+          name: 'customer[first_name]',
+          label: firstNameLabel,
+          placeholder: firstNamePlaceholder,
+          autocomplete: 'given-name',
+          required: true,
+          class: 'register-input-first-name-field',
+          invalid: form.errors contains 'first_name',
+          value: form.first_name
+        %}
+
+        <!-- Last Name -->
+        {%- assign lastNameLabel = 'customer.register.last_name' | t -%}
+        {%- assign lastNamePlaceholder = 'customer.register.last_name' | t -%}
+        {%
+          render 'input',
+          type: 'text',
+          id: 'customer-last-name',
+          name: 'customer[last_name]',
+          label: lastNameLabel,
+          placeholder: lastNamePlaceholder,
+          autocomplete: 'family-name',
+          required: true,
+          class: 'register-input-last-name-field',
+          invalid: form.errors contains 'last_name',
+          value: form.last_name
+        %}
+
+        <!-- Phone Number -->
+        <div class="register-input-phone-field-container">
+          {% assign phoneLabel = 'customer.register.phone' | t -%}
+          {% assign phonePlaceholder = 'customer.register.phone_placeholder' | t -%}
+          <div class="phone-input-wrapper gap-16">
+            {%
+              render 'input',
+              type: 'tel',
+              id: 'customer-phone',
+              name: 'customer[phone]',
+              label: phoneLabel,
+              placeholder: phonePlaceholder,
+              autocomplete: 'tel',
+              required: true,
+              class: 'register-input-phone-field',
+              invalid: form.errors contains 'phone',
+              value: form.phone
+            %}
+          </div>
+          <button type="button" id="send-otp-button" class="send-otp-btn ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
+            {{ 'customer.register.send_otp' | t }}
+          </button>
+        </div>
+
+        <!-- OTP Container - Updated with separate inputs -->
+        <div class="otp-container" id="otp-container">
+          <div class="otp-inputs">
+            <input
+              type="text"
+              class="otp-digit fs-14-lh-20-ls-0_1  ff-general-sans fw-500"
+              maxlength="1"
+              data-index="0"
+              inputmode="numeric"
+              placeholder="-"
+            >
+            <input
+              type="text"
+              class="otp-digit fs-14-lh-20-ls-0_1  ff-general-sans fw-500"
+              maxlength="1"
+              data-index="1"
+              inputmode="numeric"
+              placeholder="-"
+            >
+            <input
+              type="text"
+              class="otp-digit fs-14-lh-20-ls-0_1  ff-general-sans fw-500"
+              maxlength="1"
+              data-index="2"
+              inputmode="numeric"
+              placeholder="-"
+            >
+            <input
+              type="text"
+              class="otp-digit fs-14-lh-20-ls-0_1  ff-general-sans fw-500"
+              maxlength="1"
+              data-index="3"
+              inputmode="numeric"
+              placeholder="-"
+            >
+            <input
+              type="text"
+              class="otp-digit fs-14-lh-20-ls-0_1  ff-general-sans fw-500"
+              maxlength="1"
+              data-index="4"
+              inputmode="numeric"
+              placeholder="-"
+            >
+            <input
+              type="text"
+              class="otp-digit fs-14-lh-20-ls-0_1  ff-general-sans fw-500"
+              maxlength="1"
+              data-index="5"
+              inputmode="numeric"
+              placeholder="-"
+            >
+          </div>
+          <div id="otp-message" class="otp-message"></div>
+
+          <input type="hidden" id="customer-otp-hidden" name="customer[note][otp_code]" value="">
+        </div>
+
+        <!-- Email -->
+        {%- assign emailLabel = 'customer.register.email' | t -%}
+        {%- assign emailPlaceholder = 'example@gmail.com' -%}
+        {%
+          render 'input',
+          type: 'email',
+          id: 'customer-email',
+          name: 'customer[email]',
+          label: emailLabel,
+          placeholder: emailPlaceholder,
+          autocomplete: 'email',
+          required: false,
+          class: 'register-input-email-field',
+          invalid: form.errors contains 'email',
+          value: form.email
+        %}
+
+        <!-- Password -->
+        {%- assign passwordLabel = 'customer.register.password' | t -%}
+        {%- assign passwordPlaceholder = 'customer.register.password' | t -%}
+        {%
+          render 'input',
+          type: 'password',
+          id: 'customer-password',
+          name: 'customer[password]',
+          label: passwordLabel,
+          placeholder: passwordPlaceholder,
+          autocomplete: 'new-password',
+          required: true,
+          class: 'register-input-password-field',
+          invalid: form.errors contains 'password'
+        %}
+
+        <!-- Confirm Password -->
+        {% render 'input',
+          type: 'password',
+          id: 'customer-confirm-password',
+          name: 'customer[password_confirmation]',
+          label: 'Confirm Password',
+          placeholder: 'Confirm Password',
+          autocomplete: 'new-password',
+          required: true,
+          class: 'register-input-confirm-password-field'
+        %}
+      {%- endform -%}
+
+      <!-- External Register Button -->
+      <button
+        id="register-submit-button-external"
+        class="register-button ff-general-sans fs-14-lh-100pct-ls-0 fw-600"
+        disabled
+      >
+        {{ 'customer.register.submit' | t | default: 'Submit' }}
+      </button>
+
+      <!-- Response Message -->
+      <div id="response-message" class="response-message"></div>
+
+      <div class="back-link">
+        <a
+          href="{{ routes.account_login_url }} "
+          class="ff-general-sans fs-14-lh-100pct-ls-0 fw-600"
+          aria-label="{{ 'customer.register.log_in' | t | default: 'Return to login' }}"
         >
-        <button type="button" id="send-otp-button" class="btn btn--secondary btn--small">Send OTP</button>
+          {{ 'customer.register.log_in' | t | default: 'Return to login' }}
+        </a>
       </div>
-      <p id="otp-message-send-fail" class="form__field-message"></p>
-      {%- if form.errors contains 'phone' -%}
-        <p class="form__field-error" id="register-phone-error">
-          {{ form.errors.translated_fields.phone | capitalize }}
-          {{ form.errors.messages.phone }}.
-        </p>
-      {%- endif -%}
     </div>
-
-    <div class="form__field" id="otp-field-container" style="display: none;">
-      <label class="label sr-only" for="register-otp">Enter OTP Code</label>
-      <div class="input-with-icon">
-        <input
-          type="text"
-          class="input w-full"
-          id="register-otp"
-          name="customer[note][otp_code]"
-          placeholder="Enter OTP Code"
-          autocomplete="one-time-code"
-          {%- if form.errors contains 'otp_code' %}
-            aria-invalid="true" aria-describedby="register-otp-error"
-          {%- endif %}
-        >
-      </div>
-      <p id="otp-message" class="form__field-message"></p>
-      {%- if form.errors contains 'otp_code' -%}
-        <p class="form__field-error" id="register-otp-error">
-          {{ form.errors.translated_fields.otp_code | capitalize }}
-          {{ form.errors.messages.otp_code }}.
-        </p>
-      {%- endif -%}
-    </div>
-
-    <div class="form__field">
-      <label class="label" for="register-email">{{ 'customer.register.email' | t }}</label>
-      <input
-        type="email"
-        class="input w-full"
-        id="register-email"
-        name="customer-email"
-        {%- if form.email %}
-          value="{{ form.email }}"
-        {%- endif %}
-        autocomplete="email"
-        {%- if form.errors contains 'email' %}
-          aria-invalid="true" aria-describedby="register-email-error"
-        {%- endif %}
-      >
-      {%- if form.errors contains 'email' -%}
-        <p class="form__field-error" id="register-email-error">
-          {{ form.errors.translated_fields.email | capitalize }}
-          {{ form.errors.messages.email }}.
-        </p>
-      {%- endif -%}
-    </div>
-
-    <div class="form__field required">
-      <label class="label" for="register-password">
-        {{- 'customer.register.password' | t -}}
-        <span style="color:red">*</span>
-      </label>
-      <input
-        type="password"
-        class="input w-full"
-        id="register-password"
-        name="customer[password]"
-        autocomplete="new-password"
-        {%- if form.errors contains 'password' %}
-          aria-invalid="true" aria-describedby="register-password-error"
-        {%- endif %}
-        aria-required="true"
-        required
-      >
-      {%- if form.errors contains 'password' -%}
-        <p class="form__field-error" id="register-password-error">
-          {{ form.errors.translated_fields.password | capitalize }}
-          {{ form.errors.messages.password }}.
-        </p>
-      {%- endif -%}
-    </div>
-  {%- endform -%}
-
-  <div class="mt-6 form-width" style="margin:20px auto;">
-    <button class="btn btn--primary w-full" id="register-submit-button" disabled>
-      {{ 'customer.register.submit' | t }}
-    </button>
   </div>
-
-  <p class="mt-8 mb-0 text-center">
-    {{ 'customer.register.have_account' | t }}
-    <a class="link" href="{{ routes.account_login_url }}">{{ 'customer.register.log_in' | t }}</a>
-  </p>
 </div>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const registrationForm = document.querySelector('form[name="create_customer"]');
-    const firstNameInput = document.getElementById('register-first-name');
-    const lastNameInput = document.getElementById('register-last-name');
-    const phoneInput = document.getElementById('register-phone');
-    const emailInput = document.getElementById('register-email');
+    // Password toggles
+    const passwordToggles = document.querySelectorAll('.toggle-password');
+
+    passwordToggles.forEach((toggle) => {
+      toggle.addEventListener('click', function () {
+        const targetId = this.getAttribute('data-target');
+        const passwordInput = document.getElementById(targetId);
+        const openEye = passwordInput.parentElement.querySelector('.password-toggle-eye-open');
+        const closeEye = passwordInput.parentElement.querySelector('.password-toggle-eye-close');
+
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          if (openEye) openEye.style.display = 'none';
+          if (closeEye) closeEye.style.display = 'flex';
+        } else {
+          passwordInput.type = 'password';
+          if (closeEye) closeEye.style.display = 'none';
+          if (openEye) openEye.style.display = 'flex';
+        }
+      });
+    });
+
+    // Form elements
+    const firstNameInput = document.getElementById('customer-first-name');
+    const lastNameInput = document.getElementById('customer-last-name');
+    const phoneInput = document.getElementById('customer-phone');
+    const emailInput = document.getElementById('customer-email');
+    const passwordInput = document.getElementById('customer-password');
+    const confirmPasswordInput = document.getElementById('customer-confirm-password');
     const sendOtpButton = document.getElementById('send-otp-button');
-    const passwordInput = document.getElementById('register-password');
-    const otpFieldContainer = document.getElementById('otp-field-container');
-    const otpInput = document.getElementById('register-otp');
+    const otpContainer = document.getElementById('otp-container');
     const otpMessage = document.getElementById('otp-message');
-    const otpMessageSendFail = document.getElementById('otp-message-send-fail');
-    const submitButton = document.getElementById('register-submit-button');
+    const registerButton = document.getElementById('register-submit-button-external');
+    const registerForm = document.querySelector('.register-submit-form');
+    const otpDigits = document.querySelectorAll('.otp-digit');
+    const otpHiddenInput = document.getElementById('customer-otp-hidden');
+    const responseMessage = document.getElementById('response-message');
+
     const API_BASE_URL = `/apps/${APP_SUB_PATH}/customer/account`;
 
-    let correctOtpCode = null;
-    let isOtpMatched = false;
+    let isOtpSent = false;
 
-    submitButton.disabled = true; // initially disable external button
-
-    // Function to clean phone number (remove spaces and dashes) and ensure +880 prefix
-    function cleanPhoneNumber(phone) {
-      if (!phone || phone.trim() === '') {
-        return '';
-      }
-
-      // Remove spaces and dashes
-      let cleanedPhone = phone.replace(/[\s-]/g, '');
-
-      // Always prepend +880 to whatever the user typed
-      return '+880' + cleanedPhone;
-    }
-
-    // Function to validate phone number (user portion should be exactly 10 digits)
+    // Phone validation - now accepts both formats
     function validatePhoneNumber(phone) {
-      if (!phone || phone.trim() === '') {
-        return false;
-      }
-
-      // Remove spaces and dashes
+      if (!phone || phone.trim() === '') return false;
       let cleanedPhone = phone.replace(/[\s-]/g, '');
 
-      // Check if it's exactly 10 digits
-      return /^\d{10}$/.test(cleanedPhone);
+      // Check if it's a valid BD number with or without +88
+      if (cleanedPhone.startsWith('+88')) {
+        cleanedPhone = cleanedPhone.substring(3);
+      }
+
+      return /^01\d{9}$/.test(cleanedPhone);
     }
 
-    if (sendOtpButton && phoneInput && otpFieldContainer && otpInput) {
+    // Clean phone number - smart +88 handling
+    function cleanPhoneNumber(phone) {
+      if (!phone || phone.trim() === '') return '';
+      let cleanedPhone = phone.replace(/[\s-]/g, '');
+
+      // If already has +88, keep it
+      if (cleanedPhone.startsWith('+88')) {
+        return cleanedPhone;
+      }
+
+      // If doesn't have +88, add it
+      return '+88' + cleanedPhone;
+    }
+
+    // Show response message
+    function showResponseMessage(message, type) {
+      responseMessage.textContent = message;
+      responseMessage.className = `response-message ${type} show`;
+
+      // Auto hide after 5 seconds for success messages
+      if (type === 'success') {
+        setTimeout(() => {
+          responseMessage.classList.remove('show');
+        }, 5000);
+      }
+    }
+
+    // Hide response message
+    function hideResponseMessage() {
+      responseMessage.classList.remove('show');
+    }
+
+    // Show message
+    function showMessage(element, message, type) {
+      element.textContent = message;
+      element.className = `otp-message ${type}`;
+    }
+
+    // OTP Input Handling
+    function setupOtpInputs() {
+      otpDigits.forEach((input, index) => {
+        // Handle input
+        input.addEventListener('input', function (e) {
+          const value = e.target.value;
+
+          // Only allow numbers
+          if (!/^\d*$/.test(value)) {
+            e.target.value = '';
+            return;
+          }
+
+          // Add filled class
+          if (value) {
+            e.target.classList.add('filled');
+            // Move to next input
+            if (index < otpDigits.length - 1) {
+              otpDigits[index + 1].focus();
+            }
+          } else {
+            e.target.classList.remove('filled');
+          }
+
+          // Update hidden input
+          updateOtpValue();
+        });
+
+        // Handle backspace
+        input.addEventListener('keydown', function (e) {
+          if (e.key === 'Backspace' && !e.target.value && index > 0) {
+            otpDigits[index - 1].focus();
+          }
+        });
+
+        // Handle paste
+        input.addEventListener('paste', function (e) {
+          e.preventDefault();
+          const pastedData = e.clipboardData.getData('text');
+          const digits = pastedData.replace(/\D/g, '').split('').slice(0, 6);
+
+          digits.forEach((digit, i) => {
+            if (otpDigits[i]) {
+              otpDigits[i].value = digit;
+              otpDigits[i].classList.add('filled');
+            }
+          });
+
+          // Focus the next empty input or last input
+          const nextEmptyIndex = digits.length < 6 ? digits.length : 5;
+          if (otpDigits[nextEmptyIndex]) {
+            otpDigits[nextEmptyIndex].focus();
+          }
+          updateOtpValue();
+        });
+      });
+    }
+
+    // Update hidden OTP input value
+    function updateOtpValue() {
+      const otpValue = Array.from(otpDigits)
+        .map((input) => input.value)
+        .join('');
+      otpHiddenInput.value = otpValue;
+    }
+
+    // Clear OTP inputs
+    function clearOtpInputs() {
+      otpDigits.forEach((input) => {
+        input.value = '';
+        input.classList.remove('filled');
+      });
+      otpHiddenInput.value = '';
+      if (otpDigits[0]) otpDigits[0].focus();
+    }
+
+    // Get OTP value
+    function getOtpValue() {
+      return Array.from(otpDigits)
+        .map((input) => input.value)
+        .join('');
+    }
+
+    // Check form validity
+    function checkFormValidity() {
+      const firstName = firstNameInput.value.trim();
+      const lastName = lastNameInput.value.trim();
+      const phone = phoneInput.value.trim();
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
+
+      const isValid =
+        firstName &&
+        lastName &&
+        phone &&
+        validatePhoneNumber(phone) &&
+        password &&
+        confirmPassword &&
+        password === confirmPassword &&
+        isOtpSent;
+
+      registerButton.disabled = !isValid;
+    }
+
+    // Send OTP
+    if (sendOtpButton) {
       sendOtpButton.addEventListener('click', async () => {
         const phoneNumber = phoneInput.value.trim();
+        hideResponseMessage();
 
         if (!phoneNumber) {
-          alert('Please enter a phone number first.');
+          showResponseMessage('Please enter a phone number first.', 'error');
           return;
         }
 
         if (!validatePhoneNumber(phoneNumber)) {
-          alert('Please enter a valid 10-digit phone number.');
+          showResponseMessage('Please enter a valid Bangladesh phone number.', 'error');
           return;
         }
 
@@ -242,10 +659,10 @@
         phoneInput.disabled = true;
         sendOtpButton.disabled = true;
         sendOtpButton.textContent = 'Sending...';
-        otpMessage.textContent = '';
-        otpMessage.classList.remove('text-error-text', 'text-success-text');
-        isOtpMatched = false;
-        submitButton.disabled = true;
+        showMessage(otpMessage, '', '');
+        isOtpSent = false;
+        registerButton.disabled = true;
+        clearOtpInputs();
 
         try {
           const response = await fetch(`${API_BASE_URL}/send-otp`, {
@@ -256,69 +673,71 @@
           const data = await response.json();
 
           if (response.ok) {
-            otpFieldContainer.style.display = 'block';
-            otpInput.focus();
+            otpContainer.classList.add('active');
+            if (otpDigits[0]) otpDigits[0].focus();
             sendOtpButton.textContent = 'Resend OTP';
-            otpMessage.textContent = 'OTP was sent to your phone.';
-            otpMessage.classList.add('text-success-text');
-            otpMessageSendFail.textContent = '';
-            otpMessageSendFail.classList.remove('text-error-text');
-            if (data.otp) correctOtpCode = data.otp;
+            showMessage(otpMessage, 'OTP sent to your phone.', 'success');
+            isOtpSent = true;
+            checkFormValidity();
           } else {
             sendOtpButton.textContent = 'Send OTP';
-            otpMessageSendFail.textContent = data.message || 'Failed to send OTP. Please try again.';
-            otpMessageSendFail.classList.add('text-error-text');
-            phoneInput.disabled = false;
-            sendOtpButton.disabled = false;
-            sendOtpButton.textContent = 'Send OTP';
+            showResponseMessage(data.message || 'Failed to send OTP. Please try again.', 'error');
           }
+
+          phoneInput.disabled = false;
+          sendOtpButton.disabled = false;
         } catch (error) {
-          alert('An error occurred while trying to send OTP.');
+          showResponseMessage('An error occurred while trying to send OTP.', 'error');
           phoneInput.disabled = false;
           sendOtpButton.disabled = false;
           sendOtpButton.textContent = 'Send OTP';
         }
       });
-
-      otpInput.addEventListener('input', () => {
-        if (correctOtpCode) {
-          if (otpInput.value === correctOtpCode) {
-            otpMessage.textContent = 'OTP matched!';
-            otpMessage.classList.remove('text-error-text');
-            otpMessage.classList.add('text-success-text');
-            isOtpMatched = true;
-            submitButton.disabled = false;
-          } else {
-            otpMessage.textContent = "OTP doesn't match.";
-            otpMessage.classList.remove('text-success-text');
-            otpMessage.classList.add('text-error-text');
-            isOtpMatched = false;
-            submitButton.disabled = true;
-          }
-        }
-      });
     }
-    if (submitButton) {
-      console.log('Submit button found');
-      submitButton.addEventListener('click', async () => {
-        console.log('Submit button clicked');
-        if (!isOtpMatched) {
-          alert('Please verify your phone number first.');
+
+    // Form validation listeners
+    [firstNameInput, lastNameInput, phoneInput, passwordInput, confirmPasswordInput].forEach((input) => {
+      if (input) {
+        input.addEventListener('input', checkFormValidity);
+      }
+    });
+
+    // Register button
+    if (registerButton) {
+      registerButton.addEventListener('click', async () => {
+        hideResponseMessage();
+
+        if (!isOtpSent) {
+          showResponseMessage('Please send and verify OTP first.', 'error');
           return;
         }
 
         if (!validatePhoneNumber(phoneInput.value.trim())) {
-          alert('Please enter a valid 10-digit phone number.');
+          showResponseMessage('Please enter a valid Bangladesh phone number.', 'error');
           return;
         }
 
+        if (passwordInput.value !== confirmPasswordInput.value) {
+          showResponseMessage('Passwords do not match.', 'error');
+          return;
+        }
+
+        const otpValue = getOtpValue();
+        if (otpValue.length !== 6) {
+          showResponseMessage('Please enter the complete 6-digit OTP.', 'error');
+          return;
+        }
+
+        registerButton.disabled = true;
+        registerButton.textContent = 'Registering...';
+
         const formData = {
-          first_name: firstNameInput.value,
-          last_name: lastNameInput.value,
-          phone: cleanPhoneNumber(phoneInput.value),
-          email: emailInput.value,
+          first_name: firstNameInput.value.trim(),
+          last_name: lastNameInput.value.trim(),
+          phone: cleanPhoneNumber(phoneInput.value.trim()),
+          email: emailInput.value.trim() || undefined,
           password: passwordInput.value,
-          otp: correctOtpCode,
+          otp: otpValue,
         };
 
         try {
@@ -331,102 +750,46 @@
           const data = await response.json();
 
           if (response.ok) {
-            alert('Registration successful!');
+            showResponseMessage('Registration successful! Redirecting to login...', 'success');
+            setTimeout(() => {
+              window.location.href = '/account/login';
+            }, 2000);
           } else {
-            alert(data.message || 'Registration failed. Please try again.');
+            showResponseMessage(data.message || 'Registration failed. Please try again.', 'error');
           }
         } catch (error) {
-          alert('An error occurred during registration.');
+          showResponseMessage('An error occurred during registration. Please try again.', 'error');
+        } finally {
+          registerButton.disabled = false;
+          registerButton.textContent = '{{ "customer.register.submit" | t | default: "Submit" }}';
+          checkFormValidity();
         }
       });
     }
+
+    // Initialize OTP inputs
+    setupOtpInputs();
+
+    // Initial form check
+    checkFormValidity();
   });
 </script>
-
-<style>
-  /* Basic styling for the phone input and button alignment */
-  .input-with-icon-and-button {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border: 1px solid #ccc;
-    border-radius: var(--input-border-radius, 4px);
-    padding: 0;
-    overflow: hidden;
-  }
-
-  .input-with-icon {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border: 1px solid #ccc;
-    border-radius: var(--input-border-radius, 4px);
-    padding: 0;
-    overflow: hidden;
-  }
-
-  .input-with-icon-and-button .input,
-  .input-with-icon .input {
-    flex-grow: 1;
-    border: none;
-    padding: 10px 12px;
-    height: auto;
-  }
-
-  .input-with-icon-and-button .input:focus,
-  .input-with-icon .input:focus {
-    outline: none;
-    box-shadow: none;
-  }
-
-  .input-icon {
-    padding-left: 12px;
-    color: #888;
-    font-size: 1.2em;
-  }
-
-  .input-with-icon-and-button .btn--secondary,
-  .input-with-icon-and-button .btn--small {
-    flex-shrink: 0;
-    height: 100%;
-    border-radius: 0 var(--input-border-radius, 4px) var(--input-border-radius, 4px) 0;
-    margin-left: auto;
-    padding: 10px 15px;
-  }
-
-  .btn--small {
-    padding: 8px 12px;
-    font-size: 0.8em;
-  }
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
-
-  .form__field-message {
-    font-size: 0.85em;
-    margin-top: 5px;
-  }
-
-  .text-success-text {
-    color: green;
-  }
-
-  .text-error-text {
-    color: red;
-  }
-</style>
 
 {% schema %}
 {
   "name": "Register",
-  "class": "cc-main-register section section--template"
+  "class": "cc-main-register section section--template",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Registration form settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_phone_verification",
+      "label": "Enable phone verification",
+      "default": true
+    }
+  ]
 }
 {% endschema %}
