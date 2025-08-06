@@ -39,15 +39,74 @@ if (!customElements.get("slideshow-component")) {
         );
 
         const swiperConfig = {
-          loop: true,
-          navigation: {
-            nextEl: customNextButton,
-            prevEl: customPrevButton,
-          },
+          loop: false,
+          navigation: false,
           pagination: false,
+          resistance: true,
+          resistanceRatio: 0.85,
           on: {
             slideChange: (swiper) => {
               this.updateCustomBullets(swiper.realIndex);
+            },
+            touchMove: (swiper, event) => {
+              // Track if user is dragging beyond boundaries
+              const touchCurrentX = event.touches
+                ? event.touches[0].clientX
+                : event.clientX;
+              const touchStartX = swiper.touchStartX || touchCurrentX;
+              const dragDistance = touchCurrentX - touchStartX;
+              const threshold = 100; // Large threshold for very deliberate action
+
+              // Store intent to loop based on strong drag beyond boundary
+              // FIXED: At END + drag RIGHT (positive) = go to START
+              if (
+                swiper.activeIndex === swiper.slides.length - 1 &&
+                dragDistance > threshold
+              ) {
+                swiper.intentToLoopToStart = true;
+                swiper.intentToLoopToEnd = false;
+                // FIXED: At START + drag LEFT (negative) = go to END
+              } else if (
+                swiper.activeIndex === 0 &&
+                dragDistance < -threshold
+              ) {
+                swiper.intentToLoopToEnd = true;
+                swiper.intentToLoopToStart = false;
+              } else {
+                // Reset intent if drag becomes less aggressive
+                swiper.intentToLoopToStart = false;
+                swiper.intentToLoopToEnd = false;
+              }
+            },
+            touchEnd: (swiper, event) => {
+              // Only loop if there was clear intent during the drag
+              if (swiper.intentToLoopToStart) {
+                // From END to START
+                setTimeout(() => {
+                  swiper.slideTo(0, 600);
+                }, 200);
+              } else if (swiper.intentToLoopToEnd) {
+                // From START to END
+                setTimeout(() => {
+                  swiper.slideTo(swiper.slides.length - 1, 600);
+                }, 200);
+              }
+
+              // Reset intent flags
+              swiper.intentToLoopToStart = false;
+              swiper.intentToLoopToEnd = false;
+            },
+            touchStart: (swiper, event) => {
+              // Store the starting touch position
+              swiper.touchStartX = event.touches
+                ? event.touches[0].clientX
+                : event.clientX;
+              swiper.intentToLoopToStart = false;
+              swiper.intentToLoopToEnd = false;
+            },
+            transitionEnd: (swiper) => {
+              // Update bullets after any transition completes
+              this.updateCustomBullets(swiper.activeIndex);
             },
           },
         };
@@ -56,7 +115,28 @@ if (!customElements.get("slideshow-component")) {
           swiperConfig.pagination = {
             el: ".progress-bar-pagination",
             type: "progressbar",
+            clickable: true,
           };
+
+          // Add click handler for progress bar looping
+          const progressBar = this.querySelector(".progress-bar-pagination");
+          if (progressBar) {
+            progressBar.addEventListener("click", (e) => {
+              const rect = progressBar.getBoundingClientRect();
+              const clickPosition = (e.clientX - rect.left) / rect.width;
+              const totalSlides = this.swiper.slides.length;
+              const targetSlide = Math.floor(clickPosition * totalSlides);
+
+              // Handle wraparound if clicking near the edges
+              if (targetSlide >= totalSlides) {
+                this.swiper.slideTo(0, 400);
+              } else if (targetSlide < 0) {
+                this.swiper.slideTo(totalSlides - 1, 400);
+              } else {
+                this.swiper.slideTo(targetSlide);
+              }
+            });
+          }
         }
 
         // Carousel mode configuration
@@ -69,12 +149,65 @@ if (!customElements.get("slideshow-component")) {
             momentumBounceRatio: 1,
           };
 
-          swiperConfig.loop = false;
+          // Enhanced carousel mode with gentle looping
           swiperConfig.grabCursor = true;
           swiperConfig.resistanceRatio = 0.85;
           swiperConfig.slidesPerView = "auto";
           swiperConfig.spaceBetween = 16;
           swiperConfig.centeredSlides = false;
+
+          // Override the touchMove handler specifically for carousel mode
+          const originalTouchMove = swiperConfig.on.touchMove;
+          swiperConfig.on.touchMove = (swiper, event) => {
+            const touchCurrentX = event.touches
+              ? event.touches[0].clientX
+              : event.clientX;
+            const touchStartX = swiper.touchStartX || touchCurrentX;
+            const dragDistance = touchCurrentX - touchStartX;
+            const threshold = 150; // Very high threshold for carousel mode
+
+            // Check if we're at the actual end (last slide)
+            const isAtActualEnd =
+              swiper.activeIndex === swiper.slides.length - 1;
+
+            // FIXED: When at END and user drags RIGHT (positive dragDistance)
+            // = user wants to go to START (wrap around)
+            if (isAtActualEnd && dragDistance > threshold) {
+              swiper.intentToLoopToStart = true;
+              swiper.intentToLoopToEnd = false;
+            }
+            // FIXED: When at START and user drags LEFT (negative dragDistance)
+            // = user wants to go to END (wrap around backwards)
+            else if (swiper.activeIndex === 0 && dragDistance < -threshold) {
+              swiper.intentToLoopToEnd = true;
+              swiper.intentToLoopToStart = false;
+            } else {
+              // Reset intent if drag is not strong enough or not at boundaries
+              swiper.intentToLoopToStart = false;
+              swiper.intentToLoopToEnd = false;
+            }
+          };
+
+          // Override the touchEnd handler specifically for carousel mode
+          const originalTouchEnd = swiperConfig.on.touchEnd;
+          swiperConfig.on.touchEnd = (swiper, event) => {
+            if (swiper.intentToLoopToStart) {
+              // From END to START
+              setTimeout(() => {
+                swiper.setTransition(600);
+                swiper.slideTo(0);
+              }, 300);
+            } else if (swiper.intentToLoopToEnd) {
+              // From START to END
+              setTimeout(() => {
+                swiper.setTransition(600);
+                swiper.slideTo(swiper.slides.length - 1);
+              }, 300);
+            }
+
+            swiper.intentToLoopToStart = false;
+            swiper.intentToLoopToEnd = false;
+          };
 
           swiperConfig.breakpoints = {
             320: {
@@ -161,9 +294,47 @@ if (!customElements.get("slideshow-component")) {
             disableOnInteraction: false,
             pauseOnMouseEnter: pauseOnHover,
           };
+
+          // Enhanced autoplay with looping
+          const originalAutoplayConfig = swiperConfig.on.slideChange;
+          swiperConfig.on.slideChange = (swiper) => {
+            originalAutoplayConfig(swiper);
+
+            // If autoplay reaches the end, loop to beginning
+            if (swiper.activeIndex === swiper.slides.length - 1) {
+              setTimeout(() => {
+                swiper.slideTo(0, 800);
+              }, autoplayDelay);
+            }
+          };
         }
 
         this.swiper = new Swiper(swiperContainer, swiperConfig);
+
+        // Setup manual navigation (keeping existing behavior)
+        if (customNextButton) {
+          customNextButton.addEventListener("click", () => {
+            if (this.swiper.activeIndex === this.swiper.slides.length - 1) {
+              // At last slide, slide back to first
+              this.swiper.slideTo(0, 800);
+            } else {
+              // Normal next slide
+              this.swiper.slideNext();
+            }
+          });
+        }
+
+        if (customPrevButton) {
+          customPrevButton.addEventListener("click", () => {
+            if (this.swiper.activeIndex === 0) {
+              // At first slide, slide to last
+              this.swiper.slideTo(this.swiper.slides.length - 1, 800);
+            } else {
+              // Normal prev slide
+              this.swiper.slidePrev();
+            }
+          });
+        }
       }
     }
 
@@ -173,7 +344,8 @@ if (!customElements.get("slideshow-component")) {
       this.customBullets.forEach((bullet, index) => {
         bullet.addEventListener("click", () => {
           if (this.swiper) {
-            this.swiper.slideToLoop(index);
+            // Use slideTo instead of slideToLoop for consistent behavior
+            this.swiper.slideTo(index);
           }
         });
       });
