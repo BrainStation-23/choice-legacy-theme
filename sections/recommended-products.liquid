@@ -71,11 +71,11 @@
   }
 {%- endstyle -%}
 
-<div class="recommended-products recommended-products-{{ section.id }} pt-0 pb-88 sm-pt-16 sm-pb-16">
-  <div class="recommended-products__container page-width flex flex-col gap-48 sm-gap-16">
+<div class="recommended-products recommended-products-{{ section.id }} pt-0 pb-88 sm:pt-16 sm:pb-16">
+  <div class="recommended-products__container page-width flex flex-col gap-48 sm:gap-16">
     {% if section.settings.heading != blank %}
       <div class="desktop-grid">
-        <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0 sm-fs-21-lh-24-ls-1_2pct text-center">
+        <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct text-center">
           {{ section.settings.heading }}
         </h2>
       </div>
@@ -108,7 +108,7 @@
       >
         {% if section.settings.heading != blank %}
           <div class="flex justify-between items-end relative">
-            <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0 sm-fs-21-lh-24-ls-1_2pct text-center">
+            <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct text-center">
               {{ section.settings.heading }}
             </h2>
 

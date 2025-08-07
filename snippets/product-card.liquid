@@ -123,7 +123,7 @@
         {% assign collection_handle = product.type | handleize %}
         {% assign collection_url = routes.collections_url | append: '/' | append: collection_handle %}
         <a href="{{ collection_url }}" class="product-card__type-link relative z-3 no-underline text-inherit flex items-center" onclick="event.stopPropagation();">
-          <p class="product-card__type b-100 pt-2 pr-8 pb-2 pl-8 cursor-pointer relative z-2 mh-24 bg-brand-2 fw-500 fs-11-lh-11-ls--0_275 flex items-center">{{ product.type }}</p>
+          <p class="product-card__type b-100 pt-2 pr-8 pb-2 pl-8 cursor-pointer relative z-2 min-h-24 bg-brand-2 fw-500 fs-11-lh-11-ls--0_275 flex items-center">{{ product.type }}</p>
         </a>
       {% endif %}
 
@@ -165,7 +165,7 @@
       <!-- Placeholder content -->
       {% if show_type %}
         <a href="#" class="product-card__type-link relative z-3 no-underline text-inherit flex items-center" onclick="event.stopPropagation();">
-          <p class="product-card__type b-100 pt-2 pr-8 pb-2 pl-8 cursor-pointer relative z-2 mh-24 bg-brand-2 fw-500 fs-11-lh-11-ls--0_275 flex items-center">
+          <p class="product-card__type b-100 pt-2 pr-8 pb-2 pl-8 cursor-pointer relative z-2 min-h-24 bg-brand-2 fw-500 fs-11-lh-11-ls--0_275 flex items-center">
             {{ 'sections.product.placeholder.product_type' | t }}
           </p>
         </a>
