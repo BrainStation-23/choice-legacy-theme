@@ -52,6 +52,7 @@
 
   .product-card__content {
     padding: 8px 12px;
+    flex: 1;
   }
 
   .product-card__image {
@@ -133,7 +134,7 @@
 {% assign loading = loading | default: 'lazy' %}
 {% assign image_ratio = 1 %}
 
-<div class="product-card {{ css_classes }} {% if settings.show_product_card_box_shadow %}box-shadow{% endif %}" {% if product %}data-product-id="{{ product.id }}"{% endif %}>
+<div class="product-card flex flex-col {{ css_classes }} {% if settings.show_product_card_box_shadow %}box-shadow{% endif %}" {% if product %}data-product-id="{{ product.id }}"{% endif %}>
   <div class="product-card__image-container">
     {% if product and product != empty %}
       {% if product.featured_image %}
@@ -187,7 +188,7 @@
     {% endif %}
   </div>
 
-  <div class="product-card__content flex flex-col gap-4">
+  <div class="product-card__content flex flex-col justify-end gap-4">
     {% if product and product != empty %}
       {% if show_type and product.type != blank %}
         {% assign collection_handle = product.type | handleize %}
