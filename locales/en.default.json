@@ -40,5 +40,26 @@
         "lb": "lb"
       }
     }
+  },
+  "customer": {
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "phone": "Phone Number",
+      "password": "Password",
+      "forgot_password": "Forgot your password?",
+      "sign_in": "Login",
+      "create_account": "Create an account",
+      "new_customer": "New customer?",
+      "guest_title": "Guest Checkout",
+      "guest_continue": "Continue as Guest"
+    },
+    "recover_password": {
+      "title": "Recover your password",
+      "subtext": "Please enter your email address to receive a verification code.",
+      "success": "A verification code has been sent to your email address.",
+      "submit": " Send verification code",
+      "cancel": "Cancel"
+    }
   }
 }
