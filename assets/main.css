@@ -601,6 +601,9 @@ address {
 .h-full {
   height: 100%;
 }
+.h-254 {
+  height: 254px;
+}
 .w-auto {
   width: auto;
 }
@@ -619,6 +622,11 @@ address {
 .max-w-screen-md {
   max-width: 769px;
 }
+
+.w-116 {
+  width: 116px !important;
+}
+
 .flex-auto {
   flex: 1 1 auto;
 }
@@ -658,6 +666,9 @@ address {
 .grid-cols-2 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
+.grid-cols-5 {
+  grid-template-columns: repeat(5, 1fr);
+}
 .flex-row {
   flex-direction: row;
 }
@@ -690,6 +701,9 @@ address {
 }
 .justify-center {
   justify-content: center;
+}
+.justify-items {
+  justify-items: center;
 }
 .justify-between {
   justify-content: space-between;
@@ -991,6 +1005,9 @@ address {
 .pb-6 {
   padding-bottom: calc(6 * var(--space-unit));
 }
+.pb-88 {
+  padding-bottom: calc(88 * var(--space-unit));
+}
 .pl-4 {
   padding-left: calc(4 * var(--space-unit));
 }
@@ -1017,6 +1034,9 @@ address {
 }
 .pt-6 {
   padding-top: calc(6 * var(--space-unit));
+}
+.pt-88 {
+  padding-top: calc(88 * var(--space-unit));
 }
 .text-left {
   text-align: left;
@@ -1252,6 +1272,10 @@ address {
 .text-error-text {
   --heading-color: rgb(var(--error-text-color));
   --link-color: rgb(var(--error-text-color));
+}
+
+.text-decoration-none {
+  text-decoration: none;
 }
 
 button {

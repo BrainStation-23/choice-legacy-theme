@@ -1,19 +1,10 @@
 {{ 'collections-list.css' | asset_url | stylesheet_tag }}
-{% assign minShown = 5 %}
-{% assign blockCount = section.blocks.size %}
-{% if blockCount < minShown %}
-  {% assign minShown = blockCount %}
-{% endif %}
 {% assign image_ratio = 1 %}
 <style>
-    .collections-list-{{ section.id }} {
-      padding-top: 88px;
-      padding-bottom: 88px;
-    }
 
     .collections-list__grid {
       display: grid;
-      grid-template-columns: repeat({{ minShown }}, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       justify-items: center;
       align-items: stretch;
     }
@@ -72,21 +63,21 @@
     }
 </style>
 
-<section class="collections-list collections-list-{{ section.id }}">
-  <div class="collections-list__container page-width gap-64">
+<section class="pt-88 pb-88 w-full">
+  <div class="flex flex-col page-width gap-64">
     {% if section.settings.title != blank %}
-      <h2 class="collections-list__title ff-bebas-neue fw-400 fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct">
+      <h2 class="text-center ff-bebas-neue fw-400 fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct">
         {{ section.settings.title }}
       </h2>
     {% endif %}
 
-    <div class="collections-list__grid gap-24">
+    <div class="grid grid-cols-5 items-stretch justify-items gap-24">
       {% for block in section.blocks %}
         {% if block.settings.collection %}
-          <div class="collections-list__item" {{ block.shopify_attributes }}>
-            <a href="{{ block.settings.collection.url }}" class="collections-list__link">
+          <div class="w-full flex flex-col" {{ block.shopify_attributes }}>
+            <a href="{{ block.settings.collection.url }}" class="flex flex-col text-decoration-none h-full">
               <div
-                class="collection-list-image media block relative"
+                class="media block relative"
                 style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;"
               >
                 {% if block.settings.collection.featured_image %}
@@ -155,8 +146,8 @@
                         %}
                       </div>
                     {% else %}
-                      <div class="collections-list__image">
-                        {{ 'collection-1' | placeholder_svg_tag: 'collections-list__image' }}
+                      <div class="w-full h-254">
+                        {{ 'collection-1' | placeholder_svg_tag: 'w-full h-full' }}
                       </div>
                     {% endif %}
 
