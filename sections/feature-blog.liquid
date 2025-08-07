@@ -57,9 +57,9 @@
 </style>
 
 <article class="blog-section blog-section-{{ section.id }}">
-  <div class="blog-section__container page-width gap-48 mobile-gap-16">
+  <div class="blog-section__container page-width gap-48 sm-gap-16">
     {% if section.settings.blog_title != blank %}
-      <div class="blog-section__title fs-36-lh-40-ls-0 ff-bebas-neue fw-400 mobile-fs-21-lh-24-ls-1_2pct">
+      <div class="blog-section__title fs-36-lh-40-ls-0 ff-bebas-neue fw-400 sm-fs-21-lh-24-ls-1_2pct">
         {{ section.settings.blog_title }}
       </div>
     {% endif %}
@@ -89,7 +89,7 @@
             {% endif %}
           </div>
           <div class="blog-card__content gap-8">
-            <h3 class="blog-card__title ff-general-sans fs-23-lh-24-ls-0 fw-500 mobile-fs-17-lh-24-ls-0 ">
+            <h3 class="blog-card__title ff-general-sans fs-23-lh-24-ls-0 fw-500 sm-fs-17-lh-24-ls-0">
               {{ article.title }}
             </h3>
             <p class="blog-card__excerpt ff-general-sans fs-14-lh-20-ls-0 fw-400">
