@@ -58,7 +58,7 @@
       "resend_otp": "Resend OTP"
     },
     "recover_password": {
-      "title": "Recover your password",
+      "title": "Forget password",
       "subtext": "Please enter your email address to receive a verification code.",
       "success": "A verification code has been sent to your email address.",
       "submit": " Reset Password",
