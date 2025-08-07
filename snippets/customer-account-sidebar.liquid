@@ -1,0 +1,288 @@
+<style>
+  .customer-account__sidebar {
+    flex: 1 0 0;
+    padding: 16px;
+    border: 1px solid rgba(var(--color-secondary-text), 0.1);
+    border-radius: 6px;
+  }
+  .customer-account__sidebar-items {
+    padding: 0 !important;
+    list-style: none;
+    margin: 0;
+  }
+  .customer-account__sidebar-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 0px !important;
+    color: rgba(var(--color-primary-text), 0.9);
+  }
+
+  .customer-account__sidebar-item:hover {
+    border-bottom: 2px solid rgb(var(--color-primary-brand));
+    cursor: pointer;
+    color: rgb(var(--color-primary-brand)); /* hover icon + text color */
+  }
+  .customer-account__sidebar-item:hover .account-sidebar-item-title {
+    color: rgb(var(--color-primary-brand));
+  }
+  .customer-account__sidebar-item:hover .customer-account__sidebar-item svg {
+    height: 28px !important;
+    width: 28px !important;
+  }
+
+  .account-sidebar-item-title {
+    margin: 0 !important;
+    color: rgba(var(--color-primary-text), 0.9);
+  }
+
+  /* Mobile Styles */
+  @media (max-width: 768px) {
+    .customer-account__sidebar {
+      border: none;
+      padding: 0;
+      position: relative;
+    }
+
+    /* Selected/Visible Item */
+    .customer-account__sidebar-selected {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      border-bottom: 1px solid rgba(var(--color-secondary-text), 0.1);
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 0;
+    }
+
+    .customer-account__sidebar-selected:hover {
+      border-color: rgba(var(--color-primary-brand), 0.3);
+    }
+
+    .selected-content {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dropdown-arrow {
+      transition: transform 0.3s ease;
+      width: 20px;
+      height: 20px;
+      color: rgba(var(--color-primary-text), 0.6);
+    }
+
+    .dropdown-arrow.expanded {
+      transform: rotate(180deg);
+    }
+
+    /* Dropdown Menu */
+    .customer-account__sidebar-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: rgb(var(--color-background));
+      border: 1px solid rgba(var(--color-secondary-text), 0.1);
+      border-radius: 6px;
+      margin-top: 4px;
+      z-index: 100;
+      overflow: hidden;
+      max-height: 0;
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+
+    .customer-account__sidebar-dropdown.expanded {
+      max-height: 500px;
+      opacity: 1;
+    }
+
+    .customer-account__sidebar-item {
+      padding: 16px !important;
+      border-bottom: 1px solid rgba(var(--color-secondary-text), 0.05);
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .customer-account__sidebar-item:last-child {
+      border-bottom: none;
+    }
+
+    .customer-account__sidebar-item:hover {
+      border-bottom: 1px solid rgba(var(--color-secondary-text), 0.05);
+    }
+
+    .customer-account__sidebar-item:last-child:hover {
+      border-bottom: none;
+    }
+    .customer-account__sidebar-item.my-profile {
+      display: none;
+    }
+  }
+
+  /* Desktop Styles */
+  @media (min-width: 769px) {
+    .customer-account__sidebar-selected {
+      display: none;
+    }
+
+    .customer-account__sidebar-dropdown {
+      position: static !important;
+      max-height: none !important;
+      opacity: 1 !important;
+      background: none !important;
+      border: none !important;
+      box-shadow: none !important;
+      margin: 0 !important;
+      overflow: visible !important;
+    }
+
+    .dropdown-arrow {
+      display: none;
+    }
+    .customer-account__sidebar-item.my-profile {
+      display: flex;
+    }
+  }
+</style>
+
+<aside class="customer-account__sidebar">
+  <!-- Mobile Selected Item (Initially "My Profile") -->
+  <div class="customer-account__sidebar-selected" onclick="toggleDropdown()">
+    <div class="selected-content" id="selected-item-content">
+      {% render 'accounts-icon' %}
+      <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+        {{ 'customer.account.myaccount' | t }}
+      </h2>
+    </div>
+    <div class="dropdown-arrow" id="dropdown-arrow">
+      {% render 'icon-arrow-down' %}
+    </div>
+  </div>
+
+  <!-- Dropdown Menu Items -->
+  <div class="customer-account__sidebar-dropdown box-shadow" id="dropdown-menu">
+    <ul class="customer-account__sidebar-items">
+      <div
+        class="customer-account__sidebar-item my-profile gap-8"
+        onclick="selectItem(this, 'brash-icon', '{{ 'customer.account.myaccount' | t }}')"
+      >
+        {% render 'accounts-icon' %}
+        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+          {{ 'customer.account.myaccount' | t }}
+        </h2>
+      </div>
+      <div
+        class="customer-account__sidebar-item gap-8"
+        onclick="selectItem(this, 'brash-icon', '{{ 'customer.account.my_beauties_profile' | t }}')"
+      >
+        {% render 'brash-icon' %}
+        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+          {{ 'customer.account.my_beauties_profile' | t }}
+        </h2>
+      </div>
+
+      <div
+        class="customer-account__sidebar-item gap-8"
+        onclick="selectItem(this, 'order-menu-icon', '{{ 'customer.account.orders' | t }}')"
+      >
+        {% render 'order-menu-icon' %}
+        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+          {{ 'customer.account.orders' | t }}
+        </h2>
+      </div>
+      <div
+        class="customer-account__sidebar-item gap-8"
+        onclick="selectItem(this, 'address-icon', '{{ 'customer.account.addresses' | t }}')"
+      >
+        {% render 'address-icon' %}
+        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+          {{ 'customer.account.addresses' | t }}
+        </h2>
+      </div>
+      <a href="/pages/reward-points">
+      <div
+        class="customer-account__sidebar-item gap-8"
+        onclick="selectItem(this, 'reward-icon', '{{ 'customer.account.rewards' | t }}')"
+      >
+         {% render 'reward-icon' %}
+          <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+            {{ 'customer.account.rewards' | t }}
+          </h2>
+        </div>
+      </a>
+      <div
+        class="customer-account__sidebar-item gap-8"
+        onclick="selectItem(this, 'love-icon', '{{ 'customer.account.wishlist' | t }}')"
+      >
+        {% render 'love-icon' %}
+        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+          {{ 'customer.account.wishlist' | t }}
+        </h2>
+      </div>
+      <div
+        class="customer-account__sidebar-item gap-8"
+        onclick="selectItem(this, 'star-icon', '{{ 'customer.account.reviews' | t }}')"
+      >
+        {% render 'star-icon' %}
+        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+          {{ 'customer.account.reviews' | t }}
+        </h2>
+      </div>
+      <div
+        class="customer-account__sidebar-item gap-8"
+        onclick="selectItem(this, 'logout-icon', '{{ 'customer.account.logout' | t }}')"
+      >
+        {% render 'logout-icon' %}
+        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+          {{ 'customer.account.logout' | t }}
+        </h2>
+      </div>
+    </ul>
+  </div>
+</aside>
+
+<script>
+  function toggleDropdown() {
+    const dropdown = document.getElementById('dropdown-menu');
+    const arrow = document.getElementById('dropdown-arrow');
+
+    dropdown.classList.toggle('expanded');
+    arrow.classList.toggle('expanded');
+  }
+
+  function selectItem(element, iconName, title) {
+    // Update the selected item display
+    const selectedContent = document.getElementById('selected-item-content');
+    const iconHtml = element.querySelector('svg') ? element.querySelector('svg').outerHTML : '';
+
+    selectedContent.innerHTML = `
+    ${iconHtml}
+    <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+      ${title}
+    </h2>
+  `;
+
+    // Close the dropdown
+    const dropdown = document.getElementById('dropdown-menu');
+    const arrow = document.getElementById('dropdown-arrow');
+    dropdown.classList.remove('expanded');
+    arrow.classList.remove('expanded');
+
+    // Add your navigation logic here
+    // For example: window.location.href = '/account/' + page;
+  }
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', function (event) {
+    const sidebar = document.querySelector('.customer-account__sidebar');
+    const dropdown = document.getElementById('dropdown-menu');
+    const arrow = document.getElementById('dropdown-arrow');
+
+    if (!sidebar.contains(event.target)) {
+      dropdown.classList.remove('expanded');
+      arrow.classList.remove('expanded');
+    }
+  });
+</script>
