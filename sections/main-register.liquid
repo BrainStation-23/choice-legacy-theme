@@ -103,55 +103,6 @@
     color: #363;
     border: 1px solid #cfc;
   }
-
-  .otp-container {
-    display: none;
-  }
-
-  .otp-container.active {
-    display: block;
-  }
-
-  .otp-message {
-    font-size: 14px;
-    margin-top: 8px;
-    text-align: center;
-  }
-
-  .otp-message.success {
-    color: #363;
-  }
-
-  .otp-message.error {
-    color: #c33;
-  }
-
-  /* New OTP Styles */
-  .otp-inputs {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-  }
-
-  .otp-digit {
-    width: 55px;
-    text-align: center;
-    border: 2px solid #e1e5e9;
-    padding: 18px 16px;
-    border-radius: 6px;
-    transition: border-color 0.3s ease;
-    flex: 1;
-  }
-
-  .otp-digit:focus {
-    outline: none;
-    border-color: rgb(var(--color-primary-brand));
-  }
-
-  .otp-digit.filled {
-    border-color: rgb(var(--color-primary-brand));
-  }
-
   .phone-input-wrapper {
     flex: 1;
   }
@@ -169,7 +120,6 @@
     border: none;
     padding: 18px 10px;
     border-radius: 6px;
-    font-size: 12px;
     cursor: pointer;
     white-space: nowrap;
   }
@@ -185,7 +135,6 @@
   .back-link a {
     color: rgb(var(--color-primary-brand));
     text-decoration: none;
-    font-size: 14px;
   }
 
   .register-input-phone-field {
@@ -224,7 +173,7 @@
   <div id="register" class="register-form gap-32 ">
     <div class="register-header gap-8">
       <h1 class="register-title ff-bebas-neue fs-36-lh-40-ls-0 fw-400">
-        {{ 'customer.register.title' | t | default: 'CREATE ACCOUNT' }}
+        {{ 'customer.register.title' | t }}
       </h1>
       <div class="register-subtitle">
         <h2 class="register-existing__customer ff-general-sans fs-16-lh-24-ls-0 fw-400">
@@ -311,62 +260,7 @@
           </button>
         </div>
 
-        <!-- OTP Container - Updated with separate inputs -->
-        <div class="otp-container" id="otp-container">
-          <div class="otp-inputs">
-            <input
-              type="text"
-              class="otp-digit fs-14-lh-20-ls-0_1  ff-general-sans fw-500"
-              maxlength="1"
-              data-index="0"
-              inputmode="numeric"
-              placeholder="-"
-            >
-            <input
-              type="text"
-              class="otp-digit fs-14-lh-20-ls-0_1  ff-general-sans fw-500"
-              maxlength="1"
-              data-index="1"
-              inputmode="numeric"
-              placeholder="-"
-            >
-            <input
-              type="text"
-              class="otp-digit fs-14-lh-20-ls-0_1  ff-general-sans fw-500"
-              maxlength="1"
-              data-index="2"
-              inputmode="numeric"
-              placeholder="-"
-            >
-            <input
-              type="text"
-              class="otp-digit fs-14-lh-20-ls-0_1  ff-general-sans fw-500"
-              maxlength="1"
-              data-index="3"
-              inputmode="numeric"
-              placeholder="-"
-            >
-            <input
-              type="text"
-              class="otp-digit fs-14-lh-20-ls-0_1  ff-general-sans fw-500"
-              maxlength="1"
-              data-index="4"
-              inputmode="numeric"
-              placeholder="-"
-            >
-            <input
-              type="text"
-              class="otp-digit fs-14-lh-20-ls-0_1  ff-general-sans fw-500"
-              maxlength="1"
-              data-index="5"
-              inputmode="numeric"
-              placeholder="-"
-            >
-          </div>
-          <div id="otp-message" class="otp-message"></div>
-
-          <input type="hidden" id="customer-otp-hidden" name="customer[note][otp_code]" value="">
-        </div>
+        {% render 'otp-input' %}
 
         <!-- Email -->
         {%- assign emailLabel = 'customer.register.email' | t -%}
@@ -420,7 +314,7 @@
         class="register-button ff-general-sans fs-14-lh-100pct-ls-0 fw-600"
         disabled
       >
-        {{ 'customer.register.submit' | t | default: 'Submit' }}
+        {{ 'customer.register.submit' | t }}
       </button>
 
       <!-- Response Message -->
