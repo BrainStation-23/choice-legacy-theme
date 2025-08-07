@@ -321,6 +321,12 @@ h6,
     line-height: calc(24 * var(--font-unit));
     letter-spacing: calc(0.012 * var(--font-unit));
   }
+
+  .mobile-fs-26-lh-40-lh-0 {
+    font-size: calc(26 * var(--font-unit));
+    line-height: calc(40 * var(--font-unit));
+    letter-spacing: 0;
+  }
 }
 
 /* font weight */
