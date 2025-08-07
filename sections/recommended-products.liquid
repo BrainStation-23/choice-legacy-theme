@@ -1,16 +1,4 @@
 {%- style -%}
-  .recommended-products-{{ section.id }} {
-    padding-top: 0px;
-    padding-bottom: 88px;
-  }
-
-  @media screen and (min-width: 750px) {
-    .recommended-products-{{ section.id }} {
-      padding-top: 0px;
-      padding-bottom: 88px;
-    }
-  }
-
   /* Tablet: 768px to 1023px */
   @media screen and (min-width: 769px) and (max-width: 1023px) {
     .recommended-products-{{ section.id }} .desktop-grid {
@@ -45,12 +33,6 @@
   }
 
   @media screen and (max-width: 768px) {
-
-   .recommended-products-{{ section.id }} {
-      padding-top: 16px;
-      padding-bottom: 16px;
-    }
-
     .recommended-products-{{ section.id }} .desktop-grid {
       display: none;
     }
@@ -89,7 +71,7 @@
   }
 {%- endstyle -%}
 
-<div class="recommended-products recommended-products-{{ section.id }}">
+<div class="recommended-products recommended-products-{{ section.id }} pt-0 pb-88 mobile-pt-16 mobile-pb-16">
   <div class="recommended-products__container page-width flex flex-col gap-48 mobile-gap-16">
     {% if section.settings.heading != blank %}
       <div class="desktop-grid">
