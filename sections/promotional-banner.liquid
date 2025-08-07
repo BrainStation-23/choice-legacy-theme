@@ -23,7 +23,7 @@
 </style>
 
 <div class="promotional-banner-section promotional-banner-section-{{ section.id }}">
-  <div class="promotional-banner-container grid gap-16 mobile-gap-8 page-width">
+  <div class="promotional-banner-container grid gap-16 sm-gap-8 page-width">
     {%- for block in section.blocks -%}
       <div class="promotional-banner-item" {{ block.shopify_attributes }}>
         {%- if block.settings.link != blank -%}

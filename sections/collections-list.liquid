@@ -75,7 +75,7 @@
 <section class="collections-list collections-list-{{ section.id }}">
   <div class="collections-list__container page-width gap-64">
     {% if section.settings.title != blank %}
-      <h2 class="collections-list__title ff-bebas-neue fw-400 fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct">
+      <h2 class="collections-list__title ff-bebas-neue fw-400 fs-36-lh-40-ls-0 sm-fs-21-lh-24-ls-1_2pct">
         {{ section.settings.title }}
       </h2>
     {% endif %}
@@ -107,7 +107,7 @@
               </div>
 
               <div class="collections-list__content">
-                <h3 class="collections-list__name ff-bebas-neue fw-400 fs-26-lh-26-ls-1_2 mobile-fs-15-lh-16-ls--1_2pct">
+                <h3 class="collections-list__name ff-bebas-neue fw-400 fs-26-lh-26-ls-1_2 sm-fs-15-lh-16-ls--1_2pct">
                   {% if block.settings.collection.title %}
                     {{ block.settings.collection.title }}
                   {% else %}
@@ -161,7 +161,7 @@
                     {% endif %}
 
                     <div class="collections-list__content">
-                      <h3 class="collections-list__name mobile-fs-15-lh-16-ls--1_2pct ff-bebas-neue fw-400">
+                      <h3 class="collections-list__name sm-fs-15-lh-16-ls--1_2pct ff-bebas-neue fw-400">
                         {{ block.settings.collection.title | default: 'Collection' }}
                       </h3>
                     </div>
