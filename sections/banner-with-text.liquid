@@ -1,15 +1,8 @@
 <style>
   .banner-with-text-{{ section.id }} {
-    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+    padding-top: 0px;
+    padding-bottom: 0px;
     position: relative;
-  }
-
-  @media screen and (min-width: 750px) {
-    .banner-with-text-{{ section.id }} {
-      padding-top: {{ section.settings.padding_top }}px;
-      padding-bottom: {{ section.settings.padding_bottom }}px;
-    }
   }
 
   .banner-with-text .slide-image {
@@ -39,7 +32,6 @@
   .banner-with-text-{{ section.id }} .static-slide {
     position: relative;
     transition: transform 0.3s ease;
-    border-radius: {{ section.settings.slide_border_radius }}px;
     height: 186px;
   }
   
@@ -60,11 +52,39 @@
     }
   }
 
-  @media (max-width: 768px) {
-    .banner-with-text-{{ section.id }} .swiper-slide,
-    .banner-with-text-{{ section.id }} .static-slide {
-      border-radius: 0;
+
+  /* Text Overlay Styles */
+  .banner-text-overlay-{{ section.id }} {
+    position: absolute;
+    z-index: 2;
+    color: rgb(var(--color-background));
+    pointer-events: none;
+    max-width: calc(100% - 32px);
+    word-wrap: break-word;
+  }
+  
+  .banner-text-overlay-{{ section.id }} .overlay-text {
+    display: block;
+    line-height: 1;
+    margin: 0;
+  }
+  
+  .banner-text-overlay-{{ section.id }} .overlay-text.fs-36-lh-40-ls-0 {
+    font-size: 36px;
+    line-height: 40px;
+    letter-spacing: 0;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .banner-text-overlay-{{ section.id }} .overlay-text.fs-36-lh-40-ls-0 {
+      font-size: 21px;
+      line-height: 24px;
+      letter-spacing: 1.2%;
     }
+  }
+  
+  .banner-text-overlay-{{ section.id }} .overlay-text + .overlay-text {
+    margin-top: 8px;
   }
 
   /* Static banner styles when no navigation */
@@ -159,6 +179,9 @@
               sizes: sizes,
               block: block
             -%}
+            
+              {% render "banner-text-overlay", block: block, section_id: section.id %}
+            
             {% if block.settings.link != blank %}</a>{% endif %}
           {% else %}
             {{ "lifestyle-1" | placeholder_svg_tag: "placeholder-svg slide-image-desktop" }}
@@ -208,6 +231,20 @@
                   sizes: sizes,
                   block: block
                 -%}
+                
+                {% comment %} Text Overlay {% endcomment %}
+                {% if block.settings.overlay_text_line_1 != blank or block.settings.overlay_text_line_2 != blank %}
+                  <div class="banner-text-overlay-{{ section.id }}" 
+                       style="left: {{ block.settings.text_position_left | default: 16 }}px; top: {{ block.settings.text_position_top | default: 65 }}%; transform: translateY(-50%);">
+                    {% if block.settings.overlay_text_line_1 != blank %}
+                      <div class="overlay-text fs-36-lh-40-ls-0">{{ block.settings.overlay_text_line_1 | escape }}</div>
+                    {% endif %}
+                    {% if block.settings.overlay_text_line_2 != blank %}
+                      <div class="overlay-text fs-36-lh-40-ls-0">{{ block.settings.overlay_text_line_2 | escape }}</div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+                
                 {% if block.settings.link != blank %}</a>{% endif %}
               {% else %}
                 {% assign image_number = forloop.index0 | modulo: 2 | plus: 1 %}
@@ -323,21 +360,6 @@
     },
     {
       "type": "header",
-      "content": "Visual Settings"
-    },
-    {
-      "type": "range",
-      "id": "slide_border_radius",
-      "min": 0,
-      "max": 20,
-      "step": 1,
-      "unit": "px",
-      "label": "Desktop border radius",
-      "default": 0,
-      "info": "Rounded corners for desktop view (mobile is always 0)"
-    },
-    {
-      "type": "header",
       "content": "Autoplay Settings"
     },
     {
@@ -390,6 +412,44 @@
         },
         {
           "type": "header",
+          "content": "Overlay Text"
+        },
+        {
+          "type": "text",
+          "id": "overlay_text_line_1",
+          "label": "Text Line 1",
+          "info": "First line of overlay text"
+        },
+        {
+          "type": "text",
+          "id": "overlay_text_line_2",
+          "label": "Text Line 2",
+          "info": "Second line of overlay text"
+        },
+        {
+          "type": "range",
+          "id": "text_position_left",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Text position from left",
+          "default": 16,
+          "info": "Distance from left edge"
+        },
+        {
+          "type": "range",
+          "id": "text_position_top",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Text position from top",
+          "default": 65,
+          "info": "Percentage from top of banner"
+        },
+        {
+          "type": "header",
           "content": "Link Settings"
         },
         {
@@ -412,7 +472,7 @@
       "name": "Banner with Text",
       "blocks": [
         {
-          "type": "banner",
+          "type": "banner"
         }
       ]
     }

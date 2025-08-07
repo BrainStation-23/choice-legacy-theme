@@ -1,0 +1,41 @@
+{% comment %}
+  Renders text overlay for banner images
+  
+  Accepts:
+  - block: block object with text settings
+  - section_id: unique section identifier for styling
+  
+  Usage:
+  {% render 'banner-text-overlay', block: block, section_id: section.id %}
+{% endcomment %}
+
+<style>
+  .banner-text-overlay-{{ section_id }} {
+    position: absolute;
+    z-index: 2;
+    color: rgb(var(--color-background));
+    pointer-events: none;
+    max-width: calc(100% - 32px);
+    word-wrap: break-word;
+    left: calc(2 * {{ block.settings.text_position_left }}px); 
+    top: calc(50% - 16px);
+  }
+
+  @media screen and (max-width: 768px) {
+    .banner-text-overlay-{{ section_id }} {
+      top: calc(50% - 10px);
+      max-width: 158px;
+    }
+  }
+</style>
+
+{% if block.settings.overlay_text_line_1 != blank or block.settings.overlay_text_line_2 != blank %}
+  <div class="banner-text-overlay-{{ section_id }}" style="">
+    {% if block.settings.overlay_text_line_1 != blank %}
+      <div class="overlay-text fs-36-lh-40-ls-0 fw-400 ff-bebas-neue uppercase">{{ block.settings.overlay_text_line_1 | escape }}</div>
+    {% endif %}
+    {% if block.settings.overlay_text_line_2 != blank %}
+      <div class="overlay-text fs-36-lh-40-ls-0 fw-400 ff-bebas-neue uppercase">{{ block.settings.overlay_text_line_2 | escape }}</div>
+    {% endif %}
+  </div>
+{% endif %}
