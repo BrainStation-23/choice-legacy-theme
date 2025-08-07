@@ -13,6 +13,8 @@
   },
   "current": {
     "brand_logo": "shopify://shop_images/logo.png",
+    "logo_height": 100,
+    "logo_width": 240,
     "social_facebook": "https://www.twitter.com",
     "social_linkedin": "https://www.twitter.com",
     "social_twitter": "https://www.twitter.com",
