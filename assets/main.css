@@ -45,6 +45,9 @@ mark {
 }
 
 /* Text color utilities */
+.text-inherit {
+  color: inherit;
+}
 .text-bg {
   color: rgb(var(--color-background));
 }
@@ -456,6 +459,15 @@ address {
 .top-0 {
   top: 0;
 }
+.z-1 {
+  z-index: 1;
+}
+.z-2 {
+  z-index: 2;
+}
+.z-4 {
+  z-index: 3;
+}
 .z-10 {
   z-index: 10;
 }
@@ -631,6 +643,9 @@ address {
 }
 .h-full {
   height: 100%;
+}
+.mh-24 {
+  min-height: 24px;
 }
 .w-auto {
   width: auto;
@@ -1025,6 +1040,9 @@ address {
 .pb-6 {
   padding-bottom: calc(6 * var(--space-unit));
 }
+.pb-8 {
+  padding-bottom: calc(8 * var(--space-unit));
+}
 .pb-88 {
   padding-bottom: calc(88 * var(--space-unit));
 }
@@ -1034,11 +1052,23 @@ address {
 .pl-6 {
   padding-left: calc(6 * var(--space-unit));
 }
+.pl-8 {
+  padding-left: calc(8 * var(--space-unit));
+}
+.pl-12 {
+  padding-left: calc(12 * var(--space-unit));
+}
 .pr-4 {
   padding-right: calc(4 * var(--space-unit));
 }
 .pr-6 {
   padding-right: calc(6 * var(--space-unit));
+}
+.pr-8 {
+  padding-right: calc(8 * var(--space-unit));
+}
+.pr-12 {
+  padding-right: calc(12 * var(--space-unit));
 }
 .pt-0 {
   padding-top: 0;
@@ -1057,6 +1087,9 @@ address {
 }
 .pt-6 {
   padding-top: calc(6 * var(--space-unit));
+}
+.pt-8 {
+  padding-top: calc(8 * var(--space-unit));
 }
 
 @media screen and (max-width: 768px) {
@@ -1147,6 +1180,9 @@ address {
 }
 .line-through {
   text-decoration: line-through;
+}
+.no-underline {
+  text-decoration: none;
 }
 .transition {
   transition-property: color, background-color, border-color,
@@ -1653,7 +1689,9 @@ img {
   width: 100%;
   height: 100%;
 }
-
+.object-cover {
+  object-fit: cover;
+}
 .img-fit,
 .md\:img-fit {
   position: absolute;
