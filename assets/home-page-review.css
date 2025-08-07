@@ -1,7 +1,3 @@
-.homepage-product-review__title {
-  margin: 0 !important;
-}
-
 .homepage-product-review__grid {
   width: 100%;
   display: flex;
@@ -10,7 +6,21 @@
   box-sizing: border-box;
   margin: calc(0px);
   overflow-anchor: none;
-  height: 1300px;
+  /* Dynamic height - will be set by JavaScript */
+  min-height: 400px;
+  transition: height 0.3s ease;
+}
+@media (min-width: 769px) {
+  .homepage-product-review__desktop-only {
+    display: grid;
+  }
+  .homepage-product-review__mobile-tablet-only {
+    display: none;
+  }
+}
+
+.homepage-product-review__title {
+  margin: 0 !important;
 }
 
 .homepage-product-review__card {
@@ -22,6 +32,9 @@
   flex-direction: column;
   margin: calc(0px);
   width: calc(25% - 16px);
+  min-height: 320px; /* Minimum height for consistency */
+  height: auto; /* Allow cards to grow with content */
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
 .homepage-product-review__image-container {
@@ -29,6 +42,7 @@
   width: 100%;
   height: 204px;
   overflow: hidden;
+  flex-shrink: 0; /* Prevent shrinking */
 }
 
 .homepage-product-review__image {
@@ -114,25 +128,77 @@
   text-align: center;
 }
 
-.homepage-product-review__content-middle,
+.homepage-product-review__content-middle {
+  flex: 1; /* Take up available space */
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  min-height: 80px; /* Ensure minimum space for content */
+  padding: 4px 0; /* Add small padding */
+}
+
 .homepage-product-review__content-bottom {
   display: flex;
   flex-direction: column;
   text-align: left;
+  margin-top: auto; /* Push to bottom */
+  padding-top: 8px; /* Add space above bottom content */
+  flex-shrink: 0; /* Prevent shrinking */
 }
 
-@media screen and (min-width: 1024px) and (max-width: 1146px) {
-  .homepage-product-review__grid {
-    height: 1350px;
-  }
+/* Ensure text doesn't overflow */
+.homepage-product-review__text {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.4;
+  max-height: none; /* Remove any height restrictions */
 }
 
-@media screen and (min-width: 768px) and (max-width: 1023px) {
-  .homepage-product-review__grid {
-    height: 1700px;
-  }
+.homepage-product-review__product-title {
+  text-transform: uppercase;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.2;
+}
 
-  .homepage-product-review__card {
-    width: calc(33% - 16px);
-  }
+/* Load More Button Styles */
+.homepage-product-review__load-more-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.homepage-product-review__load-more-btn {
+  background-color: rgb(var(--color-primary-brand));
+  color: rgb(var(--color-background));
+  border: none;
+  padding: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  height: 56px;
+}
+
+.homepage-product-review__load-more-btn:disabled {
+  background-color: rgba(var(--color-primary-brand), 0.5);
+  cursor: not-allowed;
+  transform: none;
+}
+
+.homepage-product-review__load-more-btn.loading {
+  position: relative;
+  color: transparent;
+}
+
+.homepage-product-review__load-more-btn.loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid transparent;
+  border-top: 2px solid rgb(var(--color-background));
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
