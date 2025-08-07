@@ -16,19 +16,11 @@
 
   /* -- MEGA MENU STYLES -- */
   .mega-menu {
-    position: relative;
-    z-index: 1000;
     background: rgb(var(--color-primary-brand));
   }
 
   .mega-menu__container {
     padding: 20px 0;
-  }
-
-  .mega-menu__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
   }
 
   .mega-menu__item {
@@ -549,10 +541,10 @@
 </header>
 
 <!-- Desktop Mega Menu Navigation -->
-<nav class="mega-menu">
+<nav class="mega-menu relative z-1000">
   <div class="mega-menu__nav page-width">
     <div class="mega-menu__container">
-      <ul class="mega-menu__list flex items-center justify-center gap-24">
+      <ul class="mega-menu__list m-0 p-0 list-style-none flex items-center justify-center gap-24">
         {%- if section.settings.main_menu != blank -%}
           {%- for link in linklists[section.settings.main_menu].links -%}
             <li class="mega-menu__item">
