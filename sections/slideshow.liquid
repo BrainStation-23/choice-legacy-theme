@@ -1,31 +1,3 @@
-<style>
-  @media screen and (min-width: 1024px) {
-    .slideshow .slideshow-nav-button-prev {
-      left: calc(10% - 52px);
-    }
-
-    .slideshow .slideshow-nav-button-next {
-      right: calc(10% - 52px);
-    }
-  }
-  
-  @media screen and (min-width: 769px) {
-    .slideshow-{{ section.id }} .swiper-slide {
-      border-radius: {{ section.settings.slide_border_radius }}px;
-    }
-  }
-
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    .slideshow .slideshow-nav-button-prev {
-      left: calc(11% - 52px);
-    }
-
-    .slideshow .slideshow-nav-button-next {
-      right: calc(11% - 52px);
-    }
-  }
-</style>
-
 <slideshow-component
   class="slideshow slideshow-{{ section.id }} block relative overflow-hidden pt-12 pb-12 sm:pt-0 sm:pb-0"
   data-autoplay="{{ section.settings.enable_autoplay }}"
@@ -42,7 +14,7 @@
             assign m_img = block.settings.mobile_image
           -%}
           <div
-            class="swiper-slide sm:rounded-0 relative overflow-hidden transition-transform {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}"
+            class="swiper-slide rounded-6 sm:rounded-0 relative overflow-hidden transition-transform {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}"
             {{ block.shopify_attributes }}
             data-block-id="{{ block.id }}"
             data-block-type="{{ block.type }}"
@@ -195,9 +167,9 @@
       </div>
     </div>
 
-    {% render 'nav-button', cls: 'slideshow-nav-button-prev sm:left-8', icon_cls: 'icon-arrow-left' %}
+    {% render 'nav-button', cls: 'slideshow-nav-button-prev lg:left-10p-52 md:left-11p-52 sm:left-8', icon_cls: 'icon-arrow-left' %}
 
-    {% render 'nav-button', cls: 'slideshow-nav-button-next sm:right-8' %}
+    {% render 'nav-button', cls: 'slideshow-nav-button-next lg:right-10p-52 md:right-11p-52 sm:right-8' %}
   </div>
 </slideshow-component>
 
@@ -210,20 +182,6 @@
     "groups": ["header", "footer"]
   },
   "settings": [
-    {
-      "type": "header",
-      "content": "Slideshow Settings"
-    },
-    {
-      "type": "range",
-      "id": "slide_border_radius",
-      "min": 0,
-      "max": 20,
-      "step": 1,
-      "unit": "px",
-      "label": "Desktop slide border radius",
-      "default": 6
-    },
     {
       "type": "header",
       "content": "Autoplay Settings"
