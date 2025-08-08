@@ -269,7 +269,7 @@
         // Set limit based on whether it's initial load or load more
         const limit = page === 1 ? 8 : 4;
 
-        const response = await fetch(`/apps/generic-name/customer/product-review/show-home?page=${page}&limit=${limit}`, {
+        const response = await fetch(`/apps/${APP_SUB_PATH}/customer/product-review/show-home?page=${page}&limit=${limit}`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' }
         });

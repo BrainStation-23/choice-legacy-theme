@@ -1,23 +1,5 @@
-{% assign minShown = 4 %}
-{% assign articleCount = section.settings.blog.articles.size %}
-{% if articleCount < minShown %}
-  {% assign minShown = articleCount %}
-{% endif %}
-{% assign image_ratio = 1 %}
-<style>
-  .blog-section__content-grid {
-    grid-template-columns: repeat({{ minShown }}, 1fr);
-  }
-
-  @media screen and (max-width: 768px) {
-    .swiper-slide:last-child {
-      margin-right: 0;
-    }
-  }
-</style>
-
 <article class="blog-section blog-section-{{ section.id }} pt-0 pb-88 pt-16 pb-16">
-  <div class="blog-section__container page-width flex flex-col gap-48 sm:gap-16">
+  <div class="page-width flex flex-col gap-48 sm:gap-16">
     {% if section.settings.blog_title != blank %}
       <div class="blog-section__title fs-36-lh-40-ls-0 ff-bebas-neue fw-400 sm:fs-21-lh-24-ls-1_2pct text-center uppercase">
         {{ section.settings.blog_title }}
@@ -25,10 +7,15 @@
     {% endif %}
 
     <!-- Desktop Grid -->
-    <div class="blog-section__content-grid grid gap-16 sm:hidden">
+    <div class="blog-section__content-grid 
+      {% if section.settings.blog.articles.size == 1 %}grid-cols-1{% endif %}
+      {% if section.settings.blog.articles.size == 2 %}grid-cols-2{% endif %}
+      {% if section.settings.blog.articles.size == 3 %}grid-cols-3{% endif %}
+      {% if section.settings.blog.articles.size == 4 %}grid-cols-4{% endif %} 
+      grid gap-16 sm:hidden">
       {% for article in section.settings.blog.articles limit: section.settings.blog_post_limit %}
-        <div class="blog-card flex flex-col gap-16">
-          <div class="blog-card__image__container h-154 relative w-full">
+        <div class="flex flex-col gap-16 sm:gap-8">
+          <div class="h-154 relative w-full">
             {% if article.image %}
               {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
               <div
@@ -48,11 +35,11 @@
               {{ 'image' | placeholder_svg_tag: 'blog-card__image' }}
             {% endif %}
           </div>
-          <div class="blog-card__content flex flex-col gap-8">
-            <h3 class="blog-card__title ff-general-sans fs-23-lh-24-ls-0 fw-500 sm:fs-17-lh-24-ls-0 m-0">
+          <div class="flex flex-col gap-8">
+            <h3 class="ff-general-sans fs-23-lh-24-ls-0 fw-500 sm:fs-17-lh-24-ls-0 m-0">
               {{ article.title }}
             </h3>
-            <p class="blog-card__excerpt m-0 text-label-light ff-general-sans fs-14-lh-20-ls-0 fw-400">
+            <p class="m-0 text-label-light ff-general-sans fs-14-lh-20-ls-0 fw-400">
               {{ article.content | strip_html | truncatewords: 20 }}
             </p>
           </div>
@@ -61,7 +48,7 @@
     </div>
 
     <!-- Mobile Swiper -->
-    <div class="blog-section__content-swiper hidden sm:block relative pb-20">
+    <div class="hidden sm:block relative pb-20">
       <slideshow-component
         data-autoplay="false"
         data-show-progress-bar="true"
@@ -75,8 +62,8 @@
         <div class="swiper-container flex flex-col gap-16">
           <div class="swiper-wrapper gap-16">
             {% for article in section.settings.blog.articles limit: section.settings.blog_post_limit %}
-              <div class="swiper-slide blog-card flex flex-col gap-16">
-                <div class="blog-card__image__container h-154 relative w-full">
+              <div class="swiper-slide blog-card flex flex-col gap-16 sm:gap-8">
+                <div class="h-154 relative w-full">
                   {% if article.image %}
                     {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
                     <div
@@ -96,9 +83,9 @@
                     {{ 'image' | placeholder_svg_tag: 'blog-card__image' }}
                   {% endif %}
                 </div>
-                <div class="blog-card__content flex flex-col gap-8">
-                  <h3 class="blog-card__title ff-general-sans fs-23-lh-24-ls-0 fw-500 m-0">{{ article.title }}</h3>
-                  <p class="blog-card__excerpt m-0 text-label-light ff-general-sans fs-14-lh-20-ls-0 fw-400">
+                <div class="flex flex-col gap-8 sm:gap-4">
+                  <h3 class="ff-general-sans fs-23-lh-24-ls-0 sm:fs-17-lh-24-ls-0 fw-500 m-0">{{ article.title }}</h3>
+                  <p class="m-0 text-label-light ff-general-sans fs-14-lh-20-ls-0 fw-400">
                     {{ article.content | strip_html | truncatewords: 20 }}
                   </p>
                 </div>

@@ -8,7 +8,7 @@
   }
 </style>
 
-<div class="form-input-field  relative {{ class }}">
+<div class="relative {{ class }}">
   <input
     type="{{ type | default: 'text' }}"
     id="{{ id }}"
@@ -16,7 +16,7 @@
     value="{{ value }}"
     autocomplete="off"
     placeholder=" "
-    class="form-input fs-14-lh-20-ls-0_1 ff-general-sans fw-500"
+    class=" fs-14-lh-20-ls-0_1 ff-general-sans fw-500"
     autocomplete="{{ autocomplete }}"
     {% if type == 'password' %}
       data-password-field="true"
@@ -31,22 +31,22 @@
       {{ extra_attributes }}
     {% endif %}
   >
-  <label class="form-label fs-14-lh-20-ls-0_1 ff-general-sans fw-600" for="{{ id }}">{{ label }}</label>
+  <label class=" fs-14-lh-20-ls-0_1 ff-general-sans fw-600" for="{{ id }}">{{ label }}</label>
 
   {% if type == 'password' %}
-    <button
+    <span
       type="button"
       class="password-toggle-eye-open toggle-password absolute right-12 top-50pct translate-y--50 cursor-pointer h-28 w-28 p-0 flex items-center justify-center"
       data-target="{{ id }}"
     >
       {% render 'open-eye' %}
-    </button>
-    <button
+    </span>
+    <span
       type="button"
       class="password-toggle-eye-close toggle-password absolute right-12 top-50pct translate-y--50 cursor-pointer h-28 w-28 p-0 flex items-center justify-center"
       data-target="{{ id }}"
     >
       {% render 'close-eye' %}
-    </button>
+    </span>
   {% endif %}
 </div>
