@@ -1,9 +1,3 @@
-<style>
-  .featured-collections-{{ section.id }} .featured-collection-item {
-    border-radius: {{ section.settings.item_border_radius }}px;
-  }
-</style>
-
 {% liquid
   assign image_ratio = 1
 %}
@@ -119,16 +113,6 @@
   "tag": "section",
   "class": "section-featured-collections",
   "settings": [
-    {
-      "type": "range",
-      "id": "item_border_radius",
-      "min": 0,
-      "max": 20,
-      "step": 1,
-      "unit": "px",
-      "label": "Item border radius",
-      "default": 0
-    },
     {
       "type": "header",
       "content": "Mobile Carousel Settings"

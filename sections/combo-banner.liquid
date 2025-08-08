@@ -1,14 +1,6 @@
-<style>
-  @media screen and (min-width: 769px) {
-    .combo-banner-{{ section.id }} .swiper-slide {
-      border-radius: {{ section.settings.slide_border_radius }}px;
-    }
-  }
-</style>
-
 <div class="combo-banner combo-banner-{{ section.id }} relative pt-0 pb-0">
   {% for block in section.blocks %}
-    <div class="swiper-slide relative transition-transform h-508 sm:h-180 sm:rounded-0 {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
+    <div class="swiper-slide relative transition-transform h-508 sm:h-180 {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
           {{ block.shopify_attributes }}
           data-block-id="{{ block.id }}"
           data-block-type="{{ block.type }}">
@@ -53,21 +45,7 @@
     "groups": ["header", "footer"]
   },
   "settings": [
-    {
-      "type": "header",
-      "content": "Visual Settings"
-    },
-    {
-      "type": "range",
-      "id": "slide_border_radius",
-      "min": 0,
-      "max": 20,
-      "step": 1,
-      "unit": "px",
-      "label": "Desktop border radius",
-      "default": 0,
-      "info": "Rounded corners for desktop view (mobile is always 0)"
-    }
+    
   ],
   "max_blocks": 1,
   "blocks": [
