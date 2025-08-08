@@ -1,6 +1,8 @@
 <style>
-  .combo-banner-{{ section.id }} .swiper-slide {
-    border-radius: {{ section.settings.slide_border_radius }}px;
+  @media screen and (min-width: 769px) {
+    .combo-banner-{{ section.id }} .swiper-slide {
+      border-radius: {{ section.settings.slide_border_radius }}px;
+    }
   }
 </style>
 
