@@ -93,8 +93,7 @@ mark {
 :root {
   --fluid-vw: 100vw;
   --fluid-max-vw: 1536;
-  --fluid-calc: (var(--fluid-vw) - 32rem) / (var(--fluid-max-vw) / 10 - 32) +
-    0.1rem;
+  --fluid-calc: (var(--fluid-vw) - 32rem) / (var(--fluid-max-vw) / 10 - 32) + 0.1rem;
   --fluid-1-065: ((1.065 / 10 - 0.1) * var(--fluid-calc));
   --fluid-1-125: ((1.125 / 10 - 0.1) * var(--fluid-calc));
   --fluid-1-2: ((1.2 / 10 - 0.1) * var(--fluid-calc));
@@ -476,6 +475,9 @@ address {
 }
 .right-8 {
   right: 8px;
+}
+.right-12 {
+  right: 12px;
 }
 .right-24 {
   right: 24px;
@@ -1451,15 +1453,12 @@ address {
   transform: translate(-50%, -50%);
 }
 .transition {
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    -webkit-backdrop-filter;
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    backdrop-filter;
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    backdrop-filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -1873,16 +1872,26 @@ legend {
 input,
 textarea,
 select {
-  background-clip: padding-box;
-  font-family: inherit;
-  font-size: 16px;
-  line-height: 1.5;
+  width: 100%;
+  padding: 0px 16px;
+  border: 1px solid rgba(var(--color-primary-text), 0.2);
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  line-height: 0px !important;
+}
+
+input + label {
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  transform: translateY(-50%);
+  color: rgba(var(--color-primary-text), 0.5);
+  pointer-events: none;
+  transition: 0.2s ease all;
 }
 
 input[type="date"] {
-  min-height: calc(
-    (var(--input-padding-y, 11px) + var(--input-border-width)) * 2 + 1.2em
-  );
+  min-height: calc((var(--input-padding-y, 11px) + var(--input-border-width)) * 2 + 1.2em);
   -webkit-appearance: none;
 }
 
@@ -1899,11 +1908,25 @@ select {
   font-size: 0.88em;
   line-height: 1.2em;
 }
-.input:focus,
-select:focus {
-  border-color: rgba(var(--input-text-color) / 0.6);
-  outline: 0;
-  box-shadow: 0 0 0 1px rgba(var(--input-text-color) / 0.6);
+
+inout:focus + label,
+input:not(:placeholder-shown) + label {
+  top: 4px;
+  left: 16px;
+  font-size: 12px;
+  transform: translateY(0);
+  color: rgb(var(--color-primary-text)) !important;
+  font-weight: 500;
+}
+
+input:focus {
+  outline: none;
+  border-color: rgba(var(--color-primary-text), 0.2);
+}
+
+input[type="password"],
+input[data-password-field="true"] {
+  padding-right: 40px;
 }
 
 .input::placeholder {
@@ -1924,6 +1947,16 @@ select:-webkit-autofill:focus {
   border: var(--input-border-width) solid rgba(var(--input-text-color) / 0.2);
   box-shadow: 0 0 0 1000px rgb(var(--input-bg-color)) inset;
   -webkit-text-fill-color: rgb(var(--input-text-color));
+}
+
+input:-webkit-autofill + label {
+  top: 4px;
+  left: 16px;
+  font-size: 12px;
+  transform: translateY(0);
+  color: rgb(var(--color-primary-text)) !important;
+  font-weight: 500;
+  padding-bottom: 4px;
 }
 
 [type="email"],

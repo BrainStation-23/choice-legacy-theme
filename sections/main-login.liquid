@@ -3,13 +3,14 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    padding-top: 48px;
+    padding-top: 48px ;
     padding-bottom: 88px;
   }
 
   .login-container .form-input-field .form-input {
     height: 54px;
   }
+
   .h-captcha {
     display: none;
   }
@@ -91,45 +92,6 @@
 
   .hidden {
     display: none !important;
-  }
-
-  .recover-form {
-    display: none;
-  }
-
-  .recover-form.active {
-    display: block;
-  }
-
-  .login-form.hidden {
-    display: none;
-  }
-
-  .otp-field,
-  .password-fields,
-  .verify-otp-wrapper {
-    display: none;
-  }
-
-  .otp-field.active,
-  .password-fields.active,
-  .verify-otp-wrapper.active {
-    display: block;
-  }
-
-  .back-link {
-    text-align: center;
-    margin-top: 20px;
-  }
-
-  .back-link a {
-    color: #666;
-    text-decoration: none;
-    font-size: 14px;
-  }
-
-  .back-link a:hover {
-    color: #ff6b9d;
   }
 
   .login-form-container {
@@ -228,275 +190,103 @@
     </div>
   </div>
 
-  <!-- RECOVER PASSWORD FORM -->
-  <div id="recover" class="recover-form">
-    <div class="login-header gap-8">
-      <h1 class="login-title">{{ 'customer.recover_password.title' | t }}</h1>
-      <p class="login-subtitle">{{ 'customer.recover_password.subtext' | t }}</p>
-    </div>
-
-    {%- assign recover_success = form.posted_successfully? -%}
-    {%- if recover_success == true -%}
-      <div class="alert alert-success" tabindex="-1" autofocus>
-        {{ 'customer.recover_password.success' | t }}
-      </div>
-    {%- endif -%}
-
-    <!-- Phone Input -->
-    <div class="form-field" id="phone-field">
-      <label class="form-label" for="recover-phone">{{ 'customer.login.phone' | t }}</label>
-      <input
-        type="number"
-        class="form-input"
-        id="recover-phone"
-        name="phone"
-        autocomplete="phone"
-        placeholder="+8801234567890"
-        aria-required="true"
-        required
-      >
-    </div>
-
-    <!-- OTP Input -->
-    <div class="form-field otp-field" id="otp-field">
-      <label class="form-label" for="recover-otp">Enter OTP</label>
-      <input
-        type="text"
-        class="form-input"
-        id="recover-otp"
-        name="otp"
-        maxlength="6"
-        autocomplete="one-time-code"
-        placeholder="000000"
-        aria-required="true"
-        required
-      >
-    </div>
-
-    <!-- New Password Fields -->
-    <div class="form-field password-fields" id="new-password-field">
-      <label class="form-label" for="new-password">New Password</label>
-      <input type="password" id="new-password" class="form-input" name="new_password" required>
-    </div>
-
-    <div class="form-field password-fields" id="confirm-password-field">
-      <label class="form-label" for="confirm-password">Confirm Password</label>
-      <input type="password" id="confirm-password" class="form-input" name="confirm_password" required>
-    </div>
-
-    <!-- Action Buttons -->
-    <button id="recover-submit-button" type="button" class="login-button">
-      {{ 'customer.recover_password.submit' | t }}
-    </button>
-
-    <button id="verify-otp-button" type="button" class="login-button verify-otp-wrapper">Verify OTP</button>
-
-    <button id="reset-password-button" type="button" class="login-button password-fields">Reset Password</button>
-
-    <div class="back-link">
-      <a class="js-login" href="#login">{{ 'customer.recover_password.cancel' | t }}</a>
-    </div>
+  <!-- Forgot Password Section (Initially Hidden) -->
+  <div id="forgot-password-section" class="hidden">
+    {% render 'forgot-password' %}
   </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', () => {
+    const passwordToggles = document.querySelectorAll('.toggle-password');
 
-const passwordToggles = document.querySelectorAll('.toggle-password');
-    
     passwordToggles.forEach((toggle) => {
-        toggle.addEventListener('click', function () {
-            const targetId = this.getAttribute('data-target');
-            const passwordInput = document.getElementById(targetId);
-            const openEye = passwordInput.parentElement.querySelector('.password-toggle-eye-open');
-            const closeEye = passwordInput.parentElement.querySelector('.password-toggle-eye-close');
+      toggle.addEventListener('click', function () {
+        const targetId = this.getAttribute('data-target');
+        const passwordInput = document.getElementById(targetId);
+        const openEye = passwordInput.parentElement.querySelector('.password-toggle-eye-open');
+        const closeEye = passwordInput.parentElement.querySelector('.password-toggle-eye-close');
 
-            if (passwordInput.type === 'password') {
-                // Show password
-                passwordInput.type = 'text';
-                openEye.style.display = 'none';
-                closeEye.style.display = 'flex';
-            } else {
-                // Hide password
-                passwordInput.type = 'password';
-                closeEye.style.display = 'none';
-                openEye.style.display = 'flex';
-            }
-        });
+        if (passwordInput.type === 'password') {
+          // Show password
+          passwordInput.type = 'text';
+          openEye.style.display = 'none';
+          closeEye.style.display = 'flex';
+        } else {
+          // Hide password
+          passwordInput.type = 'password';
+          closeEye.style.display = 'none';
+          openEye.style.display = 'flex';
+        }
+      });
     });
+
     const loginForm = document.getElementById('login');
-    const recoverForm = document.getElementById('recover');
+    const forgotPasswordSection = document.getElementById('forgot-password-section');
     const phoneInput = document.getElementById('customer-phone');
     const emailInput = document.getElementById('customer-email');
-    const recoverPhoneInput = document.getElementById('recover-phone');
     const loginButtonExternal = document.getElementById('login-submit-button-external');
     const loginSubmitForm = document.querySelector('.login-submit-form');
-    
-    const recoverSubmitButton = document.getElementById('recover-submit-button');
-    const verifyOtpButton = document.getElementById('verify-otp-button');
-    const resetPasswordButton = document.getElementById('reset-password-button');
 
     const API_BASE_URL = `/apps/${APP_SUB_PATH}/customer/account`;
-    let serverOtpCode = null;
 
-    // Toggle between login and recover forms
-    function toggleContent(recover) {
-        loginForm.classList.toggle('hidden', recover);
-        recoverForm.classList.toggle('active', recover);
+    // Toggle between login and forgot password
+    function toggleForms(showForgotPassword) {
+      if (showForgotPassword) {
+        loginForm.classList.add('hidden');
+        forgotPasswordSection.classList.remove('hidden');
+      } else {
+        loginForm.classList.remove('hidden');
+        forgotPasswordSection.classList.add('hidden');
+      }
     }
 
- 
-
-    // Event listeners for form switching
-    document.querySelector('.js-recover').addEventListener('click', (evt) => {
-        evt.preventDefault();
-        toggleContent(true);
+    // Handle forgot password link click
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('js-recover')) {
+        e.preventDefault();
+        toggleForms(true);
         history.pushState('', document.title, `${window.location.pathname}#recover`);
+      }
     });
 
-    document.querySelector('.js-login').addEventListener('click', (evt) => {
-        evt.preventDefault();
-        toggleContent(false);
+    // Handle back to login (this will work with the forgot password form's back link)
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('js-login')) {
+        e.preventDefault();
+        toggleForms(false);
         history.pushState('', document.title, window.location.pathname);
+      }
     });
 
-    if (window.location.hash === '#recover') toggleContent(true);
-    {% if recover_success %}toggleContent(true);{% endif %}
+    // Check URL hash on page load
+    if (window.location.hash === '#recover') {
+      toggleForms(true);
+    }
 
     // External Login
     if (loginButtonExternal) {
-        loginButtonExternal.addEventListener('click', async () => {
-            const phone = phoneInput ? phoneInput.value.trim() : '';
-            try {
-                const response = await fetch(`${API_BASE_URL}/login/+88${phone}`);
-                const data = await response.json();
-                
-                if (!response.ok) {
-                    alert('Login failed: ' + (data.message || 'Unknown error'));
-                    throw new Error(data.message || 'Login failed');
-                }
+      loginButtonExternal.addEventListener('click', async () => {
+        const phone = phoneInput ? phoneInput.value.trim() : '';
+        try {
+          const response = await fetch(`${API_BASE_URL}/login/+88${phone}`);
+          const data = await response.json();
 
-                if (data.email) {
-                    emailInput.value = data.email;
-                    loginSubmitForm.submit();
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        });
+          if (!response.ok) {
+            alert('Login failed: ' + (data.message || 'Unknown error'));
+            throw new Error(data.message || 'Login failed');
+          }
+
+          if (data.email) {
+            emailInput.value = data.email;
+            loginSubmitForm.submit();
+          }
+        } catch (error) {
+          console.error('Error:', error);
+        }
+      });
     }
-
-    // Send OTP
-    if (recoverSubmitButton) {
-        recoverSubmitButton.addEventListener('click', async () => {
-            const phone = recoverPhoneInput ? recoverPhoneInput.value.trim() : '';
-            const cleanedPhoneNumber = `+88${phone}`;
-
-            if (!phone) {
-                alert('Please enter your phone number');
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/send-otp`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ phone: cleanedPhoneNumber, register: false }),
-                });
-
-                const data = await response.json();
-
-                if (!response.ok) {
-                    alert(data.message || 'OTP request failed');
-                    return;
-                }
-
-                serverOtpCode = data.code;
-
-                // Show OTP field and hide phone field
-                document.getElementById('phone-field').style.display = 'none';
-                recoverSubmitButton.style.display = 'none';
-                document.getElementById('otp-field').classList.add('active');
-                verifyOtpButton.classList.add('active');
-
-                alert('OTP sent. Please check your phone.');
-
-            } catch (error) {
-                console.error('OTP request failed:', error);
-                alert('Something went wrong. Please try again.');
-            }
-        });
-    }
-
-    // Verify OTP
-    if (verifyOtpButton) {
-        verifyOtpButton.addEventListener('click', () => {
-            const userOtp = document.getElementById('recover-otp').value.trim();
-
-            if (!userOtp) {
-                alert('Please enter the OTP');
-                return;
-            }
-
-            if (userOtp === serverOtpCode) {
-                // Hide OTP field and show password fields
-                document.getElementById('otp-field').classList.remove('active');
-                verifyOtpButton.classList.remove('active');
-                
-                const passwordFields = document.querySelectorAll('.password-fields');
-                passwordFields.forEach(field => field.classList.add('active'));
-
-                alert('OTP verified. Please reset your password.');
-            } else {
-                alert('Invalid OTP. Please try again.');
-            }
-        });
-    }
-
-    // Reset Password
-    if (resetPasswordButton) {
-        resetPasswordButton.addEventListener('click', async () => {
-            const phone = recoverPhoneInput ? recoverPhoneInput.value.trim() : '';
-            const password = document.getElementById('new-password').value;
-            const confirmPassword = document.getElementById('confirm-password').value;
-
-            if (!password || !confirmPassword) {
-                alert('Please fill in both password fields');
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                alert('Passwords do not match');
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_BASE_URL}/forgot-password`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        phone: `+88${phone}`,
-                        password,
-                    }),
-                });
-
-                const result = await response.json();
-
-                if (!response.ok) {
-                    alert(result.message || 'Password reset failed');
-                    return;
-                }
-
-                alert('Password reset successful. Please log in.');
-                location.href = '/account/login';
-
-            } catch (error) {
-                console.error('Password reset error:', error);
-                alert('Something went wrong. Please try again.');
-            }
-        });
-    }
-});
+  });
 </script>
 
 {% schema %}

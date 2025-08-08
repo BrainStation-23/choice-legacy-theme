@@ -53,14 +53,19 @@
       "create_account": "Create an account",
       "new_customer": "New customer?",
       "guest_title": "Guest Checkout",
-      "guest_continue": "Continue as Guest"
+      "guest_continue": "Continue as Guest.",
+      "verify_otp": "Verify OTP",
+      "otp_not_received": "Did not receive the OTP?",
+      "resend_otp": "Resend OTP"
     },
     "recover_password": {
-      "title": "Recover your password",
+      "title": "Forget password",
       "subtext": "Please enter your email address to receive a verification code.",
       "success": "A verification code has been sent to your email address.",
-      "submit": " Send verification code",
-      "cancel": "Cancel"
+      "submit": " Reset Password",
+      "cancel": "Cancel",
+      "confirm_password": "Confirm Password",
+      "new_password": "New Password"
     },
     "register": {
       "title": "Create an account",
