@@ -665,8 +665,14 @@ address {
 .h-auto {
   height: auto;
 }
+.h-508 {
+  height: 508px;
+}
 .h-254 {
   height: 254px;
+}
+.h-180 {
+  height: 180px;
 }
 .h-44 {
   height: 44px;
@@ -731,6 +737,10 @@ address {
 
   .sm\:block {
     display: block;
+  }
+
+  .sm\:h-180 {
+    height: 180px;
   }
 }
 
@@ -1642,6 +1652,12 @@ shop-login-button {
 }
 .rounded-100 {
   border-radius: 100px;
+}
+
+@media screen and (max-width: 768px) {
+  .sm\:rounded-0 {
+    border-radius: 0;
+  }
 }
 
 fieldset {
