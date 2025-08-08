@@ -4,7 +4,7 @@
   }
 </style>
 
-<div class=" w-full  flex justify-center pt-48 pb-88">
+<div class=" w-full flex justify-center pt-48 pb-88">
   <!-- LOGIN FORM -->
   <div id="login" class=" flex gap-32  flex-col min-w-406  ">
     <div class=" gap-8 flex flex-col items-center">
@@ -22,7 +22,7 @@
       </div>
     </div>
     <div class=" flex  gap-16 flex-col">
-      {%- form 'customer_login', novalidate: 'novalidate', class: ' flex flex-col gap-16' -%}
+      {%- form 'customer_login', novalidate: 'novalidate', class: 'login-submit-form flex flex-col gap-16' -%}
         {%- if form.errors -%}
           <div class="alert alert-error" tabindex="-1" autofocus>
             {{ form.errors | default_errors }}

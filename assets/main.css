@@ -1260,6 +1260,9 @@ address {
 .pb-12 {
   padding-bottom: calc(12 * var(--space-unit));
 }
+.pb-16 {
+  padding-bottom: calc(16 * var(--space-unit));
+}
 .pb-20 {
   padding-bottom: calc(20 * var(--space-unit));
 }
@@ -1323,8 +1326,14 @@ address {
 .pt-12 {
   padding-top: calc(12 * var(--space-unit));
 }
+.pt-14 {
+  padding-top: calc(14 * var(--space-unit));
+}
 .pt-20 {
   padding-top: calc(20 * var(--space-unit));
+}
+.pt-40 {
+  padding-top: calc(40 * var(--space-unit));
 }
 .pt-48 {
   padding-top: calc(48 * var(--space-unit));
@@ -1645,13 +1654,18 @@ address {
 }
 
 button {
-  width: 100%;
+  /* width: 100%; */
   background: rgb(var(--color-primary-brand));
   color: rgb(var(--color-background));
   border: none;
-  padding: 14px;
+  padding: 18px 10px;
   border-radius: 6px;
   cursor: pointer;
+}
+
+.button:disabled {
+  background: rgb(var(--color-primary-brand));
+  cursor: not-allowed;
 }
 
 shop-login-button {
@@ -1845,6 +1859,9 @@ shop-login-button {
 .rounded-12 {
   border-radius: 12px;
 }
+.rounded-8 {
+  border-radius: 8px;
+}
 
 .opacity-0 {
   opacity: 0;
@@ -1930,7 +1947,7 @@ select {
   line-height: 1.2em;
 }
 
-inout:focus + label,
+input:focus + label,
 input:not(:placeholder-shown) + label {
   top: 4px;
   left: 16px;
@@ -1963,11 +1980,10 @@ textarea:-webkit-autofill:focus,
 select:-webkit-autofill,
 select:-webkit-autofill:hover,
 select:-webkit-autofill:focus {
-  -webkit-transition: background-color 5000s ease-in-out 0s;
-  transition: background-color 5000s ease-in-out 0s;
-  border: var(--input-border-width) solid rgba(var(--input-text-color) / 0.2);
-  box-shadow: 0 0 0 1000px rgb(var(--input-bg-color)) inset;
-  -webkit-text-fill-color: rgb(var(--input-text-color));
+  outline: none;
+  border-color: rgba(var(--color-primary-text), 0.2);
+  -webkit-text-fill-color: rgb(var(--color-primary-text));
+  background-color: rgb(var(--color-background));
 }
 
 input:-webkit-autofill + label {
