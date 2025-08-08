@@ -1,5 +1,3 @@
-{{ 'feature-blog.css' | asset_url | stylesheet_tag }}
-
 {% assign minShown = 4 %}
 {% assign articleCount = section.settings.blog.articles.size %}
 {% if articleCount < minShown %}
@@ -7,68 +5,30 @@
 {% endif %}
 {% assign image_ratio = 1 %}
 <style>
-  .blog-section-{{ section.id }} {
-    padding-top: 0px;
-    padding-bottom: 88px;
-  }
-
   .blog-section__content-grid {
-    display: grid;
     grid-template-columns: repeat({{ minShown }}, 1fr);
-    gap: 16px;
-  }
-
-  .blog-section__content-swiper {
-    display: none;
   }
 
   @media screen and (max-width: 768px) {
-
-    .blog-section-{{ section.id }} {
-      padding-top: 16px;
-      padding-bottom: 16px;
-    }
-
-    .blog-section__content-grid {
-      display: none;
-    }
-
-    .blog-section__content-swiper {
-      display: block;
-    }
-
-    .blog-section__content-swiper .swiper-container {
-      position: relative;
-      padding-bottom: 20px;
-    }
-
     .swiper-slide:last-child {
       margin-right: 0;
     }
-
-    .blog-section__content-swiper .swiper-container .swiper-wrapper {
-      gap:16px !important
-    }
-
-    /* .blog-card__image {
-      height: 124px;
-    } */
   }
 </style>
 
-<article class="blog-section blog-section-{{ section.id }}">
-  <div class="blog-section__container page-width gap-48 sm:gap-16">
+<article class="blog-section blog-section-{{ section.id }} pt-0 pb-88 pt-16 pb-16">
+  <div class="blog-section__container page-width flex flex-col gap-48 sm:gap-16">
     {% if section.settings.blog_title != blank %}
-      <div class="blog-section__title fs-36-lh-40-ls-0 ff-bebas-neue fw-400 sm:fs-21-lh-24-ls-1_2pct">
+      <div class="blog-section__title fs-36-lh-40-ls-0 ff-bebas-neue fw-400 sm:fs-21-lh-24-ls-1_2pct text-center uppercase">
         {{ section.settings.blog_title }}
       </div>
     {% endif %}
 
     <!-- Desktop Grid -->
-    <div class="blog-section__content-grid">
+    <div class="blog-section__content-grid grid gap-16 sm:hidden">
       {% for article in section.settings.blog.articles limit: section.settings.blog_post_limit %}
-        <div class="blog-card gap-16">
-          <div class="blog-card__image__container">
+        <div class="blog-card flex flex-col gap-16">
+          <div class="blog-card__image__container h-154 relative w-full">
             {% if article.image %}
               {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
               <div
@@ -88,11 +48,11 @@
               {{ 'image' | placeholder_svg_tag: 'blog-card__image' }}
             {% endif %}
           </div>
-          <div class="blog-card__content gap-8">
-            <h3 class="blog-card__title ff-general-sans fs-23-lh-24-ls-0 fw-500 sm:fs-17-lh-24-ls-0">
+          <div class="blog-card__content flex flex-col gap-8">
+            <h3 class="blog-card__title ff-general-sans fs-23-lh-24-ls-0 fw-500 sm:fs-17-lh-24-ls-0 m-0">
               {{ article.title }}
             </h3>
-            <p class="blog-card__excerpt ff-general-sans fs-14-lh-20-ls-0 fw-400">
+            <p class="blog-card__excerpt m-0 text-label-light ff-general-sans fs-14-lh-20-ls-0 fw-400">
               {{ article.content | strip_html | truncatewords: 20 }}
             </p>
           </div>
@@ -101,7 +61,7 @@
     </div>
 
     <!-- Mobile Swiper -->
-    <div class="blog-section__content-swiper">
+    <div class="blog-section__content-swiper hidden sm:block relative pb-20">
       <slideshow-component
         data-autoplay="false"
         data-show-progress-bar="true"
@@ -113,10 +73,10 @@
         data-slide-width-desktop="304px"
       >
         <div class="swiper-container flex flex-col gap-16">
-          <div class="swiper-wrapper">
+          <div class="swiper-wrapper gap-16">
             {% for article in section.settings.blog.articles limit: section.settings.blog_post_limit %}
-              <div class="swiper-slide blog-card gap-16">
-                <div class="blog-card__image__container">
+              <div class="swiper-slide blog-card flex flex-col gap-16">
+                <div class="blog-card__image__container h-154 relative w-full">
                   {% if article.image %}
                     {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
                     <div
@@ -136,16 +96,15 @@
                     {{ 'image' | placeholder_svg_tag: 'blog-card__image' }}
                   {% endif %}
                 </div>
-                <div class="blog-card__content gap-8">
-                  <h3 class="blog-card__title ff-general-sans fs-23-lh-24-ls-0 fw-500">{{ article.title }}</h3>
-                  <p class="blog-card__excerpt ff-general-sans fs-14-lh-20-ls-0 fw-400">
+                <div class="blog-card__content flex flex-col gap-8">
+                  <h3 class="blog-card__title ff-general-sans fs-23-lh-24-ls-0 fw-500 m-0">{{ article.title }}</h3>
+                  <p class="blog-card__excerpt m-0 text-label-light ff-general-sans fs-14-lh-20-ls-0 fw-400">
                     {{ article.content | strip_html | truncatewords: 20 }}
                   </p>
                 </div>
               </div>
             {% endfor %}
           </div>
-          {% render 'slideshow-progress-bar' %}
         </div>
       </slideshow-component>
     </div>
