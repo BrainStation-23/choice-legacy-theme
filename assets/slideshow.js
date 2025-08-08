@@ -4,9 +4,12 @@ if (!customElements.get("slideshow-component")) {
       super();
       this.swiper = null;
       this.customBullets = [];
+      this.sliderItems = [];
+      this.addThemeEditorEvents.bind(this)();
     }
 
     connectedCallback() {
+      this.isSelectedInThemeEditor = false;
       this.initializeSwiper();
       this.initializeCustomBullets();
     }
@@ -182,6 +185,12 @@ if (!customElements.get("slideshow-component")) {
         }
 
         this.swiper = new Swiper(swiperContainer, swiperConfig);
+
+        // Set sliderItems from swiper-wrapper's swiper-slide elements
+        const swiperWrapper = swiperContainer.querySelector(".swiper-wrapper");
+        this.sliderItems = Array.from(
+          swiperWrapper.querySelectorAll(".swiper-slide")
+        );
       }
     }
 
@@ -214,6 +223,54 @@ if (!customElements.get("slideshow-component")) {
           bullet.classList.remove("active");
         }
       });
+    }
+    // Add theme editor block selection event listeners
+    addThemeEditorEvents() {
+      console.log(
+        "🚀 ~ SlideshowComponent ~ addThemeEditorEvents ~ addThemeEditorEvents:",
+        addThemeEditorEvents
+      );
+      this.sliderItems.forEach((slide) => {
+        slide.addEventListener(
+          "shopify:block:select",
+          this.handelThemeEditorBlockSelectEvent.bind(this)
+        );
+
+        slide.addEventListener(
+          "shopify:block:deselect",
+          this.handelThemeEditorBlockDeselectEvent.bind(this)
+        );
+      });
+    }
+
+    // Handle block selection event in theme editor
+    handelThemeEditorBlockSelectEvent(event) {
+      const target = event.target;
+      const itemIndex = +target?.dataset?.index + 1;
+      console.log(
+        "🚀 ~ SlideshowComponent ~ handelThemeEditorBlockSelectEvent ~ itemIndex:",
+        itemIndex
+      );
+
+      if (this.swiper) {
+        // Scroll to the selected slide
+        this.swiper.slideTo(itemIndex);
+
+        // // Optionally highlight the selected slide
+        // const selectedSlide = this.sliderItems[itemIndex];
+        // if (selectedSlide) {
+        //   selectedSlide.classList.add("selected-block");
+        //   // Remove highlight after a short delay (e.g., 2 seconds)
+        //   setTimeout(() => {
+        //     selectedSlide.classList.remove("selected-block");
+        //   }, 2000);
+        // }
+      }
+      this.isSelectedInThemeEditor = true;
+    }
+
+    handelThemeEditorBlockDeselectEvent() {
+      this.isSelectedInThemeEditor = false;
     }
   }
 
