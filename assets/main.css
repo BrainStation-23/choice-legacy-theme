@@ -486,6 +486,9 @@ address {
 .z-2 {
   z-index: 2;
 }
+.z-3 {
+  z-index: 3;
+}
 .z-4 {
   z-index: 3;
 }
@@ -677,6 +680,12 @@ address {
 .h-508 {
   height: 508px;
 }
+.h-412 {
+  height: 412px;
+}
+.h-340 {
+  height: 340px;
+}
 .h-308 {
   height: 308px;
 }
@@ -689,11 +698,26 @@ address {
 .h-180 {
   height: 180px;
 }
+.h-56 {
+  height: 56px;
+}
 .h-44 {
   height: 44px;
 }
+.h-40 {
+  height: 40px;
+}
+.h-32 {
+  height: 32px;
+}
 .h-28 {
   height: 28px;
+}
+.h-14 {
+  height: 14px;
+}
+.min-h-56 {
+  min-height: 56px;
 }
 .min-h-24 {
   min-height: 24px;
@@ -704,14 +728,29 @@ address {
 .w-full {
   width: 100%;
 }
+.w-268 {
+  width: 268px;
+}
 .w-240 {
   width: 240px;
+}
+.w-56 {
+  width: 56px;
 }
 .w-44 {
   width: 44px;
 }
+.w-40 {
+  width: 40px;
+}
+.w-32 {
+  width: 32px;
+}
 .w-28 {
   width: 28px;
+}
+.w-14 {
+  width: 14px;
 }
 .max-w-full {
   max-width: 100%;
@@ -1202,6 +1241,9 @@ address {
 .pt-8 {
   padding-top: calc(8 * var(--space-unit));
 }
+.p-16 {
+  padding: 16px;
+}
 
 @media screen and (max-width: 768px) {
   .sm\:pt-0 {
@@ -1298,6 +1340,9 @@ address {
 @media screen and (max-width: 768px) {
   .sm\:text-center {
     text-align: center;
+  }
+  .sm\:text-left {
+    text-align: left;
   }
 }
 .translate-y--50 {
@@ -1675,6 +1720,13 @@ shop-login-button {
 }
 .rounded-100 {
   border-radius: 100px;
+}
+
+.opacity-0 {
+  opacity: 0;
+}
+.opacity-0_7 {
+  opacity: 0.7;
 }
 
 @media screen and (max-width: 768px) {
