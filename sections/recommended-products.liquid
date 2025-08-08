@@ -1,8 +1,8 @@
 <div class="recommended-products recommended-products-{{ section.id }} pt-0 pb-88 sm:pt-16 sm:pb-16">
-  <div class="recommended-products__container page-width flex flex-col gap-48 sm:gap-16">
+  <div class="page-width flex flex-col gap-48 sm:gap-16">
     {% if section.settings.heading != blank %}
       <div class="block sm:hidden">
-        <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct text-center sm:text-center">
+        <h2 class="fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct text-center sm:text-center">
           {{ section.settings.heading }}
         </h2>
       </div>
@@ -35,7 +35,7 @@
       >
         {% if section.settings.heading != blank %}
           <div class="flex justify-between items-end relative">
-            <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct text-center">
+            <h2 class="fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct text-center">
               {{ section.settings.heading }}
             </h2>
 
