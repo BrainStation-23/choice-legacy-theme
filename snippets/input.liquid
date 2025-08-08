@@ -5,32 +5,43 @@
 
   .form-input-field .form-input {
     width: 100%;
-    padding: 16px 16px 16px;
+    padding: 0px 16px;
     border: 1px solid rgba(var(--color-primary-text), 0.2);
     border-radius: 12px;
     transition: all 0.2s ease;
+    line-height: 0px !important;
   }
 
   .form-input-field .form-label {
     position: absolute;
     top: 50%;
-    left: 12px;
+    left: 16px;
     transform: translateY(-50%);
     color: rgba(var(--color-primary-text), 0.5);
     pointer-events: none;
     transition: 0.2s ease all;
   }
 
-  /* Float the label when input is focused or has content */
   .form-input-field .form-input:focus + .form-label,
   .form-input-field .form-input:not(:placeholder-shown) + .form-label {
     top: 4px;
-    left: 8px;
+    left: 16px;
     font-size: 12px;
     transform: translateY(0);
-    padding: 0 4px;
     color: rgb(var(--color-primary-text)) !important;
     font-weight: 500;
+  }
+
+  /* Float the label when input is focused or has content */
+  .form-input-field .form-input:focus + .form-label,
+  .form-input-field .form-input:not(:placeholder-shown) + .form-label {
+    top: 1px;
+    left: 16px;
+    font-size: 12px;
+    transform: translateY(0);
+    color: rgb(var(--color-primary-text)) !important;
+    font-weight: 500;
+    padding-bottom: 4px;
   }
   .form-input:focus {
     outline: none;
@@ -70,6 +81,15 @@
   .form-input-field input[data-password-field='true'] {
     padding-right: 40px;
   }
+  input:-webkit-autofill + .form-label {
+    top: 4px;
+    left: 16px;
+    font-size: 12px;
+    transform: translateY(0);
+    color: rgb(var(--color-primary-text)) !important;
+    font-weight: 500;
+    padding-bottom: 4px;
+  }
 </style>
 
 <div class="form-input-field {{ class }}">
@@ -78,6 +98,7 @@
     id="{{ id }}"
     name="{{ name }}"
     value="{{ value }}"
+    autocomplete="off"
     placeholder=" "
     class="form-input fs-14-lh-20-ls-0_1 ff-general-sans fw-500"
     autocomplete="{{ autocomplete }}"
