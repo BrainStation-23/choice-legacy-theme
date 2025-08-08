@@ -1,20 +1,38 @@
-<nav class="mega-menu relative z-1000 bg-brand">
+<style>
+  .mega-menu__item:hover .mega-menu__dropdown {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .mega-menu__dropdown--1-column .mega-menu__column {
+    min-width: 100px;
+  }
+
+  .mega-menu__column:last-child {
+    padding-right: 0;
+  }
+
+  .mega-menu__column-link:hover {
+    color: rgb(var(--color-primary-brand));
+  }
+</style>
+
+<nav class="mega-menu relative z-1000 bg-brand sm:hidden">
   <div class="mega-menu__nav page-width">
-    <div class="mega-menu__container">
+    <div class="mega-menu__container pt-20 pr-0 pb-20 pl-0">
       <ul class="mega-menu__list m-0 p-0 list-style-none flex items-center justify-center gap-24">
         {%- if section.settings.main_menu != blank -%}
           {%- for link in linklists[section.settings.main_menu].links -%}
-            <li class="mega-menu__item">
+            <li class="mega-menu__item relative">
               {% assign undergarments_link = link.title | downcase %}
               <a
                 href="{{ link.url }}"
-                class="mega-menu__link fw-600 fs-14-lh-100pct-ls-2pct uppercase {% if undergarments_link contains "undergarments" %}mega-menu__link--undergarments{% endif %}"
+                class="mega-menu__link text-bg no-underline fw-600 fs-14-lh-100pct-ls-2pct uppercase {% if undergarments_link contains "undergarments" %}mega-menu__link--undergarments{% endif %}"
               >
                 {{ link.title }}
               </a>
 
               {%- if link.links != blank -%}
-                {%- comment -%} Count columns for dynamic layout {%- endcomment -%}
                 {%- assign column_count = 0 -%}
                 {%- assign has_2level_items = false -%}
                 {%- for child_link in link.links -%}
@@ -25,41 +43,38 @@
                   {%- endif -%}
                 {%- endfor -%}
 
-                {%- comment -%} If we have 2-level items, they count as one column {%- endcomment -%}
                 {%- if has_2level_items -%}
                   {%- assign column_count = column_count | plus: 1 -%}
                 {%- endif -%}
 
-                {%- comment -%} Determine if we should show image (2+ columns) {%- endcomment -%}
                 {%- assign show_image = false -%}
                 {%- if column_count >= 2 -%}
                   {%- assign show_image = true -%}
                 {%- endif -%}
 
-                {%- comment -%} Determine dropdown width class based on column count {%- endcomment -%}
-                {%- assign dropdown_class = 'mega-menu__dropdown' -%}
+                {%- assign dropdown_class = 'mega-menu__dropdown absolute top-100pct left-50pct translate-x--50 bg-bg rounded-6 opacity-0 invisible transition-transform z-1001 mt-8 pt-24 pr-40 pb-24 pl-40 whitespace-nowrap w-mx-content max-w-1134 min-w-200 ml-50pct xlg:max-w-900 slg:pt-20 slg:pb-20 slg:pr-20 slg:pl-20 slg:left-100pct md:max-w-720 md:p-16 md:visible' -%}
                 {%- if column_count == 1 -%}
-                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--1-column' -%}
+                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--1-column w-auto min-w-100 max-w-400 pt-16 pr-20 pb-16 pl-20 slg:w-auto slg:min-w-150 slg:max-w-400 slg:pt-10 slg:pr-16 slg:pb-10 slg:pl-16 md:max-w-300' -%}
                 {%- elsif column_count == 2 -%}
-                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--2-columns' -%}
+                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--2-columns w-auto min-w-430 max-w-600 pt-16 pr-20 pb-16 pl-20 md:max-w-450' -%}
                 {%- elsif column_count == 3 -%}
-                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--3-columns' -%}
+                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--3-columns w-auto min-w-1134 slg:min-w-900 md:max-w-720 md:min-w-720' -%}
                 {%- else -%}
-                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--4-plus-columns' -%}
+                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--4-plus-columns w-1134 slg:w-400 md:w-720' -%}
                 {%- endif -%}
 
                 <div class="{{ dropdown_class }} box-shadow">
-                  <div class="mega-menu__dropdown-inner">
-                    <div class="mega-menu__columns-wrapper">
+                  <div class="mega-menu__dropdown-inner flex gap-24 items-start">
+                    <div class="mega-menu__columns-wrapper flex flex-wrap gap-16 flex-1 min-w-0 md:gap-32">
                       {%- assign column_rendered = false -%}
                       {%- for child_link in link.links -%}
                         {%- if child_link.links != blank -%}
                           <!-- 3-level menu: child has grandchildren -->
-                          <div class="mega-menu__column flex flex-col gap-16">
-                            <h3 class="mega-menu__column-title uppercase fs-21-lh-24-ls-1_2pct fw-400">
+                          <div class="mega-menu__column min-w-198 slg:min-w-150 flex flex-col gap-16 md:min-w-auto">
+                            <h3 class="mega-menu__column-title text-primary uppercase fs-21-lh-24-ls-1_2pct fw-400">
                               {{ child_link.title }}
                             </h3>
-                            <ul class="mega-menu__column-list flex flex-col gap-16">
+                            <ul class="mega-menu__column-list list-style-none m-0 p-0 flex flex-col gap-16">
                               {%- for grandchild_link in child_link.links -%}
                                 <li class="mega-menu__column-item">
                                   <a
@@ -75,12 +90,12 @@
                         {%- else -%}
                           <!-- 2-level menu: child has no grandchildren -->
                           {%- unless column_rendered -%}
-                            <div class="mega-menu__column flex flex-col gap-16">
-                              <ul class="mega-menu__column-list flex flex-col gap-16">
+                            <div class="mega-menu__column min-w-198 slg:min-w-150 flex flex-col gap-16 md:min-w-auto">
+                              <ul class="mega-menu__column-list list-style-none m-0 p-0 flex flex-col gap-16">
                                 {%- assign column_rendered = true -%}
                           {%- endunless -%}
                           <li class="mega-menu__column-item">
-                            <a href="{{ child_link.url }}" class="mega-menu__column-link fs-14-lh-20-ls-0_1 fw-500">
+                            <a href="{{ child_link.url }}" class="mega-menu__column-link fs-14-lh-20-ls-0_1 fw-500 transition-transform block">
                               {{- child_link.title -}}
                             </a>
                           </li>
@@ -97,7 +112,7 @@
                     <!-- Image Column - Only show when column count >= 2 -->
                     {%- if section.settings.mega_menu_image != blank and show_image -%}
                       <div
-                        class="mega-menu__image-column flex flex-start media relative block"
+                        class="mega-menu__image-column flex flex-start media relative block shrink-0"
                         style="padding-top: 200px; padding-left: 402px;"
                       >
                         {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
