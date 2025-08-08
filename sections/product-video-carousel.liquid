@@ -1,43 +1,3 @@
-{%- style -%}
-  .product-video-carousel-{{ section.id }} .product-video-item {
-    border-radius: {{ section.settings.card_border_radius }}px;
-  }
-
-  .product-video-carousel-{{ section.id }} .product-video-container {
-    border-radius: {{ section.settings.card_border_radius }}px {{ section.settings.card_border_radius }}px 0 0;
-  }
-
-  .product-video-item__small-play::after {
-    content: "";
-    width: 0;
-    height: 0;
-  }
-
-  .product-video-item-overlay-image {
-    border: 2px solid rgb(var(--color-background));
-  }
-
-  .product-video-item__small-play .icon-play {
-    display: block;
-  }
-
-  .product-video-item__small-play .icon-pause {
-    display: none;
-  }
-
-  .product-video-item.playing .product-video-item__small-play .icon-play {
-    display: none;
-  }
-
-  .product-video-item.playing .product-video-item__small-play .icon-pause {
-    display: block;
-  }
-
-  .product-video-item__small-play svg path {
-    stroke: rgb(var(--color-background));
-  }
-{%- endstyle -%}
-
 <div class="product-video-carousel product-video-carousel-{{ section.id }} pt-88 pb-88 sm:pt-16 sm:pb-16 relative">
   <div class="page-width flex gap-48 flex-col sm:gap-16">
     {% if section.settings.heading != blank %}
@@ -73,7 +33,7 @@
 
               <div class="swiper-slide">
                 <div
-                  class="product-video-item cursor-pointer transition-transform w-268 h-412 overflow-hidden box-shadow{% if has_video %} has-video{% endif %}"
+                  class="product-video-item rounded-8 cursor-pointer transition-transform w-268 h-412 overflow-hidden box-shadow{% if has_video %} has-video{% endif %}"
                   data-block-id="{{ block.id }}"
                 >
                   <div class="product-video-container relative w-full h-340">
@@ -131,7 +91,7 @@
                         <div class="flex flex-col gap-9 flex-1">
                           <div class="flex items-center flex-wrap gap-9">
                             <div
-                              class="product-video-item-overlay-image media block relative w-40 h-40 rounded-full object-cover "
+                              class="product-video-item-overlay-image border-2 border-solid border-bg media block relative w-40 h-40 rounded-full object-cover "
                               style="padding-left: 40px; padding-bottom: 40px"
                             >
                               {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
@@ -154,8 +114,8 @@
                           </p>
                         </div>
                         <button class="product-video-item__small-play w-32 h-32 bg-brand rounded-full flex items-center justify-center shrink-0 cursor-pointer border-none" type="button" aria-label="Play video">
-                          {% render 'icon-play', cls: "block w-14 h-14" %}
-                          {% render 'icon-pause', cls: "hidden w-14 h-14" %}
+                          {% render 'icon-play', cls: "block w-14 h-14 svg-bg" %}
+                          {% render 'icon-pause', cls: "hidden w-14 h-14 svg-bg" %}
                         </button>
                       </div>
                     {% endif %}
@@ -227,73 +187,99 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    const videoItems = document.querySelectorAll('.product-video-item');
+  const videoItems = document.querySelectorAll('.product-video-item');
 
-    videoItems.forEach((item, index) => {
-      const video = item.querySelector('video[data-video-type="mp4"]');
-      const iframe = item.querySelector('iframe[data-video-type="youtube"]');
-      const smallPlayButton = item.querySelector('.product-video-item__small-play');
+  videoItems.forEach((item) => {
+    const video = item.querySelector('video[data-video-type="mp4"]');
+    const iframe = item.querySelector('iframe[data-video-type="youtube"]');
+    const smallPlayButton = item.querySelector('.product-video-item__small-play');
 
-      if (video && smallPlayButton) {
-        const toggleVideo = () => {
-          if (video.paused) {
-            const playPromise = video.play();
-            if (playPromise !== undefined) {
-              playPromise
-                .then(() => {
-                  item.classList.add('playing');
-                })
-                .catch((error) => {
-                  console.error('Video play failed:', error);
-                });
-            }
-          } else {
-            video.pause();
-            item.classList.remove('playing');
+    function updateIcons(isPlaying) {
+      const playIcon = item.querySelector('.icon-play');
+      const pauseIcon = item.querySelector('.icon-pause');
+
+      if (!playIcon || !pauseIcon) return;
+
+      if (isPlaying) {
+        playIcon.classList.add('hidden');
+        playIcon.classList.remove('block');
+        pauseIcon.classList.remove('hidden');
+        pauseIcon.classList.add('block');
+      } else {
+        playIcon.classList.remove('hidden');
+        playIcon.classList.add('block');
+        pauseIcon.classList.add('hidden');
+        pauseIcon.classList.remove('block');
+      }
+    }
+
+    if (video && smallPlayButton) {
+      const toggleVideo = () => {
+        if (video.paused) {
+          const playPromise = video.play();
+          if (playPromise !== undefined) {
+            playPromise
+              .then(() => {
+                item.classList.add('playing');
+                updateIcons(true);
+              })
+              .catch((error) => {
+                console.error('Video play failed:', error);
+              });
           }
-        };
+        } else {
+          video.pause();
+          item.classList.remove('playing');
+          updateIcons(false);
+        }
+      };
 
-        smallPlayButton.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          toggleVideo();
-        });
+      smallPlayButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleVideo();
+      });
 
-        video.addEventListener('play', () => {
+      video.addEventListener('play', () => {
+        item.classList.add('playing');
+        updateIcons(true);
+      });
+
+      video.addEventListener('pause', () => {
+        item.classList.remove('playing');
+        updateIcons(false);
+      });
+
+      video.addEventListener('ended', () => {
+        item.classList.remove('playing');
+        updateIcons(false);
+      });
+    }
+
+    if (iframe && smallPlayButton) {
+      const toggleYouTube = () => {
+        const currentSrc = iframe.src;
+
+        if (item.classList.contains('playing')) {
+          iframe.src = currentSrc.replace('autoplay=1', 'autoplay=0');
+          item.classList.remove('playing');
+          updateIcons(false);
+        } else {
+          iframe.src = currentSrc.replace('autoplay=0', 'autoplay=1');
           item.classList.add('playing');
-        });
+          updateIcons(true);
+        }
+      };
 
-        video.addEventListener('pause', () => {
-          item.classList.remove('playing');
-        });
-
-        video.addEventListener('ended', () => {
-          item.classList.remove('playing');
-        });
-      }
-
-      if (iframe && smallPlayButton) {
-        const toggleYouTube = () => {
-          const currentSrc = iframe.src;
-
-          if (item.classList.contains('playing')) {
-            iframe.src = currentSrc.replace('autoplay=1', 'autoplay=0');
-            item.classList.remove('playing');
-          } else {
-            iframe.src = currentSrc.replace('autoplay=0', 'autoplay=1');
-            item.classList.add('playing');
-          }
-        };
-
-        smallPlayButton.addEventListener('click', (e) => {
-          console.log('YouTube play button clicked');
-          e.preventDefault();
-          e.stopPropagation();
-          toggleYouTube();
-        });
-      }
-    });
+      smallPlayButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleYouTube();
+      });
+    }
   });
+});
+
 </script>
 
 {% schema %}

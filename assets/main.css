@@ -76,6 +76,9 @@ mark {
   stroke: rgb(var(--color-primary-brand));
   fill: rgb(var(--color-primary-brand));
 }
+.svg-bg path {
+  stroke: rgb(var(--color-background));
+}
 
 /* Background color utilities */
 .bg-bg {
@@ -2110,6 +2113,9 @@ shop-login-button {
 .rounded-12 {
   border-radius: 12px;
 }
+.rounded-8 {
+  border-radius: 8px;
+}
 .rounded-6 {
   border-radius: 6px;
 }
@@ -2120,11 +2126,17 @@ shop-login-button {
 .border-1 {
   border-width: 1px;
 }
+.border-2 {
+  border-width: 2px;
+}
 .border-solid {
   border-style: solid;
 }
 .border-color {
   border-color: rgb(var(--color-border));
+}
+.border-bg {
+  border-color: rgb(var(--color-background));
 }
 
 .opacity-0 {
