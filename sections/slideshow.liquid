@@ -1,37 +1,21 @@
-{{ 'slideshow.css' | asset_url | stylesheet_tag }}
-
 <style>
-  .slideshow-{{ section.id }} {
-    padding-top: 12px;
-    padding-bottom: 12px;
-  }
+  @media screen and (min-width: 1024px) {
+    .slideshow .slideshow-nav-button-prev {
+      left: calc(10% - 52px);
+    }
 
-  @media screen and (min-width: 750px) {
-    .slideshow-{{ section.id }} {
-      padding-top: 12px;
-      padding-bottom: 12px;
+    .slideshow .slideshow-nav-button-next {
+      right: calc(10% - 52px);
+    }
+  }
+  
+  @media screen and (min-width: 769px) {
+    .slideshow-{{ section.id }} .swiper-slide {
+      border-radius: {{ section.settings.slide_border_radius }}px;
     }
   }
 
-  .slideshow-{{ section.id }} .swiper-slide {
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s ease;
-    border-radius: {{ section.settings.slide_border_radius }}px;
-  }
-
-  /* Video Styles */
-  .slide-video,
-  .slide-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-
-
-  @media screen and (max-width: 1024px) {
+  @media screen and (min-width: 769px) and (max-width: 1023px) {
     .slideshow .slideshow-nav-button-prev {
       left: calc(11% - 52px);
     }
@@ -40,52 +24,17 @@
       right: calc(11% - 52px);
     }
   }
-
-  @media (max-width: 768px) {
-    .slideshow-{{ section.id }} {
-      padding-top: 0px;
-      padding-bottom: 0px;
-    }
-    .slideshow .slide-content {
-      max-width: 300px;
-      padding: 0 15px;
-    }
-
-    .slideshow .slide-content.align-left {
-      left: 20px;
-    }
-
-    .slideshow .slide-content.align-right {
-      right: 20px;
-    }
-
-    .slideshow .slide-content.card {
-      padding: 20px;
-    }
-
-    .slideshow .slideshow-nav-button-prev {
-      left: 8px !important;
-    }
-
-    .slideshow .slideshow-nav-button-next {
-      right: 8px !important;
-    }
-
-    .slideshow .swiper-slide {
-      border-radius: 0;
-    }
-  }
 </style>
 
 <slideshow-component
-  class="slideshow slideshow-{{ section.id }}"
+  class="slideshow slideshow-{{ section.id }} block relative overflow-hidden pt-12 pb-12 sm:pt-0 sm:pb-0"
   data-autoplay="{{ section.settings.enable_autoplay }}"
   data-autoplay-delay="{{ section.settings.autoplay_delay | times: 1000 }}"
   data-pause-on-hover="{{ section.settings.pause_on_hover }}"
   data-show-partial-slides="true"
 >
-  <div class="slideshow-container">
-    <div class="swiper-container">
+  <div class="slideshow-container mt-0 mr-auto mb-0 ml-auto">
+    <div class="swiper-container relative w-full h-410 overflow-visible sm:h-186">
       <div class="swiper-wrapper">
         {% for block in section.blocks %}
           {%- liquid
@@ -93,15 +42,13 @@
             assign m_img = block.settings.mobile_image
           -%}
           <div
-            class="swiper-slide {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}"
+            class="swiper-slide sm:rounded-0 relative overflow-hidden transition-transform {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}"
             {{ block.shopify_attributes }}
             data-block-id="{{ block.id }}"
             data-block-type="{{ block.type }}"
             id="shopify-block-{{ block.id }}"
           >
-            {% comment %} Desktop Media (Video has priority over Image) {% endcomment %}
             {% if block.settings.video_url != blank %}
-              {% comment %} Video {% endcomment %}
               {% if block.settings.link != blank %}
                 <a
                   href="{{ block.settings.link }}"
@@ -111,7 +58,7 @@
                 >
               {% endif %}
               <video
-                class="slide-video"
+                class="slide-video w-full h-full object-cover block"
                 {% if block.settings.video_autoplay %}
                   autoplay
                 {% endif %}
@@ -132,7 +79,6 @@
               </video>
               {% if block.settings.link != blank %}</a>{% endif %}
             {% elsif block.settings.image != blank %}
-              {% comment %} Desktop Image {% endcomment %}
               {% if block.settings.link != blank %}
                 <a
                   href="{{ block.settings.link }}"
@@ -159,12 +105,10 @@
               {% if block.settings.link != blank %}</a>{% endif %}
             {% else %}
               {% assign image_number = forloop.index0 | modulo: 2 | plus: 1 %}
-              {{ 'lifestyle-' | append: image_number | placeholder_svg_tag: 'placeholder-svg slide-image-desktop' }}
+              {{ 'lifestyle-' | append: image_number | placeholder_svg_tag: 'placeholder-svg block sm:hidden' }}
             {% endif %}
 
-            {% comment %} Mobile Media (Video has priority over Image) {% endcomment %}
             {% if block.settings.video_url != blank %}
-              {% comment %} Use same video for mobile {% endcomment %}
               {% if block.settings.link != blank %}
                 <a
                   href="{{ block.settings.link }}"
@@ -174,7 +118,7 @@
                 >
               {% endif %}
               <video
-                class="slide-video slide-image-mobile"
+                class="slide-video hidden sm:block"
                 {% if block.settings.video_autoplay %}
                   autoplay
                 {% endif %}
@@ -195,7 +139,6 @@
               </video>
               {% if block.settings.link != blank %}</a>{% endif %}
             {% elsif img != blank %}
-              {% comment %} Mobile Image {% endcomment %}
               {% if block.settings.link != blank %}
                 <a
                   href="{{ block.settings.link }}"
@@ -221,15 +164,23 @@
               -%}
               {% if block.settings.link != blank %}</a>{% endif %}
             {% else %}
-              {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg slide-image-mobile' }}
+              {{ 'lifestyle-1' | placeholder_svg_tag: 'placeholder-svg hidden sm:block' }}
             {% endif %}
 
-            {% comment %} Slide Content {% endcomment %}
             {% if block.settings.title != blank
               or block.settings.description != blank
               or block.settings.button_text != blank
             %}
-              <div class="slide-content {% if block.settings.show_card %}card{% endif %} align-{{ block.settings.content_alignment | default: 'left' }}">
+             {% liquid
+               assign slide_content_cls = 'left-40 text-left'
+               if block.settings.content_alignment == "right"
+                assign slide_content_cls = 'right-40 text-right'
+               elsif block.settings.content_alignment == "center"
+                assign slide_content_cls = 'left-50pct text-center'
+               endif
+
+             %}
+              <div class="slide-content flex flex-col gap-10 md:max-w-300 sm:pt-0 sm:pr-15 sm:pb-0 sm:pl-15 absolute top-50pct translate-y--50 z-2 max-w-400 pt-0 pr-20 pb-0 pl-20 {% if block.settings.show_card %}card bg-bg backdrop-blur-10 rounded-12 p-30 sm:p-20{% endif %} align-{{ block.settings.content_alignment | default: 'left' }} {{ slide_content_cls }}">
                 {% if block.settings.title != blank %}
                   <h3 class="slide-title fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct">{{ block.settings.title }}</h3>
                 {% endif %}
@@ -244,9 +195,9 @@
       </div>
     </div>
 
-    {% render 'nav-button', cls: 'slideshow-nav-button-prev', icon_cls: 'icon-arrow-left' %}
+    {% render 'nav-button', cls: 'slideshow-nav-button-prev sm:left-8', icon_cls: 'icon-arrow-left' %}
 
-    {% render 'nav-button', cls: 'slideshow-nav-button-next' %}
+    {% render 'nav-button', cls: 'slideshow-nav-button-next sm:right-8' %}
   </div>
 </slideshow-component>
 
