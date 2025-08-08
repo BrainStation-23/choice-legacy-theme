@@ -437,9 +437,6 @@ address {
 .fixed {
   position: fixed;
 }
-.static {
-  position: static;
-}
 .absolute {
   position: absolute;
 }
@@ -449,6 +446,9 @@ address {
 .sticky {
   position: -webkit-sticky;
   position: sticky;
+}
+.static {
+  position: static;
 }
 .inset-0 {
   inset: 0;
