@@ -634,6 +634,9 @@ address {
 .grid-cols-5 {
   grid-template-columns: repeat(5, 1fr);
 }
+.grid-cols-fixed-2 {
+  grid-template-columns: 1fr 1fr;
+}
 @media screen and (min-width: 769px) and (max-width: 1023px) {
   .md\:-grid-cols-2 {
     grid-template-columns: repeat(2, 1fr);
@@ -673,6 +676,9 @@ address {
 }
 .h-508 {
   height: 508px;
+}
+.h-308 {
+  height: 308px;
 }
 .h-254 {
   height: 254px;
@@ -754,6 +760,10 @@ address {
 
   .sm\:h-164 {
     height: 164px;
+  }
+
+  .sm\:h-88 {
+    height: 88px;
   }
 }
 
