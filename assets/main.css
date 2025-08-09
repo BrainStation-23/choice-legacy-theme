@@ -900,6 +900,9 @@ address {
 .w-14 {
   width: 14px;
 }
+.w-48 {
+  width: 48px;
+}
 .w-325 {
   width: 325px;
 }
@@ -1007,6 +1010,10 @@ address {
     width: 36px;
   }
 
+  .sm\:w-32 {
+    width: 32px;
+  }
+
   .sm\:hidden {
     display: none;
   }
@@ -1025,6 +1032,9 @@ address {
 
   .sm\:h-186 {
     height: 186px;
+  }
+  .sm\:h-32 {
+    height: 32px;
   }
 
   .sm\:h-180 {
@@ -1700,6 +1710,10 @@ address {
 
   .sm\:pt-16 {
     padding-top: calc(16 * var(--space-unit));
+  }
+
+  .sm\:pt-24 {
+    padding-top: calc(24 * var(--space-unit));
   }
 
   .sm\:pt-40 {
