@@ -2,7 +2,8 @@
   "sections": {
     "footer": {
       "social_media": "Social media",
-      "payment_methods_alt": "Payment methods"
+      "payment_methods_alt": "Payment methods",
+      "all_right": "All rights reserved."
     },
     "header": {
       "account": "My Account",

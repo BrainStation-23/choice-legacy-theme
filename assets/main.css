@@ -69,6 +69,9 @@ mark {
 .text-secondary-light {
   color: rgba(var(--color-secondary-text), 0.6);
 }
+.bg-secondary-light-20pct {
+  background-color: rgba(var(--color-secondary-text), 0.02);
+}
 .text-brand {
   color: rgb(var(--color-primary-brand));
 }
@@ -766,7 +769,9 @@ address {
   .sm\:left-8 {
     left: 8px;
   }
-
+  .sm\:block {
+    display: block;
+  }
   .sm\:right-8 {
     right: 8px;
   }
@@ -1138,6 +1143,9 @@ address {
 
   .sm\:justify-start {
     justify-content: flex-start;
+  }
+  .sm\:justify-left {
+    justify-content: left;
   }
 }
 
@@ -1622,6 +1630,10 @@ address {
 .pt-20 {
   padding-top: calc(20 * var(--space-unit));
 }
+
+.pt-32 {
+  padding-top: calc(32 * var(--space-unit));
+}
 .pt-40 {
   padding-top: calc(40 * var(--space-unit));
 }
@@ -1711,6 +1723,10 @@ address {
 
   .sm\:pb-16 {
     padding-bottom: calc(16 * var(--space-unit));
+  }
+
+  .sm\:pb-24 {
+    padding-bottom: calc(24 * var(--space-unit));
   }
   .sm\:p-4 {
     padding: calc(4 * var(--space-unit));
