@@ -1,676 +1,93 @@
-{{ 'header.css' | asset_url | stylesheet_tag }}
-
 <style>
-  .header-{{ section.id }} {
-    padding-top: 16px;
-    padding-bottom: 16px;
-    background-color: rgb(var(--color-background));
-  }
-
-  /* -- MOBILE STYLES -- */
-  @media screen and (max-width: 767px) {
-    .header-{{ section.id }} {
-      padding: 16px 0;
-    }
-  }
-
-  /* -- MEGA MENU STYLES -- */
-  .mega-menu {
-    background: rgb(var(--color-primary-brand));
-  }
-
-  .mega-menu__container {
-    padding: 20px 0;
-  }
-
-  .mega-menu__item {
-    position: relative;
-  }
-
-  .mega-menu__link {
-    color: rgb(var(--color-background));
-    text-decoration: none;
-  }
-
-  .mega-menu__link--undergarments {
-    background: {{ section.settings.undergarments_bg_color }};
-    padding: 4px 8px;
-    border-radius: 5px;
-  }
-
-  /* Mega Menu Dropdown - Base styles */
-  .mega-menu__dropdown {
-    position: absolute;
-    top: 100%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgb(var(--color-background));
-    border-radius: 6px;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    z-index: 1001;
-    margin-top: 8px;
-    padding: 24px 40px;
-    white-space: nowrap;
-    width: max-content;
-    max-width: 1134px;
-    min-width: 200px;
-    margin-left: 50%;
-  }
-
-  /* Column-specific width adjustments */
-  .mega-menu__dropdown--1-column {
-    width: auto;
-    min-width: 100px;
-    max-width: 400px;
-    padding: 16px 20px;
-  }
-
-  .mega-menu__dropdown--2-columns {
-    width: auto;
-    min-width: 430px;
-    max-width: 600px;
-  }
-
-  .mega-menu__dropdown--3-columns {
-    width: auto;
-    min-width: 1134px;
-  }
-
-  .mega-menu__dropdown--4-plus-columns {
-    width: 1134px;
-  }
-
-  .mega-menu__item:hover .mega-menu__dropdown {
-    opacity: 1;
-    visibility: visible;
-  }
-
-  .mega-menu__dropdown-inner {
-    display: flex;
-    gap: 24px;
-    align-items: flex-start;
-  }
-
-  .mega-menu__columns-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .mega-menu__column {
-    min-width: 198px;
-  }
-
-  .mega-menu__dropdown--1-column .mega-menu__column {
-    min-width: 100px;
-  }
-
-  .mega-menu__column:last-child {
-    padding-right: 0;
-  }
-
-  .mega-menu__column-title {
-    color: rgb(var(--color-primary-text))
-  }
-
-  .mega-menu__column-list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .mega-menu__column-link {
-    transition: color 0.3s ease;
-    display: block;
-  }
-
-  .mega-menu__column-link:hover {
-    color: rgb(var(--color-primary-brand));
-  }
-
-  .mega-menu__image-column {
-    flex-shrink: 0;
-  }
-
-  .mega-menu__image {
-    width: 400px;
-    height: 200px;
-    object-fit: cover;
-  }
-
-  /* MOBILE MEGA MENU STYLES */
-  .mobile-mega-menu {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 325px;
-    height: calc(100vh - var(--header-height, 80px));
-    z-index: 9999;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease;
-    overflow-y: auto;
-    background: rgb(var(--color-background));
-  }
-
-  .mobile-mega-menu.active {
-    transform: translateX(0);
-  }
-
-  .mobile-mega-menu__content {
-    padding: 24px 16px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .mobile-mega-menu__categories {
-    flex: 1;
-  }
-
-  /* CollapsibleContent Web Component Styles */
-  collapsible-content {
-    display: block;
-  }
-
-  collapsible-content .mobile-mega-menu__category-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    user-select: none;
-  }
-
-  collapsible-content .mobile-mega-menu__category-title {
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin: 0;
-  }
-
-  collapsible-content .mobile-mega-menu__category-toggle {
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.3s ease;
-  }
-
-  collapsible-content .mobile-mega-menu__category-toggle svg {
-    width: 12px;
-    height: 12px;
-    fill: currentColor;
-  }
-
-  collapsible-content.expanded .mobile-mega-menu__category-toggle {
-    transform: rotate(-90deg);
-  }
-
-  collapsible-content.expanded .mobile-mega-menu__category-toggle svg path {
-    stroke: rgb(var(--color-primary-brand));
-    fill: rgb(var(--color-primary-brand));
-  }
-
-  collapsible-content .mobile-mega-menu__subcategory-list {
-    list-style: none;
-    margin: 0;
-    padding: 0px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease;
-  }
-
-  collapsible-content.expanded .mobile-mega-menu__subcategory-list {
-    min-height: 550px;
-    padding: 16px 0;
-  }
-
-  .mobile-mega-menu__subcategory-link {
-    text-decoration: none;
-    display: block;
-    transition: color 0.3s ease;
-  }
-
-  .mobile-mega-menu__subcategory-item:hover {
-    color: rgb(var(--color-primary-brand));
-  }
-
-  .mobile-mega-menu__promo {
-    margin-top: auto;
-  }
-
-  .mobile-mega-menu__promo-image {
-    width: 293px;
-    height: 200px;
-    overflow: hidden;
-  }
-
-  .mobile-mega-menu__promo-image img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
-  }
-
-  /* Menu Toggle Button Styles */
-  .header__menu-toggle {
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: none; /* Hidden by default on desktop */
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.3s ease;
-  }
-
-  /* Show menu toggle only on mobile */
-  @media screen and (max-width: 767px) {
-    .header__menu-toggle {
-      display: flex;
-    }
-  }
-
-  /* Alternative: Hide menu icon and show close icon when active */
-  .header__menu-toggle .close-icon {
-    display: none;
-  }
-
-  .header__menu-toggle.active .menu-icon {
-    display: none;
-  }
-
-  .header__menu-toggle.active .close-icon {
-    display: block;
-  }
-
-  .header__menu-toggle .close-icon svg {
-    stroke: rgb(var(--color-primary-brand));
-    fill: rgb(var(--color-primary-brand));
-  }
-
-  /* Hide desktop mega menu on mobile */
-  @media screen and (max-width: 767px) {
-    .mega-menu {
-      display: none;
-    }
-  }
-
-  /* Hide mobile menu on desktop */
-  @media screen and (min-width: 768px) {
-    .mobile-mega-menu {
-      display: none;
-    }
-    .header__icon-link-title {
-      display: block;
-    }
-  }
-
   @media screen and  (max-width: 1280px) {
     .header__icon-link-title {
       display: none;
     }
   }
-
-
-  @media screen and (min-width: 1024px) and (max-width: 1280px) {
-    .mega-menu__dropdown {
-      max-width: 900px;
-      padding: 20px 32px;
-      left: 100%;
-    }
-
-    .mega-menu__dropdown--3-columns {
-      min-width: 900px;
-    }
-
-    .mega-menu__dropdown--4-plus-columns {
-      width: 900px;
-    }
-
-    .mega-menu__column {
-      min-width: 150px;
-    }
-
-    .mega-menu__dropdown--1-column {
-      width: auto;
-      min-width: 100px;
-      max-width: 400px;
-      padding: 10px 16px;
-    }
-  }
-
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    .mega-menu__dropdown {
-      max-width: 720px;
-      padding: 16px;
-      visibility: visible;
-    }
-
-    .mega-menu__columns-wrapper {
-      gap: 32px;
-    }
-
-    .mega-menu__column {
-      min-width: auto;
-    }
-
-    .mega-menu__dropdown--4-plus-columns {
-      width: 720px;
-    }
-
-    .mega-menu__dropdown--1-column {
-      max-width: 300px;
-    }
-
-    .mega-menu__dropdown--2-columns {
-      max-width: 450px;
-    }
-
-    .mega-menu__dropdown--3-columns {
-      max-width: 720px;
-      min-width: 720px;
-    }
-
-    .mega-menu__image {
-      width: 250px;
-      height: 150px;
-      object-fit: cover;
-    }
-  }
 </style>
 
-<header class="header header-{{ section.id }}">
-  <div class="header__container">
-    <div class="header__inner gap-36">
-      <div class="header__left header__item-container">
-        <button id="menuIcon" class="header__menu-toggle" aria-label="Open menu" onclick="toggleMobileMenu()">
+<header class="header header-{{ section.id }} pt-16 pb-16 sm:pl-0 sm:pr-0">
+  <div class="header__container pt-0 pr-6_1_1 pb-0 pl-6_1_1 sm:flex-col sm:gap-0 sm:pt-0 sm:pr-3_9_8 sm:pb-0 sm:pl-3_9_8">
+    <div class="header__inner flex justify-between items-center gap-36 sm:pt-16 sm:pr-0 sm:pb-16 sm:pl-0">
+      <div class="header__left header__item-container flex-1 justify-start sm:flex-1_0_0">
+        <button id="menuIcon" class="header__menu-toggle hidden sm:block border-none cursor-pointer hidden sm:flex items-center justify-center transition-transform sm:bg-none sm:border-none sm:p-0" aria-label="Open menu" onclick="toggleMobileMenu()">
           <div class="menu-icon">
             {% render 'menu-icon' %}
           </div>
-          <div class="close-icon">
-            {% render 'icon-close' %}
+          <div class="close-icon hidden">
+            {% render 'icon-close', cls: "svg-brand" %}
           </div>
         </button>
-        {% render 'logo', padding_left: 138, padding_bottom: 40, logo_width: 138 %}
+        {% render 'logo', padding_left: 138, padding_bottom: 40, logo_width: 138, logo_cls: "block sm:hidden" %}
       </div>
 
-      <div class="header__center header__item-container">
-        <a href="{{ routes.root_url }}" class="header__logo-link--mobile">
+      <div class="header__center header__item-container flex-1 text-left sm:flex-1_0_0 sm:text-center">
+        <a href="{{ routes.root_url }}" class="header__logo-link--mobile hidden sm:block relative block media">
           {%- if settings.brand_logo != blank -%}
-            <img
-              src="{{ settings.brand_logo | image_url: width: settings.logo_width }}"
-              alt="{{ settings.logo_alt_text  }}"
-              loading="lazy"
-              class="header__logo-img"
-              width="{{ settings.logo_width }}"
-              height="{{ settings.logo_height }}"
-            >
+            {% render 'logo', cls: "w-full h-auto", logo_cls: "hidden sm:block", height: settings.logo_height, width: settings.logo_width %}
           {%- else -%}
             <span class="header__logo-name">{{ settings.logo_text }}</span>
           {%- endif -%}
         </a>
-        <div class="header__search--desktop">
+        <div class="header__search--desktop block sm:hidden relative max-w-400 mt-0 mb-0 ml-auto mr-auto">
           <form action="{{ routes.search_url }}" method="get" class="header__search-form" role="search">
             <input
               type="search"
               name="q"
-              class="header__search-input ff-general-sans fs-14-lh-20-ls-0_1 fw-500"
+              class="header__search-input border-1 border-solid border-color w-full h-48 rounded-6 pt-10 pr-15 pb-10 pl-45 ff-general-sans fs-14-lh-20-ls-0_1 fw-500"
               placeholder="{{ 'sections.header.search' | t }}"
               aria-label="Search"
             >
-            <button type="submit" class="header__search-button" aria-label="Submit search">
-              {% render 'search-icon' %}
+            <button type="submit" class="header__search-button bg-none text-secondary-light absolute left-15 top-50pct translate-y--50 border-none p-0 cursor-pointer" aria-label="Submit search">
+              {% render 'search-icon', cls: "w-20 h-20 block" %}
             </button>
           </form>
         </div>
       </div>
 
-      <div class="header__right header__item-container gap-24">
-        <a href="{{ routes.account_url }}" class="header__icon-link gap-4">
+      <div class="header__right header__item-container flex justify-end items-center flex-1 gap-24 sm:flex-1_0_0 sm:gap-16 sm:flex-row-reverse sm:justify-start">
+        <a href="{{ routes.account_url }}" class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4">
           {% render 'accounts-icon' %}
-          <span class="header__icon-link-title ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
+          <span class="header__icon-link-title block sm:hidden ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
             {{- 'sections.header.account' | t -}}
           </span>
         </a>
-        <a href="{{ routes.cart_url }}" class="header__icon-link gap-4">
+        <a href="{{ routes.cart_url }}" class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4">
           {% render 'cart-icon' %}
-          <span class="header__icon-link-title ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
+          <span class="header__icon-link-title block sm:hidden ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
             {{- 'sections.header.cart' | t -}}
           </span>
         </a>
-        <div class="header__social-icons gap-10">
-          <a href="#" class="header__icon-link" aria-label="Chat on WhatsApp">{% render 'whatsapp-icon' %}</a>
-          <a href="#" class="header__icon-link" aria-label="Chat on Messenger">{% render 'message-icon' %}</a>
-          <a href="#" class="header__icon-link" aria-label="Call us">{% render 'phone-icon' %}</a>
+        <div class="header__social-icons flex sm:hidden gap-10">
+          <a href="#" class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36" aria-label="Chat on WhatsApp">{% render 'whatsapp-icon' %}</a>
+          <a href="#" class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36" aria-label="Chat on Messenger">{% render 'message-icon' %}</a>
+          <a href="#" class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36" aria-label="Call us">{% render 'phone-icon' %}</a>
         </div>
       </div>
     </div>
 
-    <div class="header__search--mobile">
+    <div class="header__search--mobile hidden sm:block sm:relative">
       <form action="{{ routes.search_url }}" method="get" class="header__search-form" role="search">
         <input
           type="search"
           name="q"
-          class="header__search-input"
+          class="header__search-input border-1 border-solid border-color w-full h-48 rounded-6 pt-10 pr-15 pb-10 pl-45"
           placeholder="{{ 'sections.header.search' | t }}"
           aria-label="Search"
         >
-        <button type="submit" class="header__search-button" aria-label="Submit search">
+        <button type="submit" class="header__search-button bg-none text-secondary-light absolute left-15 top-50pct translate-y--50 border-none p-0 cursor-pointer" aria-label="Submit search">
           {% render 'search-icon' %}
         </button>
       </form>
     </div>
 
     <!-- Mobile Mega Menu -->
-    <div class="mobile-mega-menu box-shadow" id="mobileMegaMenu">
-      <div class="mobile-mega-menu__content flex flex-col gap-32">
-        <!-- Categories Section -->
-        <div class="mobile-mega-menu__categories flex flex-col gap-16">
-          {%- if section.settings.main_menu != blank -%}
-            {%- for link in linklists[section.settings.main_menu].links -%}
-              <collapsible-content class="mobile-mega-menu__category">
-                <div class="mobile-mega-menu__category-header">
-                  <h3 class="mobile-mega-menu__category-title fw-400 fs-21-lh-24-ls-1_2pct">{{ link.title }}</h3>
-                  <div class="mobile-mega-menu__category-toggle">
-                    {% render 'icon-arrow', cls: 'icon-arrow' %}
-                  </div>
-                </div>
-                {%- if link.links != blank -%}
-                  <ul class="mobile-mega-menu__subcategory-list flex flex-col gap-16">
-                    {%- for child_link in link.links -%}
-                      {%- if child_link.links != blank -%}
-                        {%- for grandchild_link in child_link.links -%}
-                          <li class="mobile-mega-menu__subcategory-item">
-                            <a
-                              href="{{ grandchild_link.url }}"
-                              class="mobile-mega-menu__subcategory-link fw-500 fs-14-lh-20-ls-0_1"
-                            >
-                              {{- grandchild_link.title -}}
-                            </a>
-                          </li>
-                        {%- endfor -%}
-                      {%- else -%}
-                        <li class="mobile-mega-menu__subcategory-item">
-                          <a
-                            href="{{ child_link.url }}"
-                            class="mobile-mega-menu__subcategory-link fw-500 fs-14-lh-20-ls-0_1"
-                          >
-                            {{- child_link.title -}}
-                          </a>
-                        </li>
-                      {%- endif -%}
-                    {%- endfor -%}
-                  </ul>
-                {%- endif -%}
-              </collapsible-content>
-            {%- endfor -%}
-          {%- endif -%}
-        </div>
-
-        <!-- Promotional Section -->
-        {%- if section.settings.mega_menu_image != blank -%}
-          <div class="mobile-mega-menu__promo">
-            <div
-              class="mobile-mega-menu__promo-image media block relative"
-              style="padding-top: 200px; padding-left: 293px;"
-            >
-              {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
-              {%- if section.settings.mega_menu_image_link != blank -%}
-                <a href="{{ section.settings.mega_menu_image_link }}" class="mega-menu__image-link">
-              {%- endif -%}
-                {% render 'image',
-                  image: section.settings.mega_menu_image,
-                  widths: '400, 400, 400, 400',
-                  src_width: 400,
-                  sizes: sizes,
-                  class: 'img-fit',
-                  quality: 1
-                %}
-              {%- if section.settings.mega_menu_image_link != blank -%}
-                </a>
-              {%- endif -%}
-            </div>
-          </div>
-        {%- endif -%}
-      </div>
-    </div>
+    {% render "mobile-menu", section: section %}
   </div>
 </header>
 
 <!-- Desktop Mega Menu Navigation -->
-<nav class="mega-menu relative z-1000">
-  <div class="mega-menu__nav page-width">
-    <div class="mega-menu__container">
-      <ul class="mega-menu__list m-0 p-0 list-style-none flex items-center justify-center gap-24">
-        {%- if section.settings.main_menu != blank -%}
-          {%- for link in linklists[section.settings.main_menu].links -%}
-            <li class="mega-menu__item">
-              {% assign undergarments_link = link.title | downcase %}
-              <a
-                href="{{ link.url }}"
-                class="mega-menu__link fw-600 fs-14-lh-100pct-ls-2pct uppercase {% if undergarments_link contains "undergarments" %}mega-menu__link--undergarments{% endif %}"
-              >
-                {{ link.title }}
-              </a>
-
-              {%- if link.links != blank -%}
-                {%- comment -%} Count columns for dynamic layout {%- endcomment -%}
-                {%- assign column_count = 0 -%}
-                {%- assign has_2level_items = false -%}
-                {%- for child_link in link.links -%}
-                  {%- if child_link.links != blank -%}
-                    {%- assign column_count = column_count | plus: 1 -%}
-                  {%- else -%}
-                    {%- assign has_2level_items = true -%}
-                  {%- endif -%}
-                {%- endfor -%}
-
-                {%- comment -%} If we have 2-level items, they count as one column {%- endcomment -%}
-                {%- if has_2level_items -%}
-                  {%- assign column_count = column_count | plus: 1 -%}
-                {%- endif -%}
-
-                {%- comment -%} Determine if we should show image (2+ columns) {%- endcomment -%}
-                {%- assign show_image = false -%}
-                {%- if column_count >= 2 -%}
-                  {%- assign show_image = true -%}
-                {%- endif -%}
-
-                {%- comment -%} Determine dropdown width class based on column count {%- endcomment -%}
-                {%- assign dropdown_class = 'mega-menu__dropdown' -%}
-                {%- if column_count == 1 -%}
-                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--1-column' -%}
-                {%- elsif column_count == 2 -%}
-                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--2-columns' -%}
-                {%- elsif column_count == 3 -%}
-                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--3-columns' -%}
-                {%- else -%}
-                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--4-plus-columns' -%}
-                {%- endif -%}
-
-                <div class="{{ dropdown_class }} box-shadow">
-                  <div class="mega-menu__dropdown-inner">
-                    <div class="mega-menu__columns-wrapper">
-                      {%- assign column_rendered = false -%}
-                      {%- for child_link in link.links -%}
-                        {%- if child_link.links != blank -%}
-                          <!-- 3-level menu: child has grandchildren -->
-                          <div class="mega-menu__column flex flex-col gap-16">
-                            <h3 class="mega-menu__column-title uppercase fs-21-lh-24-ls-1_2pct fw-400">
-                              {{ child_link.title }}
-                            </h3>
-                            <ul class="mega-menu__column-list flex flex-col gap-16">
-                              {%- for grandchild_link in child_link.links -%}
-                                <li class="mega-menu__column-item">
-                                  <a
-                                    href="{{ grandchild_link.url }}"
-                                    class="mega-menu__column-link fs-14-lh-20-ls-0_1 fw-500"
-                                  >
-                                    {{- grandchild_link.title -}}
-                                  </a>
-                                </li>
-                              {%- endfor -%}
-                            </ul>
-                          </div>
-                        {%- else -%}
-                          <!-- 2-level menu: child has no grandchildren -->
-                          {%- unless column_rendered -%}
-                            <div class="mega-menu__column flex flex-col gap-16">
-                              <ul class="mega-menu__column-list flex flex-col gap-16">
-                                {%- assign column_rendered = true -%}
-                          {%- endunless -%}
-                          <li class="mega-menu__column-item">
-                            <a href="{{ child_link.url }}" class="mega-menu__column-link fs-14-lh-20-ls-0_1 fw-500">
-                              {{- child_link.title -}}
-                            </a>
-                          </li>
-                        {%- endif -%}
-                      {%- endfor -%}
-
-                      {%- comment -%} Close the column if we had 2-level items {%- endcomment -%}
-                      {%- if has_2level_items -%}
-                        </ul>
-                        </div>
-                      {%- endif -%}
-                    </div>
-
-                    <!-- Image Column - Only show when column count >= 2 -->
-                    {%- if section.settings.mega_menu_image != blank and show_image -%}
-                      <div
-                        class="mega-menu__image-column flex flex-start media relative block"
-                        style="padding-top: 200px; padding-left: 402px;"
-                      >
-                        {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
-
-                        {%- if section.settings.mega_menu_image_link != blank -%}
-                          <a href="{{ section.settings.mega_menu_image_link }}" class="mobile-mega-menu__image-link">
-                        {%- endif -%}
-                          {% render 'image',
-                            image: section.settings.mega_menu_image,
-                            widths: '293, 293, 293, 293',
-                            src_width: 293,
-                            sizes: sizes,
-                            class: 'img-fit',
-                            quality: 1
-                          %}
-                        {%- if section.settings.mega_menu_image_link != blank -%}
-                          </a>
-                        {%- endif -%}
-                      </div>
-                    {%- endif -%}
-                  </div>
-                </div>
-              {%- endif -%}
-            </li>
-          {%- endfor -%}
-        {%- endif -%}
-      </ul>
-    </div>
-  </div>
-</nav>
+{% render "desktop-menu", section: section %}
 
 <script>
   // CollapsibleContent Web Component
@@ -730,14 +147,28 @@
   function toggleMobileMenu() {
     const mobileMenu = document.getElementById('mobileMegaMenu');
     const menuButton = document.getElementById('menuIcon');
+    const menuIcon = menuButton.querySelector('.menu-icon');
+    const closeIcon = menuButton.querySelector('.close-icon');
 
     mobileMenu.classList.toggle('active');
     menuButton.classList.toggle('active');
 
-    // Prevent body scroll when menu is open
+    // Swap menu/close icons with Tailwind utility classes
     if (mobileMenu.classList.contains('active')) {
+      menuIcon.classList.add('hidden');
+      menuIcon.classList.remove('block');
+
+      closeIcon.classList.remove('hidden');
+      closeIcon.classList.add('block');
+
       document.body.style.overflow = 'hidden';
     } else {
+      menuIcon.classList.remove('hidden');
+      menuIcon.classList.add('block');
+
+      closeIcon.classList.add('hidden');
+      closeIcon.classList.remove('block');
+
       document.body.style.overflow = '';
 
       // Collapse all categories when menu closes
