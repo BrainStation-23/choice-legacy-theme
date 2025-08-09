@@ -1,16 +1,20 @@
 <section class="pt-88 pb-88 bg-brand sm:pt-24 sm:pb-24">
   <div class="page-width flex justify-between gap-16 sm:gap-8">
     {% for block in section.blocks %}
-      <div class=" flex flex-col flex-1 gap-16 sm:gap-8" {{ block.shopify_attributes }}>
+      <div
+        class=" flex flex-col flex-1 gap-16 sm:gap-8  media relative "
+        {{ block.shopify_attributes }}
+      >
         {% if block.settings.image %}
-          <img
-            src="{{ block.settings.image | image_url: width: section.settings.image_size }}"
-            alt="{{ block.settings.image.alt | default: block.settings.heading }}"
-            class=" h-48 w-48 sm:w-32 sm:h-32"
-            loading="lazy"
-            height="48"
-            width="48"
-          >
+          {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
+          {% render 'image',
+            image: block.settings.image,
+            widths: '32, 48, 48, 48',
+            src_width: 48,
+            sizes: sizes,
+            class: 'img-contain',
+            quality: 1
+          %}
         {% else %}
           <div class="h-48 w-48 sm:w-32 sm:h-32">
             {{ 'collection-1' | placeholder_svg_tag }}
