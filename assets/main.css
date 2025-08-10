@@ -582,6 +582,9 @@ address {
 .m-0 {
   margin: 0;
 }
+.m-0-auto {
+  margin: 0 auto;
+}
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -765,6 +768,10 @@ address {
 @media screen and (max-width: 768px) {
   .sm\:mt-0 {
     margin-top: 0;
+  }
+
+  .sm\:m-0-auto {
+    margin: 0 auto;
   }
   .sm\:left-8 {
     left: 8px;
@@ -1012,6 +1019,10 @@ address {
 
   .sm\:w-32 {
     width: 32px;
+  }
+
+  .sm\:max-w-full {
+    max-width: 100%;
   }
 
   .sm\:hidden {
@@ -1703,7 +1714,9 @@ address {
   .sm\:pt-8 {
     padding-top: calc(8 * var(--space-unit));
   }
-
+  .sm\:pt-10 {
+    padding-top: calc(10 * var(--space-unit));
+  }
   .sm\:pt-15 {
     padding-top: calc(15 * var(--space-unit));
   }
@@ -1730,6 +1743,9 @@ address {
   .sm\:pb-8 {
     padding-bottom: calc(8 * var(--space-unit));
   }
+  .sm\:pb-10 {
+    padding-bottom: calc(10 * var(--space-unit));
+  }
 
   .sm\:pb-15 {
     padding-bottom: calc(15 * var(--space-unit));
@@ -1741,6 +1757,9 @@ address {
 
   .sm\:pb-24 {
     padding-bottom: calc(24 * var(--space-unit));
+  }
+  .sm\:p-0 {
+    padding: calc(0 * var(--space-unit));
   }
   .sm\:p-4 {
     padding: calc(4 * var(--space-unit));
@@ -2648,4 +2667,16 @@ td {
   .slg\:left-100pct {
     left: 100%;
   }
+}
+@keyframes play-normal-0-to-n100 {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+.play-normal-0-to-n100 {
+  animation: play-normal-0-to-n100 linear infinite;
 }
