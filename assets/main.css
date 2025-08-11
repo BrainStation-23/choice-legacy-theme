@@ -2054,9 +2054,6 @@ address {
     display: none !important;
   }
 }
-.color-link {
-  color: rgb(var(--link-color));
-}
 
 .border-top {
   border-top: 1px solid rgba(var(--text-color) / 0.15);
@@ -2682,7 +2679,6 @@ img {
 }
 a,
 .link {
-  color: rgb(var(--link-color));
   text-decoration: none;
 }
 
