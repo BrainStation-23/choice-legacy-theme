@@ -30,9 +30,9 @@
 </style>
 
 {% if block.settings.overlay_text_line_1 != blank or block.settings.overlay_text_line_2 != blank %}
-  <div class="banner-text-overlay-{{ section_id }}" style="">
+  <div class="banner-text-overlay absolute z-2 text-bg pointer-events-none max-w-100pc-32 break-word">
     {% if block.settings.overlay_text_line_1 != blank %}
-      <div class="overlay-text fs-36-lh-40-ls-0 fw-400 ff-bebas-neue uppercase">{{ block.settings.overlay_text_line_1 | escape }}</div>
+      <div class="overlay-text fs-36-lh-40-ls-0 fw-400 ff-bebas-neue uppercase block m-0">{{ block.settings.overlay_text_line_1 | escape }}</div>
     {% endif %}
     {% if block.settings.overlay_text_line_2 != blank %}
       <div class="overlay-text fs-36-lh-40-ls-0 fw-400 ff-bebas-neue uppercase">{{ block.settings.overlay_text_line_2 | escape }}</div>

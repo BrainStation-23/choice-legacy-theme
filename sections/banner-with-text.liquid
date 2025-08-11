@@ -1,162 +1,39 @@
 <style>
-  .banner-with-text-{{ section.id }} {
-    padding-top: 0px;
-    padding-bottom: 0px;
-    position: relative;
-  }
-
-  .banner-with-text .slide-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
-
-  .banner-with-text .slide-image-desktop {
-    display: none;
-  }
-
-  .banner-with-text .slide-image-mobile {
-    display: block;
-  }
-
-  .banner-with-text .slideshow-nav-button-prev {
-    left: 24px;
-  }
-
-  .banner-with-text .slideshow-nav-button-next {
-    right: 24px;
-  }
-  
-  .banner-with-text-{{ section.id }} .swiper-slide,
-  .banner-with-text-{{ section.id }} .static-slide {
-    position: relative;
-    transition: transform 0.3s ease;
-    height: 186px;
-  }
-  
-  @media screen and (min-width: 768px) {
-    .banner-with-text-{{ section.id }} .swiper-slide,
-    .banner-with-text-{{ section.id }} .static-slide {
-      height: 408px;
-    }
-  }
-
   @media screen and (min-width: 769px) {
-    .banner-with-text .slide-image-desktop {
-      display: block;
-    }
-
-    .banner-with-text .slide-image-mobile {
-      display: none;
-    }
-  }
-
-
-  /* Text Overlay Styles */
-  .banner-text-overlay-{{ section.id }} {
-    position: absolute;
-    z-index: 2;
-    color: rgb(var(--color-background));
-    pointer-events: none;
-    max-width: calc(100% - 32px);
-    word-wrap: break-word;
-  }
-  
-  .banner-text-overlay-{{ section.id }} .overlay-text {
-    display: block;
-    line-height: 1;
-    margin: 0;
-  }
-  
-  .banner-text-overlay-{{ section.id }} .overlay-text.fs-36-lh-40-ls-0 {
-    font-size: 36px;
-    line-height: 40px;
-    letter-spacing: 0;
-  }
-  
-  @media screen and (max-width: 768px) {
-    .banner-text-overlay-{{ section.id }} .overlay-text.fs-36-lh-40-ls-0 {
-      font-size: 21px;
-      line-height: 24px;
-      letter-spacing: 1.2%;
-    }
-  }
-  
-  .banner-text-overlay-{{ section.id }} .overlay-text + .overlay-text {
-    margin-top: 8px;
-  }
-
-  /* Static banner styles when no navigation */
-  .banner-with-text-{{ section.id }} .static-banner {
-    display: block;
-  }
-
-  .banner-with-text-{{ section.id }} .static-slide {
-    width: 100%;
-    display: block;
-  }
-
-  /* Desktop Navigation Controls */
-  @media screen and (min-width: 769px) {
-    {% if section.settings.desktop_nav == 'none' %}
-      .banner-with-text-{{ section.id }} .slideshow-nav-button-prev,
-      .banner-with-text-{{ section.id }} .slideshow-nav-button-next,
-      .banner-with-text-{{ section.id }} .dot-pagination {
-        display: none !important;
-      }
-    {% elsif section.settings.desktop_nav == 'nav' %}
-      .banner-with-text-{{ section.id }} .dot-pagination {
-        display: none !important;
-      }
-    {% elsif section.settings.desktop_nav == 'dots' %}
+    {% unless section.settings.show_arrows_desktop %}
       .banner-with-text-{{ section.id }} .slideshow-nav-button-prev,
       .banner-with-text-{{ section.id }} .slideshow-nav-button-next {
         display: none !important;
       }
-    {% endif %}
+    {% endunless %}
   }
 
-  /* Mobile Navigation Controls */
   @media screen and (max-width: 768px) {
-    {% if section.settings.mobile_nav == 'none' %}
-      .banner-with-text-{{ section.id }} .slideshow-nav-button-prev,
-      .banner-with-text-{{ section.id }} .slideshow-nav-button-next,
-      .banner-with-text-{{ section.id }} .dot-pagination {
-        display: none !important;
-      }
-    {% elsif section.settings.mobile_nav == 'nav' %}
-      .banner-with-text-{{ section.id }} .dot-pagination {
-        display: none !important;
-      }
-    {% elsif section.settings.mobile_nav == 'dots' %}
+    {% unless section.settings.show_arrows_mobile %}
       .banner-with-text-{{ section.id }} .slideshow-nav-button-prev,
       .banner-with-text-{{ section.id }} .slideshow-nav-button-next {
         display: none !important;
       }
-    {% endif %}
+    {% endunless %}
   }
 </style>
 
-{% comment %} Check if both desktop and mobile navigation are set to 'none' {% endcomment %}
 {% liquid
   assign both_nav_none = false
-  if section.settings.desktop_nav == 'none' and section.settings.mobile_nav == 'none'
+  if section.settings.show_arrows_desktop == false and section.settings.show_arrows_mobile == false
     assign both_nav_none = true
   endif
 %}
 
 {% if both_nav_none %}
-  {% comment %} Render as static banner when both navigations are 'none' {% endcomment %}
-  <div class="banner-with-text banner-with-text-{{ section.id }}">
-    <div class="static-banner">
+  <div class="banner-with-text banner-with-text-{{ section.id }} pt-0 pb-0 relative">
+    <div class="static-banner block">
       {% for block in section.blocks limit: 1 %}
-        <div class="static-slide {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
+        <div class="static-slide h-408 sm:h-186 relative transition-transform block w-full {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
              {{ block.shopify_attributes }}
              data-block-id="{{ block.id }}"
              data-block-type="{{ block.type }}">
           
-          {% comment %} Desktop Image {% endcomment %}
           {% if block.settings.image != blank %}
             {% if block.settings.link != blank %}
               <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
@@ -184,31 +61,28 @@
             
             {% if block.settings.link != blank %}</a>{% endif %}
           {% else %}
-            {{ "lifestyle-1" | placeholder_svg_tag: "placeholder-svg slide-image-desktop" }}
+            {{ "lifestyle-1" | placeholder_svg_tag: "placeholder-svg block sm:hidden" }}
           {% endif %}
         </div>
       {% endfor %}
     </div>
   </div>
 {% else %}
-  {% comment %} Render as slideshow component when navigation is enabled {% endcomment %}
   <slideshow-component
     class="banner-with-text banner-with-text-{{ section.id }}"
     data-autoplay="{{ section.settings.enable_autoplay }}"
     data-autoplay-delay="{{ section.settings.autoplay_delay | times: 1000 }}"
     data-pause-on-hover="{{ section.settings.pause_on_hover }}"
-    data-single-slide-view="true"
   >
-    <div class="slideshow-container">
-      <div class="swiper-container">
+    <div class="slideshow-container relative">
+      <div class="swiper-container overflow-hidden">
         <div class="swiper-wrapper">
           {% for block in section.blocks %}
-            <div class="swiper-slide {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
+            <div class="swiper-slide h-408 sm:186 relative transition-transform {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
                  {{ block.shopify_attributes }}
                  data-block-id="{{ block.id }}"
                  data-block-type="{{ block.type }}">
               
-              {% comment %} Desktop Image {% endcomment %}
               {% if block.settings.image != blank %}
                 {% if block.settings.link != blank %}
                   <a href="{{ block.settings.link }}"{% if block.settings.link_target %} target="_blank" rel="noopener"{% endif %}>
@@ -232,64 +106,21 @@
                   block: block
                 -%}
                 
-                {% comment %} Text Overlay {% endcomment %}
-                {% if block.settings.overlay_text_line_1 != blank or block.settings.overlay_text_line_2 != blank %}
-                  <div class="banner-text-overlay-{{ section.id }}" 
-                       style="left: {{ block.settings.text_position_left | default: 16 }}px; top: {{ block.settings.text_position_top | default: 65 }}%; transform: translateY(-50%);">
-                    {% if block.settings.overlay_text_line_1 != blank %}
-                      <div class="overlay-text fs-36-lh-40-ls-0">{{ block.settings.overlay_text_line_1 | escape }}</div>
-                    {% endif %}
-                    {% if block.settings.overlay_text_line_2 != blank %}
-                      <div class="overlay-text fs-36-lh-40-ls-0">{{ block.settings.overlay_text_line_2 | escape }}</div>
-                    {% endif %}
-                  </div>
-                {% endif %}
+                {% render "banner-text-overlay", block: block, section_id: section.id %}
                 
                 {% if block.settings.link != blank %}</a>{% endif %}
               {% else %}
                 {% assign image_number = forloop.index0 | modulo: 2 | plus: 1 %}
-                {{ "lifestyle-" | append: image_number | placeholder_svg_tag: "placeholder-svg slide-image-desktop" }}
+                {{ "lifestyle-" | append: image_number | placeholder_svg_tag: "placeholder-svg block sm:hidden" }}
               {% endif %}
             </div>
           {% endfor %}
         </div>
-
-        {% comment %} Render dots only when needed {% endcomment %}
-        {% liquid
-          assign show_dots_desktop = false
-          assign show_dots_mobile = false
-          
-          if section.settings.desktop_nav == 'dots' or section.settings.desktop_nav == 'both'
-            assign show_dots_desktop = true
-          endif
-          
-          if section.settings.mobile_nav == 'dots' or section.settings.mobile_nav == 'both'
-            assign show_dots_mobile = true
-          endif
-        %}
-        
-        {% if show_dots_desktop or show_dots_mobile %}
-          {% render "dot-buttons", items: section.blocks %}
-        {% endif %}
       </div>
 
-      <!-- Navigation arrows -->
-      {% liquid
-        assign show_arrows_desktop = false
-        assign show_arrows_mobile = false
-        
-        if section.settings.desktop_nav == 'nav' or section.settings.desktop_nav == 'both'
-          assign show_arrows_desktop = true
-        endif
-        
-        if section.settings.mobile_nav == 'nav' or section.settings.mobile_nav == 'both'
-          assign show_arrows_mobile = true
-        endif
-      %}
-      
-      {% if show_arrows_desktop or show_arrows_mobile %}
-        {% render "nav-button", cls: "slideshow-nav-button-prev", icon_cls: "icon-arrow-left" %}
-        {% render "nav-button", cls: "slideshow-nav-button-next" %}
+      {% if section.settings.show_arrows_desktop or section.settings.show_arrows_mobile %}
+        {% render "nav-button", cls: "slideshow-nav-button-prev top-50pct left-24", icon_cls: "icon-arrow-left" %}
+        {% render "nav-button", cls: "slideshow-nav-button-next right-24" %}
       {% endif %}
     </div>
   </slideshow-component>
@@ -309,54 +140,16 @@
       "content": "Navigation Settings"
     },
     {
-      "type": "select",
-      "id": "desktop_nav",
-      "label": "Desktop navigation",
-      "default": "none",
-      "info": "Choose navigation style for desktop devices",
-      "options": [
-        {
-          "value": "none",
-          "label": "None"
-        },
-        {
-          "value": "nav",
-          "label": "Arrows only"
-        },
-        {
-          "value": "dots",
-          "label": "Dots only"
-        },
-        {
-          "value": "both",
-          "label": "Arrows + Dots"
-        }
-      ]
+      "type": "checkbox",
+      "id": "show_arrows_desktop",
+      "label": "Show arrows on desktop",
+      "default": true
     },
     {
-      "type": "select",
-      "id": "mobile_nav",
-      "label": "Mobile navigation",
-      "default": "none",
-      "info": "Choose navigation style for mobile devices",
-      "options": [
-        {
-          "value": "none",
-          "label": "None"
-        },
-        {
-          "value": "nav",
-          "label": "Arrows only"
-        },
-        {
-          "value": "dots",
-          "label": "Dots only"
-        },
-        {
-          "value": "both",
-          "label": "Arrows + Dots"
-        }
-      ]
+      "type": "checkbox",
+      "id": "show_arrows_mobile",
+      "label": "Show arrows on mobile",
+      "default": true
     },
     {
       "type": "header",
