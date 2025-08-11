@@ -1062,6 +1062,9 @@ address {
   .sm\:w-421 {
     width: 421px;
   }
+  .sm\:w-180 {
+    width: 180px;
+  }
   .sm\:w-116 {
     width: 116px !important;
   }

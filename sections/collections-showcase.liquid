@@ -10,8 +10,7 @@
         <div class="collections-showcase__item relative h-600 lg:h-500 md:h-300" {{ block.shopify_attributes }}>
           {% if collection != empty and collection.featured_image %}
             <div 
-              class="collections-showcase__image-wrapper w-full h-full media block relative"
-              style="padding-top: 100%;"
+              class="collections-showcase__image-wrapper h-600 lg:h-500 md:h-300 media block relative"
             >
               {% assign image = collection.featured_image %}
               {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 3 %}{% endcapture -%}
@@ -19,10 +18,10 @@
               {% render 'image',
                 image: image,
                 alt_text: block.settings.collection.title,
-                widths: '421.33, 421.33, 421.33, 421.33',
-                src_width: 421.33,
+                widths: '421, 421, 421, 421',
+                src_width: 421,
                 sizes: sizes,
-                class: 'img-fit md:object-contain',
+                class: 'img-fit',
                 quality: 1
               %}
               <div class="collections-showcase__overlay absolute top-0 left-0 w-full h-full"></div>
@@ -50,26 +49,26 @@
       data-pause-on-hover="{{ section.settings.pause_on_hover }}"
       data-enable-carousel="true"
       data-show-progress-bar="true"
+      data-gap="8"
       class="collections-showcase--mobile hidden sm:block"
     >
       <div class="swiper-container flex flex-col gap-24">
-        <div class="swiper-wrapper flex gap-8">
+        <div class="swiper-wrapper flex">
           {% for block in section.blocks %}
-            <div class="swiper-slide">
+            <div class="swiper-slide sm:w-180 sm:h-224">
               {% assign collection = collections[block.settings.collection] %}
-              <div class="collections-showcase__item w-421 h-224" {{ block.shopify_attributes }}>
+              <div class="collections-showcase__item sm:w-180 sm:h-224 relative" {{ block.shopify_attributes }}>
                 {% if collection != empty and collection.featured_image %}
                   <div
-                    class="collections-showcase__image-wrapper media block relative"
-                    style="padding-top: 100%;"
+                    class="collections-showcase__image-wrapper media block relative sm:180 sm:h-224"
                   >
                     {% assign image = collection.featured_image %}
                     {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 2, sm: 2, lg: 2, xl: 2 %}{% endcapture -%}
                     {% render 'image',
                       image: image,
                       alt_text: block.settings.collection.title,
-                      widths: '421.33, 421.33, 421.33, 421.33',
-                      src_width: 421.33,
+                      widths: '180, 180, 180, 180',
+                      src_width: 180,
                       sizes: sizes,
                       class: 'img-fit',
                       quality: 1
@@ -82,7 +81,7 @@
                   </div>
                 {% endif %}
               
-                <div class="collections-showcase__content flex flex-col items-center gap-9 absolute left-0 right-0 bottom-0 text-center z-2 black-gradient pt-34 pr-16 pb-40 pl-16">
+                <div class="collections-showcase__content sm:w-180 flex flex-col items-center absolute left-0 right-0 bottom-0 text-center z-2 black-gradient pt-16 pr-16 pb-16 pl-16">
                   <h3 class="collections-showcase__card-title fw-400 fs-36-lh-40-ls-0 sm:fs-26-lh-40-lh-0 text-bg uppercase">{{ collection.title | default: "Collection Name" }}</h3>
               
                   {% if block.settings.button_text != blank %}
