@@ -899,6 +899,9 @@ address {
 .w-auto {
   width: auto;
 }
+.w-auto-priority {
+  width: auto !important;
+}
 .w-full {
   width: 100%;
 }
