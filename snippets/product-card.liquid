@@ -95,37 +95,40 @@
 
       <h3 class="product-card__title ff-general-sans fw-400 fs-14-lh-20-ls-0">{{ product.title }}</h3>
       
-      <div class="flex flex-col gap-8">
-        {% if product.price %}
-          <div class="product-card__pricing flex flex-wrap items-center gap-8">
-            <span class="product-card__price text-brand fw-600 fs-14-lh-20-ls-0_1">
-              {{ product.price | money_without_trailing_zeros }}
-            </span>
-            {% if product.compare_at_price > product.price %}
-              <span class="product-card__compare-price line-through fw-500 fs-14-lh-20-ls-0_1">
-                {{ product.compare_at_price | money_without_trailing_zeros }}
+        <div class="flex flex-col gap-8">
+          {% if product.price %}
+            <div class="product-card__pricing flex flex-wrap items-center gap-8">
+              <span class="product-card__price text-brand fw-600 fs-14-lh-20-ls-0_1">
+                {{ product.price | money_without_trailing_zeros }}
               </span>
-              {% assign discount_amount = product.compare_at_price | minus: product.price %}
-              {% assign discount_percentage = discount_amount | times: 100.0 | divided_by: product.compare_at_price | round %}
-              <span class="product-card__discount text-brand fw-400 fs-14-lh-20-ls-0_1">
-                {{ discount_percentage }}% {{ "sections.product.placeholder.off" | t }}
-              </span>
-            {% endif %}
-          </div>
-        {% endif %}
-
-        <div class="flex items-center gap-4">
-          {% assign product_rating_cnt = product.metafields.choice_legacy_reviews.rating_count %}
-
-          {% if show_rating and product_rating_cnt > 0 %}
-            <div class="product-card__rating rounded-100 pt-2 pr-4 pb-2 pl-4 text-bg bg-brand flex items-center flex gap-4">
-              <span class="fw-500 fs-11-lh-normal-ls-0_5">{{ product.metafields.choice_legacy_reviews.avg_rating }}</span>
-              {% render "icon-star" %}
+              {% if product.compare_at_price > product.price %}
+                <span class="product-card__compare-price line-through fw-500 fs-14-lh-20-ls-0_1">
+                  {{ product.compare_at_price | money_without_trailing_zeros }}
+                </span>
+                {% assign discount_amount = product.compare_at_price | minus: product.price %}
+                {% assign discount_percentage = discount_amount | times: 100.0 | divided_by: product.compare_at_price | round %}
+                <span class="product-card__discount text-brand fw-400 fs-14-lh-20-ls-0_1">
+                  {{ discount_percentage }}% {{ "sections.product.placeholder.off" | t }}
+                </span>
+              {% endif %}
             </div>
-
-            <span class="product-card__rating-cnt text-label fw-500 fs-11-lh-11-ls--0_275">({{ product_rating_cnt }})</span>
           {% endif %}
+
+        <div class="flex flex-col gap-12">
+          {% assign product_rating_cnt = product.metafields.choice_legacy_reviews.rating_count %}
+          
+          {% if show_rating and product_rating_cnt > 0 %}
+              <div class="flex items-center gap-4">
+                <div class="product-card__rating rounded-100 pt-2 pr-4 pb-2 pl-4 text-bg bg-brand flex items-center flex gap-4">
+                  <span class="fw-500 fs-11-lh-normal-ls-0_5">{{ product.metafields.choice_legacy_reviews.avg_rating }}</span>
+                  {% render "icon-star" %}
+                </div>
+                <span class="product-card__rating-cnt text-label fw-500 fs-11-lh-11-ls--0_275">({{ product_rating_cnt }})</span>
+              </div>
+            {% endif %}
+          {% render "product-form" %}
         </div>
+
       </div>
     {% else %}
       <!-- Placeholder content -->
@@ -148,15 +151,19 @@
           </span>
         </div>
 
-        <div class="flex items-center gap-4">
+        <div class="flex flex-col gap-12">
           {% if show_rating %}
-            <div class="product-card__rating rounded-100 pt-2 pr-4 pb-2 pl-4 text-bg bg-brand flex items-center flex gap-4">
-              <span class="fw-500 fs-11-lh-normal-ls-0_5">{{ "sections.product.placeholder.avg_rating" | t }}</span>
-              {% render "icon-star" %}
-            </div>
+            <div class="flex items-center gap-4">
+              <div class="product-card__rating rounded-100 pt-2 pr-4 pb-2 pl-4 text-bg bg-brand flex items-center flex gap-4">
+                <span class="fw-500 fs-11-lh-normal-ls-0_5">{{ "sections.product.placeholder.avg_rating" | t }}</span>
+                {% render "icon-star" %}
+              </div>
 
-            <span class="product-card__rating-cnt text-label fw-500 fs-11-lh-11-ls--0_275">({{ "sections.product.placeholder.rating_cnt" | t }})</span>
+              <span class="product-card__rating-cnt text-label fw-500 fs-11-lh-11-ls--0_275">({{ "sections.product.placeholder.rating_cnt" | t }})</span>
+            </div>
           {% endif %}
+
+          {% render "product-form" %}
         </div>
       </div>
     {% endif %}

@@ -1260,6 +1260,9 @@ address {
 .gap-12 {
   gap: calc(12 * var(--space-unit));
 }
+.gap-14 {
+  gap: calc(14 * var(--space-unit));
+}
 .gap-16 {
   gap: calc(16 * var(--space-unit));
 }
@@ -2174,15 +2177,19 @@ address {
   text-decoration: none;
 }
 
-button {
-  background: rgb(var(--color-primary-brand));
-  color: rgb(var(--color-background));
+.button {
   border: none;
-  background: rgb(var(--color-primary-brand));
-  color: rgb(var(--color-background));
   border: none;
   border-radius: 6px;
   cursor: pointer;
+}
+
+.button--outline {
+  background: rgb(var(--color-background));
+  color: rgb(var(--color-primary-brand));
+  border-radius: 6px;
+  border: 1.5px solid rgba(var(--color-primary-brand));
+  padding: 10px 16px;
 }
 
 .button:disabled {
