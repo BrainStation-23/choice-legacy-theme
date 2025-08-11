@@ -33,13 +33,13 @@
   <div class="product-card__image-container w-full relative overflow-hidden">
     {% if product and product != empty %}
       {% if product.featured_image %}
-        {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 5, xl: 5 %}{% endcapture -%}
+        {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 2, sm: 2, lg: 2, xl: 2 %}{% endcapture -%}
         <div class="media w-full" style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;">
 
         {% render 'image',
           image: product.featured_image,
           src_width: image_width,
-          widths: '268, 268, 268, 268, 268',
+          widths: '177, 268, 268, 268, 268',
           alt_text: product.title,
           class: 'img-fit',
           quality: 1,
