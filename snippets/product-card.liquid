@@ -12,115 +12,10 @@
 <style>
   .product-card {
     border-radius: {{ settings.product_card_border_radius }}px;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-    width: 240px;
-    height: 100%;
-    background: rgb(var(--color-background));
-    position: relative;
-  }
-
-  .product-card__price {
-    color: rgb(var(--color-primary-brand));
-  }
-
-  .product-card__compare-price {
-    text-decoration: line-through;
-  }
-
-  .product-card__discount {
-    color: rgb(var(--color-primary-brand));
-  }
-
-  .product-card__type {
-    border-radius: 100px;
-    background: rgb(var(--color-secondary-brand));
-    padding: 2px 8px;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    position: relative;
-    z-index: 2;
-    min-height: 24px;
   }
 
   .product-card__image-container {
-    width: 100%;
     border-radius: {{ settings.product_card_border_radius }}px {{ settings.product_card_border_radius }}px 0 0;
-    overflow: hidden;
-    position: relative;
-  }
-
-  .product-card__content {
-    padding: 8px 12px;
-    flex: 1;
-  }
-
-  .product-card__image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .product-card__rating {
-    background: rgb(var(--color-primary-brand));
-    border-radius: 100px;
-    padding: 2px 4px;
-    color: rgb(var(--color-background));
-  }
-
-  .product-card__rating-cnt {
-    color: rgb(var(--color-primary-label));
-  }
-
-  .product-card__link {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    text-decoration: none;
-  }
-
-  .product-card__type-link {
-    position: relative;
-    z-index: 3;
-    text-decoration: none;
-    color: inherit;
-  }
-
-  .product-card__weight {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    padding: 4px 8px;
-  }
-
-  /* Tablet: 768px to 1023px */
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    .product-card {
-      width: 100%;
-    }
-  }
-
-  /* Small desktop: 1024px to 1439px */
-  @media screen and (min-width: 1024px) and (max-width: 1439px) {
-    .product-card {
-      width: 100%;
-    }
-  }
-
-  /* Large desktop: 1440px and above */
-  @media screen and (min-width: 1440px) {
-    .product-card {
-      width: 100%;
-    }
-  }
-
-  @media screen and (max-width: 768px) {
-    .product-card {
-      width: auto;
-    }
   }
 </style>
 
@@ -134,8 +29,8 @@
 {% assign loading = loading | default: 'lazy' %}
 {% assign image_ratio = 1 %}
 
-<div class="product-card flex flex-col {{ css_classes }} {% if settings.show_product_card_box_shadow %}box-shadow{% endif %}" {% if product %}data-product-id="{{ product.id }}"{% endif %}>
-  <div class="product-card__image-container">
+<div class="product-card bg-bg h-full cursor-pointer relative transition-transform w-240 lg:w-full md:w-full sm:w-auto {{ css_classes }} {% if settings.show_product_card_box_shadow %}box-shadow{% endif %}" {% if product %}data-product-id="{{ product.id }}"{% endif %}>
+  <div class="product-card__image-container w-full relative overflow-hidden">
     {% if product and product != empty %}
       {% if product.featured_image %}
         {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 5, xl: 5 %}{% endcapture -%}
@@ -164,16 +59,16 @@
           {% assign weight_value = product.variants.first.weight %}
           {% if weight_unit == 'g' and weight_value >= 1000 %}
             {% assign display_weight = weight_value | divided_by: 1000.0 | round: 1 %}
-            <div class="product-card__weight fw-500 fs-14-lh-16-ls-0">{{ display_weight }}{{ "sections.product.placeholder.kg" | t }}</div>
+            <div class="product-card__weight absolute bottom-8 right-8 pt-4 pr-8 pb-4 pl-8 fw-500 fs-14-lh-16-ls-0">{{ display_weight }}{{ "sections.product.placeholder.kg" | t }}</div>
           {% elsif weight_unit == 'kg' %}
-            <div class="product-card__weight fw-500 fs-14-lh-16-ls-0">{{ weight_value | round: 1 }}{{ "sections.product.placeholder.kg" | t }}</div>
+            <div class="product-card__weight absolute bottom-8 right-8 pt-4 pr-8 pb-4 pl-8 fw-500 fs-14-lh-16-ls-0">{{ weight_value | round: 1 }}{{ "sections.product.placeholder.kg" | t }}</div>
           {% elsif weight_unit == 'oz' and weight_value >= 16 %}
             {% assign display_weight = weight_value | divided_by: 16.0 | round: 1 %}
-            <div class="product-card__weight fw-500 fs-14-lh-16-ls-0">{{ display_weight }}{{ "sections.product.placeholder.lb" | t }}</div>
+            <div class="product-card__weight absolute bottom-8 right-8 pt-4 pr-8 pb-4 pl-8 fw-500 fs-14-lh-16-ls-0">{{ display_weight }}{{ "sections.product.placeholder.lb" | t }}</div>
           {% elsif weight_unit == 'lb' %}
-            <div class="product-card__weight fw-500 fs-14-lh-16-ls-0">{{ weight_value | round: 1 }}{{ "sections.product.placeholder.lb" | t }}</div>
+            <div class="product-card__weight absolute bottom-8 right-8 pt-4 pr-8 pb-4 pl-8 fw-500 fs-14-lh-16-ls-0">{{ weight_value | round: 1 }}{{ "sections.product.placeholder.lb" | t }}</div>
           {% else %}
-            <div class="product-card__weight fw-500 fs-14-lh-16-ls-0">{{ weight_value }}{{ weight_unit }}</div>
+            <div class="product-card__weight absolute bottom-8 right-8 pt-4 pr-8 pb-4 pl-8 fw-500 fs-14-lh-16-ls-0">{{ weight_value }}{{ weight_unit }}</div>
           {% endif %}
         {% endif %}
       {% endif %}
@@ -183,18 +78,18 @@
       </div>
       <!-- Placeholder weight -->
       {% if show_weight %}
-        <div class="product-card__weight fw-500 fs-14-lh-16-ls-0">{{ "sections.product.placeholder.weight" | t }}</div>
+        <div class="product-card__weight absolute bottom-8 right-8 pt-4 pr-8 pb-4 pl-8 fw-500 fs-14-lh-16-ls-0">{{ "sections.product.placeholder.weight" | t }}</div>
       {% endif %}
     {% endif %}
   </div>
 
-  <div class="product-card__content flex flex-col justify-end gap-4">
+  <div class="product-card__content pt-8 pr-12 pb-8 pl-12 flex flex-col flex-1 gap-4">
     {% if product and product != empty %}
       {% if show_type and product.type != blank %}
         {% assign collection_handle = product.type | handleize %}
         {% assign collection_url = routes.collections_url | append: '/' | append: collection_handle %}
-        <a href="{{ collection_url }}" class="product-card__type-link flex items-center" onclick="event.stopPropagation();">
-          <p class="product-card__type fw-500 fs-11-lh-11-ls--0_275 flex items-center">{{ product.type }}</p>
+        <a href="{{ collection_url }}" class="product-card__type-link relative z-3 no-underline text-inherit flex items-center" onclick="event.stopPropagation();">
+          <p class="product-card__type rounded-100 pt-2 pr-8 pb-2 pl-8 cursor-pointer relative z-2 min-h-24 bg-brand-2 fw-500 fs-11-lh-11-ls--0_275 flex items-center">{{ product.type }}</p>
         </a>
       {% endif %}
 
@@ -203,16 +98,16 @@
       <div class="flex flex-col gap-8">
         {% if product.price %}
           <div class="product-card__pricing flex flex-wrap items-center gap-8">
-            <span class="product-card__price fw-600 fs-14-lh-20-ls-0_1">
+            <span class="product-card__price text-brand fw-600 fs-14-lh-20-ls-0_1">
               {{ product.price | money_without_trailing_zeros }}
             </span>
             {% if product.compare_at_price > product.price %}
-              <span class="product-card__compare-price fw-500 fs-14-lh-20-ls-0_1">
+              <span class="product-card__compare-price line-through fw-500 fs-14-lh-20-ls-0_1">
                 {{ product.compare_at_price | money_without_trailing_zeros }}
               </span>
               {% assign discount_amount = product.compare_at_price | minus: product.price %}
               {% assign discount_percentage = discount_amount | times: 100.0 | divided_by: product.compare_at_price | round %}
-              <span class="product-card__discount fw-400 fs-14-lh-20-ls-0_1">
+              <span class="product-card__discount text-brand fw-400 fs-14-lh-20-ls-0_1">
                 {{ discount_percentage }}% {{ "sections.product.placeholder.off" | t }}
               </span>
             {% endif %}
@@ -223,20 +118,20 @@
           {% assign product_rating_cnt = product.metafields.choice_legacy_reviews.rating_count %}
 
           {% if show_rating and product_rating_cnt > 0 %}
-            <div class="product-card__rating flex items-center flex gap-4">
+            <div class="product-card__rating rounded-100 pt-2 pr-4 pb-2 pl-4 text-bg bg-brand flex items-center flex gap-4">
               <span class="fw-500 fs-11-lh-normal-ls-0_5">{{ product.metafields.choice_legacy_reviews.avg_rating }}</span>
               {% render "icon-star" %}
             </div>
 
-            <span class="product-card__rating-cnt fw-500 fs-11-lh-11-ls--0_275">({{ product_rating_cnt }})</span>
+            <span class="product-card__rating-cnt text-label fw-500 fs-11-lh-11-ls--0_275">({{ product_rating_cnt }})</span>
           {% endif %}
         </div>
       </div>
     {% else %}
       <!-- Placeholder content -->
       {% if show_type %}
-        <a href="#" class="product-card__type-link flex items-center" onclick="event.stopPropagation();">
-          <p class="product-card__type fw-500 fs-11-lh-11-ls--0_275 flex items-center">
+        <a href="#" class="product-card__type-link relative z-3 no-underline text-inherit flex items-center" onclick="event.stopPropagation();">
+          <p class="product-card__type rounded-100 pt-2 pr-8 pb-2 pl-8 cursor-pointer relative z-2 min-h-24 bg-brand-2 fw-500 fs-11-lh-11-ls--0_275 flex items-center">
             {{ 'sections.product.placeholder.product_type' | t }}
           </p>
         </a>
@@ -248,19 +143,19 @@
       
       <div class="flex flex-col gap-8">
         <div class="product-card__pricing flex flex-wrap items-center gap-8">
-          <span class="product-card__price fw-600 fs-14-lh-20-ls-0_1">
+          <span class="product-card__price text-brand fw-600 fs-14-lh-20-ls-0_1">
             {{ 'sections.product.placeholder.price' | t }}
           </span>
         </div>
 
         <div class="flex items-center gap-4">
           {% if show_rating %}
-            <div class="product-card__rating flex items-center flex gap-4">
+            <div class="product-card__rating rounded-100 pt-2 pr-4 pb-2 pl-4 text-bg bg-brand flex items-center flex gap-4">
               <span class="fw-500 fs-11-lh-normal-ls-0_5">{{ "sections.product.placeholder.avg_rating" | t }}</span>
               {% render "icon-star" %}
             </div>
 
-            <span class="product-card__rating-cnt fw-500 fs-11-lh-11-ls--0_275">({{ "sections.product.placeholder.rating_cnt" | t }})</span>
+            <span class="product-card__rating-cnt text-label fw-500 fs-11-lh-11-ls--0_275">({{ "sections.product.placeholder.rating_cnt" | t }})</span>
           {% endif %}
         </div>
       </div>
@@ -268,7 +163,7 @@
   </div>
 
   {% if product and product != empty %}
-    <a href="{{ product.url }}" class="product-card__link" aria-label="{{ product.title }}">
+    <a href="{{ product.url }}" class="product-card__link absolute top-0 left-0 w-full h-full z-1 no-underline" aria-label="{{ product.title }}">
       <span class="visually-hidden">{{ product.title }}</span>
     </a>
   {% endif %}

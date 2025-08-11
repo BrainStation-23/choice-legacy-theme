@@ -2,7 +2,8 @@
   "sections": {
     "footer": {
       "social_media": "Social media",
-      "payment_methods_alt": "Payment methods"
+      "payment_methods_alt": "Payment methods",
+      "all_right": "All rights reserved."
     },
     "header": {
       "account": "My Account",
@@ -25,7 +26,8 @@
       "by": "by",
       "product_title": "Title not found",
       "no_reviews_available": "No reviews available at the moment.",
-      "unable_to_load_reviews": "Unable to load reviews. Please try again later."
+      "unable_to_load_reviews": "Unable to load reviews. Please try again later.",
+      "load_more": "Load More "
     },
     "product": {
       "placeholder": {
@@ -52,14 +54,19 @@
       "create_account": "Create an account",
       "new_customer": "New customer?",
       "guest_title": "Guest Checkout",
-      "guest_continue": "Continue as Guest"
+      "guest_continue": "Continue as Guest.",
+      "verify_otp": "Verify OTP",
+      "otp_not_received": "Did not receive the OTP?",
+      "resend_otp": "Resend OTP"
     },
     "recover_password": {
-      "title": "Recover your password",
+      "title": "Forget password",
       "subtext": "Please enter your email address to receive a verification code.",
       "success": "A verification code has been sent to your email address.",
-      "submit": " Send verification code",
-      "cancel": "Cancel"
+      "submit": " Reset Password",
+      "cancel": "Cancel",
+      "confirm_password": "Confirm Password",
+      "new_password": "New Password"
     },
     "register": {
       "title": "Create an account",

@@ -96,9 +96,9 @@
 
 <!-- sections/collections-showcase.liquid -->
 <div class="collections-showcase collections-showcase-{{ section.id }}">
-  <div class="page-width flex flex-col gap-48 mobile-gap-24">
+  <div class="page-width flex flex-col gap-48 sm:gap-24">
     {% if section.settings.section_title != blank %}
-      <h2 class="collections-showcase__title text-center fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct ff-bebas-neue">{{ section.settings.section_title }}</h2>
+      <h2 class="collections-showcase__title text-center fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct ff-bebas-neue">{{ section.settings.section_title }}</h2>
     {% endif %}
 
     <div class="collections-showcase__grid collections-showcase--desktop grid">
@@ -177,7 +177,7 @@
                 {% endif %}
               
                 <div class="collections-showcase__content flex flex-col items-center gap-9">
-                  <h3 class="collections-showcase__card-title fw-400 fs-36-lh-40-ls-0 mobile-fs-26-lh-40-lh-0 uppercase">{{ collection.title }}</h3>
+                  <h3 class="collections-showcase__card-title fw-400 fs-36-lh-40-ls-0 sm:fs-26-lh-40-lh-0 uppercase">{{ collection.title }}</h3>
               
                   {% if block.settings.button_text != blank %}
                     {% render "link-button", url: collection.url, button_text: block.settings.button_text %}
