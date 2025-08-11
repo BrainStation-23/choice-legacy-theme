@@ -3,28 +3,24 @@
 <style>
   .homepage-product-review__section-{{ section.id }} {
     background-color: rgb(var(--color-secondary-brand));
-    position: relative;
-    overflow: hidden;
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
+    padding-top: 88px;
+    padding-bottom: 64px;
   }
+
 
   .homepage-product-review__section-{{ section.id }} .custom-pagination {
     background: rgb(var(--color-background));
   }
 
-  /* Desktop: Show grid, hide swiper */
-  @media (min-width: 769px) {
-    .homepage-product-review__desktop-only {
-      display: grid;
-    }
-    .homepage-product-review__mobile-tablet-only {
-      display: none;
-    }
-  }
 
-  /* Tablet and Mobile: Hide grid, show swiper */
   @media (max-width: 768px) {
+
+    .homepage-product-review__section-{{ section.id }} {
+      background-color: rgb(var(--color-secondary-brand));
+      padding-top: 24px;
+      padding-bottom: 24px;
+    }
+
     .homepage-product-review__desktop-only {
       display: none;
     }
@@ -55,12 +51,28 @@
       text-align: left;
     }
   }
+
+  @media screen and (min-width: 1024px) and (max-width: 1146px) {
+    .homepage-product-review__grid {
+      min-height: 450px;
+    }
+  }
+
+  @media screen and (min-width: 768px) and (max-width: 1023px) {
+    .homepage-product-review__grid {
+      min-height: 500px;
+    }
+
+    .homepage-product-review__card {
+      width: calc(33% - 16px);
+    }
+  }
 </style>
 
 <section class="homepage-product-review__section homepage-product-review__section-{{ section.id }}">
   <div class="homepage-product-review__container page-width gap-48">
     {% if section.settings.title != blank %}
-      <h2 class="homepage-product-review__title ff-bebas-neue ft-400 fs-36-lh-40-ls-0pct">
+      <h2 class="homepage-product-review__title ff-bebas-neue ft-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct">
         {{ section.settings.title }}
       </h2>
     {% endif %}
@@ -70,6 +82,20 @@
       <div class="homepage-product-review__loading">
         <div class="homepage-product-review__spinner"></div>
       </div>
+    </div>
+
+    <!-- Load More Button -->
+    <div
+      id="load-more-container"
+      class="homepage-product-review__load-more-container"
+      style="display: none; text-align: center; margin-top: 8px;"
+    >
+      <button
+        id="load-more-btn"
+        class="homepage-product-review__load-more-btn ff-general-sans fs-16-lh-100pct-ls-0 fw-600"
+      >
+        {{ 'sections.product_review.load_more' | t }}
+      </button>
     </div>
 
     <!-- Mobile/Tablet Slideshow Content -->
@@ -103,6 +129,17 @@
   document.addEventListener('DOMContentLoaded', function () {
     const desktopContent = document.getElementById('homepage-product-review__desktop-content');
     const mobileSlidesContainer = document.getElementById('mobile-slides-container');
+    const loadMoreContainer = document.getElementById('load-more-container');
+    const loadMoreBtn = document.getElementById('load-more-btn');
+    
+    // Pagination variables
+    let currentPage = 1;
+    let displayedReviews = []; // Store currently displayed reviews
+    let hasMoreReviews = true;
+
+    // Image loading tracking
+    let imageLoadCount = 0;
+    let totalImages = 0;
 
     const allProducts = {
       {% for product in collections.all.products limit: 250 %}
@@ -112,6 +149,86 @@
         }{% unless forloop.last %},{% endunless %}
       {% endfor %}
     };
+
+    // Function to calculate initial grid height estimate
+    function calculateGridHeight(reviewCount) {
+      if (reviewCount === 0) return 200;
+      
+      const screenWidth = window.innerWidth;
+      let columns;
+      
+      if (screenWidth >= 1024) {
+        columns = 4; // Desktop: 4 columns
+      } else if (screenWidth >= 769) {
+        columns = 3; // Tablet: 3 columns  
+      } else {
+        columns = 2; // Mobile fallback (though grid is hidden on mobile)
+      }
+      
+      const rows = Math.ceil(reviewCount / columns);
+      const cardGap = 16; // gap between cards
+      const estimatedCardHeight = 360; // More accurate estimate based on your min-height + content
+      
+      // Calculate total height
+      const totalHeight = (rows * estimatedCardHeight) + ((rows - 1) * cardGap) + 40; // +40 for padding
+      return Math.max(totalHeight, 400); // Ensure minimum height matches CSS min-height
+    }
+
+    // Improved updateGridHeightAfterRender with better error handling
+    function updateGridHeightAfterRender(reviewCount) {
+      if (reviewCount === 0) return;
+      
+      // Clear any existing timeout to prevent multiple calculations
+      clearTimeout(window.heightCalculationTimeout);
+      
+      window.heightCalculationTimeout = setTimeout(() => {
+        requestAnimationFrame(() => {
+          const gridElement = document.querySelector('.homepage-product-review__grid');
+          const cards = gridElement?.querySelectorAll('.homepage-product-review__card');
+          
+          if (!gridElement || !cards || cards.length === 0) return;
+          
+          setTimeout(() => {
+            let maxCardHeight = 0;
+            cards.forEach(card => {
+              if (card.offsetHeight > 0) {
+                maxCardHeight = Math.max(maxCardHeight, card.offsetHeight);
+              }
+            });
+            
+            if (maxCardHeight === 0) {
+              maxCardHeight = 360; // fallback height
+            }
+            
+            const screenWidth = window.innerWidth;
+            let columns = screenWidth >= 1024 ? 4 : (screenWidth >= 769 ? 3 : 2);
+            const rows = Math.ceil(reviewCount / columns);
+            const cardGap = 16;
+            
+            const totalHeight = (rows * maxCardHeight) + ((rows - 1) * cardGap) + 40;
+            const finalHeight = Math.max(totalHeight, 400);
+            
+            console.log(`Total reviews: ${reviewCount}, Measured card height: ${maxCardHeight}px, Final grid height: ${finalHeight}px`);
+            gridElement.style.height = `${finalHeight}px`;
+            gridElement.style.minHeight = `${finalHeight}px`;
+          }, 200);
+        });
+      }, 50); // Small delay to prevent rapid fire calls
+    }
+
+    // Updated handleImageLoad function to prevent multiple height calculations
+    function handleImageLoad() {
+      imageLoadCount++;
+      // Only recalculate when ALL images have loaded, and prevent multiple calls
+      if (imageLoadCount === totalImages && displayedReviews.length > 0) {
+        // Clear any existing timeout to prevent multiple calls
+        clearTimeout(window.imageLoadTimeout);
+        window.imageLoadTimeout = setTimeout(() => {
+          updateGridHeightAfterRender(displayedReviews.length);
+          imageLoadCount = 0; // reset for next load
+        }, 100);
+      }
+    }
 
     function createStarRating(rating) {
       let starsHtml = '';
@@ -136,9 +253,23 @@
       return product ? product.title : 'Title is not available';
     }
 
-    async function fetchReviews() {
+    // Fixed fetchReviews function to prevent height calculation issues
+    async function fetchReviews(page = 1, append = false) {
       try {
-        const response = await fetch(`/apps/generic-name/customer/product-review/show-home`, {
+        // Show loading state
+        if (!append) {
+          desktopContent.innerHTML = '<div class="homepage-product-review__loading"><div class="homepage-product-review__spinner"></div></div>';
+          mobileSlidesContainer.innerHTML = '<div class="homepage-product-review__loading"><div class="homepage-product-review__spinner"></div></div>';
+          loadMoreContainer.style.display = 'none';
+        } else {
+          loadMoreBtn.classList.add('loading');
+          loadMoreBtn.disabled = true;
+        }
+
+        // Set limit based on whether it's initial load or load more
+        const limit = page === 1 ? 8 : 4;
+
+        const response = await fetch(`/apps/${APP_SUB_PATH}/customer/product-review/show-home?page=${page}&limit=${limit}`, {
           method: 'GET',
           headers: { 'Content-Type': 'application/json' }
         });
@@ -147,22 +278,60 @@
         const data = await response.json();
 
         if (data.success && data.data && data.data.length > 0) {
-          displayReviews(data.data);
+          if (append) {
+            // Add new reviews to existing ones
+            displayedReviews = [...displayedReviews, ...data.data];
+          } else {
+            // Initial load
+            displayedReviews = data.data;
+            currentPage = 1;
+          }
+          
+          // Count images for load tracking - ONLY count images in displayedReviews
+          totalImages = displayedReviews.filter(review => review.reviewImage).length;
+          imageLoadCount = 0;
+          
+          // Check if there are more reviews using backend pagination data
+          hasMoreReviews = data.pagination ? data.pagination.hasMore : false;
+          
+          // Display reviews with ALL reviews (not just new ones)
+          displayReviews(displayedReviews, append); // Pass append flag
+          
+          // Show/hide load more button based on hasMore from backend
+          if (hasMoreReviews && displayedReviews.length > 0) {
+            loadMoreContainer.style.display = 'block';
+          } else {
+            loadMoreContainer.style.display = 'none';
+          }
+          
         } else {
-          displayNoReviews();
+          if (!append) {
+            displayNoReviews();
+          }
+          hasMoreReviews = false;
+          loadMoreContainer.style.display = 'none';
         }
       } catch (error) {
         console.error('Error fetching reviews:', error);
-        displayError();
+        if (!append) {
+          displayError();
+        }
+        hasMoreReviews = false;
+        loadMoreContainer.style.display = 'none';
+      } finally {
+        // Remove loading state
+        loadMoreBtn.classList.remove('loading');
+        loadMoreBtn.disabled = false;
       }
     }
 
-    function displayReviews(reviews) {
+    // Updated displayReviews function to handle append mode properly
+    function displayReviews(reviews, isAppending = false) {
       // Generate desktop grid content
       const desktopReviewsHtml = reviews.map(review => {
         const productTitle = getProductTitle(review.productId);
         const imageHtml = review.reviewImage
-          ? `<img src="${review.reviewImage}" alt="${productTitle}" class="homepage-product-review__image" loading="lazy">`
+          ? `<img src="${review.reviewImage}" alt="${productTitle}" class="homepage-product-review__image" loading="lazy" onload="handleImageLoad()">`
           : `<div class="homepage-product-review__image" style="background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 0.8rem;">No Image</div>`;
 
         return `
@@ -181,7 +350,7 @@
                 ${review.reviewText}
               </div>
             </div>
-            <div class="homepage-product-review__content-bottom gap-8">
+            <div class="homepage-product-review__content-bottom gap-4">
               <span class="homepage-product-review__review-date fs-12-lh-16-ls-0_6pct ff-general-sans fw-400">
                 ${formatDate(review.reviewPlacedAt)}
               </span>
@@ -217,11 +386,11 @@
                   ${review.reviewText}
                 </div>
               </div>
-              <div class="homepage-product-review__content-bottom gap-8">
-                <span class="homepage-product-review__review-date fs-12-lh-16-ls-0_6pct ff-general-sans fw-400">
+              <div class="homepage-product-review__content-bottom gap-4">
+                <span class="homepage-product-review__review-date fs-12-lh-16-ls-0_6 ff-general-sans fw-400">
                   ${formatDate(review.reviewPlacedAt)}
                 </span>
-                <span class="homepage-product-review__customer-name fs-12-lh-16-ls-0_6pct ff-general-sans fw-400">
+                <span class="homepage-product-review__customer-name fs-12-lh-16-ls-0_6 ff-general-sans fw-400">
                   By ${review.customerName}
                 </span>
               </div>
@@ -230,9 +399,25 @@
         `;
       }).join('');
 
-      // Update desktop content
-      desktopContent.innerHTML = `<div class="homepage-product-review__grid gap-16">${desktopReviewsHtml}</div>`;
+      // Calculate height based on TOTAL reviews (not just new ones)
+      const estimatedHeight = calculateGridHeight(reviews.length);
       
+      // Update desktop content with proper height calculation
+      const gridElement = document.querySelector('.homepage-product-review__grid');
+      
+      if (gridElement && isAppending) {
+        // If appending, just update the content but recalculate height for ALL reviews
+        gridElement.innerHTML = desktopReviewsHtml;
+        gridElement.style.height = `${estimatedHeight}px`;
+        gridElement.style.minHeight = `${estimatedHeight}px`;
+      } else {
+        // Initial load or full refresh
+        desktopContent.innerHTML = `<div class="homepage-product-review__grid gap-16" style="height: ${estimatedHeight}px; min-height: ${estimatedHeight}px;">${desktopReviewsHtml}</div>`;
+      }
+
+      // Calculate precise height after render (for ALL reviews)
+      updateGridHeightAfterRender(reviews.length);
+
       // Update mobile slideshow content
       mobileSlidesContainer.innerHTML = mobileSlidesHtml;
 
@@ -270,6 +455,33 @@
       mobileSlidesContainer.innerHTML = `<div class="swiper-slide">${errorHtml}</div>`;
     }
 
+    // Improved window resize listener with debouncing
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(() => {
+        if (displayedReviews && displayedReviews.length > 0) {
+          updateGridHeightAfterRender(displayedReviews.length);
+        }
+      }, 250); // Debounce resize events
+    });
+
+    // Load More Button Event Listener
+    loadMoreBtn.addEventListener('click', function() {
+      if (hasMoreReviews && !loadMoreBtn.disabled) {
+        currentPage++;
+        fetchReviews(currentPage, true);
+      }
+    });
+
+    // Global function for external "Load More" functionality
+    window.updateReviewGridHeight = function(totalReviews) {
+      updateGridHeightAfterRender(totalReviews);
+    };
+
+    // Make handleImageLoad available globally
+    window.handleImageLoad = handleImageLoad;
+
     fetchReviews();
     
     document.addEventListener("shopify:section:load", (event) => {
@@ -284,7 +496,7 @@
       }
     });
 
- });
+  });
 </script>
 
 {% schema %}
@@ -310,31 +522,6 @@
       "id": "autoplay",
       "label": "Enable autoplay (Mobile & Tablet only)",
       "default": false
-    },
-
-    {
-      "type": "header",
-      "content": "Spacing"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "label": "Top padding",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "default": 88,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "label": "Bottom padding",
-      "min": 0,
-      "max": 100,
-      "step": 2,
-      "default": 88,
-      "unit": "px"
     }
   ],
   "presets": [

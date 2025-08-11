@@ -269,6 +269,26 @@
         "name": "list.metaobject_reference",
         "category": "REFERENCE"
       }
+    },
+    {
+      "key": "avg_rating",
+      "namespace": "choice_legacy_reviews",
+      "name": "Average rating",
+      "description": "Average rating for a product by choice legacy product reviews app",
+      "type": {
+        "name": "number_decimal",
+        "category": "NUMBER"
+      }
+    },
+    {
+      "key": "rating_count",
+      "namespace": "choice_legacy_reviews",
+      "name": "Rating count",
+      "description": "Total rating counts for a product by choice legacy product reviews app",
+      "type": {
+        "name": "number_integer",
+        "category": "NUMBER"
+      }
     }
   ],
   "variant": [],

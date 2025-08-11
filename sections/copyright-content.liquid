@@ -1,84 +1,26 @@
 <style>
-  .copyright__section-desktop {
-    padding-top: {{ section.settings.padding_top | default: 32 }}px;
-    padding-bottom: {{ section.settings.padding_bottom | default: 32 }}px;
-    background-color: rgba(var(--color-secondary-text), 0.02);
-  }
-  .copyright__content {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    text-align: center;
-  }
-  .copyright__section-mobile {
-    display: none;
-  }
-
-  @media screen and (max-width: 768px) {
-    .copyright__section-desktop {
-      display: none;
-    }
-    .copyright__content {
-      justify-content: left;
-    }
-
-    .copyright__section-mobile {
-      display: block;
-      padding-top: 8px;
-      padding-bottom: 24px;
-      background-color: rgb(var(--color-background));
-    }
-
-    .copyright__section-mobile--container {
-      display: flex;
-      flex-direction: column;
-      align-items: left;
-      gap: 16px;
-    }
-
-    .footer__social-mobile {
-      display: flex;
-    }
-
-    .footer__social-mobile .footer__social-list {
-      display: flex;
-      gap: 16px;
-      align-items: center;
-      justify-content: left;
-    }
-
-    .footer__social-mobile .footer__social-list a {
-      display: flex;
-      color: rgba(var(--color-primary-text), 0.7);
-      transition: color 0.3s ease;
-    }
-
-    .footer__social-mobile .footer__social-list a:hover {
-      color: rgba(var(--color-primary-text), 1);
-    }
-
-    .footer__social-mobile .footer__social-list svg {
-      width: 24px;
-      height: 24px;
-    }
+  #footer-social-icons--mobilesvg {
+    width: 24px;
+    height: 24px;
   }
 </style>
 
-<div class="copyright__section-desktop">
+<div class="pb-32 pt-32 bg-secondary-light-20pct sm:hidden">
   <div class="page-width">
-    <div class="copyright__content ff-general-sans fs-16-lh-24-ls-0">
+    <div class="ff-general-sans fs-16-lh-24-ls-0 flex text-center item-center justify-center flex-wrap sm:justify-left">
       © {{ 'now' | date: '%Y' }}
-      {{ shop.name }}. All rights reserved.
+      {{ shop.name }}
+      {{ 'sections.footer.all_right' | t }}
     </div>
   </div>
 </div>
 
-<div class="copyright__section-mobile">
-  <div class="page-width copyright__section-mobile--container">
-    <div class="copyright__content ff-general-sans fs-16-lh-24-ls-0">
+<div class="hidden sm:block sm:pt-8 sm:pb-24 bg-bg">
+  <div class="page-width  flex flex-col items-left gap-16">
+    <div class="ff-general-sans fs-16-lh-24-ls-0 flex text-center item-center justify-center flex-wrap sm:justify-left ">
       © {{ 'now' | date: '%Y' }}
-      {{ shop.name }}. All rights reserved.
+      {{ shop.name -}}
+      {{- 'sections.footer.all_right' | t }}
     </div>
     {% if settings.social_facebook != blank
       or settings.social_instagram != blank
@@ -89,8 +31,8 @@
       or settings.social_snapchat != blank
       or settings.social_pinterest != blank
     %}
-      <div class="footer__social-mobile">
-        <div class="footer__social-list">
+      <div class="flex">
+        <div class=" flex  gap-16 items-center justify-left" id="footer-social-icons--mobile">
           {%- render 'social-icons' -%}
         </div>
       </div>
@@ -104,32 +46,7 @@
   "enabled_on": {
     "groups": ["footer"]
   },
-  "settings": [
-    {
-      "type": "header",
-      "content": "Padding"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "min": 0,
-      "max": 50,
-      "step": 2,
-      "unit": "px",
-      "label": "Top padding",
-      "default": 32
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "min": 0,
-      "max": 50,
-      "step": 2,
-      "unit": "px",
-      "label": "Bottom padding",
-      "default": 32
-    }
-  ],
+  "settings": [],
   "presets": [
     {
       "name": "Copyright Content"

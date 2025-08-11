@@ -4,9 +4,12 @@ if (!customElements.get("slideshow-component")) {
       super();
       this.swiper = null;
       this.customBullets = [];
+      this.sliderItems = [];
+      this.addThemeEditorEvents.bind(this)();
     }
 
     connectedCallback() {
+      this.isSelectedInThemeEditor = false;
       this.initializeSwiper();
       this.initializeCustomBullets();
     }
@@ -47,7 +50,14 @@ if (!customElements.get("slideshow-component")) {
           pagination: false,
           on: {
             slideChange: (swiper) => {
-              this.updateCustomBullets(swiper.realIndex);
+              // Use realIndex for looped sliders, activeIndex for non-looped
+              const carouselMode = this.dataset.carouselMode === "true";
+              const singleSlideView = this.dataset.singleSlideView === "true";
+              const activeIndex =
+                carouselMode || singleSlideView
+                  ? swiper.activeIndex
+                  : swiper.realIndex;
+              this.updateCustomBullets(activeIndex);
             },
           },
         };
@@ -69,12 +79,14 @@ if (!customElements.get("slideshow-component")) {
             momentumBounceRatio: 1,
           };
 
-          swiperConfig.loop = false;
+          swiperConfig.loop = false; // Loop disabled for carousel mode
           swiperConfig.grabCursor = true;
-          swiperConfig.resistanceRatio = 0.85;
+          swiperConfig.resistanceRatio = 0; // No resistance - prevents bouncing back
           swiperConfig.slidesPerView = "auto";
           swiperConfig.spaceBetween = 16;
           swiperConfig.centeredSlides = false;
+          swiperConfig.watchSlidesProgress = true;
+          swiperConfig.watchSlidesVisibility = true;
 
           swiperConfig.breakpoints = {
             320: {
@@ -138,6 +150,15 @@ if (!customElements.get("slideshow-component")) {
           );
           swiperContainer.setAttribute("data-carousel-mode", "true");
         } else {
+          // Regular slideshow mode
+          const singleSlideView = this.dataset.singleSlideView === "true";
+
+          if (singleSlideView) {
+            // For single slide view, disable loop and bounce-back but keep normal slide configuration
+            swiperConfig.loop = false;
+            swiperConfig.resistanceRatio = 0; // Prevent bounce-back to beginning
+          }
+
           swiperConfig.slidesPerView = slidesPerViewForFullSlides;
           swiperConfig.spaceBetween = 16;
           swiperConfig.centeredSlides = false;
@@ -164,6 +185,12 @@ if (!customElements.get("slideshow-component")) {
         }
 
         this.swiper = new Swiper(swiperContainer, swiperConfig);
+
+        // Set sliderItems from swiper-wrapper's swiper-slide elements
+        const swiperWrapper = swiperContainer.querySelector(".swiper-wrapper");
+        this.sliderItems = Array.from(
+          swiperWrapper.querySelectorAll(".swiper-slide")
+        );
       }
     }
 
@@ -173,7 +200,14 @@ if (!customElements.get("slideshow-component")) {
       this.customBullets.forEach((bullet, index) => {
         bullet.addEventListener("click", () => {
           if (this.swiper) {
-            this.swiper.slideToLoop(index);
+            // Use appropriate slide method based on loop setting
+            const carouselMode = this.dataset.carouselMode === "true";
+            const singleSlideView = this.dataset.singleSlideView === "true";
+            if (carouselMode || singleSlideView) {
+              this.swiper.slideTo(index); // For non-looped carousel/single slide view
+            } else {
+              this.swiper.slideToLoop(index); // For looped slideshow
+            }
           }
         });
       });
@@ -189,6 +223,54 @@ if (!customElements.get("slideshow-component")) {
           bullet.classList.remove("active");
         }
       });
+    }
+    // Add theme editor block selection event listeners
+    addThemeEditorEvents() {
+      console.log(
+        "🚀 ~ SlideshowComponent ~ addThemeEditorEvents ~ addThemeEditorEvents:",
+        addThemeEditorEvents
+      );
+      this.sliderItems.forEach((slide) => {
+        slide.addEventListener(
+          "shopify:block:select",
+          this.handelThemeEditorBlockSelectEvent.bind(this)
+        );
+
+        slide.addEventListener(
+          "shopify:block:deselect",
+          this.handelThemeEditorBlockDeselectEvent.bind(this)
+        );
+      });
+    }
+
+    // Handle block selection event in theme editor
+    handelThemeEditorBlockSelectEvent(event) {
+      const target = event.target;
+      const itemIndex = +target?.dataset?.index + 1;
+      console.log(
+        "🚀 ~ SlideshowComponent ~ handelThemeEditorBlockSelectEvent ~ itemIndex:",
+        itemIndex
+      );
+
+      if (this.swiper) {
+        // Scroll to the selected slide
+        this.swiper.slideTo(itemIndex);
+
+        // // Optionally highlight the selected slide
+        // const selectedSlide = this.sliderItems[itemIndex];
+        // if (selectedSlide) {
+        //   selectedSlide.classList.add("selected-block");
+        //   // Remove highlight after a short delay (e.g., 2 seconds)
+        //   setTimeout(() => {
+        //     selectedSlide.classList.remove("selected-block");
+        //   }, 2000);
+        // }
+      }
+      this.isSelectedInThemeEditor = true;
+    }
+
+    handelThemeEditorBlockDeselectEvent() {
+      this.isSelectedInThemeEditor = false;
     }
   }
 
