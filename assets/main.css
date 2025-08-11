@@ -295,6 +295,11 @@ h6,
   letter-spacing: 0;
 }
 
+.fs-16-lh-16-ls-0 {
+  font-size: calc(16 * var(--font-unit));
+  line-height: calc(20 * var(--font-unit));
+  letter-spacing: calc(0.1 * var(--font-unit));
+}
 .fs-16-lh-22-ls-0 {
   font-size: calc(16 * var(--font-unit));
   line-height: calc(22 * var(--font-unit));
