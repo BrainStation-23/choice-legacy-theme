@@ -1,27 +1,76 @@
-<style>
-  /* .customer-account {
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
-  } */
-  /* .customer-account__container {
-    display:flex;
-  } */
+<div class="customer-account pt-40 pb-0">
+  <div class="customer-account__container flex gap-64 page-width">
+    {% render 'customer-account-sidebar' %}
 
+    <!-- Dynamic Content Area -->
+    <div class="customer-account__content" style="flex: 2;">
+      <!-- My Profile Section (Default) -->
+      <div id="my-profile-content" class="account-content-section" style="display: block;">
+        {% render 'account-information', customer: customer %}
+      </div>
+
+      <!-- Orders Section (Hidden initially, loaded when needed) -->
+      <div id="orders-content" class="account-content-section" style="display: none;">
+        <div id="orders-section">
+          {% render 'orders-list', orders: customer.orders %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Track which sections have been loaded
+  let loadedSections = ['my-profile']; // my-profile is loaded by default
+
+  // Function to show selected content
+  function showAccountContent(contentType) {
+    // Hide all content sections
+    const contentSections = document.querySelectorAll('.account-content-section');
+    contentSections.forEach((section) => {
+      section.style.display = 'none';
+    });
+
+    // Handle coming soon sections
+    if (contentType === 'coming-soon') {
+      alert('This section is coming soon!');
+      // Show the currently displayed section or default to my-profile
+      document.getElementById('my-profile-content').style.display = 'block';
+      return;
+    }
+
+    // Handle logout
+    if (contentType === 'logout') {
+      window.location.href = '/account/logout';
+      return;
+    }
+
+    // Show the selected content section
+    const targetContent = document.getElementById(contentType + '-content');
+    if (targetContent) {
+      targetContent.style.display = 'block';
+    }
+  }
+
+  // Make the function globally available for the sidebar
+  window.showAccountContent = showAccountContent;
+
+  // Check URL hash on page load to maintain state after pagination
+  document.addEventListener('DOMContentLoaded', function () {
+    if (window.location.hash === '#orders-section' || window.location.search.includes('page=')) {
+      showAccountContent('orders');
+    }
+  });
+</script>
+
+<style>
   @media screen and (max-width: 768px) {
     .customer-account__container {
       flex-direction: column;
       gap: 16px !important;
     }
-
   }
 </style>
-
-<div class="customer-account pt-40 pb-0">
-  <div class="customer-account__container flex gap-64 page-width">
-    {% render 'customer-account-sidebar' %}
-    {% render 'account-information', customer: customer %}
-  </div>
-</div>
 
 {% schema %}
 {

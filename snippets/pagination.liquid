@@ -1,0 +1,121 @@
+<style>
+      .pagination {
+    width: 100%;
+    display: flex !important;
+    justify-content: right;
+    align-items: center;
+    gap: 16px;
+    margin: 2rem auto;
+    flex-wrap: wrap;
+  }
+
+  .pagination-prev,
+  .pagination-next,
+  .pagination-middle {
+    text-decoration: none;
+    width: 32px;
+    height: 32px;
+    padding: 0 12px;
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.6s;
+    color: rgb(var(--color-foreground)) !important;
+    cursor: pointer;
+    font-weight: 400;
+    border: 1px solid rgba(var(--color-foreground), 0.2);
+    gap: 6px;
+  }
+
+  .pagination-prev svg {
+    transform: rotate(180deg);
+  }
+
+  .current-pagination-button {
+    box-shadow: 0 0 0 1px rgba(var(--color-foreground), 0.2),
+      0 0 0 6px rgb(var(--color-background)),
+      0 0 0 8px rgb(var(--color-solid-button-background));
+  }
+
+  @media screen and (max-width: 577px) {
+    .pagination {
+      justify-content: center;
+    }
+  }
+
+    .pagination-prev,
+    .pagination-next,
+    .pagination-middle {
+      border-radius: {% if settings.pagination_style == "circle" %}50%{% else %}8px{% endif %};
+    }
+
+    .pagination-count-label {
+      color: rgb(var(--color-foreground));
+    }
+
+    .pagination svg path {
+      stroke: rgb(var(--color-foreground));
+    }
+    .paginate-first-page,
+    .paginate-last-page {
+      padding: 0 5px !important;
+    }
+</style>
+
+{% if paginate.parts.size > 0 %}
+  <div class="pagination">
+    <a
+      data-link-type="pagination"
+      data-link-position="first"
+      aria-label="{{ "aria-label.pagination.button.pre-btn" | t }}"
+      class="pagination-prev paginate-first-page"
+      href="?page=1"
+    >
+      {%- render 'icon-pagination-arrow' -%}
+    </a>
+
+    <a
+      data-link-type="pagination"
+      data-link-position="middle"
+      aria-label="{{ "aria-label.pagination.button.pre-btn" | t }}"
+      class="pagination-prev"
+      href="{{ paginate.previous.url }}"
+    >
+      {%- render 'icon-arrow' -%}
+    </a>
+
+    {% for part in paginate.parts %}
+      {% if part.title == paginate.current_page %}<span class="current-pagination-button--container">{% endif %}
+      <a
+        data-link-type="pagination"
+        data-link-position="middle"
+        aria-label="{{ part.title }}"
+        class="pagination-middle font-size-14 font-size-mobile-14 {% if part.title == paginate.current_page %}current-pagination-button{% endif %}"
+        href="{% if part.title != paginate.current_page %}{{ part.url }}{% endif %}"
+      >
+        {{- part.title -}}
+      </a>
+      {% if part.title == paginate.current_page %}</span>{% endif %}
+    {% endfor %}
+
+    <a
+      data-link-type="pagination"
+      data-link-position="middle"
+      aria-label="{{ "aria-label.pagination.button.next-btn" | t }}"
+      class="pagination-next"
+      href="{{ paginate.next.url }}"
+    >
+      {%- render 'icon-arrow' -%}
+    </a>
+
+    <a
+      data-link-type="pagination"
+      data-link-position="last"
+      aria-label="{{ "aria-label.pagination.button.pre-btn" | t }}"
+      class="pagination-next paginate-last-page"
+      href="?page={{ paginate.pages }}"
+    >
+      {%- render 'icon-pagination-arrow' -%}
+    </a>
+  </div>
+{% endif %}
