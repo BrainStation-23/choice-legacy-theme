@@ -10,15 +10,11 @@
       data-autoplay="{{ section.settings.autoplay }}"
       data-autoplay-delay="{{ section.settings.autoplay_delay | default: 5000 }}"
       data-pause-on-hover="{{ section.settings.pause_on_hover }}"
-      data-slides-per-view-desktop="4"
-      data-show-partial-slides="true"
-      data-show-progress-bar="false"
-      data-carousel-mode="true"
-      data-slide-width-mobile="268px"
-      data-slide-width-tablet="268px"
-      data-slide-width-desktop="268px"
+      data-enable-carousel="true"
+      data-show-progress-bar="true"
+      class="flex flex-col gap-16"
     >
-      <div class="swiper-container">
+      <div class="swiper-container overflow-hidden pt-10 pr-120 pb-10 pl-4">
         <div class="swiper-wrapper flex gap-16">
           {% for block in section.blocks %}
             {% if block.settings.product != blank %}
@@ -30,7 +26,7 @@
                 {% assign has_video = true %}
               {% endif %}
 
-              <div class="swiper-slide">
+              <div class="swiper-slide w-auto" style="box-sizing: border-box;">
                 <div
                   class="product-video-item rounded-8 cursor-pointer transition-transform w-268 h-412 overflow-hidden box-shadow{% if has_video %} has-video{% endif %}"
                   data-block-id="{{ block.id }}"
@@ -153,9 +149,9 @@
                 </div>
               </div>
             {% else %}
-              <div class="swiper-slide">
-                <div class="product-video-item" data-block-id="{{ block.id }}">
-                  <div class="product-video-container">
+              <div class="swiper-slide w-auto">
+                <div class="product-video-item box-shadow" data-block-id="{{ block.id }}">
+                  <div class="product-video-container relative w-full h-340">
                     <div>
                       {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
                     </div>
@@ -180,6 +176,8 @@
           {% endfor %}
         </div>
       </div>
+
+      {% render "slideshow-progress-bar", cls: "hidden sm:block" %}
     </slideshow-component>
   </div>
 </div>
