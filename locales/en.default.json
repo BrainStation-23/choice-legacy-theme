@@ -106,6 +106,17 @@
       "phone_placeholder": "Enter your phone number",
       "send_otp": "Send OTP",
       "subtitle": "Use your credentials to access your account"
+    },
+    "order": {
+      "title": "Order History",
+      "order_number": "Order No",
+      "date": "Date",
+      "status": "Status",
+      "total": "Grand total",
+      "quantity": "Quantity",
+      "payment_type": "Payment Type",
+      "action": "Action",
+      "none": "Customer has no orders."
     }
   }
 }

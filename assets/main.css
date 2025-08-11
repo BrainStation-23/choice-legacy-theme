@@ -882,6 +882,9 @@ address {
 .h-12 {
   height: 12px;
 }
+.h-8 {
+  height: 8px;
+}
 .min-h-56 {
   min-height: 56px;
 }
@@ -938,6 +941,10 @@ address {
 }
 .w-12 {
   width: 12px;
+}
+
+.w-8 {
+  width: 8px;
 }
 .max-w-full {
   max-width: 100%;
@@ -1533,6 +1540,9 @@ address {
 }
 .p-8 {
   padding: calc(8 * var(--space-unit));
+}
+.p-14 {
+  padding: calc(14 * var(--space-unit));
 }
 .pb-0 {
   padding-bottom: 0;
@@ -2652,17 +2662,23 @@ html:not([dir="rtl"]) .is-success::before {
 }
 
 table {
-  margin: 0;
+  width: 100%;
+  border-collapse: separate;
   border-spacing: 0;
-  border-collapse: collapse;
+  border: 1px solid rgba(var(--color-secondary-text), 0.1);
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 th,
 td {
-  padding: 1em;
-  border-collapse: collapse;
-  border: 1px solid rgba(var(--text-color) / 0.15);
-  text-align: start;
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid rgba(var(--color-secondary-text), 0.1); /* Border bottom for each cell */
+}
+
+tr:last-child td {
+  border-bottom: none; /* Remove bottom border from last row */
 }
 
 .backdrop-blur-10 {

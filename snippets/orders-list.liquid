@@ -1,62 +1,4 @@
 <style>
-  
-  .order-table {
-    width: 100%;
-    border-collapse: collapse;
-    border: 1px solid #e5e7eb;
-    border-radius: 12px !important;
-  }
-
-  .order-table thead th {
-    background: white;
-    padding: 16px 24px;
-    text-align: left;
-    font-weight: 500;
-    font-size: 14px;
-    color: #6b7280;
-    border-bottom: 1px solid #e5e7eb;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-  }
-
-  .order-table tbody tr {
-    border-bottom: 1px solid #e5e7eb;
-    transition: background-color 0.2s ease;
-  }
-
-  .order-table tbody td {
-    padding: 16px 24px;
-    vertical-align: middle;
-    border: none;
-  }
-
-  .order-number {
-    font-weight: 600;
-    color: #ef4444;
-    text-decoration: none;
-    font-size: 14px;
-  }
-
-  .order-date {
-    color: #6b7280;
-    font-size: 14px;
-  }
-
-  .payment-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12px;
-    font-weight: 500;
-  }
-
-  .status-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-  }
-
   .status-paid .status-dot {
     background: #10b981;
   }
@@ -70,94 +12,6 @@
     background: #ef4444;
   }
 
-  .order-quantity {
-    font-weight: 500;
-    color: #374151;
-  }
-
-  .order-status {
-    color: #6b7280;
-    font-size: 14px;
-  }
-
-  .order-total {
-    font-weight: 600;
-    color: #1a1a1a;
-  }
-
-  .order-actions {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .action-btn {
-    padding: 8px;
-    border: none;
-    background: none;
-    cursor: pointer;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .action-btn svg {
-    width: 16px;
-    height: 16px;
-  }
-
-  .view-btn svg {
-    color: #ef4444;
-  }
-
-  .download-btn svg {
-    color: #6b7280;
-  }
-
-  .no-orders {
-    text-align: center;
-    padding: 48px 24px;
-    color: #6b7280;
-  }
-
-  .pagination-modern {
-    padding: 24px;
-    display: flex;
-    justify-content: center;
-    border-top: 1px solid #e5e7eb;
-  }
-
-  .pagination-modern ul {
-    display: flex;
-    gap: 8px;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-
-  .pagination-modern a,
-  .pagination-modern span {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
-    text-decoration: none;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-  }
-
-  .pagination-modern a {
-    color: #6b7280;
-    background: white;
-    border: 1px solid #e5e7eb;
-  }
-
   .pagination-modern span[aria-current='page'] {
     background: #ef4444;
     color: white;
@@ -165,55 +19,106 @@
   }
 </style>
 
-{% paginate customer.orders by 20 %}
+{% paginate customer.orders by 1 %}
   <div class="flex flex-col gap-24 overflow-hidden">
     <div class="order-history-header">
-      <h2 class="order-history-title m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500 ">Order history</h2>
+      <h2 class="order-history-title m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500 ">{{ 'customer.order.title' | t }}</h2>
     </div>
 
     {%- if customer.orders.size > 0 -%}
-      <!-- Desktop Table View -->
       <table class="order-table" role="table">
         <thead role="rowgroup">
-          <tr role="row">
-            <th scope="col" role="columnheader">Order No</th>
-            <th scope="col" role="columnheader">Date</th>
-            <th scope="col" role="columnheader">Payment type</th>
-            <th scope="col" role="columnheader">Quantity</th>
-            <th scope="col" role="columnheader">Status</th>
-            <th scope="col" role="columnheader">Grand total</th>
-            <th scope="col" role="columnheader">Action</th>
+          <tr role="row" class="h-48">
+            <th
+              scope="col"
+              role="columnheader"
+              class="pt-0 pb-0 pl-12 pr-12 fs-16-lh-16-ls-0 fw-500 ff-general-sans text-primary-70pct"
+            >
+              {{ 'customer.order.order_number' | t }}
+            </th>
+            <th
+              scope="col"
+              role="columnheader"
+              class="pt-0 pb-0 pl-12 pr-12 fs-16-lh-16-ls-0 fw-500 ff-general-sans text-primary-70pct"
+            >
+              {{ 'customer.order.date' | t }}
+            </th>
+            <th
+              scope="col"
+              role="columnheader"
+              class="pt-0 pb-0 pl-12 pr-12 fs-16-lh-16-ls-0 fw-500 ff-general-sans text-primary-70pct"
+            >
+              {{ 'customer.order.payment_type' | t }}
+            </th>
+            <th
+              scope="col"
+              role="columnheader"
+              class="pt-0 pb-0 pl-12 pr-12 fs-16-lh-16-ls-0 fw-500 ff-general-sans text-primary-70pct"
+            >
+              {{ 'customer.order.quantity' | t }}
+            </th>
+            <th
+              scope="col"
+              role="columnheader"
+              class="pt-0 pb-0 pl-12 pr-12 fs-16-lh-16-ls-0 fw-500 ff-general-sans text-primary-70pct"
+            >
+              {{ 'customer.order.status' | t }}
+            </th>
+            <th
+              scope="col"
+              role="columnheader"
+              class="pt-0 pb-0 pl-12 pr-12 fs-16-lh-16-ls-0 fw-500 ff-general-sans text-primary-70pct"
+            >
+              {{ 'customer.order.total' | t }}
+            </th>
+            <th
+              scope="col"
+              role="columnheader"
+              class="pt-0 pb-0 pl-12 pr-12 fs-16-lh-16-ls-0 fw-500 ff-general-sans text-primary-70pct"
+            >
+              {{ 'customer.order.action' | t }}
+            </th>
           </tr>
         </thead>
         <tbody role="rowgroup">
           {%- for order in customer.orders -%}
-            <tr role="row">
-              <td role="cell">
-                <a href="{{ order.customer_url }}" class="order-number">
+            <tr role="row" class="h-48">
+              <td role="cell" class="pt-0 pb-0 pl-12 pr-12">
+                <a
+                  href="{{ order.customer_url }}"
+                  class="order-number ff-general-sans fw-600 fs-16-lh-24-ls-0 text-brand"
+                >
                   #{{ order.order_number | default: order.name | remove: '#' }}
                 </a>
               </td>
-              <td role="cell">
-                <span class="order-date">{{ order.created_at | date: '%B %d, %y' }}</span>
+              <td role="cell" class="pt-0 pb-0 pl-12 pr-12">
+                <span class="order-date ff-general-sans fw-400 fs-16-lh-24-ls-0">
+                  {{- order.created_at | date: '%B %d, %y' -}}
+                </span>
               </td>
               <td role="cell">
-                <div class="payment-status {% if order.financial_status == 'paid' %}status-paid{% elsif order.financial_status == 'pending' %}status-pending{% elsif order.financial_status == 'cancelled' %}status-cancelled{% else %}status-ongoing{% endif %}">
-                  <span class="status-dot"></span>
+                <div class="payment-status ff-general-sans fw-400 fs-16-lh-24-ls-0 {% if order.financial_status == 'paid' %}status-paid{% elsif order.financial_status == 'pending' %}status-pending{% elsif order.financial_status == 'cancelled' %}status-cancelled{% else %}status-ongoing{% endif %}">
+                  <span class="status-dot rounded-full  h-8 w-8"></span>
                   {{ order.financial_status_label }}
                 </div>
               </td>
-              <td role="cell">
-                <span class="order-quantity">{{ order.line_items.size }}</span>
+              <td role="cell" class="pt-0 pb-0 pl-12 pr-12">
+                <span class="order-quantity ff-general-sans fw-400 fs-16-lh-24-ls-0">{{ order.line_items.size }}</span>
               </td>
-              <td role="cell">
-                <span class="order-status">{{ order.fulfillment_status_label | default: 'Processing' }}</span>
+              <td role="cell" class="pt-0 pb-0 pl-12 pr-12">
+                <span class="order-status ff-general-sans fw-400 fs-16-lh-24-ls-0">
+                  {{- order.fulfillment_status_label -}}
+                </span>
               </td>
-              <td role="cell">
-                <span class="order-total">{{ order.total_net_amount | money_with_currency }}</span>
+              <td role="cell" class="pt-0 pb-0 pl-12 pr-12">
+                <span class="order-total ff-general-sans fw-400 fs-16-lh-24-ls-0 flex gap-4 ">
+                  ৳
+                  {{- order.total_net_amount | money_without_currency -}}
+                </span>
               </td>
-              <td role="cell">
+              <td role="cell" class="pt-0 pb-0 pl-12 pr-12">
                 <div class="order-actions">
-                  <a href="{{ order.customer_url }}" class="action-btn view-btn" title="View Order">
+                  <a href="{{ order.customer_url }}" class="action-btn view-btn text-brand" title="View Order">
                     {% render 'eye-icon' %}
                   </a>
                 </div>
@@ -225,19 +130,21 @@
 
     {%- else -%}
       <div class="no-orders">
-        <p>{{ 'customer.orders.none' | t | default: 'No orders found.' }}</p>
+        <p class="ff-general-sans fs-23-lh-24-ls-0 fw-600  text-center">
+          {{ 'customer.order.none' | t }}
+        </p>
       </div>
     {%- endif -%}
 
     {%- if paginate.pages > 1 -%}
-      <div class="pagination-modern">
+      <div class="pagination-modern flex justify-center pt-24">
         <nav role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
-          <ul role="list">
+          <ul role="list" class="flex gap-8 m-0 p-0 list-style-none">
             {%- if paginate.previous -%}
               <li>
                 <a
                   href="{{ paginate.previous.url }}#orders-section"
-                  class="pagination-link"
+                  class="pagination-link flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
                   aria-label="{{ 'general.pagination.previous' | t }}"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -252,18 +159,24 @@
                 {%- if part.is_link -%}
                   <a
                     href="{{ part.url }}#orders-section"
-                    class="pagination-link"
+                    class="pagination-link flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
                     aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
                   >
                     {{- part.title -}}
                   </a>
                 {%- else -%}
                   {%- if part.title == paginate.current_page -%}
-                    <span aria-current="page" aria-label="{{ 'general.pagination.page' | t: number: part.title }}">
+                    <span
+                      aria-current="page"
+                      aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
+                      class="flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
+                    >
                       {{- part.title -}}
                     </span>
                   {%- else -%}
-                    <span>{{ part.title }}</span>
+                    <span class="flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0">
+                      {{- part.title -}}
+                    </span>
                   {%- endif -%}
                 {%- endif -%}
               </li>
@@ -273,7 +186,7 @@
               <li>
                 <a
                   href="{{ paginate.next.url }}#orders-section"
-                  class="pagination-link"
+                  class="pagination-link flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
                   aria-label="{{ 'general.pagination.next' | t }}"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
