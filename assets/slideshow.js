@@ -41,6 +41,7 @@ class SlideshowComponent extends HTMLElement {
     const swiperOptions = {
       loop: true,
       spaceBetween: gap,
+      allowTouchMove: enableCarousel,
       navigation: {
         nextEl: this.nextButton,
         prevEl: this.prevButton,
@@ -54,14 +55,6 @@ class SlideshowComponent extends HTMLElement {
     if (enableCarousel) {
       Object.assign(swiperOptions, {
         grabCursor: true,
-        touchRatio: 1,
-        touchAngle: 45,
-        longSwipesRatio: 0.5,
-        longSwipesMs: 300,
-        followFinger: true,
-        allowTouchMove: true,
-        resistance: true,
-        resistanceRatio: 0.85,
         freeMode: {
           enabled: true,
           momentum: true,
