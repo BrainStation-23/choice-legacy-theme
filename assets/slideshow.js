@@ -58,27 +58,29 @@ class SlideshowComponent extends HTMLElement {
         freeMode: {
           enabled: true,
           momentum: true,
-          momentumRatio: 1,
-          momentumVelocityRatio: 1,
           sticky: false,
         },
         loop: false,
-        slidesPerView: "auto",
-        centeredSlides: false,
         watchSlidesProgress: true,
         watchSlidesVisibility: true,
       });
 
-      swiperOptions.on = {
-        ...swiperOptions.on,
-        init: () => {
-          this.updateNavigationState();
-          this.enforceSlideWidths();
-        },
-      };
+      if (numberOfItems > 0) {
+        swiperOptions.slidesPerView = numberOfItems;
+      } else {
+        swiperOptions.slidesPerView = "auto";
+        swiperOptions.on = {
+          ...swiperOptions.on,
+          init: () => {
+            this.updateNavigationState();
+            this.enforceSlideWidths();
+          },
+        };
+      }
     } else if (numberOfItems > 0) {
       swiperOptions.slidesPerView = numberOfItems;
     } else if (showPartialSlides) {
+      swiperOptions.allowTouchMove = true;
       swiperOptions.slidesPerView = 1;
       swiperOptions.centeredSlides = false;
       swiperOptions.centerInsufficientSlides = true;
