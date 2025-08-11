@@ -1551,6 +1551,10 @@ address {
 .pb-16 {
   padding-bottom: calc(16 * var(--space-unit));
 }
+
+.pb-18 {
+  padding-bottom: calc(18 * var(--space-unit));
+}
 .pb-20 {
   padding-bottom: calc(20 * var(--space-unit));
 }
@@ -1674,6 +1678,9 @@ address {
 }
 .pt-16 {
   padding-top: calc(16 * var(--space-unit));
+}
+.pt-18 {
+  padding-top: calc(18 * var(--space-unit));
 }
 .pt-20 {
   padding-top: calc(20 * var(--space-unit));
@@ -2113,11 +2120,9 @@ address {
 }
 
 button {
-  /* width: 100%; */
   background: rgb(var(--color-primary-brand));
   color: rgb(var(--color-background));
   border: none;
-  /* padding: 18px 10px; */
   background: rgb(var(--color-primary-brand));
   color: rgb(var(--color-background));
   border: none;
