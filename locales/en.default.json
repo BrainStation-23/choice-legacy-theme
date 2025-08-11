@@ -61,7 +61,11 @@
       "rewards": "Rewards Points",
       "wishlist": "My Wishlist",
       "reviews": "Reviews",
-      "logout": "Logout"
+      "logout": "Logout",
+      "date_of_birth": "Date of Birth",
+      "gender": "Gender",
+      "edit": "Edit",
+      "change_email": "Change email address"
     },
     "login": {
       "title": "Login",

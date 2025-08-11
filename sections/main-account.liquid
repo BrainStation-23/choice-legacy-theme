@@ -1,28 +1,23 @@
 <style>
-  .customer-account {
+  /* .customer-account {
     padding-top: {{ section.settings.padding_top }}px;
     padding-bottom: {{ section.settings.padding_bottom }}px;
-  }
-  .customer-account__container {
+  } */
+  /* .customer-account__container {
     display:flex;
-  }
-  .customer-account__information-empty {
-    flex: 1;
-  }
+  } */
 
   @media screen and (max-width: 768px) {
     .customer-account__container {
       flex-direction: column;
-      gap:16px !important;
+      gap: 16px !important;
     }
-    .customer-account__information-empty {
-      display: none;
-    }
+
   }
 </style>
 
-<div class="customer-account">
-  <div class="customer-account__container gap-64 page-width">
+<div class="customer-account pt-40 pb-0">
+  <div class="customer-account__container flex gap-64 page-width">
     {% render 'customer-account-sidebar' %}
     {% render 'account-information', customer: customer %}
   </div>
@@ -31,31 +26,6 @@
 {% schema %}
 {
   "name": "Main Account",
-  "settings": [
-    {
-      "type": "header",
-      "content": "Section Padding"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "label": "Top padding",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "default": 40,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "label": "Bottom padding",
-      "min": 0,
-      "max": 100,
-      "step": 4,
-      "default": 40,
-      "unit": "px"
-    }
-  ]
+  "settings": []
 }
 {% endschema %}

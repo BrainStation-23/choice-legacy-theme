@@ -1,81 +1,73 @@
-<style>
-  .customer-account__information {
-    flex: 3;
-    display: flex;
-  }
+<div class="flex flex-3">
+  <div class="flex flex-col gap-24 flex-2">
+    <div class="flex gap-8  items-center">
+      <h1 class=" ff-general-sans fs-23-lh-24-ls-0 fw-500 m-0 ">
+        {{ 'customer.account.account_title' | t }}
+      </h1>
+      <h3 class="text-brand ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer">
+        {{ 'customer.account.edit' | t }}
+      </h3>
+    </div>
 
-  .customer-account__information-empty {
-    flex: 1;
-  }
-
-  .account-information__container {
-    display: flex;
-    flex-direction: column;
-    flex: 2;
-  }
-
-  .account-information__title {
-    margin: 0 !important;
-  }
-
-  .account-information__form {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    flex-wrap: wrap;
-  }
-
-  .account-information__field .input-box {
-    border: 1px solid rgba(var(--color-secondary-text), 0.1);
-    border-radius: 12px;
-    padding: 10px 16px;
-  }
-
-  .account-information__field .input-label {
-    margin: 0 !important;
-    color: rgba(var(--color-secondary-text), 0.65);
-  }
-
-  @media screen and (max-width: 768px) {
-    .account-information__form {
-      grid-template-columns: 1fr;
-      gap: 8px !important;
-    }
-  }
-</style>
-
-<div class="customer-account__information">
-  <div class="account-information__container gap-24">
-    <h1 class="account-information__title ff-general-sans fs-23-lh-24-ls-0 fw-500 ">
-      {{ 'customer.account.account_title' | t }}
-    </h1>
-
-    <div class="account-information__form gap-16">
-      <div class="account-information__field">
-        <div class="input-box">
-          <h2 class="input-label ff-general-sans fs-12-lh-16-ls-0_6 fw-400">{{ 'customer.account.first_name' | t }}</h2>
-          <div class="input-value ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.first_name }}</div>
+    <div class="grid gap-16 grid-cols-2 flex-wrap sm:grid-cols-1  sm:gap-8 ">
+      <div>
+        <div class="border-secondary-text-10pct rounded-12  pt-10 pb-10 pr-16 pl-16">
+          <h2 class="ff-general-sans fs-12-lh-16-ls-0_6 fw-400 m-0 text-secondary-light ">
+            {{ 'customer.account.first_name' | t }}
+          </h2>
+          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.first_name }}</div>
         </div>
       </div>
 
-      <div class="account-information__field">
-        <div class="input-box">
-          <h2 class="input-label ff-general-sans fs-12-lh-16-ls-0_6 fw-400">{{ 'customer.account.last_name' | t }}</h2>
-          <div class="input-value ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.last_name }}</div>
+      <div>
+        <div class="border-secondary-text-10pct rounded-12  pt-10 pb-10 pr-16 pl-16">
+          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
+            {{ 'customer.account.last_name' | t }}
+          </h2>
+          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.last_name }}</div>
         </div>
       </div>
-      <div class="account-information__field">
-        <div class="input-box">
-          <h2 class="input-label ff-general-sans fs-12-lh-16-ls-0_6 fw-400">{{ 'customer.account.email' | t }}</h2>
-          <div class="input-value ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.email }}</div>
+
+      <div>
+        <div class="border-secondary-text-10pct rounded-12 pt-10 pb-10 pr-16 pl-16">
+          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
+            {{ 'customer.account.phone' | t }}
+          </h2>
+          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.phone }}</div>
         </div>
       </div>
-      <div class="account-information__field">
-        <div class="input-box">
-          <h2 class="input-label ff-general-sans fs-12-lh-16-ls-0_6 fw-400">{{ 'customer.account.phone' | t }}</h2>
-          <div class="input-value ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.phone }}</div>
+
+      <div>
+        <div class="border-secondary-text-10pct rounded-12 pt-10 pb-10 pr-16 pl-16">
+          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
+            {{ 'customer.account.date_of_birth' | t }}
+          </h2>
+          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">
+            {% comment %} todo update date of birth {% endcomment %}
+            {{ customer.date_of_birth | default: 'date_of_birth' }}
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-8">
+        <div class="border-secondary-text-10pct rounded-12  pt-10 pb-10 pr-16 pl-16">
+          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
+            {{ 'customer.account.email' | t }}
+          </h2>
+          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.email }}</div>
+        </div>
+        <h1 class=" text-brand ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer">{{ 'customer.account.change_email' | t }}</h1>
+      </div>
+      <div>
+        <div class="border-secondary-text-10pct rounded-12  pt-10 pb-10 pr-16 pl-16">
+          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
+            {{ 'customer.account.gender' | t }}
+          </h2>
+          {% comment %} todo update actual gender {% endcomment %}
+          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.gender | default: 'Female' }}</div>
         </div>
       </div>
     </div>
   </div>
-  <div class="customer-account__information-empty"></div>
+  <div class="flex flex-1 sm:hidden"></div>
 </div>
