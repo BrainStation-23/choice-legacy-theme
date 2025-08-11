@@ -2711,3 +2711,7 @@ td {
 .play-normal-0-to-n100 {
   animation: play-normal-0-to-n100 linear infinite;
 }
+
+.progress-bar-pagination .swiper-pagination-progressbar-fill {
+  background: rgb(var(--color-primary-brand));
+}
