@@ -1,92 +1,22 @@
-{{ 'collections-list.css' | asset_url | stylesheet_tag }}
-{% assign minShown = 5 %}
-{% assign blockCount = section.blocks.size %}
-{% if blockCount < minShown %}
-  {% assign minShown = blockCount %}
-{% endif %}
 {% assign image_ratio = 1 %}
-<style>
-    .collections-list-{{ section.id }} {
-      padding-top: 88px;
-      padding-bottom: 88px;
-    }
-
-    .collections-list__grid {
-      display: grid;
-      grid-template-columns: repeat({{ minShown }}, 1fr);
-      justify-items: center;
-      align-items: stretch;
-    }
-
-    .collections-list__swiper-wrapper {
-      display: none;
-    }
-
-    @media screen and (max-width: 768px) {
-      .collections-list-{{ section.id }} {
-        padding-top: 23px;
-        padding-bottom: 16px;
-      }
-      .collections-list__item {
-        width: 116px !important;
-      }
-
-       .collections-list__swiper-wrapper .swiper-container{
-        gap:24px !important
-       }
-
-      .collections-list__grid {
-        display: none;
-      }
-
-      .collections-list__swiper-wrapper {
-        display: block;
-      }
-
-      .collections-list__swiper-wrapper .swiper-container {
-        position: relative;
-        padding-bottom: 20px;
-      }
-
-      .collections-list__swiper-wrapper .swiper-slide {
-        box-sizing: border-box;
-      }
-       .collections-list__swiper-wrapper .swiper-slide:last-child {
-        margin-right: 0;
-      }
-
-    }
-
-    @media screen and (min-width: 769px) and (max-width: 1023px) {
-     .collections-list__grid{
-      gap: 16px !important;
-     }
-
-    }
-
-    @media screen and (min-width: 1024px) and (max-width: 1264px) {
-
-  .collections-list__grid{
-      gap: 20px !important;
-     }
-    }
-</style>
-
-<section class="collections-list collections-list-{{ section.id }}">
-  <div class="collections-list__container page-width gap-64">
+<section class="w-full pt-88 pb-88 sm:pt-23 sm:pb-16  ">
+  <div class="page-width flex flex-col gap-64">
     {% if section.settings.title != blank %}
-      <h2 class="collections-list__title ff-bebas-neue fw-400 fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct">
+      <h2 class="uppercase flex justify-center items-center ff-bebas-neue fw-400 fs-36-lh-40-ls-0 m-0 mobile-fs-21-lh-24-ls-1_2pct">
         {{ section.settings.title }}
       </h2>
     {% endif %}
 
-    <div class="collections-list__grid gap-24">
+    <div class="grid grid-cols-5 lg:grid-cols-4 md:grid-cols-3 gap-24 justify-center items-stretch lg:gap-20 md:gap-16 sm:hidden ">
       {% for block in section.blocks %}
         {% if block.settings.collection %}
-          <div class="collections-list__item" {{ block.shopify_attributes }}>
-            <a href="{{ block.settings.collection.url }}" class="collections-list__link">
+          <div class="flex flex-col w-full sm:w-116 " {{ block.shopify_attributes }}>
+            <a
+              href="{{ block.settings.collection.url }}"
+              class="flex flex-col no-underline h-full"
+            >
               <div
-                class="collection-list-image media block relative"
+                class="media block relative w-full h-254 "
                 style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;"
               >
                 {% if block.settings.collection.featured_image %}
@@ -100,14 +30,14 @@
                     quality: 1
                   %}
                 {% else %}
-                  <div class="collections-list__image">
-                    {{ 'collection-1' | placeholder_svg_tag: 'collections-list__image' }}
+                  <div class="w-full h-254">
+                    {{ 'collection-1' | placeholder_svg_tag: 'w-full h-254 ' }}
                   </div>
                 {% endif %}
               </div>
 
-              <div class="collections-list__content">
-                <h3 class="collections-list__name ff-bebas-neue fw-400 fs-26-lh-26-ls-1_2 mobile-fs-15-lh-16-ls--1_2pct">
+              <div class="bg-brand pt-12 pb-12 pl-8 pr-8 rounded-t-l-0 rounded-t-r-0 rounded-b-r-32 rounded-b-l-32 sm:pt-4 sm:pb-4 sm:pr-3 sm:pl-3 sm:rounded-b-l-13 sm:rounded-b-r-13">
+                <h3 class="text-bg text-center m-0 ff-bebas-neue fw-400 fs-26-lh-26-ls-1_2 mobile-fs-15-lh-16-ls--1_2pct">
                   {% if block.settings.collection.title %}
                     {{ block.settings.collection.title }}
                   {% else %}
@@ -121,7 +51,7 @@
       {% endfor %}
     </div>
 
-    <div class="collections-list__swiper-wrapper">
+    <div class="hidden sm:block">
       <slideshow-component
         data-autoplay="false"
         data-show-progress-bar="true"
@@ -131,15 +61,18 @@
         data-slide-width-tablet="116px"
         data-slide-width-desktop="116px"
       >
-        <div class="swiper-container flex flex-col gap-24">
+        <div class="swiper-container flex flex-col gap-24 sm:relative sm:pb-20">
           <div class="swiper-wrapper">
             {% for block in section.blocks %}
               {% if block.settings.collection %}
-                <div class="swiper-slide collections-list__item" {{ block.shopify_attributes }}>
-                  <a href="{{ block.settings.collection.url }}" class="collections-list__link">
+                <div
+                  class="swiper-slide sm:border-box sm:w-116 sm:mr-10"
+                  {{ block.shopify_attributes }}
+                >
+                  <a href="{{ block.settings.collection.url }}" class="flex flex-col no-underline h-full">
                     {% if block.settings.collection.featured_image %}
                       <div
-                        class="collection-list-image media block relative"
+                        class="media block relative w-full h-254 sm:h-90"
                         style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;"
                       >
                         {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 5 %}{% endcapture -%}
@@ -155,13 +88,13 @@
                         %}
                       </div>
                     {% else %}
-                      <div class="collections-list__image">
-                        {{ 'collection-1' | placeholder_svg_tag: 'collections-list__image' }}
+                      <div class="w-full h-254 sm:h-90">
+                        {{ 'collection-1' | placeholder_svg_tag: 'w-full h-254 sm:h-90' }}
                       </div>
                     {% endif %}
 
-                    <div class="collections-list__content">
-                      <h3 class="collections-list__name mobile-fs-15-lh-16-ls--1_2pct ff-bebas-neue fw-400">
+                    <div class="bg-brand sm:pt-4 sm:pb-4 sm:pr-3 sm:pl-3 sm:rounded-b-l-13 sm:rounded-b-r-13">
+                      <h3 class="text-bg text-center m-0 mobile-fs-15-lh-16-ls--1_2pct ff-bebas-neue fw-400">
                         {{ block.settings.collection.title | default: 'Collection' }}
                       </h3>
                     </div>
@@ -181,7 +114,6 @@
 {
   "name": "Collections List",
   "tag": "section",
-  "class": "shopify-section-collections-list",
   "settings": [
     {
       "type": "header",

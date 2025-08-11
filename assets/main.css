@@ -121,6 +121,10 @@ mark {
   .sm\:bg-none {
     background: none;
   }
+
+  .sm\:border-box {
+    box-sizing: border-box;
+  }
 }
 
 :root {
@@ -682,8 +686,11 @@ address {
 .mt-8 {
   margin-top: calc(8 * var(--space-unit));
 }
-.mt-section {
-  margin-top: calc(var(--section-gap) * var(--fluid-1-5));
+
+@media screen and (max-width: 768px) {
+  .sm\:mr-10 {
+    margin-right: 10px;
+  }
 }
 .block {
   display: block;
@@ -746,6 +753,10 @@ address {
   .md\:right-11p-52 {
     right: calc(11% - 52px);
   }
+
+  .md\:gap-16 {
+    gap: 16px;
+  }
 }
 @media screen and (min-width: 1024px) and (max-width: 1439px) {
   .lg\:grid-cols-2 {
@@ -763,6 +774,10 @@ address {
   }
   .lg\:right-10p-52 {
     right: calc(10% - 52px);
+  }
+
+  .lg\:gap-20 {
+    gap: 20px;
   }
 }
 @media screen and (max-width: 768px) {
@@ -1010,6 +1025,10 @@ address {
     width: 304px;
   }
 
+  .sm\:w-116 {
+    width: 116px !important;
+  }
+
   .sm\:w-full {
     width: 100%;
   }
@@ -1039,6 +1058,9 @@ address {
 
   .sm\:h-304 {
     height: 304px;
+  }
+  .sm\:h-90 {
+    height: 90px;
   }
 
   .sm\:h-186 {
@@ -1690,7 +1712,9 @@ address {
   .sm\:pl-0 {
     padding-left: 0;
   }
-
+  .sm\:pl-3 {
+    padding-left: calc(3 * var(--space-unit));
+  }
   .sm\:pl-3_9_8 {
     padding-left: 3.98%;
   }
@@ -1725,6 +1749,10 @@ address {
     padding-top: calc(16 * var(--space-unit));
   }
 
+  .sm\:pt-23 {
+    padding-top: calc(23 * var(--space-unit));
+  }
+
   .sm\:pt-24 {
     padding-top: calc(24 * var(--space-unit));
   }
@@ -1755,6 +1783,14 @@ address {
     padding-bottom: calc(16 * var(--space-unit));
   }
 
+  .sm\:pb-20 {
+    padding-bottom: calc(20 * var(--space-unit));
+  }
+
+  .sm\:pb-23 {
+    padding-bottom: calc(23 * var(--space-unit));
+  }
+
   .sm\:pb-24 {
     padding-bottom: calc(24 * var(--space-unit));
   }
@@ -1779,6 +1815,9 @@ address {
   }
   .sm\:pr-3pct {
     padding-right: 3.98%;
+  }
+  .sm\:pr-3 {
+    padding-right: calc(3 * var(--space-unit));
   }
 
   .sm\:p-0 {
@@ -2268,6 +2307,7 @@ shop-login-button {
 .border-none {
   border: none;
 }
+
 .rounded-full {
   border-radius: 50%;
 }
@@ -2285,6 +2325,21 @@ shop-login-button {
 }
 .rounded-5 {
   border-radius: 5px;
+}
+.rounded-32 {
+  border-radius: 32px;
+}
+.rounded-t-l-0 {
+  border-top-left-radius: 0;
+}
+.rounded-t-r-0 {
+  border-top-right-radius: 0;
+}
+.rounded-b-r-32 {
+  border-bottom-right-radius: 32px;
+}
+.rounded-b-l-32 {
+  border-bottom-left-radius: 32px;
 }
 
 .border-1 {
@@ -2321,6 +2376,12 @@ shop-login-button {
 
   .sm\:border-none {
     border: none;
+  }
+  .sm\:rounded-b-l-13 {
+    border-bottom-left-radius: 13px;
+  }
+  .sm\:rounded-b-r-13 {
+    border-bottom-right-radius: 13px;
   }
 }
 
