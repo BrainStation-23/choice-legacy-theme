@@ -1,48 +1,28 @@
 <style>
   /* Desktop Navigation Controls */
   @media screen and (min-width: 769px) {
-    {% if section.settings.desktop_nav == 'none' %}
-      .offer-banner-{{ section.id }} .slideshow-nav-button-prev,
-      .offer-banner-{{ section.id }} .slideshow-nav-button-next,
-      .offer-banner-{{ section.id }} .dot-pagination {
-        display: none !important;
-      }
-    {% elsif section.settings.desktop_nav == 'nav' %}
-      .offer-banner-{{ section.id }} .dot-pagination {
-        display: none !important;
-      }
-    {% elsif section.settings.desktop_nav == 'dots' %}
+    {% unless section.settings.show_nav_desktop %}
       .offer-banner-{{ section.id }} .slideshow-nav-button-prev,
       .offer-banner-{{ section.id }} .slideshow-nav-button-next {
         display: none !important;
       }
-    {% endif %}
+    {% endunless %}
   }
 
   /* Mobile Navigation Controls */
   @media screen and (max-width: 768px) {
-    {% if section.settings.mobile_nav == 'none' %}
-      .offer-banner-{{ section.id }} .slideshow-nav-button-prev,
-      .offer-banner-{{ section.id }} .slideshow-nav-button-next,
-      .offer-banner-{{ section.id }} .dot-pagination {
-        display: none !important;
-      }
-    {% elsif section.settings.mobile_nav == 'nav' %}
-      .offer-banner-{{ section.id }} .dot-pagination {
-        display: none !important;
-      }
-    {% elsif section.settings.mobile_nav == 'dots' %}
+    {% unless section.settings.show_nav_mobile %}
       .offer-banner-{{ section.id }} .slideshow-nav-button-prev,
       .offer-banner-{{ section.id }} .slideshow-nav-button-next {
         display: none !important;
       }
-    {% endif %}
+    {% endunless %}
   }
 </style>
 
 {% liquid
   assign both_nav_none = false
-  if section.settings.desktop_nav == 'none' and section.settings.mobile_nav == 'none'
+  if section.settings.show_nav_desktop == false and section.settings.show_nav_mobile == false
     assign both_nav_none = true
   endif
 %}
@@ -133,36 +113,11 @@
             </div>
           {% endfor %}
         </div>
-
-        {% liquid
-          assign show_dots_desktop = false
-          assign show_dots_mobile = false
-          
-          if section.settings.desktop_nav == 'dots' or section.settings.desktop_nav == 'both'
-            assign show_dots_desktop = true
-          endif
-          
-          if section.settings.mobile_nav == 'dots' or section.settings.mobile_nav == 'both'
-            assign show_dots_mobile = true
-          endif
-        %}
-        
-        {% if show_dots_desktop or show_dots_mobile %}
-          {% render "dot-buttons", items: section.blocks %}
-        {% endif %}
       </div>
 
       {% liquid
-        assign show_arrows_desktop = false
-        assign show_arrows_mobile = false
-        
-        if section.settings.desktop_nav == 'nav' or section.settings.desktop_nav == 'both'
-          assign show_arrows_desktop = true
-        endif
-        
-        if section.settings.mobile_nav == 'nav' or section.settings.mobile_nav == 'both'
-          assign show_arrows_mobile = true
-        endif
+        assign show_arrows_desktop = section.settings.show_nav_desktop
+        assign show_arrows_mobile = section.settings.show_nav_mobile
       %}
       
       {% if show_arrows_desktop or show_arrows_mobile %}
@@ -187,83 +142,16 @@
       "content": "Navigation Settings"
     },
     {
-      "type": "select",
-      "id": "desktop_nav",
-      "label": "Desktop navigation",
-      "default": "nav",
-      "info": "Choose navigation style for desktop devices",
-      "options": [
-        {
-          "value": "none",
-          "label": "None"
-        },
-        {
-          "value": "nav",
-          "label": "Arrows only"
-        },
-        {
-          "value": "dots",
-          "label": "Dots only"
-        },
-        {
-          "value": "both",
-          "label": "Arrows + Dots"
-        }
-      ]
-    },
-    {
-      "type": "select",
-      "id": "mobile_nav",
-      "label": "Mobile navigation",
-      "default": "nav",
-      "info": "Choose navigation style for mobile devices",
-      "options": [
-        {
-          "value": "none",
-          "label": "None"
-        },
-        {
-          "value": "nav",
-          "label": "Arrows only"
-        },
-        {
-          "value": "dots",
-          "label": "Dots only"
-        },
-        {
-          "value": "both",
-          "label": "Arrows + Dots"
-        }
-      ]
-    },
-    {
-      "type": "header",
-      "content": "Autoplay Settings"
+      "type": "checkbox",
+      "id": "show_nav_desktop",
+      "label": "Show navigation arrows on desktop",
+      "default": true
     },
     {
       "type": "checkbox",
-      "id": "enable_autoplay",
-      "label": "Enable autoplay",
-      "default": false,
-      "info": "Automatically advance slides"
-    },
-    {
-      "type": "range",
-      "id": "autoplay_delay",
-      "min": 2,
-      "max": 10,
-      "step": 0.5,
-      "unit": "s",
-      "label": "Autoplay delay",
-      "default": 5,
-      "info": "Time between slide transitions"
-    },
-    {
-      "type": "checkbox",
-      "id": "pause_on_hover",
-      "label": "Pause autoplay on hover",
-      "default": true,
-      "info": "Pause slideshow when mouse hovers over it"
+      "id": "show_nav_mobile",
+      "label": "Show navigation arrows on mobile",
+      "default": true
     }
   ],
   "blocks": [
