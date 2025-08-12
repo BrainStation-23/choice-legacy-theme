@@ -113,9 +113,13 @@
                             {{ block.settings.sub_text | default: 'Skincare routine for glowing skin' }}
                           </p>
                         </div>
-                        <button class="product-video-item__small-play w-32 h-32 bg-brand rounded-full flex items-center justify-center shrink-0 cursor-pointer border-none" type="button" aria-label="Play video">
-                          {% render 'icon-play', cls: "block w-14 h-14 svg-bg" %}
-                          {% render 'icon-pause', cls: "hidden w-14 h-14 svg-bg" %}
+                        <button
+                          class="product-video-item__small-play w-32 h-32 bg-brand rounded-full flex items-center justify-center shrink-0 cursor-pointer border-none"
+                          type="button"
+                          aria-label="Play video"
+                        >
+                          {% render 'icon-play', cls: 'block w-14 h-14 svg-bg' %}
+                          {% render 'icon-pause', cls: 'hidden w-14 h-14 svg-bg' %}
                         </button>
                       </div>
                     {% endif %}
@@ -187,99 +191,98 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-  const videoItems = document.querySelectorAll('.product-video-item');
+    const videoItems = document.querySelectorAll('.product-video-item');
 
-  videoItems.forEach((item) => {
-    const video = item.querySelector('video[data-video-type="mp4"]');
-    const iframe = item.querySelector('iframe[data-video-type="youtube"]');
-    const smallPlayButton = item.querySelector('.product-video-item__small-play');
+    videoItems.forEach((item) => {
+      const video = item.querySelector('video[data-video-type="mp4"]');
+      const iframe = item.querySelector('iframe[data-video-type="youtube"]');
+      const smallPlayButton = item.querySelector('.product-video-item__small-play');
 
-    function updateIcons(isPlaying) {
-      const playIcon = item.querySelector('.icon-play');
-      const pauseIcon = item.querySelector('.icon-pause');
+      function updateIcons(isPlaying) {
+        const playIcon = item.querySelector('.icon-play');
+        const pauseIcon = item.querySelector('.icon-pause');
 
-      if (!playIcon || !pauseIcon) return;
+        if (!playIcon || !pauseIcon) return;
 
-      if (isPlaying) {
-        playIcon.classList.add('hidden');
-        playIcon.classList.remove('block');
-        pauseIcon.classList.remove('hidden');
-        pauseIcon.classList.add('block');
-      } else {
-        playIcon.classList.remove('hidden');
-        playIcon.classList.add('block');
-        pauseIcon.classList.add('hidden');
-        pauseIcon.classList.remove('block');
-      }
-    }
-
-    if (video && smallPlayButton) {
-      const toggleVideo = () => {
-        if (video.paused) {
-          const playPromise = video.play();
-          if (playPromise !== undefined) {
-            playPromise
-              .then(() => {
-                item.classList.add('playing');
-                updateIcons(true);
-              })
-              .catch((error) => {
-                console.error('Video play failed:', error);
-              });
-          }
+        if (isPlaying) {
+          playIcon.classList.add('hidden');
+          playIcon.classList.remove('block');
+          pauseIcon.classList.remove('hidden');
+          pauseIcon.classList.add('block');
         } else {
-          video.pause();
-          item.classList.remove('playing');
-          updateIcons(false);
+          playIcon.classList.remove('hidden');
+          playIcon.classList.add('block');
+          pauseIcon.classList.add('hidden');
+          pauseIcon.classList.remove('block');
         }
-      };
+      }
 
-      smallPlayButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleVideo();
-      });
+      if (video && smallPlayButton) {
+        const toggleVideo = () => {
+          if (video.paused) {
+            const playPromise = video.play();
+            if (playPromise !== undefined) {
+              playPromise
+                .then(() => {
+                  item.classList.add('playing');
+                  updateIcons(true);
+                })
+                .catch((error) => {
+                  console.error('Video play failed:', error);
+                });
+            }
+          } else {
+            video.pause();
+            item.classList.remove('playing');
+            updateIcons(false);
+          }
+        };
 
-      video.addEventListener('play', () => {
-        item.classList.add('playing');
-        updateIcons(true);
-      });
+        smallPlayButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleVideo();
+        });
 
-      video.addEventListener('pause', () => {
-        item.classList.remove('playing');
-        updateIcons(false);
-      });
-
-      video.addEventListener('ended', () => {
-        item.classList.remove('playing');
-        updateIcons(false);
-      });
-    }
-
-    if (iframe && smallPlayButton) {
-      const toggleYouTube = () => {
-        const currentSrc = iframe.src;
-
-        if (item.classList.contains('playing')) {
-          iframe.src = currentSrc.replace('autoplay=1', 'autoplay=0');
-          item.classList.remove('playing');
-          updateIcons(false);
-        } else {
-          iframe.src = currentSrc.replace('autoplay=0', 'autoplay=1');
+        video.addEventListener('play', () => {
           item.classList.add('playing');
           updateIcons(true);
-        }
-      };
+        });
 
-      smallPlayButton.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleYouTube();
-      });
-    }
+        video.addEventListener('pause', () => {
+          item.classList.remove('playing');
+          updateIcons(false);
+        });
+
+        video.addEventListener('ended', () => {
+          item.classList.remove('playing');
+          updateIcons(false);
+        });
+      }
+
+      if (iframe && smallPlayButton) {
+        const toggleYouTube = () => {
+          const currentSrc = iframe.src;
+
+          if (item.classList.contains('playing')) {
+            iframe.src = currentSrc.replace('autoplay=1', 'autoplay=0');
+            item.classList.remove('playing');
+            updateIcons(false);
+          } else {
+            iframe.src = currentSrc.replace('autoplay=0', 'autoplay=1');
+            item.classList.add('playing');
+            updateIcons(true);
+          }
+        };
+
+        smallPlayButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleYouTube();
+        });
+      }
+    });
   });
-});
-
 </script>
 
 {% schema %}
@@ -364,7 +367,7 @@
           "type": "text",
           "id": "main_text",
           "label": "Main overlay text",
-          "default": "Choice Legacy"
+          "default": "Default title"
         },
         {
           "type": "text",

@@ -533,12 +533,7 @@
           }
         }
       },
-      "block_order": [
-        "collection_1",
-        "collection_2",
-        "collection_3",
-        "collection_4"
-      ],
+      "block_order": ["collection_1", "collection_2", "collection_3", "collection_4"],
       "settings": {
         "item_border_radius": 0,
         "autoplay": false,
