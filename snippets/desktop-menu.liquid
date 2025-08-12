@@ -28,7 +28,7 @@
               {% assign undergarments_link = link.title | downcase %}
               <a
                 href="{{ link.url }}"
-                class="mega-menu__link text-bg no-underline fw-600 fs-14-lh-100pct-ls-2pct uppercase {% if undergarments_link contains "undergarments" %}mega-menu__link--undergarments{% endif %}"
+                class="mega-menu__link text-bg no-underline fw-600 fs-14-lh-100pct-ls-2pct uppercase {% if undergarments_link contains "undergarments" %}mega-menu__link--undergarments rounded-5 pt-4 pr-8 pb-4 pl-8{% endif %}"
               >
                 {{ link.title }}
               </a>
