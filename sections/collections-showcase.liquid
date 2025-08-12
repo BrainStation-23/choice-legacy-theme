@@ -1,114 +1,16 @@
-
-<style>
-  .collections-showcase {
-    width: 100%;
-    padding: 88px 0;
-  }
-
-  @media screen and (max-width: 768px) {
-    .collections-showcase {
-      padding: 16px 0;
-    }
-  }
-
-  .collections-showcase__grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .collections-showcase__item {
-    position: relative;
-    height: 600px;
-  }
-
-  .collections-showcase__image-wrapper {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .collections-showcase__image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .collections-showcase__overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-  }
-
-  .collections-showcase__content {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    text-align: center;
-    z-index: 2;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.00) 4.89%, #000 100%);
-    padding: 34px 16px 40px 16px;
-  }
-
-  .collections-showcase__card-title {
-    color: rgb(var(--color-background));
-  }
-
-  .collections-showcase--desktop {
-    display: grid;
-  }
-
-  .collections-showcase--mobile {
-    display: none;
-  }
-
-  @media screen and (min-width: 1024px) and (max-width: 1439px) {
-    .collections-showcase__item {
-      height: 500px;
-    }
-  }
-
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    .collections-showcase__item {
-      height: 400px;
-    }
-  }
-
-  @media screen and (max-width: 768px) {
-    .collections-showcase--desktop {
-      display: none;
-    }
-
-    .collections-showcase--mobile {
-      display: grid;
-    }
-
-    .collections-showcase__item {
-      width: 421px;
-      height: 224px
-    }
-  }
-</style>
-
-
-<!-- sections/collections-showcase.liquid -->
-<div class="collections-showcase collections-showcase-{{ section.id }}">
-  <div class="page-width flex flex-col gap-48 mobile-gap-24">
+<div class="collections-showcase collections-showcase-{{ section.id }} pt-88 pb-88 sm:pt-0 sm:pb-0">
+  <div class="page-width flex flex-col gap-48 sm:gap-24">
     {% if section.settings.section_title != blank %}
-      <h2 class="collections-showcase__title text-center fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct ff-bebas-neue">{{ section.settings.section_title }}</h2>
+      <h2 class="collections-showcase__title text-center fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct ff-bebas-neue">{{ section.settings.section_title }}</h2>
     {% endif %}
 
-    <div class="collections-showcase__grid collections-showcase--desktop grid">
+    <div class="collections-showcase__grid collections-showcase--desktop grid sm:hidden grid-cols-3">
       {% for block in section.blocks %}
         {% assign collection = collections[block.settings.collection] %}
-        <div class="collections-showcase__item" {{ block.shopify_attributes }}>
-          {% if collection.featured_image  %}
+        <div class="collections-showcase__item relative h-600 lg:h-500 md:h-300" {{ block.shopify_attributes }}>
+          {% if collection != empty and collection.featured_image %}
             <div 
-              class="collections-showcase__image-wrapper media block relative"
-              style="padding-top: 100%;"
+              class="collections-showcase__image-wrapper h-600 lg:h-500 md:h-300 media block relative"
             >
               {% assign image = collection.featured_image %}
               {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 3 %}{% endcapture -%}
@@ -116,18 +18,22 @@
               {% render 'image',
                 image: image,
                 alt_text: block.settings.collection.title,
-                widths: '421.33, 421.33, 421.33, 421.33',
-                src_width: 421.33,
+                widths: '421, 421, 421, 421',
+                src_width: 421,
                 sizes: sizes,
                 class: 'img-fit',
                 quality: 1
               %}
-              <div class="collections-showcase__overlay"></div>
+              <div class="collections-showcase__overlay absolute top-0 left-0 w-full h-full"></div>
+            </div>
+          {% else %}
+            <div class="collections-showcase__image-wrapper">
+              {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
             </div>
           {% endif %}
           
-          <div class="collections-showcase__content flex flex-col items-center gap-9">
-            <h3 class="collections-showcase__card-title fw-400 fs-36-lh-40-ls-0 uppercase">{{ collection.title }}</h3>
+          <div class="collections-showcase__content flex flex-col items-center gap-9 absolute left-0 right-0 bottom-0 text-center z-2 black-gradient pt-34 pr-16 pb-40 pl-16">
+            <h3 class="collections-showcase__card-title fw-400 fs-36-lh-40-ls-0 text-bg uppercase">{{ collection.title | default: "Collection Name" }}</h3>
             
             {% if block.settings.button_text != blank %}
               {% render "link-button", url: collection.url, button_text: block.settings.button_text %}
@@ -141,43 +47,42 @@
       data-autoplay="{{ section.settings.autoplay }}"
       data-autoplay-delay="{{ section.settings.autoplay_delay | default: 5000 }}"
       data-pause-on-hover="{{ section.settings.pause_on_hover }}"
-      data-slides-per-view-desktop="3"
-      data-show-partial-slides="true"
+      data-enable-carousel="true"
       data-show-progress-bar="true"
-      data-carousel-mode="true"
-      data-slide-width-mobile="421px"
-      data-slide-width-tablet="421px"
-      data-slide-width-desktop="421px"
-      class="collections-showcase--mobile"
+      data-gap="8"
+      class="collections-showcase--mobile hidden sm:block"
     >
-      <div class="swiper-container">
-        <div class="swiper-wrapper flex gap-8">
+      <div class="swiper-container flex flex-col gap-24">
+        <div class="swiper-wrapper flex">
           {% for block in section.blocks %}
-            <div class="swiper-slide">
+            <div class="swiper-slide sm:w-180 sm:h-224">
               {% assign collection = collections[block.settings.collection] %}
-              <div class="collections-showcase__item" {{ block.shopify_attributes }}>
-                {% if collection.featured_image  %}
+              <div class="collections-showcase__item sm:w-180 sm:h-224 relative" {{ block.shopify_attributes }}>
+                {% if collection != empty and collection.featured_image %}
                   <div
-                    class="collections-showcase__image-wrapper media block relative"
-                    style="padding-top: 100%;"
+                    class="collections-showcase__image-wrapper media block relative sm:180 sm:h-224"
                   >
                     {% assign image = collection.featured_image %}
                     {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 2, sm: 2, lg: 2, xl: 2 %}{% endcapture -%}
                     {% render 'image',
                       image: image,
                       alt_text: block.settings.collection.title,
-                      widths: '421.33, 421.33, 421.33, 421.33',
-                      src_width: 421.33,
+                      widths: '180, 180, 180, 180',
+                      src_width: 180,
                       sizes: sizes,
                       class: 'img-fit',
                       quality: 1
                     %}
-                    <div class="collections-showcase__overlay"></div>
+                    <div class="collections-showcase__overlay absolute top-0 left-0 w-full h-full"></div>
+                  </div>
+                {% else %}
+                  <div class="collections-showcase__image-wrapper">
+                    {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg' }}
                   </div>
                 {% endif %}
               
-                <div class="collections-showcase__content flex flex-col items-center gap-9">
-                  <h3 class="collections-showcase__card-title fw-400 fs-36-lh-40-ls-0 mobile-fs-26-lh-40-lh-0 uppercase">{{ collection.title }}</h3>
+                <div class="collections-showcase__content sm:w-180 flex flex-col items-center absolute left-0 right-0 bottom-0 text-center z-2 black-gradient pt-16 pr-16 pb-16 pl-16">
+                  <h3 class="collections-showcase__card-title fw-400 fs-36-lh-40-ls-0 sm:fs-26-lh-40-lh-0 text-bg uppercase">{{ collection.title | default: "Collection Name" }}</h3>
               
                   {% if block.settings.button_text != blank %}
                     {% render "link-button", url: collection.url, button_text: block.settings.button_text %}

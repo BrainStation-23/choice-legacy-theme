@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function fetchReviews() {
     try {
-      const response = await fetch(`/apps/generic-name/customer/product-review/show-home?limit=${reviewLimit}`, {
+      const response = await fetch(`/apps/${APP_SUB_PATH}/customer/product-review/show-home?limit=${reviewLimit}`, {
         method: "GET",
         headers: { "Content-Type": "application/json" },
       });

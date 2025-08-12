@@ -1,117 +1,24 @@
-<style>
-  .featured-collections-{{ section.id }} {
-    padding-top: 48px;
-    padding-bottom: 56px;
-  }
-
-  @media screen and (min-width: 750px) {
-    .featured-collections-{{ section.id }} {
-      padding-top: 48px;
-      padding-bottom: 56px;
-    }
-  }
-
-  .featured-collections-grid[data-blocks-count="1"] {
-    grid-template-columns: 1fr;
-  }
-
-  .featured-collections-grid[data-blocks-count="2"] {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .featured-collections-grid[data-blocks-count="3"] {
-    grid-template-columns: repeat(3, 1fr);
-  }
-
-  .featured-collections-{{ section.id }} .featured-collection-item {
-    position: relative;
-    border-radius: {{ section.settings.item_border_radius }}px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-
-  }
-
-  .featured-collection-link {
-    display: block;
-    text-decoration: none;
-    color: inherit;
-    height: 100%;
-  }
-
-  .featured-collection-image {
-    position: relative;
-    overflow: hidden;
-    height: 100%;
-    object-fit: contain;
-  }
-
-  /* Tablet: 768px to 1023px */
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    .featured-collections-grid {
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px !important;
-    }
-
-    .featured-collections .mobile-carousel {
-      display: none;
-    }
-  }
-
-  /* Small desktop: 1024px to 1439px */
-  @media screen and (min-width: 1024px) and (max-width: 1439px) {
-    .featured-collections-grid {
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px !important;
-    }
-
-    .featured-collections .mobile-carousel {
-      display: none;
-    }
-  }
-
-  /* Large desktop: 1440px and above */
-  @media screen and (min-width: 1440px) {
-    .featured-collections-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-
-    .featured-collections .mobile-carousel {
-      display: none;
-    }
-  }
-
-  @media screen and (max-width: 768px) {
-
-    .featured-collections-{{ section.id }} {
-      padding-top: 20px;
-      padding-bottom: 20px;
-    }
-
-    .featured-collections .desktop-grid {
-      display: none;
-    }
-
-    .featured-collections .mobile-carousel {
-      display: block;
-    }
-
-    .featured-collection-item {
-      width: 304px;
-      height: 304px;
-    }
-  }
-</style>
-
 {% liquid
   assign image_ratio = 1
 %}
 {%- if section.blocks.size > 0 -%}
   <section
-    class="featured-collections featured-collections-{{ section.id }}"
+    class="featured-collections featured-collections-{{ section.id }} pt-48 pb-56 sm:pt-20 sm:pb-20"
     data-section-type="featured-collections"
     data-section-id="{{ section.id }}"
   >
     <div class="page-width">
-      <div class="featured-collections-grid desktop-grid grid gap-16" data-blocks-count="{{ section.blocks.size }}">
+      <div
+        class="
+          grid gap-16 lg:gap-10 md:gap-10
+          {% if section.blocks.size == 1 %}grid-cols-1{% endif %}
+          {% if section.blocks.size == 2 %}grid-cols-2{% endif %}
+          {% if section.blocks.size == 3 %}grid-cols-3{% endif %}
+          {% if section.blocks.size == 4 %}grid-cols-4{% endif %}
+          lg:grid-cols-4 md:grid-cols-4 sm:hidden
+        "
+        data-blocks-count="{{ section.blocks.size }}"
+      >
         {%- for block in section.blocks -%}
           {%- liquid
             assign collection = collections[block.settings.collection]
@@ -120,10 +27,14 @@
             assign collection_image = block.settings.custom_image
           -%}
 
-          <div class="featured-collection-item" {{ block.shopify_attributes }}>
-            <a href="{{ collection_url }}" class="featured-collection-link" aria-label="{{ collection_title }}">
+          <div class="featured-collection-item relative transition-transform" {{ block.shopify_attributes }}>
+            <a
+              href="{{ collection_url }}"
+              class="block no-underline text-inherit h-full"
+              aria-label="{{ collection_title }}"
+            >
               <div
-                class="featured-collection-image media block relative"
+                class="relative h-full overflow-hidden object-contain media block relative"
                 style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;"
               >
                 {%- if collection and collection_image -%}
@@ -137,7 +48,7 @@
                     quality: 1
                   %}
                 {%- else -%}
-                  <div class="featured-collection-image">
+                  <div class="relative h-full overflow-hidden object-contain">
                     {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg collection-img' }}
                   </div>
                 {%- endif -%}
@@ -147,23 +58,19 @@
         {%- endfor -%}
       </div>
 
-      <div class="mobile-carousel">
+      <div class="hidden sm:block">
         <slideshow-component
           data-autoplay="{{ section.settings.autoplay }}"
           data-autoplay-delay="{{ section.settings.autoplay_delay | default: 5000 }}"
           data-pause-on-hover="{{ section.settings.pause_on_hover }}"
-          data-slides-per-view-desktop="4"
-          data-show-partial-slides="true"
           data-show-progress-bar="false"
-          data-carousel-mode="true"
-          data-slide-width-mobile="304px"
-          data-slide-width-tablet="304px"
-          data-slide-width-desktop="304px"
+          data-enable-carousel="true"
+          data-gap="16"
         >
-          <div class="swiper-container">
-            <div class="swiper-wrapper flex gap-16">
+          <div class="swiper-container overflow-hidden">
+            <div class="swiper-wrapper flex">
               {%- for block in section.blocks -%}
-                <div class="swiper-slide">
+                <div class="swiper-slide w-auto-priority">
                   {%- liquid
                     assign collection = collections[block.settings.collection]
                     assign collection_url = block.settings.custom_url
@@ -171,9 +78,16 @@
                     assign collection_image = block.settings.custom_image
                   -%}
 
-                  <div class="featured-collection-item" {{ block.shopify_attributes }}>
-                    <a href="{{ collection_url }}" class="featured-collection-link" aria-label="{{ collection_title }}">
-                      <div class="featured-collection-image media block relative">
+                  <div
+                    class="featured-collection-item relative transition-transform sm:w-304 sm:h-304"
+                    {{ block.shopify_attributes }}
+                  >
+                    <a
+                      href="{{ collection_url }}"
+                      class="block no-underline text-inherit h-full"
+                      aria-label="{{ collection_title }}"
+                    >
+                      <div class="relative h-full overflow-hidden object-contain media block relative">
                         {%- if collection and collection_image -%}
                           {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 4 %}{% endcapture -%}
                           {% render 'image',
@@ -185,7 +99,7 @@
                             quality: 1
                           %}
                         {%- else -%}
-                          <div class="featured-collection-image">
+                          <div class="relative h-full overflow-hidden object-contain">
                             {{ 'collection-1' | placeholder_svg_tag: 'placeholder-svg collection-img' }}
                           </div>
                         {%- endif -%}
@@ -208,16 +122,6 @@
   "tag": "section",
   "class": "section-featured-collections",
   "settings": [
-    {
-      "type": "range",
-      "id": "item_border_radius",
-      "min": 0,
-      "max": 20,
-      "step": 1,
-      "unit": "px",
-      "label": "Item border radius",
-      "default": 0
-    },
     {
       "type": "header",
       "content": "Mobile Carousel Settings"

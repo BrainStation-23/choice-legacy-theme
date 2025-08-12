@@ -1,46 +1,7 @@
-{{ 'product-video-carousel.css' | asset_url | stylesheet_tag }}
-
-{%- style -%}
-  .product-video-carousel-{{ section.id }} {
-    padding-top: 88px;
-    padding-bottom: 88px;
-  }
-
-  @media screen and (min-width: 750px) {
-    .product-video-carousel-{{ section.id }} {
-      padding-top: 88px;
-      padding-bottom: 88px;
-    }
-  }
-
-  .product-video-carousel-{{ section.id }} .product-video-item {
-    border-radius: {{ section.settings.card_border_radius }}px;
-    cursor: pointer;
-    transition: transform 0.3s ease;
-    width: 268px;
-    height: 412px;
-  }
-
-  .product-video-carousel-{{ section.id }} .product-video-container {
-    position: relative;
-    width: 100%;
-    height: 340px;
-    border-radius: {{ section.settings.card_border_radius }}px {{ section.settings.card_border_radius }}px 0 0;
-    overflow: hidden;
-  }
-
-  @media screen and (max-width: 768px) {
-    .product-video-carousel-{{ section.id }} {
-      padding-top: 16px;
-      padding-bottom: 16px;
-    }
-  }
-{%- endstyle -%}
-
-<div class="product-video-carousel product-video-carousel-{{ section.id }}">
-  <div class="product-video-carousel__container page-width flex gap-48 flex-col mobile-gap-16">
+<div class="product-video-carousel product-video-carousel-{{ section.id }} pt-88 pb-88 sm:pt-16 sm:pb-16 relative">
+  <div class="page-width flex gap-48 flex-col sm:gap-16">
     {% if section.settings.heading != blank %}
-      <h2 class="product-video-carousel__title fw-400 fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct text-center">
+      <h2 class="product-video-carousel__title fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct text-center sm:text-left">
         {{ section.settings.heading }}
       </h2>
     {% endif %}
@@ -49,17 +10,12 @@
       data-autoplay="{{ section.settings.autoplay }}"
       data-autoplay-delay="{{ section.settings.autoplay_delay | default: 5000 }}"
       data-pause-on-hover="{{ section.settings.pause_on_hover }}"
-      data-slides-per-view-desktop="4"
-      data-show-partial-slides="true"
-      data-show-progress-bar="false"
-      data-carousel-mode="true"
-      data-slide-width-mobile="268px"
-      data-slide-width-tablet="268px"
-      data-slide-width-desktop="268px"
-      style="overflow: hidden !important"
+      data-enable-carousel="true"
+      data-show-progress-bar="true"
+      class="flex flex-col gap-16"
     >
-      <div class="swiper-container" style="overflow: hidden !important;">
-        <div class="swiper-wrapper flex gap-16">
+      <div class="swiper-container overflow-hidden pt-10 pr-120 pb-10 pl-4">
+        <div class="swiper-wrapper flex">
           {% for block in section.blocks %}
             {% if block.settings.product != blank %}
               {% assign product = all_products[block.settings.product] %}
@@ -70,12 +26,12 @@
                 {% assign has_video = true %}
               {% endif %}
 
-              <div class="swiper-slide">
+              <div class="swiper-slide w-auto" style="box-sizing: border-box;">
                 <div
-                  class="product-video-item box-shadow{% if has_video %} has-video{% endif %}"
+                  class="product-video-item rounded-8 cursor-pointer transition-transform w-268 h-412 overflow-hidden box-shadow{% if has_video %} has-video{% endif %}"
                   data-block-id="{{ block.id }}"
                 >
-                  <div class="product-video-container">
+                  <div class="product-video-container relative w-full h-340">
                     {% if block.settings.video_type == 'youtube' and block.settings.youtube_url != blank %}
                       {% assign youtube_id = block.settings.youtube_url | split: 'v=' | last | split: '&' | first %}
                       {% if youtube_id == blank %}
@@ -88,7 +44,7 @@
                       {% endif %}
                       {% if youtube_id != blank %}
                         <iframe
-                          class="product-video-item__iframe"
+                          class="w-full h-340 border-none block"
                           src="https://www.youtube.com/embed/{{ youtube_id }}?autoplay=0&mute=1&loop=1&playlist={{ youtube_id }}&controls=0&showinfo=0&rel=0&modestbranding=1&enablejsapi=1"
                           loading="lazy"
                           allow="autoplay; encrypted-media"
@@ -100,7 +56,7 @@
                     {% elsif block.settings.video_type == 'url' and block.settings.video_url != blank %}
                       <video
                         style="width: 100%; height: 100%; object-fit: cover;"
-                        class="product-video-item__video"
+                        class="w-full h-full block object-cover"
                         muted
                         loop
                         playsinline
@@ -118,7 +74,7 @@
                           width: 268,
                           height_attr: 340,
                           alt_text: product.title,
-                          css_classes: 'product-video-item__video product-video-item__fallback-image',
+                          css_classes: 'w-full h-full block object-cover hidden h-340 object-cover',
                           loading: 'lazy',
                           width_attr: 268
                         %}
@@ -126,11 +82,11 @@
                     {% endunless %}
 
                     {% if has_video %}
-                      <div class="product-video-item__top-overlay">
-                        <div class="product-video-item__top-text flex flex-col gap-9">
+                      <div class="absolute bottom-0 left-0 right-0 flex justify-between items-end z-3 p-16">
+                        <div class="flex flex-col gap-9 flex-1">
                           <div class="flex items-center flex-wrap gap-9">
                             <div
-                              class="choice-legacy-overlay-image media block relative"
+                              class="product-video-item-overlay-image border-2 border-solid border-bg media block relative w-40 h-40 rounded-full object-cover "
                               style="padding-left: 40px; padding-bottom: 40px"
                             >
                               {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
@@ -140,27 +96,31 @@
                                 widths: '40, 40, 40, 40',
                                 src_width: 40,
                                 sizes: sizes,
-                                class: 'img-fit',
+                                class: 'img-fit rounded-full',
                                 quality: 1
                               %}
                             </div>
-                            <p class="product-video-item__main-text fw-500 fs-13-lh-16-ls-0_2">
+                            <p class="fw-500 fs-13-lh-16-ls-0_2 text-bg">
                               {{ block.settings.main_text | default: 'Check out this amazing product!' }}
                             </p>
                           </div>
-                          <p class="product-video-item__sub-text fw-500 fs-13-lh-16-ls-0_2">
+                          <p class="fw-500 fs-13-lh-16-ls-0_2 m-0 text-bg">
                             {{ block.settings.sub_text | default: 'Skincare routine for glowing skin' }}
                           </p>
                         </div>
-                        <button class="product-video-item__small-play" type="button" aria-label="Play video">
-                          {% render 'icon-play' %}
-                          {% render 'icon-pause' %}
+                        <button
+                          class="product-video-item__small-play w-32 h-32 bg-brand rounded-full flex items-center justify-center shrink-0 cursor-pointer border-none"
+                          type="button"
+                          aria-label="Play video"
+                        >
+                          {% render 'icon-play', cls: 'block w-14 h-14 svg-bg' %}
+                          {% render 'icon-pause', cls: 'hidden w-14 h-14 svg-bg' %}
                         </button>
                       </div>
                     {% endif %}
                   </div>
 
-                  <div class="product-video-item__product-info">
+                  <div class="flex items-center gap-12 p-8">
                     {% if product.featured_image %}
                       <div class="relative" style="width: 56px; height: 56px;">
                         <div class="media block" style="padding-top: 100%;">
@@ -176,44 +136,40 @@
                         </div>
                       </div>
                     {% endif %}
-                    <div class="product-video-item__product-details flex flex-col justify-center gap-4">
+                    <div class="flex flex-col justify-center gap-4">
                       {% if product.price %}
-                        <p class="product-video-item__product-price fw-600 fs-16-lh-16-ls-0">
+                        <p class="fw-600 fs-16-lh-16-ls-0">
                           {{ product.price | money }}
                         </p>
                       {% endif %}
 
-                      <h3 class="product-video-item__product-title ff-general-sans fw-400 fs-12-lh-16-ls-0_6pct">
-                        <a href="{{ product.url }}" class="product-title-link" aria-label="View {{ product.title }}">
+                      <h3 class="ff-general-sans fw-400 fs-12-lh-16-ls-0_6pct">
+                        <a href="{{ product.url }}" aria-label="View {{ product.title }}">
                           {{ product.title }}
                         </a>
                       </h3>
                     </div>
                   </div>
-
-                  {% comment %} <a href="{{ product.url }}" class="product-video-item__link" aria-label="View {{ product.title }}">
-                    <span class="visually-hidden">{{ product.title }}</span>
-                  </a> {% endcomment %}
                 </div>
               </div>
             {% else %}
-              <div class="swiper-slide">
-                <div class="product-video-item" data-block-id="{{ block.id }}">
-                  <div class="product-video-container">
-                    <div class="product-video-item__placeholder">
+              <div class="swiper-slide w-auto">
+                <div class="product-video-item box-shadow" data-block-id="{{ block.id }}">
+                  <div class="product-video-container relative w-full h-340">
+                    <div>
                       {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
                     </div>
                   </div>
 
-                  <div class="product-video-item__product-info">
-                    <div class="product-video-item__product-image">
+                  <div class="flex items-center gap-12 p-8">
+                    <div class="w-56 h-56 object-cover shrink-0">
                       {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
                     </div>
-                    <div class="product-video-item__product-details flex flex-col gap-4 fw-600 fs-16-lh-16-ls-0">
-                      <p class="product-video-item__product-price">
+                    <div class="flex flex-col gap-4 fw-600 fs-16-lh-16-ls-0 min-h-56 w-full">
+                      <p class="m-0 text-brand">
                         {{ 'sections.product_video_carousel.placeholder.price' | t | default: '$0.00' }}
                       </p>
-                      <h3 class="product-video-item__product-title ff-general-sans fw-400 fs-12-lh-16-ls-0_6pct">
+                      <h3 class="ff-general-sans fw-400 fs-12-lh-16-ls-0_6pct m-0">
                         {{ 'sections.product_video_carousel.placeholder.product_title' | t | default: 'Product Title' }}
                       </h3>
                     </div>
@@ -224,6 +180,8 @@
           {% endfor %}
         </div>
       </div>
+
+      {% render "slideshow-progress-bar", cls: "hidden sm:block" %}
     </slideshow-component>
   </div>
 </div>
@@ -232,10 +190,29 @@
   document.addEventListener('DOMContentLoaded', function () {
     const videoItems = document.querySelectorAll('.product-video-item');
 
-    videoItems.forEach((item, index) => {
+    videoItems.forEach((item) => {
       const video = item.querySelector('video[data-video-type="mp4"]');
       const iframe = item.querySelector('iframe[data-video-type="youtube"]');
       const smallPlayButton = item.querySelector('.product-video-item__small-play');
+
+      function updateIcons(isPlaying) {
+        const playIcon = item.querySelector('.icon-play');
+        const pauseIcon = item.querySelector('.icon-pause');
+
+        if (!playIcon || !pauseIcon) return;
+
+        if (isPlaying) {
+          playIcon.classList.add('hidden');
+          playIcon.classList.remove('block');
+          pauseIcon.classList.remove('hidden');
+          pauseIcon.classList.add('block');
+        } else {
+          playIcon.classList.remove('hidden');
+          playIcon.classList.add('block');
+          pauseIcon.classList.add('hidden');
+          pauseIcon.classList.remove('block');
+        }
+      }
 
       if (video && smallPlayButton) {
         const toggleVideo = () => {
@@ -245,6 +222,7 @@
               playPromise
                 .then(() => {
                   item.classList.add('playing');
+                  updateIcons(true);
                 })
                 .catch((error) => {
                   console.error('Video play failed:', error);
@@ -253,6 +231,7 @@
           } else {
             video.pause();
             item.classList.remove('playing');
+            updateIcons(false);
           }
         };
 
@@ -264,14 +243,17 @@
 
         video.addEventListener('play', () => {
           item.classList.add('playing');
+          updateIcons(true);
         });
 
         video.addEventListener('pause', () => {
           item.classList.remove('playing');
+          updateIcons(false);
         });
 
         video.addEventListener('ended', () => {
           item.classList.remove('playing');
+          updateIcons(false);
         });
       }
 
@@ -282,14 +264,15 @@
           if (item.classList.contains('playing')) {
             iframe.src = currentSrc.replace('autoplay=1', 'autoplay=0');
             item.classList.remove('playing');
+            updateIcons(false);
           } else {
             iframe.src = currentSrc.replace('autoplay=0', 'autoplay=1');
             item.classList.add('playing');
+            updateIcons(true);
           }
         };
 
         smallPlayButton.addEventListener('click', (e) => {
-          console.log('YouTube play button clicked');
           e.preventDefault();
           e.stopPropagation();
           toggleYouTube();
@@ -310,16 +293,6 @@
       "id": "heading",
       "default": "Watch & Shop",
       "label": "Heading"
-    },
-    {
-      "type": "range",
-      "id": "card_border_radius",
-      "min": 0,
-      "max": 20,
-      "step": 1,
-      "unit": "px",
-      "label": "Card border radius",
-      "default": 8
     },
     {
       "type": "image_picker",
@@ -391,7 +364,7 @@
           "type": "text",
           "id": "main_text",
           "label": "Main overlay text",
-          "default": "Choice Legacy"
+          "default": "Default title"
         },
         {
           "type": "text",
