@@ -57,18 +57,14 @@
           data-autoplay="{{ section.settings.autoplay }}"
           data-autoplay-delay="{{ section.settings.autoplay_delay | default: 5000 }}"
           data-pause-on-hover="{{ section.settings.pause_on_hover }}"
-          data-slides-per-view-desktop="4"
-          data-show-partial-slides="true"
           data-show-progress-bar="false"
-          data-carousel-mode="true"
-          data-slide-width-mobile="304px"
-          data-slide-width-tablet="304px"
-          data-slide-width-desktop="304px"
+          data-enable-carousel="true"
+          data-gap="16"
         >
-          <div class="swiper-container">
-            <div class="swiper-wrapper flex gap-16">
+          <div class="swiper-container overflow-hidden">
+            <div class="swiper-wrapper flex">
               {%- for block in section.blocks -%}
-                <div class="swiper-slide">
+                <div class="swiper-slide w-auto-priority">
                   {%- liquid
                     assign collection = collections[block.settings.collection]
                     assign collection_url = block.settings.custom_url

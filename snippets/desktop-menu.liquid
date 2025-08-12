@@ -2,6 +2,7 @@
   .mega-menu__item:hover .mega-menu__dropdown {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto;
   }
 
   .mega-menu__dropdown--1-column .mega-menu__column {
@@ -52,7 +53,7 @@
                   {%- assign show_image = true -%}
                 {%- endif -%}
 
-                {%- assign dropdown_class = 'mega-menu__dropdown absolute top-100pct left-50pct translate-x--50 bg-bg rounded-6 opacity-0 invisible transition-transform z-1001 mt-8 pt-24 pr-40 pb-24 pl-40 whitespace-nowrap w-mx-content max-w-1134 min-w-200 ml-50pct xlg:max-w-900 slg:pt-20 slg:pb-20 slg:pr-20 slg:pl-20 slg:left-100pct md:max-w-720 md:p-16 md:visible' -%}
+                {%- assign dropdown_class = 'mega-menu__dropdown absolute top-100pct left-50pct translate-x--50 bg-bg rounded-6 opacity-0 invisible pointer-events-none transition-transform z-1001 pt-24 pr-40 pb-24 pl-40 whitespace-nowrap w-mx-content max-w-1134 min-w-200 ml-50pct xlg:max-w-900 slg:pt-20 slg:pb-20 slg:pr-20 slg:pl-20 slg:left-100pct md:max-w-720 md:p-16 md:visible mt-0' -%}
                 {%- if column_count == 1 -%}
                   {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--1-column w-auto min-w-100 max-w-400 pt-16 pr-20 pb-16 pl-20 slg:w-auto slg:min-w-150 slg:max-w-400 slg:pt-10 slg:pr-16 slg:pb-10 slg:pl-16 md:max-w-300' -%}
                 {%- elsif column_count == 2 -%}
@@ -79,7 +80,7 @@
                                 <li class="mega-menu__column-item">
                                   <a
                                     href="{{ grandchild_link.url }}"
-                                    class="mega-menu__column-link fs-14-lh-20-ls-0_1 fw-500"
+                                    class="mega-menu__column-link fs-14-lh-20-ls-0_1 fw-500 text-primary"
                                   >
                                     {{- grandchild_link.title -}}
                                   </a>
@@ -95,7 +96,7 @@
                                 {%- assign column_rendered = true -%}
                           {%- endunless -%}
                           <li class="mega-menu__column-item">
-                            <a href="{{ child_link.url }}" class="mega-menu__column-link fs-14-lh-20-ls-0_1 fw-500 transition-transform block">
+                            <a href="{{ child_link.url }}" class="mega-menu__column-link text-primary fs-14-lh-20-ls-0_1 fw-500 transition-transform block">
                               {{- child_link.title -}}
                             </a>
                           </li>
@@ -118,7 +119,7 @@
                         {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
 
                         {%- if section.settings.mega_menu_image_link != blank -%}
-                          <a href="{{ section.settings.mega_menu_image_link }}" class="mobile-mega-menu__image-link">
+                          <a href="{{ section.settings.mega_menu_image_link }}" class="mobile-mega-menu__image-link text-primary">
                         {%- endif -%}
                           {% render 'image',
                             image: section.settings.mega_menu_image,
