@@ -29,7 +29,18 @@
     },
     "reward_points": {
       "label": "Reward Points"
-    }
+    },
+    "reward_history": {
+      "label": "Reward History"
+    },
+    "redeeming": {
+      "label": "Redeeming..."
+    },
+    "apply_to_cart_button": {
+      "label": "Apply to cart"
+    },
+    "redeem_message": "Points redeemed successfully!",
+    "apply_to_cart_message": "Discount code applied successfully!"
   },
   "sections": {
     "footer": {

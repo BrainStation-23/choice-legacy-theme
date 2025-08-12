@@ -1,0 +1,62 @@
+class ToastNotificationManager {
+  constructor() {
+    this.successToastWrapper = document.getElementById("success-toast-wrapper");
+    this.errorToastWrapper = document.getElementById("error-toast-wrapper");
+
+    this.successToastText = this.successToastWrapper
+      ? this.successToastWrapper.querySelector(".toast-text")
+      : null;
+    this.errorToastText = this.errorToastWrapper
+      ? this.errorToastWrapper.querySelector(".toast-text")
+      : null;
+  }
+
+  show(message, type = "success", duration = 3000) {
+    let targetToastWrapper = null;
+    let targetToastText = null;
+
+    this.hideAllToastsImmediate();
+
+    if (type === "success" && this.successToastWrapper) {
+      targetToastWrapper = this.successToastWrapper;
+      targetToastText = this.successToastText;
+    } else if (type === "error" && this.errorToastWrapper) {
+      targetToastWrapper = this.errorToastWrapper;
+      targetToastText = this.errorToastText;
+    } else {
+      return;
+    }
+
+    if (targetToastText) {
+      targetToastText.textContent = message;
+    }
+
+    targetToastWrapper.style.display = "flex";
+
+    setTimeout(() => {
+      targetToastWrapper.classList.add("show");
+    }, 50);
+
+    setTimeout(() => {
+      targetToastWrapper.classList.remove("show");
+      targetToastWrapper.addEventListener(
+        "transitionend",
+        () => {
+          targetToastWrapper.style.display = "none";
+        },
+        { once: true }
+      );
+    }, duration);
+  }
+
+  hideAllToastsImmediate() {
+    if (this.successToastWrapper) {
+      this.successToastWrapper.classList.remove("show");
+      this.successToastWrapper.style.display = "none";
+    }
+    if (this.errorToastWrapper) {
+      this.errorToastWrapper.classList.remove("show");
+      this.errorToastWrapper.style.display = "none";
+    }
+  }
+}

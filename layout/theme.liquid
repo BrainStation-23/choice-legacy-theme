@@ -60,6 +60,8 @@
 
     <main id="main-content">
       {{ content_for_layout }}
+
+      {% render 'toast' %}
     </main>
 
     {%- sections 'footer-group' -%}
@@ -74,7 +76,7 @@
           predictiveSearch: '{{ routes.predictive_search_url }}'
         },
       };
-      window.APP_SUB_PATH = "generic-name"
+      window.APP_SUB_PATH = "choice-legacy-app"
       {% if customer %}
         window.customerLoggedIn = true;
         window.customerId = {{ customer.id }};
@@ -86,5 +88,6 @@
     </script>
     <script src="{{ 'wishlist.js' | asset_url }}" defer></script>
     <script src="{{ 'slideshow.js' | asset_url }}" defer></script>
+    <script src="{{ 'toast.js' | asset_url }}" defer></script>
   </body>
 </html>

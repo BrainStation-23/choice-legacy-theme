@@ -111,6 +111,9 @@ mark {
 .bg-light-gray {
   background-color: #efeeec;
 }
+.bg-success-light {
+  background-color: #dbffd8;
+}
 .bg-transparent {
   background-color: transparent;
 }
@@ -549,6 +552,9 @@ address {
 .right-12 {
   right: 12px;
 }
+.right-20 {
+  right: 20px;
+}
 .right-24 {
   right: 24px;
 }
@@ -560,6 +566,9 @@ address {
 }
 .top-0 {
   top: 0;
+}
+.top-20 {
+  top: 20px;
 }
 .top-50pct {
   top: 50%;
@@ -2021,6 +2030,9 @@ address {
   .sm\:text-left {
     text-align: left;
   }
+}
+.translate-y--20 {
+  transform: translateY(-20px);
 }
 .translate-x--50 {
   transform: translateX(-50%);
