@@ -2,14 +2,11 @@
   <div class="customer-account__container flex gap-64 page-width">
     {% render 'customer-account-sidebar' %}
 
-    <!-- Dynamic Content Area -->
     <div class="customer-account__content" style="flex: 2;">
-      <!-- My Profile Section (Default) -->
       <div id="my-profile-content" class="account-content-section" style="display: block;">
         {% render 'account-information', customer: customer %}
       </div>
 
-      <!-- Orders Section (Hidden initially, loaded when needed) -->
       <div id="orders-content" class="account-content-section" style="display: none;">
         <div id="orders-section">
           {% render 'orders-list', orders: customer.orders %}
@@ -26,42 +23,100 @@
 </div>
 
 <script>
-  // Track which sections have been loaded
-  let loadedSections = ['my-profile']; // my-profile is loaded by default
+  let loadedSections = ['my-profile'];
+  let deliveryStatusLoaded = false;
 
-  // Function to show selected content
-  function showAccountContent(contentType) {
-    // Hide all content sections
+  async function fetchDeliveryStatuses() {
+    if (deliveryStatusLoaded) return;
+
+    const deliveryStatusElements = document.querySelectorAll('.delivery-status');
+
+    if (deliveryStatusElements.length === 0) {
+      console.log('No delivery status elements found');
+      return;
+    }
+
+    console.log('Fetching delivery status for', deliveryStatusElements.length, 'orders');
+
+    // Show loading state for all elements
+    deliveryStatusElements.forEach((element) => {
+      element.textContent = 'Loading...';
+      element.classList.add('text-gray-500');
+    });
+
+    // Collect all order IDs
+    const orderIds = Array.from(deliveryStatusElements).map((element) => element.getAttribute('data-order-id'));
+
+    console.log('Order IDs to fetch:', orderIds);
+
+    try {
+      // Make single API call with all order IDs
+      const orderIdsParam = orderIds.join(',');
+      const response = await fetch(
+        `/apps/${APP_SUB_PATH}/customer/account/delivery-status?order_ids=${encodeURIComponent(orderIdsParam)}`
+      );
+
+      const result = await response.json();
+      console.log('API Response:', result);
+
+      if (result.success && result.data) {
+        // Update each element with its corresponding status
+        deliveryStatusElements.forEach((element) => {
+          const orderId = element.getAttribute('data-order-id');
+          const orderData = result.data[orderId];
+
+          if (orderData) {
+            element.textContent = orderData.deliveryStatus;
+          } else {
+            element.textContent = 'Order Placed';
+          }
+        });
+      } else {
+        deliveryStatusElements.forEach((element) => {
+          element.textContent = 'Order Placed';
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching delivery statuses:', error);
+      deliveryStatusElements.forEach((element) => {
+        element.textContent = 'Order Placed';
+      });
+    }
+
+    deliveryStatusLoaded = true;
+  }
+
+  async function showAccountContent(contentType) {
     const contentSections = document.querySelectorAll('.account-content-section');
     contentSections.forEach((section) => {
       section.style.display = 'none';
     });
 
-    // Handle coming soon sections
     if (contentType === 'coming-soon') {
       alert('This section is coming soon!');
-      // Show the currently displayed section or default to my-profile
       document.getElementById('my-profile-content').style.display = 'block';
       return;
     }
 
-    // Handle logout
     if (contentType === 'logout') {
       window.location.href = '/account/logout';
       return;
     }
 
-    // Show the selected content section
     const targetContent = document.getElementById(contentType + '-content');
     if (targetContent) {
       targetContent.style.display = 'block';
+
+      if (contentType === 'orders') {
+        setTimeout(() => {
+          fetchDeliveryStatuses();
+        }, 100);
+      }
     }
   }
 
-  // Make the function globally available for the sidebar
   window.showAccountContent = showAccountContent;
 
-  // Check URL hash on page load to maintain state after pagination
   document.addEventListener('DOMContentLoaded', function () {
     if (window.location.hash === '#orders-section' || window.location.search.includes('page=')) {
       showAccountContent('orders');
@@ -75,6 +130,31 @@
       flex-direction: column;
       gap: 16px !important;
     }
+  }
+
+  /* Loading and status styles */
+  .delivery-status {
+    transition: color 0.3s ease;
+  }
+
+  .text-gray-500 {
+    color: #6b7280;
+  }
+
+  .text-green-600 {
+    color: #16a34a;
+  }
+
+  .text-blue-600 {
+    color: #2563eb;
+  }
+
+  .text-yellow-600 {
+    color: #ca8a04;
+  }
+
+  .text-red-600 {
+    color: #dc2626;
   }
 </style>
 
