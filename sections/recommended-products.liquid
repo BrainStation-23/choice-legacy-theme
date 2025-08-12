@@ -1,8 +1,8 @@
-<div class="recommended-products recommended-products-{{ section.id }} pt-0 pb-88 sm:pt-16 sm:pb-16">
+<div class="recommended-products recommended-products-{{ section.id }} pt-0 pb-88 sm:pt-16 sm:pb-16 overflow-hidden">
   <div class="page-width flex flex-col gap-48 sm:gap-16">
     {% if section.settings.heading != blank %}
       <div class="block sm:hidden">
-        <h2 class="fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct text-center sm:text-center">
+        <h2 class="fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct text-center sm:text-center uppercase">
           {{ section.settings.heading }}
         </h2>
       </div>
@@ -28,9 +28,8 @@
         data-autoplay="{{  section.settings.autoplay }}"
         data-autoplay-delay="{{ section.settings.autoplay_delay | default: 5000 }}"
         data-pause-on-hover="{{ section.settings.pause_on_hover }}"
-        data-show-progress-bar="true"
-        data-slides-per-view-desktop="2"
-        data-single-slide-view="true"
+        data-show-progress-bar="false"
+        data-number-of-items="2"
         class="flex flex-col gap-24"
       >
         {% if section.settings.heading != blank %}
@@ -49,13 +48,13 @@
         <div class="swiper-container">
           <div class="swiper-wrapper flex items-stretch">
             {% for block in section.blocks limit: section.settings.products_to_show %}
-              <div class="swiper-slide h-auto flex flex-col">
+              <div class="swiper-slide w-auto h-auto flex flex-col">
                 <div class="flex-1" data-block-id="{{ block.id }}">
                   {% if block.settings.product != blank %}
                     {% assign product = all_products[block.settings.product] %}
-                    {% render 'product-card', product: product, css_classes: '', image_width: 268, image_height: 268 %}
+                    {% render 'product-card', product: product, image_width: 268, image_height: 268 %}
                   {% else %}
-                    {% render 'product-card', css_classes: '', image_width: 268, image_height: 268 %}
+                    {% render 'product-card', image_width: 268, image_height: 268 %}
                   {% endif %}
                 </div>
               </div>

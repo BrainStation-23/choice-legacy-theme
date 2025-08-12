@@ -51,18 +51,14 @@
     <div class="hidden sm:block relative pb-20">
       <slideshow-component
         data-autoplay="false"
-        data-show-progress-bar="true"
-        data-slides-per-view-desktop="2"
-        data-single-slide-view="true"
-        data-carousel-mode="true"
-        data-slide-width-mobile="304px"
-        data-slide-width-tablet="304px"
-        data-slide-width-desktop="304px"
+        data-show-progress-bar="false"
+        data-enable-carousel="true"
+        data-gap="16"
       >
-        <div class="swiper-container flex flex-col gap-16">
-          <div class="swiper-wrapper gap-16">
+        <div class="swiper-container overflow-hidden flex flex-col gap-16">
+          <div class="swiper-wrapper">
             {% for article in section.settings.blog.articles limit: section.settings.blog_post_limit %}
-              <div class="swiper-slide blog-card flex flex-col gap-16 sm:gap-8">
+              <div class="swiper-slide w-auto-priority blog-card flex flex-col gap-16 sm:gap-8">
                 <div class="h-154 relative w-full">
                   {% if article.image %}
                     {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}

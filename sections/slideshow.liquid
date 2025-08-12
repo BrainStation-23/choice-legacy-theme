@@ -4,10 +4,11 @@
   data-autoplay-delay="{{ section.settings.autoplay_delay | times: 1000 }}"
   data-pause-on-hover="{{ section.settings.pause_on_hover }}"
   data-show-partial-slides="true"
+  data-gap="16"
 >
   <div class="slideshow-container mt-0 mr-auto mb-0 ml-auto">
     <div class="swiper-container relative w-full h-410 overflow-visible sm:h-186">
-      <div class="swiper-wrapper">
+      <div class="swiper-wrapper flex">
         {% for block in section.blocks %}
           {%- liquid
             assign img = block.settings.image
@@ -167,9 +168,9 @@
       </div>
     </div>
 
-    {% render 'nav-button', cls: 'slideshow-nav-button-prev lg:left-10p-52 md:left-11p-52 sm:left-8', icon_cls: 'icon-arrow-left' %}
+    {% render 'nav-button', cls: 'slideshow-nav-button-prev left-10p-52 lg:left-10p-52 md:left-11p-52 sm:left-8', icon_cls: 'icon-arrow-left' %}
 
-    {% render 'nav-button', cls: 'slideshow-nav-button-next lg:right-10p-52 md:right-11p-52 sm:right-8' %}
+    {% render 'nav-button', cls: 'slideshow-nav-button-next right-10p-52 lg:right-10p-52 md:right-11p-52 sm:right-8' %}
   </div>
 </slideshow-component>
 
