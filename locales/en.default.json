@@ -123,5 +123,13 @@
       "action": "Action",
       "none": "Customer has no orders."
     }
+  },
+  "general": {
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page"
+    }
   }
 }

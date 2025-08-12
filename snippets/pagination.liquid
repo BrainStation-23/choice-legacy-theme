@@ -1,121 +1,100 @@
 <style>
-      .pagination {
-    width: 100%;
-    display: flex !important;
-    justify-content: right;
-    align-items: center;
-    gap: 16px;
-    margin: 2rem auto;
-    flex-wrap: wrap;
+ .pagination-modern span[aria-current='page'] {
+    background: #ef4444; 
+    color: white;
+    border: 1px solid #ef4444;
   }
-
-  .pagination-prev,
-  .pagination-next,
-  .pagination-middle {
-    text-decoration: none;
-    width: 32px;
-    height: 32px;
-    padding: 0 12px;
-    display: flex !important;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.6s;
-    color: rgb(var(--color-foreground)) !important;
-    cursor: pointer;
-    font-weight: 400;
-    border: 1px solid rgba(var(--color-foreground), 0.2);
-    gap: 6px;
-  }
-
-  .pagination-prev svg {
-    transform: rotate(180deg);
-  }
-
-  .current-pagination-button {
-    box-shadow: 0 0 0 1px rgba(var(--color-foreground), 0.2),
-      0 0 0 6px rgb(var(--color-background)),
-      0 0 0 8px rgb(var(--color-solid-button-background));
-  }
-
-  @media screen and (max-width: 577px) {
-    .pagination {
-      justify-content: center;
-    }
-  }
-
-    .pagination-prev,
-    .pagination-next,
-    .pagination-middle {
-      border-radius: {% if settings.pagination_style == "circle" %}50%{% else %}8px{% endif %};
-    }
-
-    .pagination-count-label {
-      color: rgb(var(--color-foreground));
-    }
-
-    .pagination svg path {
-      stroke: rgb(var(--color-foreground));
-    }
-    .paginate-first-page,
-    .paginate-last-page {
-      padding: 0 5px !important;
-    }
 </style>
+{%- if paginate.pages > 1 -%}
+  <div class="pagination-modern flex justify-center pt-24">
+    <nav role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
+      <ul role="list" class="flex gap-8 m-0 p-0 list-style-none">
+        {%- if paginate.previous -%}
+          <li>
+            <a
+              href="{{ paginate.previous.url }}#{{ section_id | default: 'pagination-section' }}"
+              class="pagination-link flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
+              aria-label="{{ 'general.pagination.previous' | t }}"
+            >
+              {% render 'icon-left-arrow' %}
+            </a>
+          </li>
+        {%- endif -%}
 
-{% if paginate.parts.size > 0 %}
-  <div class="pagination">
-    <a
-      data-link-type="pagination"
-      data-link-position="first"
-      aria-label="{{ "aria-label.pagination.button.pre-btn" | t }}"
-      class="pagination-prev paginate-first-page"
-      href="?page=1"
-    >
-      {%- render 'icon-pagination-arrow' -%}
-    </a>
+        {%- for part in paginate.parts -%}
+          <li>
+            {%- if part.is_link -%}
+              <a
+                href="{{ part.url }}#{{ section_id | default: 'pagination-section' }}"
+                class="pagination-link flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
+                aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
+              >
+                {{- part.title -}}
+              </a>
+            {%- else -%}
+              {%- if part.title == paginate.current_page -%}
+                <span
+                  aria-current="page"
+                  aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
+                  class="flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
+                >
+                  {{- part.title -}}
+                </span>
+              {%- else -%}
+                <span class="flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0">
+                  {{- part.title -}}
+                </span>
+              {%- endif -%}
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
 
-    <a
-      data-link-type="pagination"
-      data-link-position="middle"
-      aria-label="{{ "aria-label.pagination.button.pre-btn" | t }}"
-      class="pagination-prev"
-      href="{{ paginate.previous.url }}"
-    >
-      {%- render 'icon-arrow' -%}
-    </a>
-
-    {% for part in paginate.parts %}
-      {% if part.title == paginate.current_page %}<span class="current-pagination-button--container">{% endif %}
-      <a
-        data-link-type="pagination"
-        data-link-position="middle"
-        aria-label="{{ part.title }}"
-        class="pagination-middle font-size-14 font-size-mobile-14 {% if part.title == paginate.current_page %}current-pagination-button{% endif %}"
-        href="{% if part.title != paginate.current_page %}{{ part.url }}{% endif %}"
-      >
-        {{- part.title -}}
-      </a>
-      {% if part.title == paginate.current_page %}</span>{% endif %}
-    {% endfor %}
-
-    <a
-      data-link-type="pagination"
-      data-link-position="middle"
-      aria-label="{{ "aria-label.pagination.button.next-btn" | t }}"
-      class="pagination-next"
-      href="{{ paginate.next.url }}"
-    >
-      {%- render 'icon-arrow' -%}
-    </a>
-
-    <a
-      data-link-type="pagination"
-      data-link-position="last"
-      aria-label="{{ "aria-label.pagination.button.pre-btn" | t }}"
-      class="pagination-next paginate-last-page"
-      href="?page={{ paginate.pages }}"
-    >
-      {%- render 'icon-pagination-arrow' -%}
-    </a>
+        {%- if paginate.next -%}
+          <li>
+            <a
+              href="{{ paginate.next.url }}#{{ section_id | default: 'pagination-section' }}"
+              class="pagination-link flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
+              aria-label="{{ 'general.pagination.next' | t }}"
+            >
+              {% render 'icon-right-arrow' %}
+            </a>
+          </li>
+        {%- endif -%}
+      </ul>
+    </nav>
   </div>
-{% endif %}
+
+  <script>
+    // Handle pagination clicks to stay on specific section
+    document.addEventListener('DOMContentLoaded', function () {
+      const paginationLinks = document.querySelectorAll('.pagination-link');
+
+      paginationLinks.forEach((link) => {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          const url = this.href;
+
+          window.location.href = url;
+
+          setTimeout(() => {
+            if (window.showAccountContent) {
+              // Extract section from hash or use default
+              const hash = new URL(url).hash.replace('#', '');
+              const section = hash.replace('-section', '') || 'orders';
+              window.showAccountContent(section);
+            }
+          }, 100);
+        });
+      });
+
+      // Check if we came from pagination and show appropriate section
+      const currentHash = window.location.hash.replace('#', '');
+      if (currentHash && currentHash.includes('-section')) {
+        if (window.showAccountContent) {
+          const section = currentHash.replace('-section', '');
+          window.showAccountContent(section);
+        }
+      }
+    });
+  </script>
+{%- endif -%}

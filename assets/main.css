@@ -2846,6 +2846,39 @@ tr:last-child td {
   animation: play-normal-0-to-n100 linear infinite;
 }
 
+/* utilist  */
+.status-paid {
+  background: #10b981; /* Green */
+}
+
+.status-pending,
+.status-ongoing {
+  background: #f59e0b; /* Amber */
+}
+
+.status-authorized {
+  background: #3b82f6; /* Blue */
+}
+
+.status-partially-paid {
+  background: #8b5cf6; /* Purple */
+}
+
+.status-partially-refunded {
+  background: #a855f7; /* Light Purple */
+}
+
+.status-refunded {
+  background: #6366f1; /* Indigo */
+}
+
+.status-voided {
+  background: #9ca3af; /* Gray */
+}
+
+.status-cancelled {
+  background: #ef4444; /* Red */
+}
 .progress-bar-pagination .swiper-pagination-progressbar-fill {
   background: rgb(var(--color-primary-brand));
 }
