@@ -1534,6 +1534,9 @@ address {
 .border {
   border-width: 1px;
 }
+.border-secondary-text-10pct {
+  border: 1px solid rgba(var(--color-secondary-text), 0.1);
+}
 .bg-error-bg {
   background-color: rgb(var(--error-bg-color));
 }
@@ -2499,7 +2502,6 @@ legend {
 }
 
 input,
-textarea,
 select {
   width: 100%;
   padding: 0px 16px;
