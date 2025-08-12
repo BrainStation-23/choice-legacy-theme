@@ -1,6 +1,8 @@
 <!doctype html>
 <html class="no-js" lang="{{ request.locale.iso_code }}">
   <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.7/swiper-bundle.min.js">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.7/swiper-bundle.min.css">
     <link
@@ -17,7 +19,8 @@
         --color-secondary-text: {{ settings.secondary_text.red }}, {{ settings.secondary_text.green }}, {{ settings.secondary_text.blue }};
         --color-primary-brand: {{ settings.primary_brand_color.red }}, {{ settings.primary_brand_color.green }}, {{ settings.primary_brand_color.blue }};
         --color-secondary-brand: {{ settings.secondary_brand_color.red }}, {{ settings.secondary_brand_color.green }}, {{ settings.secondary_brand_color.blue }};
-
+        --color-border: {{ settings.border_color.red }}, {{ settings.border_color.green }}, {{ settings.border_color.blue }};
+        
         --page-width: {{ settings.page_width | divided_by: 10.0 }}rem;
       }
     {%- endstyle %}

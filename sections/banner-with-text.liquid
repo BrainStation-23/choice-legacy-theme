@@ -1,19 +1,17 @@
 <style>
-  /* Desktop Navigation Controls */
   @media screen and (min-width: 769px) {
-    {% unless section.settings.show_nav_desktop %}
-      .offer-banner-{{ section.id }} .slideshow-nav-button-prev,
-      .offer-banner-{{ section.id }} .slideshow-nav-button-next {
+    {% unless section.settings.show_arrows_desktop %}
+      .banner-with-text-{{ section.id }} .slideshow-nav-button-prev,
+      .banner-with-text-{{ section.id }} .slideshow-nav-button-next {
         display: none !important;
       }
     {% endunless %}
   }
 
-  /* Mobile Navigation Controls */
   @media screen and (max-width: 768px) {
-    {% unless section.settings.show_nav_mobile %}
-      .offer-banner-{{ section.id }} .slideshow-nav-button-prev,
-      .offer-banner-{{ section.id }} .slideshow-nav-button-next {
+    {% unless section.settings.show_arrows_mobile %}
+      .banner-with-text-{{ section.id }} .slideshow-nav-button-prev,
+      .banner-with-text-{{ section.id }} .slideshow-nav-button-next {
         display: none !important;
       }
     {% endunless %}
@@ -22,16 +20,16 @@
 
 {% liquid
   assign both_nav_none = false
-  if section.settings.show_nav_desktop == false and section.settings.show_nav_mobile == false
+  if section.settings.show_arrows_desktop == false and section.settings.show_arrows_mobile == false
     assign both_nav_none = true
   endif
 %}
 
 {% if both_nav_none %}
-  <div class="offer-banner offer-banner-{{ section.id }} relative pt-0 pb-0">
-    <div class="static-banner">
+  <div class="banner-with-text banner-with-text-{{ section.id }} pt-0 pb-0 relative">
+    <div class="static-banner block">
       {% for block in section.blocks limit: 1 %}
-        <div class="static-slide relative transition-transform h-225 sm:h-164 block w-full {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
+        <div class="static-slide h-408 sm:h-186 relative transition-transform block w-full {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
              {{ block.shopify_attributes }}
              data-block-id="{{ block.id }}"
              data-block-type="{{ block.type }}">
@@ -58,9 +56,12 @@
               sizes: sizes,
               block: block
             -%}
+            
+              {% render "banner-text-overlay", block: block, section_id: section.id %}
+            
             {% if block.settings.link != blank %}</a>{% endif %}
           {% else %}
-            {{ "lifestyle-1" | placeholder_svg_tag: "placeholder-svg slide-image-desktop" }}
+            {{ "lifestyle-1" | placeholder_svg_tag: "placeholder-svg block sm:hidden" }}
           {% endif %}
         </div>
       {% endfor %}
@@ -68,17 +69,16 @@
   </div>
 {% else %}
   <slideshow-component
-    class="offer-banner offer-banner-{{ section.id }} relative pt-0 pb-0"
+    class="banner-with-text banner-with-text-{{ section.id }}"
     data-autoplay="{{ section.settings.enable_autoplay }}"
     data-autoplay-delay="{{ section.settings.autoplay_delay | times: 1000 }}"
     data-pause-on-hover="{{ section.settings.pause_on_hover }}"
-    data-single-slide-view="true"
   >
-    <div class="slideshow-container overflow-hidden">
-      <div class="swiper-container">
+    <div class="slideshow-container relative">
+      <div class="swiper-container overflow-hidden">
         <div class="swiper-wrapper">
           {% for block in section.blocks %}
-            <div class="swiper-slide relative transition-transform h-225 sm:h-164 block w-full {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
+            <div class="swiper-slide h-408 sm:186 relative transition-transform {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
                  {{ block.shopify_attributes }}
                  data-block-id="{{ block.id }}"
                  data-block-type="{{ block.type }}">
@@ -105,23 +105,21 @@
                   sizes: sizes,
                   block: block
                 -%}
+                
+                {% render "banner-text-overlay", block: block, section_id: section.id %}
+                
                 {% if block.settings.link != blank %}</a>{% endif %}
               {% else %}
                 {% assign image_number = forloop.index0 | modulo: 2 | plus: 1 %}
-                {{ "lifestyle-" | append: image_number | placeholder_svg_tag: "placeholder-svg slide-image-desktop" }}
+                {{ "lifestyle-" | append: image_number | placeholder_svg_tag: "placeholder-svg block sm:hidden" }}
               {% endif %}
             </div>
           {% endfor %}
         </div>
       </div>
 
-      {% liquid
-        assign show_arrows_desktop = section.settings.show_nav_desktop
-        assign show_arrows_mobile = section.settings.show_nav_mobile
-      %}
-      
-      {% if show_arrows_desktop or show_arrows_mobile %}
-        {% render "nav-button", cls: "slideshow-nav-button-prev left-24", icon_cls: "icon-arrow-left" %}
+      {% if section.settings.show_arrows_desktop or section.settings.show_arrows_mobile %}
+        {% render "nav-button", cls: "slideshow-nav-button-prev top-50pct left-24", icon_cls: "icon-arrow-left" %}
         {% render "nav-button", cls: "slideshow-nav-button-next right-24" %}
       {% endif %}
     </div>
@@ -130,7 +128,7 @@
 
 {% schema %}
 {
-  "name": "Offer Banner",
+  "name": "Banner with Text",
   "tag": "section",
   "class": "section",
   "disabled_on": {
@@ -143,15 +141,44 @@
     },
     {
       "type": "checkbox",
-      "id": "show_nav_desktop",
-      "label": "Show navigation arrows on desktop",
+      "id": "show_arrows_desktop",
+      "label": "Show arrows on desktop",
       "default": true
     },
     {
       "type": "checkbox",
-      "id": "show_nav_mobile",
-      "label": "Show navigation arrows on mobile",
+      "id": "show_arrows_mobile",
+      "label": "Show arrows on mobile",
       "default": true
+    },
+    {
+      "type": "header",
+      "content": "Autoplay Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_autoplay",
+      "label": "Enable autoplay",
+      "default": false,
+      "info": "Automatically advance slides"
+    },
+    {
+      "type": "range",
+      "id": "autoplay_delay",
+      "min": 2,
+      "max": 10,
+      "step": 0.5,
+      "unit": "s",
+      "label": "Autoplay delay",
+      "default": 5,
+      "info": "Time between slide transitions"
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause autoplay on hover",
+      "default": true,
+      "info": "Pause slideshow when mouse hovers over it"
     }
   ],
   "blocks": [
@@ -178,6 +205,44 @@
         },
         {
           "type": "header",
+          "content": "Overlay Text"
+        },
+        {
+          "type": "text",
+          "id": "overlay_text_line_1",
+          "label": "Text Line 1",
+          "info": "First line of overlay text"
+        },
+        {
+          "type": "text",
+          "id": "overlay_text_line_2",
+          "label": "Text Line 2",
+          "info": "Second line of overlay text"
+        },
+        {
+          "type": "range",
+          "id": "text_position_left",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "px",
+          "label": "Text position from left",
+          "default": 16,
+          "info": "Distance from left edge"
+        },
+        {
+          "type": "range",
+          "id": "text_position_top",
+          "min": 0,
+          "max": 100,
+          "step": 1,
+          "unit": "%",
+          "label": "Text position from top",
+          "default": 65,
+          "info": "Percentage from top of banner"
+        },
+        {
+          "type": "header",
           "content": "Link Settings"
         },
         {
@@ -197,10 +262,10 @@
   ],
   "presets": [
     {
-      "name": "Offer Banner",
+      "name": "Banner with Text",
       "blocks": [
         {
-          "type": "banner",
+          "type": "banner"
         }
       ]
     }

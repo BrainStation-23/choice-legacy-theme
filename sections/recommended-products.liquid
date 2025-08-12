@@ -1,106 +1,15 @@
-{%- style -%}
-  .recommended-products-{{ section.id }} {
-    padding-top: 0px;
-    padding-bottom: 88px;
-  }
-
-  @media screen and (min-width: 750px) {
-    .recommended-products-{{ section.id }} {
-      padding-top: 0px;
-      padding-bottom: 88px;
-    }
-  }
-
-  /* Tablet: 768px to 1023px */
-  @media screen and (min-width: 769px) and (max-width: 1023px) {
-    .recommended-products-{{ section.id }} .desktop-grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    .recommended-products-{{ section.id }} .mobile-carousel {
-      display: none;
-    }
-  }
-
-  /* Small desktop: 1024px to 1439px */
-  @media screen and (min-width: 1024px) and (max-width: 1439px) {
-    .recommended-products-{{ section.id }} .desktop-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-
-    .recommended-products-{{ section.id }} .mobile-carousel {
-      display: none;
-    }
-  }
-
-  /* Large desktop: 1440px and above */
-  @media screen and (min-width: 1440px) {
-    .recommended-products-{{ section.id }} .desktop-grid {
-      grid-template-columns: repeat(5, 1fr);
-    }
-
-    .recommended-products-{{ section.id }} .mobile-carousel {
-      display: none;
-    }
-  }
-
-  @media screen and (max-width: 768px) {
-
-   .recommended-products-{{ section.id }} {
-      padding-top: 16px;
-      padding-bottom: 16px;
-    }
-
-    .recommended-products-{{ section.id }} .desktop-grid {
-      display: none;
-    }
-
-    .recommended-products-{{ section.id }} .mobile-carousel {
-      display: block;
-    }
-
-    .recommended-products__title {
-      text-align: left !important;
-    }
-  }
-
-  .recommended-products .mobile-carousel .swiper-wrapper {
-    align-items: stretch;
-  }
-
-  .recommended-products .mobile-carousel .swiper-slide {
-    height: auto;
-  }
-
-  .recommended-products .mobile-carousel .swiper-slide > div {
-    flex: 1;
-  }
-
-  .recommended-products .mobile-carousel .product-card__content {
-    flex: 1;
-  }
-
-  .recommended-products .nav-button {
-    background: transparent;
-    position: static;
-    width: 28px;
-    height: 28px;
-    transform: none;
-  }
-{%- endstyle -%}
-
-<div class="recommended-products recommended-products-{{ section.id }}">
-  <div class="recommended-products__container page-width flex flex-col gap-48 mobile-gap-16">
+<div class="recommended-products recommended-products-{{ section.id }} pt-0 pb-88 sm:pt-16 sm:pb-16 overflow-hidden">
+  <div class="page-width flex flex-col gap-48 sm:gap-16">
     {% if section.settings.heading != blank %}
-      <div class="desktop-grid">
-        <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct text-center">
+      <div class="block sm:hidden">
+        <h2 class="fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct text-center sm:text-center uppercase">
           {{ section.settings.heading }}
         </h2>
       </div>
     {% endif %}
 
     <!-- Desktop Grid (4 per row) -->
-    <div class="desktop-grid grid gap-16">
+    <div class="grid grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:hidden gap-16">
       {% for block in section.blocks limit: section.settings.products_to_show %}
         <div data-block-id="{{ block.id }}">
           {% if block.settings.product != blank %}
@@ -114,39 +23,38 @@
     </div>
 
     <!-- Mobile Carousel -->
-    <div class="mobile-carousel">
+    <div class="hidden sm:block">
       <slideshow-component
         data-autoplay="{{  section.settings.autoplay }}"
         data-autoplay-delay="{{ section.settings.autoplay_delay | default: 5000 }}"
         data-pause-on-hover="{{ section.settings.pause_on_hover }}"
-        data-show-progress-bar="true"
-        data-slides-per-view-desktop="2"
-        data-single-slide-view="true"
+        data-show-progress-bar="false"
+        data-number-of-items="2"
         class="flex flex-col gap-24"
       >
         {% if section.settings.heading != blank %}
           <div class="flex justify-between items-end relative">
-            <h2 class="recommended-products__title fw-400 fs-36-lh-40-ls-0 mobile-fs-21-lh-24-ls-1_2pct text-center">
+            <h2 class="fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct text-center">
               {{ section.settings.heading }}
             </h2>
 
             <div class="flex justify-end gap-24">
-              {% render 'nav-button', cls: 'slideshow-nav-button-prev', icon_cls: 'icon-arrow-left' %}
-              {% render 'nav-button', cls: 'slideshow-nav-button-next' %}
+              {% render 'nav-button', cls: 'slideshow-nav-button-prev static transform-none bg-transparent w-28 h-28', icon_cls: 'icon-arrow-left' %}
+              {% render 'nav-button', cls: 'slideshow-nav-button-next static transform-none bg-transparent w-28 h-28' %}
             </div>
           </div>
         {% endif %}
 
         <div class="swiper-container">
-          <div class="swiper-wrapper flex">
+          <div class="swiper-wrapper flex items-stretch">
             {% for block in section.blocks limit: section.settings.products_to_show %}
-              <div class="swiper-slide flex flex-col">
-                <div data-block-id="{{ block.id }}">
+              <div class="swiper-slide w-auto h-auto flex flex-col">
+                <div class="flex-1" data-block-id="{{ block.id }}">
                   {% if block.settings.product != blank %}
                     {% assign product = all_products[block.settings.product] %}
-                    {% render 'product-card', product: product, css_classes: '', image_width: 268, image_height: 268 %}
+                    {% render 'product-card', product: product, image_width: 268, image_height: 268 %}
                   {% else %}
-                    {% render 'product-card', css_classes: '', image_width: 268, image_height: 268 %}
+                    {% render 'product-card', image_width: 268, image_height: 268 %}
                   {% endif %}
                 </div>
               </div>
