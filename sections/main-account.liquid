@@ -7,13 +7,13 @@
         {% render 'account-information', customer: customer %}
       </div>
 
-      <div id="orders-content" class="account-content-section" style="display: none;">
+      <div id="orders-content" class="account-content-section" style="display: block;">
         <div id="orders-section">
           {% render 'orders-list', orders: customer.orders %}
         </div>
       </div>
 
-      <div id="rewards-content" class="account-content-section" style="display: block;">
+      <div id="rewards-content" class="account-content-section" style="display: none;">
         <div id="rewards-section">
           {% render 'reward-points' %}
         </div>
@@ -36,18 +36,14 @@
       return;
     }
 
-    console.log('Fetching delivery status for', deliveryStatusElements.length, 'orders');
 
     // Show loading state for all elements
     deliveryStatusElements.forEach((element) => {
       element.textContent = 'Loading...';
-      element.classList.add('text-gray-500');
     });
 
     // Collect all order IDs
     const orderIds = Array.from(deliveryStatusElements).map((element) => element.getAttribute('data-order-id'));
-
-    console.log('Order IDs to fetch:', orderIds);
 
     try {
       // Make single API call with all order IDs
@@ -57,7 +53,6 @@
       );
 
       const result = await response.json();
-      console.log('API Response:', result);
 
       if (result.success && result.data) {
         // Update each element with its corresponding status
@@ -133,29 +128,6 @@
   }
 
   /* Loading and status styles */
-  .delivery-status {
-    transition: color 0.3s ease;
-  }
-
-  .text-gray-500 {
-    color: #6b7280;
-  }
-
-  .text-green-600 {
-    color: #16a34a;
-  }
-
-  .text-blue-600 {
-    color: #2563eb;
-  }
-
-  .text-yellow-600 {
-    color: #ca8a04;
-  }
-
-  .text-red-600 {
-    color: #dc2626;
-  }
 </style>
 
 {% schema %}

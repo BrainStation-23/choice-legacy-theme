@@ -136,8 +136,7 @@ mark {
 :root {
   --fluid-vw: 100vw;
   --fluid-max-vw: 1536;
-  --fluid-calc: (var(--fluid-vw) - 32rem) / (var(--fluid-max-vw) / 10 - 32) +
-    0.1rem;
+  --fluid-calc: (var(--fluid-vw) - 32rem) / (var(--fluid-max-vw) / 10 - 32) + 0.1rem;
   --fluid-1-065: ((1.065 / 10 - 0.1) * var(--fluid-calc));
   --fluid-1-125: ((1.125 / 10 - 0.1) * var(--fluid-calc));
   --fluid-1-2: ((1.2 / 10 - 0.1) * var(--fluid-calc));
@@ -263,9 +262,7 @@ h6,
 .fs-12-lh-16-ls-0_072 {
   font-size: calc(12 * var(--font-unit));
   line-height: calc(16 * var(--font-unit));
-  letter-spacing: calc(
-    0.006 * var(--font-unit)
-  ); /* 0.072px at base font unit */
+  letter-spacing: calc(0.006 * var(--font-unit)); /* 0.072px at base font unit */
 }
 
 .fs-13-lh-16-ls-0_2 {
@@ -912,6 +909,9 @@ address {
 .h-8 {
   height: 8px;
 }
+.h-10 {
+  height: 10px;
+}
 .h-2 {
   height: 2px !important;
 }
@@ -968,6 +968,9 @@ address {
 }
 .w-14 {
   width: 14px;
+}
+.w-10 {
+  width: 10px;
 }
 .w-48 {
   width: 48px;
@@ -1820,6 +1823,12 @@ address {
   .sm\:pl-3 {
     padding-left: calc(3 * var(--space-unit));
   }
+  .sm\:pl-12 {
+    padding-left: calc(12 * var(--space-unit));
+  }
+  .sm\:pl-16 {
+    padding-left: calc(16 * var(--space-unit));
+  }
   .sm\:pl-3_9_8 {
     padding-left: 3.98%;
   }
@@ -1842,6 +1851,9 @@ address {
 
   .sm\:pt-8 {
     padding-top: calc(8 * var(--space-unit));
+  }
+  .sm\:pt-9 {
+    padding-top: calc(9 * var(--space-unit));
   }
   .sm\:pt-10 {
     padding-top: calc(10 * var(--space-unit));
@@ -1878,6 +1890,9 @@ address {
   }
   .sm\:pb-8 {
     padding-bottom: calc(8 * var(--space-unit));
+  }
+  .sm\:pb-9 {
+    padding-bottom: calc(9 * var(--space-unit));
   }
   .sm\:pb-10 {
     padding-bottom: calc(10 * var(--space-unit));
@@ -1926,6 +1941,13 @@ address {
   }
   .sm\:pr-3 {
     padding-right: calc(3 * var(--space-unit));
+  }
+  .sm\:pr-12 {
+    padding-right: calc(12 * var(--space-unit));
+  }
+
+  .sm\:pr-16 {
+    padding-right: calc(16 * var(--space-unit));
   }
 
   .sm\:p-0 {
@@ -2032,15 +2054,12 @@ address {
   transform: translate(-50%, -50%);
 }
 .transition {
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    -webkit-backdrop-filter;
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    backdrop-filter;
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    backdrop-filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -2467,6 +2486,17 @@ shop-login-button {
 .border-bg {
   border-color: rgb(var(--color-background));
 }
+.border-b {
+  border-bottom-width: 1px;
+}
+
+.border-b-color {
+  border-bottom-color: rgb(var(--color-border));
+}
+
+.border-b-solid {
+  border-bottom-style: solid;
+}
 
 .opacity-0 {
   opacity: 0;
@@ -2547,9 +2577,7 @@ input + label {
 }
 
 input[type="date"] {
-  min-height: calc(
-    (var(--input-padding-y, 11px) + var(--input-border-width)) * 2 + 1.2em
-  );
+  min-height: calc((var(--input-padding-y, 11px) + var(--input-border-width)) * 2 + 1.2em);
   -webkit-appearance: none;
 }
 
