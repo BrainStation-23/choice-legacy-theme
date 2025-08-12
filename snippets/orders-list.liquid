@@ -1,11 +1,11 @@
-{% paginate customer.orders by 1 %}
+{% paginate customer.orders by 10 %}
   <div class="flex flex-col gap-24 overflow-hidden">
-    <div class="order-history-header">
-      <h2 class="order-history-title m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500 ">{{ 'customer.order.title' | t }}</h2>
+    <div>
+      <h2 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500 ">{{ 'customer.order.title' | t }}</h2>
     </div>
 
     {%- if customer.orders.size > 0 -%}
-      <table class="order-table" role="table">
+      <table role="table">
         <thead role="rowgroup">
           <tr role="row" class="h-48">
             <th
@@ -71,7 +71,7 @@
                 </a>
               </td>
               <td role="cell" class="pt-0 pb-0 pl-12 pr-12">
-                <span class="order-date ff-general-sans fw-400 fs-16-lh-24-ls-0">
+                <span class="ff-general-sans fw-400 fs-16-lh-24-ls-0">
                   {{- order.created_at | date: '%B %d, %y' -}}
                 </span>
               </td>
@@ -99,26 +99,26 @@
                 {% endcase %}
 
                 <div class="ff-general-sans fw-400 fs-16-lh-24-ls-0 flex items-center gap-4 justify-start">
-                  <span class="status-dot rounded-full h-8 w-8 {{ status_class }}"></span>
+                  <span class="rounded-full h-8 w-8 {{ status_class }}"></span>
                   {{ order.financial_status_label }}
                 </div>
               </td>
               <td role="cell" class="pt-0 pb-0 pl-12 pr-12">
-                <span class="order-quantity ff-general-sans fw-400 fs-16-lh-24-ls-0">{{ order.line_items.size }}</span>
+                <span class="ff-general-sans fw-400 fs-16-lh-24-ls-0">{{ order.line_items.size }}</span>
               </td>
               <td role="cell" class="pt-0 pb-0 pl-12 pr-12">
-                <span class="order-status ff-general-sans fw-400 fs-16-lh-24-ls-0">
+                <span class=" ff-general-sans fw-400 fs-16-lh-24-ls-0">
                   {{- order.fulfillment_status_label -}}
                 </span>
               </td>
               <td role="cell" class="pt-0 pb-0 pl-12 pr-12">
-                <span class="order-total ff-general-sans fw-400 fs-16-lh-24-ls-0 flex gap-4 ">
+                <span class=" ff-general-sans fw-400 fs-16-lh-24-ls-0 flex gap-4 ">
                   ৳
                   {{- order.total_net_amount | money_without_currency -}}
                 </span>
               </td>
               <td role="cell" class="pt-0 pb-0 pl-12 pr-12">
-                <div class="order-actions">
+                <div>
                   <a href="{{ order.customer_url }}" class="action-btn view-btn text-brand" title="View Order">
                     {% render 'eye-icon' %}
                   </a>
@@ -130,7 +130,7 @@
       </table>
 
     {%- else -%}
-      <div class="no-orders">
+      <div>
         <p class="ff-general-sans fs-23-lh-24-ls-0 fw-600  text-center">
           {{ 'customer.order.none' | t }}
         </p>

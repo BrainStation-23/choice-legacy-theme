@@ -1,19 +1,12 @@
-<style>
- .pagination-modern span[aria-current='page'] {
-    background: #ef4444; 
-    color: white;
-    border: 1px solid #ef4444;
-  }
-</style>
 {%- if paginate.pages > 1 -%}
-  <div class="pagination-modern flex justify-center pt-24">
+  <div class="flex justify-center pt-24">
     <nav role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
       <ul role="list" class="flex gap-8 m-0 p-0 list-style-none">
         {%- if paginate.previous -%}
           <li>
             <a
               href="{{ paginate.previous.url }}#{{ section_id | default: 'pagination-section' }}"
-              class="pagination-link flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
+              class="text-primary  flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
               aria-label="{{ 'general.pagination.previous' | t }}"
             >
               {% render 'icon-left-arrow' %}
@@ -26,7 +19,7 @@
             {%- if part.is_link -%}
               <a
                 href="{{ part.url }}#{{ section_id | default: 'pagination-section' }}"
-                class="pagination-link flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
+                class="text-primary  flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
                 aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
               >
                 {{- part.title -}}
@@ -36,7 +29,7 @@
                 <span
                   aria-current="page"
                   aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
-                  class="flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
+                  class="text-primary  flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
                 >
                   {{- part.title -}}
                 </span>
@@ -53,7 +46,7 @@
           <li>
             <a
               href="{{ paginate.next.url }}#{{ section_id | default: 'pagination-section' }}"
-              class="pagination-link flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
+              class="flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
               aria-label="{{ 'general.pagination.next' | t }}"
             >
               {% render 'icon-right-arrow' %}
