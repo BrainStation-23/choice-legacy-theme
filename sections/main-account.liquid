@@ -3,7 +3,7 @@
     {% render 'customer-account-sidebar' %}
 
     <div class="customer-account__content" style="flex: 2;">
-      <div id="my-profile-content" class="account-content-section" style="display: block;">
+      <div id="my-profile-content" class="account-content-section" style="display: none;">
         {% render 'account-information', customer: customer %}
       </div>
 
@@ -13,7 +13,7 @@
         </div>
       </div>
 
-      <div id="rewards-content" class="account-content-section" style="display: none;">
+      <div id="rewards-content" class="account-content-section" style="display: block;">
         <div id="rewards-section">
           {% render 'reward-points' %}
         </div>
