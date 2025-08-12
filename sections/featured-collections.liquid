@@ -3,18 +3,20 @@
 %}
 {%- if section.blocks.size > 0 -%}
   <section
-    class="featured-collections featured-collections-{{ section.id }} pt-48 pb-56 pt-20 pb-20"
+    class="featured-collections featured-collections-{{ section.id }} pt-48 pb-56 sm:pt-20 sm:pb-20"
     data-section-type="featured-collections"
     data-section-id="{{ section.id }}"
   >
     <div class="page-width">
-      <div 
-        class="grid gap-16 lg:gap-10 md:gap-10 
+      <div
+        class="
+          grid gap-16 lg:gap-10 md:gap-10
           {% if section.blocks.size == 1 %}grid-cols-1{% endif %}
           {% if section.blocks.size == 2 %}grid-cols-2{% endif %}
           {% if section.blocks.size == 3 %}grid-cols-3{% endif %}
           {% if section.blocks.size == 4 %}grid-cols-4{% endif %}
-          lg:grid-cols-4 md:grid-cols-4 sm:hidden"
+          lg:grid-cols-4 md:grid-cols-4 sm:hidden
+        "
         data-blocks-count="{{ section.blocks.size }}"
       >
         {%- for block in section.blocks -%}
@@ -26,7 +28,11 @@
           -%}
 
           <div class="featured-collection-item relative transition-transform" {{ block.shopify_attributes }}>
-            <a href="{{ collection_url }}" class="block no-underline text-inherit h-full" aria-label="{{ collection_title }}">
+            <a
+              href="{{ collection_url }}"
+              class="block no-underline text-inherit h-full"
+              aria-label="{{ collection_title }}"
+            >
               <div
                 class="relative h-full overflow-hidden object-contain media block relative"
                 style="padding-top: {{ 1 | divided_by: image_ratio | times: 100 }}%;"
@@ -72,8 +78,15 @@
                     assign collection_image = block.settings.custom_image
                   -%}
 
-                  <div class="featured-collection-item relative transition-transform sm:w-304 sm:h-304" {{ block.shopify_attributes }}>
-                    <a href="{{ collection_url }}" class="block no-underline text-inherit h-full" aria-label="{{ collection_title }}">
+                  <div
+                    class="featured-collection-item relative transition-transform sm:w-304 sm:h-304"
+                    {{ block.shopify_attributes }}
+                  >
+                    <a
+                      href="{{ collection_url }}"
+                      class="block no-underline text-inherit h-full"
+                      aria-label="{{ collection_title }}"
+                    >
                       <div class="relative h-full overflow-hidden object-contain media block relative">
                         {%- if collection and collection_image -%}
                           {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 4 %}{% endcapture -%}
