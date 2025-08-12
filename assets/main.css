@@ -254,6 +254,14 @@ h6,
   letter-spacing: calc(0.006 * var(--font-unit));
 }
 
+.fs-12-lh-16-ls-0_072 {
+  font-size: calc(12 * var(--font-unit));
+  line-height: calc(16 * var(--font-unit));
+  letter-spacing: calc(
+    0.006 * var(--font-unit)
+  ); /* 0.072px at base font unit */
+}
+
 .fs-13-lh-16-ls-0_2 {
   font-size: calc(13 * var(--font-unit));
   line-height: calc(16 * var(--font-unit));
@@ -1277,6 +1285,9 @@ address {
 }
 .gap-16 {
   gap: calc(16 * var(--space-unit));
+}
+.gap-20 {
+  gap: calc(20 * var(--space-unit));
 }
 .gap-24 {
   gap: calc(24 * var(--space-unit));

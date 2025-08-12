@@ -1,3 +1,24 @@
-<h1>Reward points</h1>
+<div class="reward-points-container">
+  <div class="reward-points-header">
+    <h2>Reward Point</h2>
+    <p>Spend 500 Get 200 Point</p>
+  </div>
+  <div class="reward-points-balance rounded-8 p-8">
+    <div class="balance-info flex gap-12">
+      <div class="points-icon w-32 h-32 rounded-full bg-brand flex justify-center items-center gap-10">{% render "icon-star" %}</div>
+      
+      <div class="flex flex-col gap-8">
+        <span class="fw-400 fs-12-lh-16-ls-0_072 text-label">Reward Point Balance</span>
+        <span class="fw-500 fs-23-lh-24-ls-0 text-primary" id="currentPoints"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="earn-points-section">
+  <h3>Earn Reward Points on Product Reviews</h3>
+  <p>Points Awarded for 3+ Star Review</p>
+  <button class="review-button">Review Products</button>
+</div>
 
 <script src="{{ 'reward-point.js' | asset_url }}" defer></script>
