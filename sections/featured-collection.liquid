@@ -1,0 +1,129 @@
+<div class="featured-collection featured-collection-{{ section.id }} pt-88 pb-88 sm:pt-16 sm:pb-16">
+  <div class="page-width flex flex-col gap-48 sm:gap-16">
+    {% if section.settings.heading != blank %}
+      <div class="block sm:hidden">
+        <h2 class="fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct text-left uppercase">
+          {{ section.settings.heading }}
+        </h2>
+      </div>
+    {% endif %}
+
+    {% if section.settings.collection != blank %}
+      {% assign collection = collections[section.settings.collection] %}
+      {% assign products_to_show = section.settings.products_to_show | at_most: collection.products.size %}
+    {% else %}
+      {% assign collection = collections.all %}
+      {% assign products_to_show = section.settings.products_to_show | at_most: 8 %}
+    {% endif %}
+
+    <!-- Desktop Grid (4 per row) -->
+    <div class="grid grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:hidden gap-16">
+      {% for product in collection.products limit: products_to_show %}
+        <div>
+          {% render 'product-card', product: product, css_classes: '', image_width: 268, image_height: 268 %}
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Mobile Carousel -->
+    <div class="hidden sm:block">
+      <slideshow-component
+        data-autoplay="{{  section.settings.autoplay }}"
+        data-autoplay-delay="{{ section.settings.autoplay_delay | default: 5000 }}"
+        data-pause-on-hover="{{ section.settings.pause_on_hover }}"
+        data-show-progress-bar="false"
+        data-number-of-items="2"
+        class="flex flex-col gap-24"
+      >
+        {% if section.settings.heading != blank %}
+          <div class="flex justify-between items-end relative">
+            <h2 class="fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct text-left">
+              {{ section.settings.heading }}
+            </h2>
+
+            <div class="flex justify-end gap-24">
+              {% render 'nav-button', cls: 'slideshow-nav-button-prev w-28 h-28 static bg-transparent transform-none', icon_cls: 'icon-arrow-left' %}
+              {% render 'nav-button', cls: 'slideshow-nav-button-next w-28 h-28 static bg-transparent transform-none' %}
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="swiper-container">
+          <div class="swiper-wrapper flex items-stretch">
+            {% for product in collection.products limit: products_to_show %}
+              <div class="swiper-slide flex flex-col">
+                <div class="flex-1">
+                  {% render 'product-card', product: product, css_classes: '', image_width: 268, image_height: 268 %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+      </slideshow-component>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Featured Collection",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "RECOMMENDED FOR YOU",
+      "label": "Heading"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 4,
+      "max": 12,
+      "step": 1,
+      "default": 8,
+      "label": "Products to show"
+    },
+    {
+      "type": "header",
+      "content": "Mobile Carousel Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "default": false,
+      "label": "Auto-play carousel"
+    },
+    {
+      "type": "range",
+      "id": "autoplay_delay",
+      "min": 1000,
+      "max": 9000,
+      "step": 500,
+      "default": 5000,
+      "label": "Auto-play delay (ms)",
+      "info": "Time between slide transitions"
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "default": true,
+      "label": "Pause on hover"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Collection"
+    }
+  ]
+}
+{% endschema %}

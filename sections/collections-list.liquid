@@ -2,7 +2,7 @@
 <section class="w-full pt-88 pb-88 sm:pt-23 sm:pb-16  ">
   <div class="page-width flex flex-col gap-64">
     {% if section.settings.title != blank %}
-      <h2 class="uppercase flex justify-center items-center ff-bebas-neue fw-400 fs-36-lh-40-ls-0 m-0 mobile-fs-21-lh-24-ls-1_2pct">
+      <h2 class="uppercase flex justify-center items-center ff-bebas-neue fw-400 fs-36-lh-40-ls-0 m-0 sm:fs-21-lh-24-ls-1_2pct">
         {{ section.settings.title }}
       </h2>
     {% endif %}
@@ -37,7 +37,7 @@
               </div>
 
               <div class="bg-brand pt-12 pb-12 pl-8 pr-8 rounded-t-l-0 rounded-t-r-0 rounded-b-r-32 rounded-b-l-32 sm:pt-4 sm:pb-4 sm:pr-3 sm:pl-3 sm:rounded-b-l-13 sm:rounded-b-r-13">
-                <h3 class="text-bg text-center m-0 ff-bebas-neue fw-400 fs-26-lh-26-ls-1_2 mobile-fs-15-lh-16-ls--1_2pct">
+                <h3 class="text-bg text-center m-0 ff-bebas-neue fw-400 fs-26-lh-26-ls-1_2 sm-fs-15-lh-16-ls--1_2pct">
                   {% if block.settings.collection.title %}
                     {{ block.settings.collection.title }}
                   {% else %}
@@ -54,19 +54,16 @@
     <div class="hidden sm:block">
       <slideshow-component
         data-autoplay="false"
+        data-enable-carousel="true"
         data-show-progress-bar="true"
-        data-slides-per-view-desktop="3"
-        data-single-slide-view="true"
-        data-slide-width-mobile="116px"
-        data-slide-width-tablet="116px"
-        data-slide-width-desktop="116px"
+        data-number-of-items="3"
       >
-        <div class="swiper-container flex flex-col gap-24 sm:relative sm:pb-20">
+        <div class="swiper-container flex flex-col gap-24 sm:relative sm:pb-20 overflow-hidden">
           <div class="swiper-wrapper">
             {% for block in section.blocks %}
               {% if block.settings.collection %}
                 <div
-                  class="swiper-slide sm:border-box sm:w-116 sm:mr-10"
+                  class="swiper-slide sm:border-box sm:mr-10"
                   {{ block.shopify_attributes }}
                 >
                   <a href="{{ block.settings.collection.url }}" class="flex flex-col no-underline h-full">
