@@ -1,24 +1,38 @@
 <div class="reward-points-container">
-  <div class="reward-points-header">
-    <h2>Reward Point</h2>
-    <p>Spend 500 Get 200 Point</p>
-  </div>
-  <div class="reward-points-balance rounded-8 p-8">
-    <div class="balance-info flex gap-12">
-      <div class="points-icon w-32 h-32 rounded-full bg-brand flex justify-center items-center gap-10">{% render "icon-star" %}</div>
-      
-      <div class="flex flex-col gap-8">
-        <span class="fw-400 fs-12-lh-16-ls-0_072 text-label">Reward Point Balance</span>
-        <span class="fw-500 fs-23-lh-24-ls-0 text-primary" id="currentPoints"></span>
+  <div class="flex flex-col gap-24">
+    <div class="reward-points-header flex flex-col gap-8">
+      <h2 class="ff-general-sans fs-23-lh-24-ls-0 fw-500">{{ 'reward_points.title' | t }}</h2>
+      <p id="redemptionRulesText" class="fs-16-lh-24-ls-0 fw-400 text-label"></p>
+    </div>
+    <div class="flex flex-col gap-8">
+      <div class="reward-points-balance rounded-8 p-16 bg-light-gray">
+        <div class="balance-info flex gap-12">
+          <div class="points-icon w-32 h-32 rounded-full bg-brand flex justify-center items-center gap-10">{% render "icon-star" %}</div>
+          
+          <div class="flex flex-col gap-8">
+            <span class="fw-400 fs-12-lh-16-ls-0_072 text-label">{{ 'reward_points.balance.label' | t }}</span>
+            <span class="fw-500 fs-23-lh-24-ls-0 text-primary"><span id="currentPoints"></span> {{ 'reward_points.points.label' | t }}</span>
+          </div>
+        </div>
+      </div>
+      <div class="earn-points-section--product rounded-8 p-16 bg-light-blue">
+        <div class="flex flex-col gap-8">
+          <h3 class="ff-general-sans fw-500 fs-23-lh-24-ls-0 text-primary">{{ 'reward_points.product_review_points.label' | t }}</h3>
+          <div class="flex flex-col gap-6">
+            <p class="fw-400 fs-12-lh-16-ls-0_072 text-label" id="threeStarReview" data-translation="{{ 'reward_points.product_review_points.three_star' | t }}"></p>
+            <p class="fw-400 fs-12-lh-16-ls-0_072 text-label" id="fourStarReview" data-translation="{{ 'reward_points.product_review_points.four_star' | t }}"></p>
+            <p class="fw-400 fs-12-lh-16-ls-0_072 text-label" id="fiveStarReview" data-translation="{{ 'reward_points.product_review_points.five_star' | t }}"></p>
+          </div>
+        </div>
+      </div>
+      <div class="earn-points-section--order rounded-8 p-16 bg-light-blue">
+        <div class="flex flex-col gap-8">
+          <h3 class="ff-general-sans fw-500 fs-23-lh-24-ls-0 text-primary">{{ 'reward_points.order_points.label' | t }}</h3>
+          <p class="fw-400 fs-12-lh-16-ls-0_072 text-label" id="orderPointsRule" data-translation="{{ 'reward_points.order_points.rule' | t }}"></p>
+        </div>
       </div>
     </div>
   </div>
-</div>
-
-<div class="earn-points-section">
-  <h3>Earn Reward Points on Product Reviews</h3>
-  <p>Points Awarded for 3+ Star Review</p>
-  <button class="review-button">Review Products</button>
 </div>
 
 <script src="{{ 'reward-point.js' | asset_url }}" defer></script>

@@ -4,6 +4,25 @@
       "label": "Add to cart"
     }
   },
+  "reward_points": {
+    "title": "Reward Point",
+    "points": {
+      "label": "Points"
+    },
+    "balance": {
+      "label": "Reward Point Balance"
+    },
+    "product_review_points": {
+      "label": "Earn Reward Points on Product Reviews",
+      "three_star": "Points Awarded for 3 Star Review: {points}",
+      "four_star": "Points Awarded for 4 Star Review: {points}",
+      "five_star": "Points Awarded for 5 Star Review: {points}"
+    },
+    "order_points": {
+      "label": "Earn Reward Points on Order",
+      "rule": "Points Awarded {points} for purchasing {amount} amount"
+    }
+  },
   "sections": {
     "footer": {
       "social_media": "Social media",

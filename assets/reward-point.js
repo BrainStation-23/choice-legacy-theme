@@ -25,8 +25,61 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!apiResponse?.success) {
       document.querySelector(".reward-container").style.display = "none";
     } else {
+      // Update reward points balance
       const currentPoints = apiResponse.remainingPoints || 0;
       currentPointsSpan.textContent = currentPoints;
+
+      // Update redemption rules text
+      const redemptionRulesText = document.getElementById(
+        "redemptionRulesText"
+      );
+      if (
+        redemptionRulesText &&
+        apiResponse.configuration?.pointRedemptionRules
+      ) {
+        const { pointsRequired, discountAmount } =
+          apiResponse.configuration.pointRedemptionRules;
+        redemptionRulesText.textContent = `Redeem ${pointsRequired} Points for ${discountAmount} OFF`;
+      }
+
+      // Update product review rules with localized text
+      const reviewRules = apiResponse.configuration?.pointsPerProductReview;
+      if (reviewRules) {
+        const threeStarText = document
+          .getElementById("threeStarReview")
+          .getAttribute("data-translation");
+        document.getElementById("threeStarReview").textContent =
+          threeStarText.replace("{points}", reviewRules.threeStarPoints);
+
+        const fourStarText = document
+          .getElementById("fourStarReview")
+          .getAttribute("data-translation");
+        document.getElementById("fourStarReview").textContent =
+          fourStarText.replace("{points}", reviewRules.fourStarPoints);
+
+        const fiveStarText = document
+          .getElementById("fiveStarReview")
+          .getAttribute("data-translation");
+        document.getElementById("fiveStarReview").textContent =
+          fiveStarText.replace("{points}", reviewRules.fiveStarPoints);
+      }
+
+      // Update order points rule with localized text
+      const orderRules = apiResponse.configuration?.purchasePointsConfiguration;
+      if (orderRules) {
+        const orderRuleText = document
+          .getElementById("orderPointsRule")
+          .getAttribute("data-translation");
+        let finalOrderRule = orderRuleText.replace(
+          "{points}",
+          orderRules.pointsAwarded
+        );
+        finalOrderRule = finalOrderRule.replace(
+          "{amount}",
+          orderRules.amountThreshold
+        );
+        document.getElementById("orderPointsRule").textContent = finalOrderRule;
+      }
     }
   };
 
