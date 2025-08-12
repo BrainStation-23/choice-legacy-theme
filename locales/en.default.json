@@ -21,6 +21,14 @@
     "order_points": {
       "label": "Earn Reward Points on Order",
       "rule": "Points Awarded {points} for purchasing {amount} amount"
+    },
+    "redeem_points": {
+      "label": "Redeem Points",
+      "off": "OFF",
+      "button": "Redeem Now"
+    },
+    "reward_points": {
+      "label": "Reward Points"
     }
   },
   "sections": {

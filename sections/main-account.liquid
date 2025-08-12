@@ -15,7 +15,7 @@
 
       <div id="rewards-content" class="account-content-section" style="display: none;">
         <div id="rewards-section">
-          {% render 'reward-points' %}
+          {% render 'reward-points', section: section %}
         </div>
       </div>
     </div>
@@ -133,6 +133,26 @@
 {% schema %}
 {
   "name": "Main Account",
-  "settings": []
+  "settings": [
+   
+  ],
+  "blocks": [
+    {
+      "type": "redeem_offer",
+      "name": "Redeem Offer",
+      "settings": [
+        {
+          "type": "number",
+          "id": "points_required",
+          "label": "Points required"
+        },
+        {
+          "type": "number",
+          "id": "discount_amount",
+          "label": "Discount amount"
+        }
+      ]
+    }
+  ]
 }
 {% endschema %}

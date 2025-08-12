@@ -997,6 +997,9 @@ address {
 .max-w-100pc-32 {
   max-width: calc(100% - 32px);
 }
+.max-w-120 {
+  max-width: 120px;
+}
 .min-w-406 {
   min-width: 406px;
 }
@@ -2239,6 +2242,16 @@ address {
   border: none;
   border-radius: 6px;
   cursor: pointer;
+  font-weight: 600;
+  font-size: calc(14 * var(--font-unit));
+  line-height: 100%;
+  letter-spacing: 0;
+}
+
+.button--solid {
+  background: rgb(var(--color-primary-brand));
+  color: rgb(var(--color-background));
+  padding: 16px;
 }
 
 .button--outline {
