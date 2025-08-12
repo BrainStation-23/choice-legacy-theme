@@ -1,24 +1,3 @@
-<style>
-  .status-paid .status-dot {
-    background: #10b981;
-  }
-
-  .status-pending .status-dot,
-  .status-ongoing .status-dot {
-    background: #f59e0b;
-  }
-
-  .status-cancelled .status-dot {
-    background: #ef4444;
-  }
-
-  .pagination-modern span[aria-current='page'] {
-    background: #ef4444;
-    color: white;
-    border: 1px solid #ef4444;
-  }
-</style>
-
 {% paginate customer.orders by 1 %}
   <div class="flex flex-col gap-24 overflow-hidden">
     <div class="order-history-header">
@@ -97,8 +76,30 @@
                 </span>
               </td>
               <td role="cell">
-                <div class="payment-status ff-general-sans fw-400 fs-16-lh-24-ls-0 {% if order.financial_status == 'paid' %}status-paid{% elsif order.financial_status == 'pending' %}status-pending{% elsif order.financial_status == 'cancelled' %}status-cancelled{% else %}status-ongoing{% endif %}">
-                  <span class="status-dot rounded-full  h-8 w-8"></span>
+                {% assign status_class = '' %}
+                {% case order.financial_status %}
+                  {% when 'paid' %}
+                    {% assign status_class = 'status-paid' %}
+                  {% when 'pending' %}
+                    {% assign status_class = 'status-pending' %}
+                  {% when 'authorized' %}
+                    {% assign status_class = 'status-authorized' %}
+                  {% when 'partially_paid' %}
+                    {% assign status_class = 'status-partially-paid' %}
+                  {% when 'partially_refunded' %}
+                    {% assign status_class = 'status-partially-refunded' %}
+                  {% when 'refunded' %}
+                    {% assign status_class = 'status-refunded' %}
+                  {% when 'voided' %}
+                    {% assign status_class = 'status-voided' %}
+                  {% when 'cancelled' %}
+                    {% assign status_class = 'status-cancelled' %}
+                  {% else %}
+                    {% assign status_class = 'status-ongoing' %}
+                {% endcase %}
+
+                <div class="ff-general-sans fw-400 fs-16-lh-24-ls-0 flex items-center gap-4 justify-start">
+                  <span class="status-dot rounded-full h-8 w-8 {{ status_class }}"></span>
                   {{ order.financial_status_label }}
                 </div>
               </td>
@@ -136,99 +137,6 @@
       </div>
     {%- endif -%}
 
-    {%- if paginate.pages > 1 -%}
-      <div class="pagination-modern flex justify-center pt-24">
-        <nav role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
-          <ul role="list" class="flex gap-8 m-0 p-0 list-style-none">
-            {%- if paginate.previous -%}
-              <li>
-                <a
-                  href="{{ paginate.previous.url }}#orders-section"
-                  class="pagination-link flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
-                  aria-label="{{ 'general.pagination.previous' | t }}"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="15,18 9,12 15,6"></polyline>
-                  </svg>
-                </a>
-              </li>
-            {%- endif -%}
-
-            {%- for part in paginate.parts -%}
-              <li>
-                {%- if part.is_link -%}
-                  <a
-                    href="{{ part.url }}#orders-section"
-                    class="pagination-link flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
-                    aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
-                  >
-                    {{- part.title -}}
-                  </a>
-                {%- else -%}
-                  {%- if part.title == paginate.current_page -%}
-                    <span
-                      aria-current="page"
-                      aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
-                      class="flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
-                    >
-                      {{- part.title -}}
-                    </span>
-                  {%- else -%}
-                    <span class="flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0">
-                      {{- part.title -}}
-                    </span>
-                  {%- endif -%}
-                {%- endif -%}
-              </li>
-            {%- endfor -%}
-
-            {%- if paginate.next -%}
-              <li>
-                <a
-                  href="{{ paginate.next.url }}#orders-section"
-                  class="pagination-link flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-400 fs-16-lh-24-ls-0"
-                  aria-label="{{ 'general.pagination.next' | t }}"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <polyline points="9,18 15,12 9,6"></polyline>
-                  </svg>
-                </a>
-              </li>
-            {%- endif -%}
-          </ul>
-        </nav>
-      </div>
-    {%- endif -%}
+    {% render 'pagination', paginate: paginate, section_id: 'orders-section' %}
   </div>
-
-  <script>
-    // Handle pagination clicks to stay on orders section
-    document.addEventListener('DOMContentLoaded', function () {
-      const paginationLinks = document.querySelectorAll('.pagination-link');
-
-      paginationLinks.forEach((link) => {
-        link.addEventListener('click', function (e) {
-          e.preventDefault();
-          const url = this.href;
-
-          // Load the new page and show orders section
-          window.location.href = url;
-
-          // After page loads, ensure orders section is shown
-          setTimeout(() => {
-            if (window.showAccountContent) {
-              window.showAccountContent('orders');
-            }
-          }, 100);
-        });
-      });
-
-      // Check if we came from pagination and show orders
-      if (window.location.hash === '#orders-section') {
-        if (window.showAccountContent) {
-          window.showAccountContent('orders');
-        }
-      }
-    });
-  </script>
 {% endpaginate %}
