@@ -42,6 +42,27 @@
     "redeem_message": "Points redeemed successfully!",
     "apply_to_cart_message": "Discount code applied successfully!"
   },
+  "wishlist": {
+    "title": "My Wishlist",
+    "loading": "Loading your wishlist...",
+    "empty": "Your wishlist is currently empty.",
+    "table": {
+      "image": "Image",
+      "name": "Name",
+      "price": "Price",
+      "action": "Action"
+    },
+    "buttons": {
+      "remove": "Remove",
+      "removing": "Removing..."
+    },
+    "notifications": {
+      "removed_success": "Product removed from wishlist",
+      "removed_error": "Failed to remove from wishlist",
+      "load_error": "Could not load wishlist. Please try again later.",
+      "generic_error": "Something went wrong. Please try again."
+    }
+  },
   "sections": {
     "footer": {
       "social_media": "Social media",
