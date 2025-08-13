@@ -176,11 +176,28 @@
       "order_number": "Order No",
       "date": "Date",
       "status": "Status",
-      "total": "Grand total",
+      "total": "Total",
       "quantity": "Quantity",
       "payment_type": "Payment Type",
       "action": "Action",
-      "none": "Customer has no orders."
+      "none": "Customer has no orders.",
+      "cancelled": "Cancelled",
+      "cancelled_reason": "Cancelled Reason",
+      "product": "Product",
+      "sku": "SKU",
+      "price": "Price",
+      "discount": "Discount",
+      "fulfilled_at": "Fulfilled At",
+      "track_shipment": "Track Shipment",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "tax": "Tax",
+      "total_duties": "Total Duties",
+      "total_refunded": "Total Refunded",
+      "billing_address": "Billing Address",
+      "payment_status": "Payment Status",
+      "shipping_address": "Shipping Address",
+      "fulfillment_status": "Fulfillment Status"
     }
   },
   "general": {
@@ -190,5 +207,17 @@
       "next": "Next",
       "page": "Page"
     }
+  },
+  "products": {
+    "product": {
+      "price": {
+        "unit_price": "Unit Price",
+        "regular_price": "Regular Price",
+        "sale_price": "Sale Price"
+      }
+    }
+  },
+  "accessibility": {
+    "unit_price_separator": "Unit Price Separator"
   }
 }
