@@ -67,6 +67,7 @@
     {%- sections 'footer-group' -%}
 
     <script>
+      window.APP_SUB_PATH = "choice-legacy-app";
       window.theme = {
         routes: {
           cart: '{{ routes.cart_url }}',
@@ -75,20 +76,6 @@
           cartUpdate: '{{ routes.cart_update_url }}',
           predictiveSearch: '{{ routes.predictive_search_url }}'
         },
-      };
-      window.APP_SUB_PATH = "choice-legacy-app";
-      window.wishlist_localization = {
-        buttons: {
-          remove: {{ 'wishlist.buttons.remove' | t | json }},
-          removing: {{ 'wishlist.buttons.removing' | t | json }},
-          cartButton: {{ 'cart.add_to_cart.label' | t }}
-        },
-        notifications: {
-          removed_success: {{ 'wishlist.notifications.removed_success' | t | json }},
-          removed_error: {{ 'wishlist.notifications.removed_error' | t | json }},
-          load_error: {{ 'wishlist.notifications.load_error' | t | json }},
-          generic_error: {{ 'wishlist.notifications.generic_error' | t | json }}
-        }
       };
       {% if customer %}
         window.customerLoggedIn = true;
