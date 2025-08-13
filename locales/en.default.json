@@ -63,6 +63,17 @@
       "generic_error": "Something went wrong. Please try again."
     }
   },
+  "review": {
+    "title": "Review",
+    "loading": "Loading your reviews...",
+    "empty": "You have not submitted any reviews yet.",
+    "table": {
+      "serial": "Serial",
+      "product": "Product",
+      "rating": "Rating",
+      "action": "Action"
+    }
+  },
   "sections": {
     "footer": {
       "social_media": "Social media",
