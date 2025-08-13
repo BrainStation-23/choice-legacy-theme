@@ -7,7 +7,7 @@
         {% render 'account-information', customer: customer %}
       </div>
 
-      <div id="orders-content" class="account-content-section" style="display: block;">
+      <div id="orders-content" class="account-content-section" style="display: none;">
         <div id="orders-section">
           {% render 'orders-list', orders: customer.orders %}
         </div>
@@ -16,6 +16,12 @@
       <div id="rewards-content" class="account-content-section" style="display: none;">
         <div id="rewards-section">
           {% render 'reward-points', section: section %}
+        </div>
+      </div>
+
+      <div id="wishlist-content" class="account-content-section" style="display: block;">
+        <div id="wishlist-section">
+          {% render 'wishlist' %}
         </div>
       </div>
     </div>

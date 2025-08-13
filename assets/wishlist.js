@@ -2,23 +2,7 @@ let wishlistConfig = {
   apiUrl: `/apps/${APP_SUB_PATH}`,
 };
 
-async function addToWishlist(productHandle, variantId = null) {
-  const response = await fetch(
-    `${wishlistConfig.apiUrl}/customer/wishlist/add`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        productHandle: productHandle,
-        variantId: variantId,
-      }),
-    }
-  );
-
-  return await response.json();
-}
+const toastManager = new ToastNotificationManager();
 
 async function removeFromWishlist(productHandle, variantId = null) {
   const response = await fetch(
@@ -34,123 +18,116 @@ async function removeFromWishlist(productHandle, variantId = null) {
       }),
     }
   );
-
   return await response.json();
 }
 
-function showMessage(message) {
-  let messageEl = document.getElementById("wishlist-message");
-
-  if (!messageEl) {
-    messageEl = document.createElement("div");
-    messageEl.id = "wishlist-message";
-    messageEl.style.cssText = `
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: #000;
-      color: #fff;
-      padding: 10px 15px;
-      border-radius: 4px;
-      z-index: 9999;
-      font-size: 14px;
-    `;
-    document.body.appendChild(messageEl);
-  }
-
-  messageEl.textContent = message;
-  messageEl.style.display = "block";
-
-  // Hide after 3 seconds
-  setTimeout(() => {
-    messageEl.style.display = "none";
-  }, 3000);
-}
-
-// Initialize wishlist functionality
 document.addEventListener("DOMContentLoaded", function () {
-  // Handle wishlist add buttons
-  document.addEventListener("click", async (e) => {
-    if (
-      e.target.matches(".wishlist-btn") ||
-      e.target.closest(".wishlist-btn")
-    ) {
-      e.preventDefault();
-      const button = e.target.closest(".wishlist-btn");
-      const productHandle = button.dataset.productHandle;
-      const variantId = button.dataset.variantId || null;
+  const table = document.querySelector(".wishlist-table");
+  const tableBody = document.getElementById("customer-wishlist-items");
+  const loader = document.getElementById("wishlist-loader");
+  const emptyMessage = document.getElementById("empty-wishlist-message");
 
-      if (!productHandle) {
-        console.error("Product handle not found");
-        return;
+  const renderWishlist = (items) => {
+    items.forEach((item) => {
+      const imageUrl =
+        item.images.edges.length > 0
+          ? item.images.edges[0].node.src
+          : "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png";
+      const price =
+        item.variants.edges.length > 0
+          ? parseFloat(item.variants.edges[0].node.price.amount).toFixed(2)
+          : "N/A";
+      const currencySymbol = "৳";
+
+      const row = document.createElement("tr");
+      row.id = item.id;
+
+      row.innerHTML = `
+          <td>
+            <img src="${imageUrl}" alt="${item.title}" class="product-image w-32 h-32">
+          </td>
+          <td class="product-name fw-400 fs-16-lh-24-ls-0">${item.title}</td>
+          <td class="product-price fw-400 fs-16-lh-24-ls-0">${currencySymbol}${price}</td>
+          <td class="wishlist-actions">
+            <button 
+              class="remove-wishlist-button" 
+              data-product-handle="${item.handle}"
+              data-item-id="${item.id}">
+              ${window.wishlist_localization.buttons.remove}
+            </button>
+          </td>
+        `;
+      tableBody.appendChild(row);
+    });
+  };
+
+  const fetchAndDisplayWishlist = async () => {
+    try {
+      const response = await fetch(
+        `/apps/${APP_SUB_PATH}/customer/wishlist/fetch`
+      );
+      const data = await response.json();
+
+      if (data.success && data.wishlist.length > 0) {
+        renderWishlist(data.wishlist);
+        table.style.display = "table";
+      } else {
+        emptyMessage.style.display = "block";
       }
-
-      try {
-        button.disabled = true;
-        const result = await addToWishlist(productHandle, variantId);
-
-        if (result.success) {
-          showMessage("Added to wishlist");
-        } else if (result.alreadyExists) {
-          showMessage("Already in wishlist");
-        } else {
-          showMessage("Failed to add to wishlist");
-        }
-      } catch (error) {
-        console.error("Wishlist error:", error);
-        showMessage("Something went wrong. Please try again.");
-      } finally {
-        button.disabled = false;
-      }
+    } catch (error) {
+      console.error("Failed to fetch wishlist:", error);
+      emptyMessage.innerText =
+        window.wishlist_localization.notifications.load_error;
+      emptyMessage.style.display = "block";
+    } finally {
+      loader.style.display = "none";
     }
-  });
+  };
 
-  // Handle wishlist remove buttons (from wishlist page)
+  fetchAndDisplayWishlist();
+
   document.addEventListener("click", async (e) => {
     if (e.target.matches(".remove-wishlist-button")) {
       const button = e.target;
       const productHandle = button.dataset.productHandle;
-      const variantId = button.dataset.variantId || null;
       const itemId = button.dataset.itemId;
 
       button.disabled = true;
-      button.textContent = "Removing...";
+      button.textContent = window.wishlist_localization.buttons.removing;
 
       try {
-        const result = await removeFromWishlist(productHandle, variantId);
+        const result = await removeFromWishlist(productHandle);
 
         if (result.success) {
-          showMessage("Product removed from wishlist");
-
-          // Remove the item from the page
+          toastManager.show(
+            window.wishlist_localization.notifications.removed_success,
+            "success"
+          );
           const listItem = document.getElementById(itemId);
           if (listItem) {
             listItem.remove();
           }
 
-          // Check if wishlist is now empty
-          const wishlistItemsList = document.getElementById(
-            "customer-wishlist-items"
-          );
-          if (wishlistItemsList && wishlistItemsList.children.length === 0) {
-            const emptyMessage = document.getElementById(
-              "empty-wishlist-message"
-            );
-            if (emptyMessage) {
-              emptyMessage.style.display = "block";
-            }
-            wishlistItemsList.style.display = "none";
+          if (tableBody.children.length === 0) {
+            emptyMessage.style.display = "block";
+            table.style.display = "none";
           }
         } else {
-          showMessage("Failed to remove from wishlist");
+          toastManager.show(
+            window.wishlist_localization.notifications.removed_error,
+            "error"
+          );
           button.disabled = false;
-          button.textContent = "Remove";
+          button.textContent = window.wishlist_localization.buttons.remove;
         }
       } catch (error) {
         console.error("Remove error:", error);
-        showMessage("Something went wrong. Please try again.");
+        toastManager.show(
+          window.wishlist_localization.notifications.generic_error,
+          "error"
+        );
         button.disabled = false;
-        button.textContent = "Remove";
+        button.textContent = window.wishlist_localization.buttons.remove;
       }
     }
   });

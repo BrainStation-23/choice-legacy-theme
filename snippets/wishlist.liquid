@@ -1,0 +1,39 @@
+<div class="wishlist-page-container flex flex-col gap-24">
+  <h2 class="ff-general-sans fw-500 fs-23-lh-24-ls-0 text-left">{{ 'wishlist.title' | t }}</h2>
+
+  <div id="wishlist-loader">
+    <p class="fw-500 fs-14-lh-16-ls-0">{{ 'wishlist.loading' | t }}</p>
+  </div>
+  
+  <table class="wishlist-table" style="display: none;">
+    <thead>
+      <tr class="pt-14 pr-12 pb-14 pl-12">
+        <th class="fw-500 fs-16-lh-20-ls-0_1">{{ 'wishlist.table.image' | t }}</th>
+        <th class="fw-500 fs-16-lh-20-ls-0_1">{{ 'wishlist.table.name' | t }}</th>
+        <th class="fw-500 fs-16-lh-20-ls-0_1">{{ 'wishlist.table.price' | t }}</th>
+        <th class="wishlist-actions fw-500 fs-16-lh-20-ls-0_1">{{ 'wishlist.table.action' | t }}</th>
+      </tr>
+    </thead>
+    <tbody id="customer-wishlist-items">
+    </tbody>
+  </table>
+
+  <div id="empty-wishlist-message" style="display: none;">
+    <p>{{ 'wishlist.empty' | t }}</p>
+  </div>
+</div>
+
+<script>
+  window.wishlist_localization = {
+    buttons: {
+      remove: {{ 'wishlist.buttons.remove' | t | json }},
+      removing: {{ 'wishlist.buttons.removing' | t | json }}
+    },
+    notifications: {
+      removed_success: {{ 'wishlist.notifications.removed_success' | t | json }},
+      removed_error: {{ 'wishlist.notifications.removed_error' | t | json }},
+      load_error: {{ 'wishlist.notifications.load_error' | t | json }},
+      generic_error: {{ 'wishlist.notifications.generic_error' | t | json }}
+    }
+  };
+</script>

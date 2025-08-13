@@ -139,7 +139,8 @@ mark {
 :root {
   --fluid-vw: 100vw;
   --fluid-max-vw: 1536;
-  --fluid-calc: (var(--fluid-vw) - 32rem) / (var(--fluid-max-vw) / 10 - 32) + 0.1rem;
+  --fluid-calc: (var(--fluid-vw) - 32rem) / (var(--fluid-max-vw) / 10 - 32) +
+    0.1rem;
   --fluid-1-065: ((1.065 / 10 - 0.1) * var(--fluid-calc));
   --fluid-1-125: ((1.125 / 10 - 0.1) * var(--fluid-calc));
   --fluid-1-2: ((1.2 / 10 - 0.1) * var(--fluid-calc));
@@ -265,7 +266,9 @@ h6,
 .fs-12-lh-16-ls-0_072 {
   font-size: calc(12 * var(--font-unit));
   line-height: calc(16 * var(--font-unit));
-  letter-spacing: calc(0.006 * var(--font-unit)); /* 0.072px at base font unit */
+  letter-spacing: calc(
+    0.006 * var(--font-unit)
+  ); /* 0.072px at base font unit */
 }
 
 .fs-13-lh-16-ls-0_2 {
@@ -308,6 +311,12 @@ h6,
   font-size: calc(16 * var(--font-unit));
   line-height: calc(16 * var(--font-unit));
   letter-spacing: 0;
+}
+
+.fs-16-lh-20-ls-0_1 {
+  font-size: calc(16 * var(--font-unit));
+  line-height: calc(20 * var(--font-unit));
+  letter-spacing: calc(0.1 * var(--font-unit));
 }
 
 .fs-16-lh-16-ls-0 {
@@ -549,6 +558,9 @@ address {
 .right-12 {
   right: 12px;
 }
+.right-16 {
+  right: 16px;
+}
 .right-20 {
   right: 20px;
 }
@@ -563,6 +575,9 @@ address {
 }
 .top-0 {
   top: 0;
+}
+.top-16 {
+  top: 16px;
 }
 .top-20 {
   top: 20px;
@@ -2069,12 +2084,15 @@ address {
   transform: translate(-50%, -50%);
 }
 .transition {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
-    transform, filter, -webkit-backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
-    transform, filter, backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
-    transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -2496,6 +2514,9 @@ shop-login-button {
   border-bottom-left-radius: 32px;
 }
 
+.border-0_727 {
+  border-width: 0.727px;
+}
 .border-1 {
   border-width: 1px;
 }
@@ -2602,7 +2623,9 @@ input + label {
 }
 
 input[type="date"] {
-  min-height: calc((var(--input-padding-y, 11px) + var(--input-border-width)) * 2 + 1.2em);
+  min-height: calc(
+    (var(--input-padding-y, 11px) + var(--input-border-width)) * 2 + 1.2em
+  );
   -webkit-appearance: none;
 }
 
