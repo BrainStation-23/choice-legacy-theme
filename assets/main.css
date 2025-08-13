@@ -136,6 +136,25 @@ mark {
   }
 }
 
+.button--solid {
+  background: rgb(var(--color-primary-brand));
+  color: rgb(var(--color-background));
+  padding: 16px;
+}
+
+.button--outline {
+  background: rgb(var(--color-background));
+  color: rgb(var(--color-primary-brand));
+  border-radius: 6px;
+  border: 1.5px solid rgba(var(--color-primary-brand));
+  padding: 10px 16px;
+}
+
+.button:disabled {
+  background: rgb(var(--color-primary-brand));
+  cursor: not-allowed;
+}
+
 :root {
   --fluid-vw: 100vw;
   --fluid-max-vw: 1536;
@@ -1636,10 +1655,12 @@ address {
 .p-8 {
   padding: calc(8 * var(--space-unit));
 }
+.p-11 {
+  padding: calc(11 * var(--space-unit));
+}
 .p-14 {
   padding: calc(14 * var(--space-unit));
 }
-
 .p-24 {
   padding: calc(24 * var(--space-unit));
 }
@@ -2295,25 +2316,6 @@ address {
   font-size: calc(14 * var(--font-unit));
   line-height: 100%;
   letter-spacing: 0;
-}
-
-.button--solid {
-  background: rgb(var(--color-primary-brand));
-  color: rgb(var(--color-background));
-  padding: 16px;
-}
-
-.button--outline {
-  background: rgb(var(--color-background));
-  color: rgb(var(--color-primary-brand));
-  border-radius: 6px;
-  border: 1.5px solid rgba(var(--color-primary-brand));
-  padding: 10px 16px;
-}
-
-.button:disabled {
-  background: rgb(var(--color-primary-brand));
-  cursor: not-allowed;
 }
 
 shop-login-button {

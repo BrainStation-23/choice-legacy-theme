@@ -1,12 +1,6 @@
-let wishlistConfig = {
-  apiUrl: `/apps/${APP_SUB_PATH}`,
-};
-
-const toastManager = new ToastNotificationManager();
-
 async function removeFromWishlist(productHandle, variantId = null) {
   const response = await fetch(
-    `${wishlistConfig.apiUrl}/customer/wishlist/remove`,
+    `/apps/choice-legacy-app/customer/wishlist/remove`,
     {
       method: "POST",
       headers: {
@@ -22,6 +16,8 @@ async function removeFromWishlist(productHandle, variantId = null) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
+  console.log(window);
+  const toastManager = new ToastNotificationManager();
   const table = document.querySelector(".wishlist-table");
   const tableBody = document.getElementById("customer-wishlist-items");
   const loader = document.getElementById("wishlist-loader");
@@ -48,13 +44,15 @@ document.addEventListener("DOMContentLoaded", function () {
           </td>
           <td class="product-name fw-400 fs-16-lh-24-ls-0">${item.title}</td>
           <td class="product-price fw-400 fs-16-lh-24-ls-0">${currencySymbol}${price}</td>
-          <td class="wishlist-actions">
+          <td class="wishlist-actions text-right">
             <button 
-              class="remove-wishlist-button" 
+              class="remove-wishlist-button bg-transparent text-brand border-none fw-600 fs-14-lh-16-ls-0 cursor-pointer" 
               data-product-handle="${item.handle}"
-              data-item-id="${item.id}">
-              ${window.wishlist_localization.buttons.remove}
+              data-item-id="${item.id}"
+            >
+              ${window.wishlist_localization?.buttons?.remove}
             </button>
+            <button class="button button--solid cursor-pointer p-11">${window.wishlist_localization?.buttons?.cartButton}</button>
           </td>
         `;
       tableBody.appendChild(row);
@@ -64,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const fetchAndDisplayWishlist = async () => {
     try {
       const response = await fetch(
-        `/apps/${APP_SUB_PATH}/customer/wishlist/fetch`
+        `/apps/choice-legacy-app/customer/wishlist/fetch`
       );
       const data = await response.json();
 
@@ -77,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
     } catch (error) {
       console.error("Failed to fetch wishlist:", error);
       emptyMessage.innerText =
-        window.wishlist_localization.notifications.load_error;
+        window.wishlist_localization?.notifications?.load_error;
       emptyMessage.style.display = "block";
     } finally {
       loader.style.display = "none";
@@ -93,14 +91,14 @@ document.addEventListener("DOMContentLoaded", function () {
       const itemId = button.dataset.itemId;
 
       button.disabled = true;
-      button.textContent = window.wishlist_localization.buttons.removing;
+      button.textContent = window.wishlist_localization?.buttons?.removing;
 
       try {
         const result = await removeFromWishlist(productHandle);
 
         if (result.success) {
           toastManager.show(
-            window.wishlist_localization.notifications.removed_success,
+            window.wishlist_localization?.notifications?.removed_success,
             "success"
           );
           const listItem = document.getElementById(itemId);
@@ -114,20 +112,20 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         } else {
           toastManager.show(
-            window.wishlist_localization.notifications.removed_error,
+            window.wishlist_localization?.notifications?.removed_error,
             "error"
           );
           button.disabled = false;
-          button.textContent = window.wishlist_localization.buttons.remove;
+          button.textContent = window.wishlist_localization?.buttons?.remove;
         }
       } catch (error) {
         console.error("Remove error:", error);
         toastManager.show(
-          window.wishlist_localization.notifications.generic_error,
+          window.wishlist_localization?.notifications?.generic_error,
           "error"
         );
         button.disabled = false;
-        button.textContent = window.wishlist_localization.buttons.remove;
+        button.textContent = window.wishlist_localization?.buttons?.remove;
       }
     }
   });
