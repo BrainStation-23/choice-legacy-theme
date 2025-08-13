@@ -32,34 +32,59 @@
       </div>
     </div>
   </div>
-  <div class="redeem-points-section">
-    <div class="flex flex-col gap-24">
-      <h3 class="ff-general-sans fs-23-lh-24-ls-0 fw-500 text-primary">{{ 'reward_points.redeem_points.label' | t }}</h3>
-      <div class="redeem-points-cards-container grid grid-cols-3 gap-24">
-        {% for block in section.blocks %}
-          <div class="redeem-card p-16 rounded-8 bg-brand-2" {{ block.shopify_attributes }}>
-            <div class="flex flex-col gap-20">
-              <div class="flex flex-col gap-8">
-                <span class="fs-16-lh-24-ls-0 fw-400 text-label">{{ block.settings.points_required }} {{ 'reward_points.reward_points.label' | t }}</span>
-                <span class="fs-23-lh-24-ls-0 fw-500 text-primary"><span class="discount-amount"></span> {{ 'reward_points.redeem_points.off' | t }}</span>
+  {% if section.blocks.size > 0 %}
+    <div class="redeem-points-section">
+      <div class="flex flex-col gap-24">
+        <h3 class="ff-general-sans fs-23-lh-24-ls-0 fw-500 text-primary">{{ 'reward_points.redeem_points.label' | t }}</h3>
+        <div class="redeem-points-cards-container grid grid-cols-3 gap-24">
+          {% for block in section.blocks %}
+            <div class="redeem-card p-16 rounded-8 bg-brand-2" {{ block.shopify_attributes }}>
+              <div class="flex flex-col gap-20">
+                <div class="flex flex-col gap-8">
+                  <span class="fs-16-lh-24-ls-0 fw-400 text-label">{{ block.settings.points_required }} {{ 'reward_points.reward_points.label' | t }}</span>
+                  <span class="fs-23-lh-24-ls-0 fw-500 text-primary"><span class="discount-amount"></span> {{ 'reward_points.redeem_points.off' | t }}</span>
+                </div>
+                <button class="redeem-now-button button button--solid rounded-6 max-w-120 fs-16-lh-24-ls-0 fw-500 py-16 px-16" data-points-required="{{ block.settings.points_required }}">
+                  {{ 'reward_points.redeem_points.button' | t }}
+                </button>
               </div>
-              <button class="redeem-now-button button button--solid rounded-6 max-w-120 fs-16-lh-24-ls-0 fw-500 py-16 px-16" data-points-required="{{ block.settings.points_required }}">
-                {{ 'reward_points.redeem_points.button' | t }}
-              </button>
             </div>
-          </div>
-        {% endfor %}
+          {% endfor %}
+        </div>
       </div>
     </div>
-  </div>
+  {% endif %}
   <div class="reward-history-section">
     <div class="flex flex-col gap-24">
       <h3 class="ff-general-sans fs-23-lh-24-ls-0 fw-500 text-primary">{{ 'reward_points.reward_history.label' | t }}</h3>
+      
+      <div class="reward-history-tabs">
+        <button class="tab-button active">Earning</button>
+        <button class="tab-button">Used</button>
+        <button class="tab-button">Expire</button>
+      </div>
+      <div class="reward-history-content">
+        <table style="width: 100%; border-collapse: collapse;">
+          <thead>
+            <tr>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Event</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">ID</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Point</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Transaction</th>
+              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Action</th>
+            </tr>
+          </thead>
+          <tbody id="earning-history-body">
+          </tbody>
+        </table>
+      </div>
+
     </div>
   </div>
 </div>
 
 <script>
+  window.customerOrders = {{ customer.orders | json }};
   window.rewardPointLocalization = {
     redeeming: "{{ 'reward_points.redeeming.label' | t }}",
     applyToCart: "{{ 'reward_points.apply_to_cart_button.label' | t }}",

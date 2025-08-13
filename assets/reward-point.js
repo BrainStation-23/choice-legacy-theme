@@ -18,6 +18,51 @@ document.addEventListener("DOMContentLoaded", () => {
     return data;
   };
 
+  const renderEarningHistoryTable = (earningHistory, orders) => {
+    const tbody = document.getElementById("earning-history-body");
+    if (!tbody) return;
+
+    tbody.innerHTML = "";
+
+    const orderMap = new Map(
+      orders.map((order) => [order.id.toString(), order])
+    );
+
+    if (earningHistory.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 16px;">No earning history found.</td></tr>`;
+      return;
+    }
+
+    earningHistory.forEach((record) => {
+      const tr = document.createElement("tr");
+
+      let transactionAmount = "";
+      let actionLink = "#";
+      let actionText = "View";
+
+      if (record.event === "order") {
+        const order = orderMap.get(record.referenceId.toString());
+        if (order) {
+          transactionAmount = `৳${(order.total_price / 100).toFixed(2)}`;
+          actionLink = order.customer_url;
+        } else {
+          transactionAmount = "N/A";
+        }
+      } else if (record.event === "review") {
+        actionLink = "/collections/all";
+      }
+
+      tr.innerHTML = `
+        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-transform: capitalize;">${record.event}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd;">#${record.referenceId}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd; color: green;">+${record.earnPoint}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd;">${transactionAmount}</td>
+        <td style="padding: 8px; border-bottom: 1px solid #ddd;"><a href="${actionLink}">${actionText}</a></td>
+      `;
+      tbody.appendChild(tr);
+    });
+  };
+
   const updateCustomerData = (apiResponse) => {
     if (!apiResponse?.success) {
       document.querySelector(".reward-container").style.display = "none";
@@ -86,6 +131,13 @@ document.addEventListener("DOMContentLoaded", () => {
         );
         document.getElementById("orderPointsRule").textContent = finalOrderRule;
       }
+
+      if (apiResponse.rewardHistory?.earning) {
+        renderEarningHistoryTable(
+          apiResponse.rewardHistory.earning,
+          window.customerOrders || []
+        );
+      }
     }
   };
 
@@ -94,47 +146,33 @@ document.addEventListener("DOMContentLoaded", () => {
       toastManager.show("No discount code provided.", "error");
       return;
     }
-
-    // Get the button that was clicked
     const button = event.target;
-
-    // Disable button and show applying state
     button.disabled = true;
-    const originalText = button.textContent;
     button.textContent = "Applying...";
-
-    // Show immediate feedback
     toastManager.show("Discount code applied successfully!", "success");
-
     const oldIframe = document.getElementById("discount-iframe");
     if (oldIframe) oldIframe.remove();
-
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
     iframe.id = "discount-iframe";
     iframe.src = `/discount/${discountCode}?redirect=/cart`;
-
     iframe.onload = () => {
       button.textContent = window.rewardPointLocalization.redeemNow;
     };
-
     document.body.appendChild(iframe);
   };
 
   const handleRedeemFromCard = async (event) => {
     const button = event.target;
     const pointsToRedeem = button.dataset.pointsRequired;
-
     try {
       button.disabled = true;
       button.textContent = window.rewardPointLocalization.redeeming;
-
       const redeemResponse = await apiCall(API_URLS.REDEEM, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ points: Number(pointsToRedeem) }),
       });
-
       if (redeemResponse.discountCode) {
         toastManager.show(
           window.rewardPointLocalization.redeemMessage,
@@ -148,7 +186,6 @@ document.addEventListener("DOMContentLoaded", () => {
           handleApplyToCart(button.dataset.discountCode)
         );
       }
-
       const latestData = await apiCall(API_URLS.HISTORY);
       updateCustomerData(latestData);
     } catch (error) {
@@ -160,8 +197,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   };
-
-  // Remove the localStorage toast check completely since we're not storing it anymore
 
   apiCall(API_URLS.HISTORY)
     .then(updateCustomerData)
