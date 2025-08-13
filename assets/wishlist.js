@@ -1,6 +1,6 @@
 async function removeFromWishlist(productHandle, variantId = null) {
   const response = await fetch(
-    `/apps/choice-legacy-app/customer/wishlist/remove`,
+    `/apps/${APP_SUB_PATH}/customer/wishlist/remove`,
     {
       method: "POST",
       headers: {
@@ -16,7 +16,6 @@ async function removeFromWishlist(productHandle, variantId = null) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  console.log(window);
   const toastManager = new ToastNotificationManager();
   const table = document.querySelector(".wishlist-table");
   const tableBody = document.getElementById("customer-wishlist-items");
@@ -50,9 +49,9 @@ document.addEventListener("DOMContentLoaded", function () {
               data-product-handle="${item.handle}"
               data-item-id="${item.id}"
             >
-              ${window.wishlist_localization?.buttons?.remove}
+              Remove
             </button>
-            <button class="button button--solid cursor-pointer p-11">${window.wishlist_localization?.buttons?.cartButton}</button>
+            <button class="button button--solid cursor-pointer p-11">Add to cart</button>
           </td>
         `;
       tableBody.appendChild(row);
@@ -62,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const fetchAndDisplayWishlist = async () => {
     try {
       const response = await fetch(
-        `/apps/choice-legacy-app/customer/wishlist/fetch`
+        `/apps/${APP_SUB_PATH}/customer/wishlist/fetch`
       );
       const data = await response.json();
 
@@ -75,7 +74,7 @@ document.addEventListener("DOMContentLoaded", function () {
     } catch (error) {
       console.error("Failed to fetch wishlist:", error);
       emptyMessage.innerText =
-        window.wishlist_localization?.notifications?.load_error;
+        "Could not load wishlist. Please try again later.";
       emptyMessage.style.display = "block";
     } finally {
       loader.style.display = "none";
@@ -91,16 +90,13 @@ document.addEventListener("DOMContentLoaded", function () {
       const itemId = button.dataset.itemId;
 
       button.disabled = true;
-      button.textContent = window.wishlist_localization?.buttons?.removing;
+      button.textContent = "Removing...";
 
       try {
         const result = await removeFromWishlist(productHandle);
 
         if (result.success) {
-          toastManager.show(
-            window.wishlist_localization?.notifications?.removed_success,
-            "success"
-          );
+          toastManager.show("Product removed from wishlist", "success");
           const listItem = document.getElementById(itemId);
           if (listItem) {
             listItem.remove();
@@ -111,21 +107,15 @@ document.addEventListener("DOMContentLoaded", function () {
             table.style.display = "none";
           }
         } else {
-          toastManager.show(
-            window.wishlist_localization?.notifications?.removed_error,
-            "error"
-          );
+          toastManager.show("Failed to remove from wishlist", "error");
           button.disabled = false;
-          button.textContent = window.wishlist_localization?.buttons?.remove;
+          button.textContent = "Remove";
         }
       } catch (error) {
         console.error("Remove error:", error);
-        toastManager.show(
-          window.wishlist_localization?.notifications?.generic_error,
-          "error"
-        );
+        toastManager.show("Something went wrong. Please try again.", "error");
         button.disabled = false;
-        button.textContent = window.wishlist_localization?.buttons?.remove;
+        button.textContent = "Remove";
       }
     }
   });
