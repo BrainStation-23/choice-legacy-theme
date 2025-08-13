@@ -109,7 +109,13 @@
   },
   "customer": {
     "addresses": {
-      "title": "My Addresses"
+      "title": "My Addresses",
+      "address1": "Address 1",
+      "address2": "Address 2",
+      "customer_name": "Customer",
+      "shipping_address": "Shipping Address",
+      "billing_address": "Billing Address",
+      "payment_status": "Payment Status"
     },
     "account": {
       "log_out": "Log out",

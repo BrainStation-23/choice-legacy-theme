@@ -1,307 +1,384 @@
 <div class="customer-account__container flex gap-64 page-width pt-40 pb-40">
   {% render 'customer-account-sidebar' %}
-  <div class="flex flex-col gap-24 w-full">
-    <h2 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500">{{ 'customer.order.title' | t: name: order.name }}</h2>
-    <div class="flex gap-8 items-center">
-      <a
-        href="{{ routes.account_url }}"
-        class="cursore-pointer text-brand h-16 w-16"
-      >
-        {% render 'icon-left-arrow' %}
-      </a>
-      <h3 class="m-0 fs-16-lh-22-ls-0 ff-general-sans  fw-600">
-        #{{ order.order_number | default: order.name | remove: '#' }}
-      </h3>
-      <h4 class="m-0 fs-16-lh-24-ls-0 ff-general-sans  fw-400">
-        {{ order.created_at | time_tag: format: 'date_at_time' }}
-      </h4>
-    </div>
 
-    <!-- Order Items -->
-    <div class="border-1 border-solid border-color rounded-12  p-24">
-      <div class="flex flex-col gap-16">
-        <!-- Header -->
-        <div class="grid grid-cols-2fr-1fr-1fr-0-5fr-1fr  border-b border-b-color  border-b-solid  ">
-          <div class="flex items-center  product-header ff-general-sans fw-500  fs-16-lh-16-ls-0 pb-16  ">
-            {{ 'customer.order.product' | t }}
-          </div>
-          <div class=" sku-header  flex items-center  ff-general-sans fw-500  fs-16-lh-16-ls-0 pb-16">
-            {{ 'customer.order.sku' | t }}
-          </div>
-          <div class="price-header  flex items-center  ff-general-sans fw-500  fs-16-lh-16-ls-0 pb-16 ">
-            {{ 'customer.order.price' | t }}
-          </div>
-          <div class="quantity-header flex items-center  ff-general-sans fw-500  fs-16-lh-16-ls-0  pb-16">
-            {{ 'customer.order.quantity' | t }}
-          </div>
-          <div class="total-header flex items-center  ff-general-sans fw-500  fs-16-lh-16-ls-0  justify-end pb-16">
-            {{ 'customer.order.total' | t }}
-          </div>
-        </div>
+  <div class="flex flex-col gap-16">
+    <div class="flex flex-col gap-24 w-full">
+      <h2 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500">{{ 'customer.order.title' | t: name: order.name }}</h2>
+      <div class="flex gap-8 items-center">
+        <a
+          href="{{ routes.account_url }}"
+          class="cursore-pointer text-brand h-16 w-16"
+        >
+          {% render 'icon-left-arrow' %}
+        </a>
+        <h3 class="m-0 fs-16-lh-22-ls-0 ff-general-sans  fw-600">
+          #{{ order.order_number | default: order.name | remove: '#' }}
+        </h3>
+        <h4 class="m-0 fs-16-lh-24-ls-0 ff-general-sans  fw-400">
+          {{ order.created_at | time_tag: format: 'date_at_time' }}
+        </h4>
+      </div>
 
-        {%- for line_item in order.line_items -%}
-          <div class="grid grid-cols-2fr-1fr-1fr-0-5fr-1fr pb-16  border-b border-b-color  border-b-solid">
-            <div class="flex flex-col justify-start product-column">
-              <div>
-                {%- if line_item.url != blank -%}
-                  <a
-                    href="{{ line_item.url }}"
-                    class="no-underline ff-general-sans fw-500  fs-16-lh-16-ls-0 text-brand"
-                  >
-                    {{- line_item.title | escape -}}
-                  </a>
-                {%- else -%}
-                  <div class="no-underline ff-general-sans fw-500  fs-16-lh-16-ls-0  text-brand">
-                    {{ line_item.title | escape }}
-                  </div>
-                {%- endif -%}
+      <!-- Order Items -->
+      <div class="border-1 border-solid border-color rounded-12  p-24">
+        <div class="flex flex-col gap-16">
+          <!-- Header -->
+          <div class="grid grid-cols-2fr-1fr-1fr-0-5fr-1fr  border-b border-b-color  border-b-solid  ">
+            <div class="flex items-center  product-header ff-general-sans fw-500  fs-16-lh-16-ls-0 pb-16  ">
+              {{ 'customer.order.product' | t }}
+            </div>
+            <div class=" sku-header  flex items-center  ff-general-sans fw-500  fs-16-lh-16-ls-0 pb-16">
+              {{ 'customer.order.sku' | t }}
+            </div>
+            <div class="price-header  flex items-center  ff-general-sans fw-500  fs-16-lh-16-ls-0 pb-16 ">
+              {{ 'customer.order.price' | t }}
+            </div>
+            <div class="quantity-header flex items-center  ff-general-sans fw-500  fs-16-lh-16-ls-0  pb-16">
+              {{ 'customer.order.quantity' | t }}
+            </div>
+            <div class="total-header flex items-center  ff-general-sans fw-500  fs-16-lh-16-ls-0  justify-end pb-16">
+              {{ 'customer.order.total' | t }}
+            </div>
+          </div>
 
-                {%- assign property_size = line_item.properties | size -%}
-                {%- unless line_item.selling_plan_allocation == null and property_size == 0 -%}
-                  <div class="flex flex-col gap-4">
-                    {%- unless line_item.product.has_only_default_variant -%}
-                      <span class="ff-general-sans fw-500  fs-16-lh-16-ls-0  text-brand">
-                        {{- line_item.variant.title | escape -}}
-                      </span>
-                    {%- endunless -%}
-                    {%- unless line_item.selling_plan_allocation == null -%}
-                      <span class="selling-plan ff-general-sans fw-500  fs-16-lh-16-ls-0  text-brand">
-                        {{- line_item.selling_plan_allocation.selling_plan.name -}}
-                      </span>
-                    {%- endunless -%}
-                    {%- if property_size != 0 -%}
-                      {%- for property in line_item.properties -%}
-                        {% assign property_first_char = property.first | slice: 0 %}
-                        {%- if property.last != blank and property_first_char != '_' -%}
-                          <span>
-                            <span class="ff-general-sans fw-500  fs-16-lh-16-ls-0 text-brand">
-                              {{- property.first }}:</span
-                            >
+          {%- for line_item in order.line_items -%}
+            <div class="grid grid-cols-2fr-1fr-1fr-0-5fr-1fr pb-16  border-b border-b-color  border-b-solid">
+              <div class="flex flex-col justify-start product-column">
+                <div>
+                  {%- if line_item.url != blank -%}
+                    <a
+                      href="{{ line_item.url }}"
+                      class="no-underline ff-general-sans fw-500  fs-16-lh-16-ls-0 text-brand"
+                    >
+                      {{- line_item.title | escape -}}
+                    </a>
+                  {%- else -%}
+                    <div class="no-underline ff-general-sans fw-500  fs-16-lh-16-ls-0  text-brand">
+                      {{ line_item.title | escape }}
+                    </div>
+                  {%- endif -%}
+
+                  {%- assign property_size = line_item.properties | size -%}
+                  {%- unless line_item.selling_plan_allocation == null and property_size == 0 -%}
+                    <div class="flex flex-col gap-4">
+                      {%- unless line_item.product.has_only_default_variant -%}
+                        <span class="ff-general-sans fw-500  fs-16-lh-16-ls-0  text-brand">
+                          {{- line_item.variant.title | escape -}}
+                        </span>
+                      {%- endunless -%}
+                      {%- unless line_item.selling_plan_allocation == null -%}
+                        <span class="selling-plan ff-general-sans fw-500  fs-16-lh-16-ls-0  text-brand">
+                          {{- line_item.selling_plan_allocation.selling_plan.name -}}
+                        </span>
+                      {%- endunless -%}
+                      {%- if property_size != 0 -%}
+                        {%- for property in line_item.properties -%}
+                          {% assign property_first_char = property.first | slice: 0 %}
+                          {%- if property.last != blank and property_first_char != '_' -%}
                             <span>
-                              {%- if property.last contains '/uploads/' -%}
-                                <a
-                                  href="{{ property.last }}"
-                                  class="ff-general-sans fw-500  fs-16-lh-16-ls-0  text-brand"
-                                >
-                                  {{- property.last | split: '/' | last -}}
-                                </a>
-                              {%- else -%}
-                                {{ property.last }}
-                              {%- endif -%}
+                              <span class="ff-general-sans fw-500  fs-16-lh-16-ls-0 text-brand">
+                                {{- property.first }}:</span
+                              >
+                              <span>
+                                {%- if property.last contains '/uploads/' -%}
+                                  <a
+                                    href="{{ property.last }}"
+                                    class="ff-general-sans fw-500  fs-16-lh-16-ls-0  text-brand"
+                                  >
+                                    {{- property.last | split: '/' | last -}}
+                                  </a>
+                                {%- else -%}
+                                  {{ property.last }}
+                                {%- endif -%}
+                              </span>
                             </span>
-                          </span>
-                        {%- endif -%}
-                      {%- endfor -%}
-                    {%- endif -%}
-                  </div>
-                {%- endunless -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                      {%- endif -%}
+                    </div>
+                  {%- endunless -%}
 
-                {%- if line_item.line_level_discount_allocations != blank -%}
-                  <div>
-                    {%- for discount_allocation in line_item.line_level_discount_allocations -%}
-                      <div class=" flex items-center ga-6">
-                        <span class="ff-general-sans fw-500  fs-16-lh-16-ls-0 ">
-                          {{- discount_allocation.discount_application.title | escape }} (-
+                  {%- if line_item.line_level_discount_allocations != blank -%}
+                    <div>
+                      {%- for discount_allocation in line_item.line_level_discount_allocations -%}
+                        <div class=" flex items-center ga-6">
+                          <span class="ff-general-sans fw-500  fs-16-lh-16-ls-0 ">
+                            {{- discount_allocation.discount_application.title | escape }} (-
+                            {%- render 'price-display',
+                              money_value: discount_allocation.amount,
+                              currency_object: order.currency
+                            -%}
+
+                            )
+                          </span>
+                        </div>
+                      {%- endfor -%}
+                    </div>
+                  {%- endif -%}
+                </div>
+              </div>
+
+              <div class="flex flex-col justify-start sku-column">
+                <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0 ">{{ line_item.sku }}</div>
+              </div>
+
+              <div class="flex flex-col justify-start price-column">
+                <div>
+                  {%- if line_item.original_price != line_item.final_price or line_item.unit_price_measurement -%}
+                    <div>
+                      {%- if line_item.original_price != line_item.final_price -%}
+                        <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0  ">
                           {%- render 'price-display',
-                            money_value: discount_allocation.amount,
+                            money_value: line_item.original_price,
                             currency_object: order.currency
                           -%}
-
-                          )
-                        </span>
-                      </div>
-                    {%- endfor -%}
-                  </div>
-                {%- endif -%}
-              </div>
-            </div>
-
-            <div class="flex flex-col justify-start sku-column">
-              <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0 ">{{ line_item.sku }}</div>
-            </div>
-
-            <div class="flex flex-col justify-start price-column">
-              <div>
-                {%- if line_item.original_price != line_item.final_price or line_item.unit_price_measurement -%}
-                  <div>
-                    {%- if line_item.original_price != line_item.final_price -%}
-                      <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0  ">
-                        {%- render 'price-display',
-                          money_value: line_item.original_price,
-                          currency_object: order.currency
-                        -%}
-                      </div>
-                      <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0  ">
-                        {%- render 'price-display',
-                          money_value: line_item.final_price,
-                          currency_object: order.currency
-                        -%}
-                      </div>
-                    {%- else -%}
-                      <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0  ">
-                        {%- render 'price-display',
-                          money_value: line_item.original_price,
-                          currency_object: order.currency
-                        -%}
-                      </div>
-                    {%- endif -%}
-                    {%- if line_item.unit_price_measurement -%}
-                      <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0  ">
-                        {%- capture unit_price_separator -%}/{% endcapture -%}
-                        {%- capture unit_price_base_unit -%}
+                        </div>
+                        <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0  ">
+                          {%- render 'price-display',
+                            money_value: line_item.final_price,
+                            currency_object: order.currency
+                          -%}
+                        </div>
+                      {%- else -%}
+                        <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0  ">
+                          {%- render 'price-display',
+                            money_value: line_item.original_price,
+                            currency_object: order.currency
+                          -%}
+                        </div>
+                      {%- endif -%}
+                      {%- if line_item.unit_price_measurement -%}
+                        <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0  ">
+                          {%- capture unit_price_separator -%}/{% endcapture -%}
+                          {%- capture unit_price_base_unit -%}
                         {%- if line_item.unit_price_measurement.reference_value != 1 -%}
                           {{- line_item.unit_price_measurement.reference_value -}}
                         {%- endif -%}
                         {{ line_item.unit_price_measurement.reference_unit }}
                       {%- endcapture -%}
-                        <span class="ff-general-sans fw-400  fs-16-lh-16-ls-0 ">
+                          <span class="ff-general-sans fw-400  fs-16-lh-16-ls-0 ">
+                            {%- render 'price-display',
+                              money_value: line_item.unit_price,
+                              currency_object: order.currency
+                            -%}
+                            {{- unit_price_separator -}}
+                            {{- unit_price_base_unit -}}
+                          </span>
+                        </div>
+                      {%- endif -%}
+                    </div>
+                  {%- else -%}
+                    <span class="ff-general-sans fw-500  fs-16-lh-16-ls-0 ">
+                      {%- render 'price-display',
+                        money_value: line_item.final_price,
+                        currency_object: order.currency
+                      -%}
+                    </span>
+                  {%- endif -%}
+                </div>
+              </div>
+
+              <div class="flex flex-col justify-start quantity-column">
+                <div class="ff-general-sans fw-400  fs-16-lh-16-ls-0 ">
+                  {{ line_item.quantity }}
+                </div>
+              </div>
+
+              <div class="flex flex-col justify-start ">
+                <div class="flex justify-end">
+                  {%- if line_item.original_line_price != line_item.final_line_price -%}
+                    <div>
+                      <div>
+                        <p class="ff-general-sans fw-400  fs-16-lh-16-ls-0 ">
                           {%- render 'price-display',
-                            money_value: line_item.unit_price,
+                            money_value: line_item.original_line_price,
                             currency_object: order.currency
                           -%}
-                          {{- unit_price_separator -}}
-                          {{- unit_price_base_unit -}}
-                        </span>
+                        </p>
                       </div>
-                    {%- endif -%}
-                  </div>
-                {%- else -%}
-                  <span class="ff-general-sans fw-500  fs-16-lh-16-ls-0 ">
-                    {%- render 'price-display', money_value: line_item.final_price, currency_object: order.currency -%}
-                  </span>
-                {%- endif -%}
-              </div>
-            </div>
-
-            <div class="flex flex-col justify-start quantity-column">
-              <div class="ff-general-sans fw-400  fs-16-lh-16-ls-0 ">
-                {{ line_item.quantity }}
-              </div>
-            </div>
-
-            <div class="flex flex-col justify-start ">
-              <div class="flex justify-end">
-                {%- if line_item.original_line_price != line_item.final_line_price -%}
-                  <div>
-                    <div>
-                      <p class="ff-general-sans fw-400  fs-16-lh-16-ls-0 ">
-                        {%- render 'price-display',
-                          money_value: line_item.original_line_price,
-                          currency_object: order.currency
-                        -%}
-                      </p>
+                      <div>
+                        <p class="ff-general-sans fw-400  fs-16-lh-16-ls-0 ">
+                          {%- render 'price-display',
+                            money_value: line_item.final_line_price,
+                            currency_object: order.currency
+                          -%}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p class="ff-general-sans fw-400  fs-16-lh-16-ls-0 ">
-                        {%- render 'price-display',
-                          money_value: line_item.final_line_price,
-                          currency_object: order.currency
-                        -%}
-                      </p>
-                    </div>
-                  </div>
-                {%- else -%}
-                  <p class="ff-general-sans fw-400  fs-16-lh-16-ls-0 ">
-                    {%- render 'price-display',
-                      money_value: line_item.original_line_price,
-                      currency_object: order.currency
-                    -%}
-                  </p>
-                {%- endif -%}
-              </div>
-            </div>
-          </div>
-        {%- endfor -%}
-
-        <!-- Order Summary -->
-        <div class="flex flex-col gap-16">
-          <div class="flex justify-end gap-120">
-            <div class=" ff-general-sans fw-500  fs-16-lh-16-ls-0 ">
-              {{ 'customer.order.subtotal' | t }}
-            </div>
-            <div class="w-10pct  ff-general-sans fw-500  fs-16-lh-16-ls-0">
-              {%- render 'price-display',
-                money_value: order.line_items_subtotal_price,
-                currency_object: order.currency
-              -%}
-            </div>
-          </div>
-
-          {%- if order.cart_level_discount_applications != blank -%}
-            {%- for discount_application in order.cart_level_discount_applications -%}
-              <div class="flex justify-end gap-120">
-                <div class="flex ff-general-sans fw-500  fs-16-lh-16-ls-0">
-                  {{ 'customer.order.discount' | t }}
-                  <span class="ff-general-sans fw-400  fs-14-lh-16-ls-0">
-                    (
-                    {{- discount_application.title | escape -}}
-                    )
-                  </span>
+                  {%- else -%}
+                    <p class="ff-general-sans fw-400  fs-16-lh-16-ls-0 ">
+                      {%- render 'price-display',
+                        money_value: line_item.original_line_price,
+                        currency_object: order.currency
+                      -%}
+                    </p>
+                  {%- endif -%}
                 </div>
-                <div class="w-10pct ff-general-sans fw-500  fs-16-lh-16-ls-0">
-                  {%- render 'price-display',
-                    money_value: order.total_allocated_amount,
-                    currency_object: order.currency
-                  -%}
-                </div>
-              </div>
-            {%- endfor -%}
-          {%- endif -%}
-
-          {%- for shipping_method in order.shipping_methods -%}
-            <div class="flex justify-end gap-120">
-              <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0">
-                {{ 'customer.order.shipping' | t }} ({{ shipping_method.title | escape }})
-              </div>
-              <div class="w-10pct ff-general-sans fw-500  fs-16-lh-16-ls-0">
-                {%- render 'price-display', money_value: shipping_method.price, currency_object: order.currency -%}
               </div>
             </div>
           {%- endfor -%}
 
-          {%- for tax_line in order.tax_lines -%}
+          <!-- Order Summary -->
+          <div class="flex flex-col gap-16">
             <div class="flex justify-end gap-120">
-              <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0">
-                {{ 'customer.order.tax' | t }} ({{ tax_line.title | escape }}
-                {{ tax_line.rate | times: 100 }}%)
+              <div class=" ff-general-sans fw-500  fs-16-lh-16-ls-0 ">
+                {{ 'customer.order.subtotal' | t }}
               </div>
-              <div class="w-10pct ff-general-sans fw-500  fs-16-lh-16-ls-0">
-                {%- render 'price-display', money_value: tax_line.price, currency_object: order.currency -%}
-              </div>
-            </div>
-          {%- endfor -%}
-
-          {%- if order.total_duties -%}
-            <div class="flex justify-end gap-120">
-              <div class="ff-general-sans fw-600  fs-16-lh-16-ls-0">
-                {{ 'customer.order.total_duties' | t }}
-              </div>
-              <div class="w-10pct ff-general-sans fw-600  fs-16-lh-16-ls-0">
-                {%- render 'price-display', money_value: order.total_duties, currency_object: order.currency -%}
-              </div>
-            </div>
-          {%- endif -%}
-
-          {%- if order.total_refunded_amount > 0 -%}
-            <div class="refund-row flex justify-end gap-120">
-              <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0">
-                {{ 'customer.order.total_refunded' | t }}
-              </div>
-              <div class="w-10pct ff-general-sans fw-500  fs-16-lh-16-ls-0">
+              <div class="w-10pct  ff-general-sans fw-500  fs-16-lh-16-ls-0">
                 {%- render 'price-display',
-                  money_value: order.total_refunded_amount,
+                  money_value: order.line_items_subtotal_price,
                   currency_object: order.currency
                 -%}
               </div>
             </div>
-          {%- endif -%}
 
-          <div class="flex justify-end gap-120">
-            <div class="ff-general-sans fw-600  fs-16-lh-16-ls-0">{{ 'customer.order.total' | t }}</div>
-            <span class="w-10pct ff-general-sans fw-600 fs-16-lh-24-ls-0 flex gap-4">
-              {%- render 'price-display', money_value: order.total_net_amount, currency_object: order.currency -%}
-            </span>
+            {%- if order.cart_level_discount_applications != blank -%}
+              {%- for discount_application in order.cart_level_discount_applications -%}
+                <div class="flex justify-end gap-120">
+                  <div class="flex ff-general-sans fw-500  fs-16-lh-16-ls-0">
+                    {{ 'customer.order.discount' | t }}
+                    <span class="ff-general-sans fw-400  fs-14-lh-16-ls-0">
+                      (
+                      {{- discount_application.title | escape -}}
+                      )
+                    </span>
+                  </div>
+                  <div class="w-10pct ff-general-sans fw-500  fs-16-lh-16-ls-0">
+                    {%- render 'price-display',
+                      money_value: order.total_allocated_amount,
+                      currency_object: order.currency
+                    -%}
+                  </div>
+                </div>
+              {%- endfor -%}
+            {%- endif -%}
+
+            {%- for shipping_method in order.shipping_methods -%}
+              <div class="flex justify-end gap-120">
+                <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0">
+                  {{ 'customer.order.shipping' | t }} ({{ shipping_method.title | escape }})
+                </div>
+                <div class="w-10pct ff-general-sans fw-500  fs-16-lh-16-ls-0">
+                  {%- render 'price-display', money_value: shipping_method.price, currency_object: order.currency -%}
+                </div>
+              </div>
+            {%- endfor -%}
+
+            {%- for tax_line in order.tax_lines -%}
+              <div class="flex justify-end gap-120">
+                <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0">
+                  {{ 'customer.order.tax' | t }} ({{ tax_line.title | escape }}
+                  {{ tax_line.rate | times: 100 }}%)
+                </div>
+                <div class="w-10pct ff-general-sans fw-500  fs-16-lh-16-ls-0">
+                  {%- render 'price-display', money_value: tax_line.price, currency_object: order.currency -%}
+                </div>
+              </div>
+            {%- endfor -%}
+
+            {%- if order.total_duties -%}
+              <div class="flex justify-end gap-120">
+                <div class="ff-general-sans fw-600  fs-16-lh-16-ls-0">
+                  {{ 'customer.order.total_duties' | t }}
+                </div>
+                <div class="w-10pct ff-general-sans fw-600  fs-16-lh-16-ls-0">
+                  {%- render 'price-display', money_value: order.total_duties, currency_object: order.currency -%}
+                </div>
+              </div>
+            {%- endif -%}
+
+            {%- if order.total_refunded_amount > 0 -%}
+              <div class="refund-row flex justify-end gap-120">
+                <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0">
+                  {{ 'customer.order.total_refunded' | t }}
+                </div>
+                <div class="w-10pct ff-general-sans fw-500  fs-16-lh-16-ls-0">
+                  {%- render 'price-display',
+                    money_value: order.total_refunded_amount,
+                    currency_object: order.currency
+                  -%}
+                </div>
+              </div>
+            {%- endif -%}
+
+            <div class="flex justify-end gap-120">
+              <div class="ff-general-sans fw-600  fs-16-lh-16-ls-0">{{ 'customer.order.total' | t }}</div>
+              <span class="w-10pct ff-general-sans fw-600 fs-16-lh-24-ls-0 flex gap-4">
+                {%- render 'price-display', money_value: order.total_net_amount, currency_object: order.currency -%}
+              </span>
+            </div>
           </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex flex-col gap-16">
+      <h1 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500">{{ 'customer.addresses.shipping_address' | t }}</h1>
+
+      <div class=" border-1 border-solid border-color rounded-12 p-24">
+        <div class="border-b border-b-color border-b-solid flex justify-between  pb-16">
+          <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0  fw-500">
+            {{ 'customer.addresses.customer_name' | t }}
+          </h1>
+          <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0  fw-500">
+            {{ 'customer.addresses.address1' | t }}
+          </h1>
+          <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0  fw-500">
+            {{ 'customer.addresses.address2' | t }}
+          </h1>
+        </div>
+
+        <div class="flex justify-between pt-16 ">
+          <h2
+            class="customer-order-cell flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400"
+          >
+            {{ order.customer.name }}
+          </h2>
+          <h2
+            class=" m-0 flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400"
+          >
+            {{ order.shipping_address.address1 | default: '-' }}
+          </h2>
+          <h2
+            class="m-0 flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400"
+          >
+            {{ order.shipping_address.address2 | default: '-' }}
+          </h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-16">
+      <h1 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500">{{ 'customer.addresses.billing_address' | t }}</h1>
+
+      <div class=" border-1 border-solid border-color rounded-12 p-24">
+        <div class="border-b border-b-color border-b-solid flex justify-between  pb-16">
+          <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0  fw-500">
+            {{ 'customer.addresses.address1' | t }}
+          </h1>
+          <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0  fw-500">
+            {{ 'customer.addresses.address2' | t }}
+          </h1>
+          <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0  fw-500">
+            {{ 'customer.addresses.payment_status' | t }}
+          </h1>
+        </div>
+
+        <div class="flex justify-between pt-16 ">
+          <h2
+            class="customer-order-cell flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400"
+          >
+            {{ order.billing_address.address1 | default: '-' }}
+          </h2>
+          <h2
+            class=" m-0 flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400"
+          >
+            {{ order.billing_address.address2 | default: '-' }}
+          </h2>
+          <h2
+            class="m-0 flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400"
+          >
+            {{ order.payment_status | default: '-' }}
+          </h2>
         </div>
       </div>
     </div>
