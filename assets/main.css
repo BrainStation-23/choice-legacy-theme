@@ -754,6 +754,9 @@ address {
 .grid-cols-fixed-2 {
   grid-template-columns: 1fr 1fr;
 }
+.grid-cols-2fr-1fr-1fr-0-5fr-1fr {
+  grid-template-columns: 2fr 1fr 1fr 0.5fr 1fr;
+}
 
 @media screen and (min-width: 769px) and (max-width: 1023px) {
   .md\:grid-cols-2 {
@@ -900,6 +903,9 @@ address {
 .h-20 {
   height: 20px;
 }
+.h-16 {
+  height: 16px;
+}
 .h-14 {
   height: 14px;
 }
@@ -984,9 +990,14 @@ address {
 .w-12 {
   width: 12px;
 }
-
+.w-16 {
+  width: 16px;
+}
 .w-8 {
   width: 8px;
+}
+.w-10pct {
+  width: 10%;
 }
 .max-w-full {
   max-width: 100%;
@@ -1083,7 +1094,9 @@ address {
     height: 300px;
   }
 }
-
+.border-collapse {
+  border-collapse: collapse;
+}
 @media screen and (max-width: 768px) {
   .sm\:w-auto {
     width: auto;
@@ -1321,7 +1334,9 @@ address {
 .gap-64 {
   gap: calc(64 * var(--space-unit));
 }
-
+.gap-120 {
+  gap: calc(120 * var(--space-unit));
+}
 .gap-x-3 {
   row-gap: calc(3 * var(--space-unit));
 }
@@ -1599,6 +1614,10 @@ address {
 }
 .p-14 {
   padding: calc(14 * var(--space-unit));
+}
+
+.p-24 {
+  padding: calc(24 * var(--space-unit));
 }
 .pb-0 {
   padding-bottom: 0;

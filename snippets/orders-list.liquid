@@ -116,8 +116,7 @@
                 </td>
                 <td role="cell" class="pt-0 pb-0 pl-12 pr-12">
                   <span class="ff-general-sans fw-400 fs-16-lh-24-ls-0 flex gap-4">
-                    ৳
-                    {{- order.total_net_amount | money_without_currency -}}
+                    {%- render 'price-display', money_value: order.total_net_amount, currency_object: order.currency -%}
                   </span>
                 </td>
                 <td role="cell" class="pt-0 pb-0 pl-12 pr-12">
