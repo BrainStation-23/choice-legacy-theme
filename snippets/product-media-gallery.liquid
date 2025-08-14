@@ -3,6 +3,8 @@
   Supports images, videos, YouTube videos, and 3D models
 {% endcomment %}
 
+<!-- Include model-viewer script for 3D models -->
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
 <style>
   .main-media-container {
@@ -15,12 +17,16 @@
 
   .main-media-wrapper {
     position: relative;
+    width: 100%;
+    height: 100%;
   }
 
   .main-media-item {
     position: absolute;
     top: 0;
     left: 0;
+    width: 100%;
+    height: 100%;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s ease;
@@ -77,10 +83,9 @@
   <div class="main-media-container h-550">
     <div class="main-media-wrapper">
       {% for media in product.media %}
-        <div class="main-media-item media block relative w-578 {% if forloop.first %}active{% endif %}" 
+        <div class="main-media-item media block relative {% if forloop.first %}active{% endif %}" 
              data-media-id="{{ media.id }}" 
              data-media-type="{{ media.media_type }}"
-             style="padding-top: 100%;"
         >
           {% case media.media_type %}
             {% when 'image' %}
@@ -301,6 +306,3 @@
     customElements.define('product-media-gallery', ProductMediaGallery);
   }
 </script>
-
-<!-- Model Viewer for 3D models -->
-<script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/model-viewer/1.12.1/model-viewer.min.js"></script>
