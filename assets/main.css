@@ -158,7 +158,8 @@ mark {
 :root {
   --fluid-vw: 100vw;
   --fluid-max-vw: 1536;
-  --fluid-calc: (var(--fluid-vw) - 32rem) / (var(--fluid-max-vw) / 10 - 32) + 0.1rem;
+  --fluid-calc: (var(--fluid-vw) - 32rem) / (var(--fluid-max-vw) / 10 - 32) +
+    0.1rem;
   --fluid-1-065: ((1.065 / 10 - 0.1) * var(--fluid-calc));
   --fluid-1-125: ((1.125 / 10 - 0.1) * var(--fluid-calc));
   --fluid-1-2: ((1.2 / 10 - 0.1) * var(--fluid-calc));
@@ -284,7 +285,9 @@ h6,
 .fs-12-lh-16-ls-0_072 {
   font-size: calc(12 * var(--font-unit));
   line-height: calc(16 * var(--font-unit));
-  letter-spacing: calc(0.006 * var(--font-unit)); /* 0.072px at base font unit */
+  letter-spacing: calc(
+    0.006 * var(--font-unit)
+  ); /* 0.072px at base font unit */
 }
 
 .fs-13-lh-16-ls-0_2 {
@@ -889,6 +892,9 @@ address {
 .h-600 {
   height: 600px;
 }
+.h-550 {
+  height: 550px;
+}
 .h-508 {
   height: 508px;
 }
@@ -921,6 +927,9 @@ address {
 }
 .h-154 {
   height: 154px;
+}
+.h-74 {
+  height: 74px;
 }
 .h-56 {
   height: 56px;
@@ -982,6 +991,9 @@ address {
 .w-1134 {
   width: 1134px;
 }
+.w-578 {
+  width: 578px;
+}
 .w-300 {
   width: 300px;
 }
@@ -996,6 +1008,9 @@ address {
 }
 .w-177 {
   width: 177px;
+}
+.w-74 {
+  width: 74px;
 }
 .w-56 {
   width: 56px;
@@ -2153,12 +2168,15 @@ address {
   transform: translate(-50%, -50%);
 }
 .transition {
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
-    transform, filter, -webkit-backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
-    transform, filter, backdrop-filter;
-  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
-    transform, filter, backdrop-filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter;
+  transition-property: color, background-color, border-color,
+    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
+    backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -2670,7 +2688,9 @@ input + label {
 }
 
 input[type="date"] {
-  min-height: calc((var(--input-padding-y, 11px) + var(--input-border-width)) * 2 + 1.2em);
+  min-height: calc(
+    (var(--input-padding-y, 11px) + var(--input-border-width)) * 2 + 1.2em
+  );
   -webkit-appearance: none;
 }
 

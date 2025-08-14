@@ -1,0 +1,306 @@
+{% comment %}
+  Product Media Gallery - snippets/product-media-gallery.liquid
+  Supports images, videos, YouTube videos, and 3D models
+{% endcomment %}
+
+
+<style>
+  .main-media-container {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #f8f8f8;
+    aspect-ratio: 1;
+  }
+
+  .main-media-wrapper {
+    position: relative;
+  }
+
+  .main-media-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .main-media-item.active {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .main-media-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .main-media-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .external-video-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+
+  .external-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .model-viewer-wrapper {
+    width: 100%;
+    height: 100%;
+  }
+
+  .main-media-model {
+    width: 100%;
+    height: 100%;
+  }
+</style>
+
+<product-media-gallery class="product-media-gallery flex flex-col gap-16">
+  <!-- Main Media Display -->
+  <div class="main-media-container h-550">
+    <div class="main-media-wrapper">
+      {% for media in product.media %}
+        <div class="main-media-item media block relative w-578 {% if forloop.first %}active{% endif %}" 
+             data-media-id="{{ media.id }}" 
+             data-media-type="{{ media.media_type }}"
+             style="padding-top: 100%;"
+        >
+          {% case media.media_type %}
+            {% when 'image' %}
+              {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
+              {%- render 'image-desktop-and-mobile',
+                  class: 'img-fit',
+                  desktop_image: media,
+                  mobile_image: media,
+                  src_width_mobile: 980,
+                  widths_mobile: '480, 980, 1200, 1400',
+                  src_width_desktop: 1440,
+                  widths_desktop: '578, 578, 578, 578, 578, 578, 578, 578',
+                  lazy_load: true,
+                  fetchpriority: "high",
+                  sizes: sizes,
+                  block: block
+                -%}
+            {% when 'video' %}
+              <video 
+                class="main-media-video"
+                controls
+                preload="metadata"
+                poster="{{ media.preview_image | image_url: width: 800 }}">
+                {% for source in media.sources %}
+                  <source src="{{ source.url }}" type="{{ source.mime_type }}">
+                {% endfor %}
+                Your browser does not support the video tag.
+              </video>
+            
+            {% when 'external_video' %}
+              {% case media.host %}
+                {% when 'youtube' %}
+                  <div class="external-video-wrapper">
+                    <iframe 
+                      src="https://www.youtube.com/embed/{{ media.external_id }}?enablejsapi=1"
+                      frameborder="0"
+                      allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                      allowfullscreen
+                      class="external-video">
+                    </iframe>
+                  </div>
+                {% when 'vimeo' %}
+                  <div class="external-video-wrapper">
+                    <iframe 
+                      src="https://player.vimeo.com/video/{{ media.external_id }}"
+                      frameborder="0"
+                      allow="autoplay; fullscreen; picture-in-picture"
+                      allowfullscreen
+                      class="external-video">
+                    </iframe>
+                  </div>
+              {% endcase %}
+            
+            {% when 'model' %}
+              <div class="model-viewer-wrapper">
+                <model-viewer
+                  src="{{ media.sources[1].url }}"
+                  poster="{{ media.preview_image | image_url: width: 800 }}"
+                  alt="{{ media.alt | escape }}"
+                  camera-controls
+                  auto-rotate
+                  class="main-media-model">
+                </model-viewer>
+              </div>
+          {% endcase %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Thumbnail Navigation -->
+  <div class="media-thumbnails flex gap-8">
+    {% render 'product-media-thumbnails', product: product %}
+  </div>
+</product-media-gallery>
+
+<!-- Web Component Script -->
+<script>
+  class ProductMediaGallery extends HTMLElement {
+    constructor() {
+      super();
+      this.currentMediaId = null;
+      this.init();
+    }
+
+    init() {
+      this.setupThumbnailClickHandlers();
+      this.setupKeyboardNavigation();
+      this.setupTouchGestures();
+      
+      // Set initial active media
+      const firstMedia = this.querySelector('.main-media-item');
+      if (firstMedia) {
+        this.currentMediaId = firstMedia.dataset.mediaId;
+      }
+    }
+
+    setupThumbnailClickHandlers() {
+      const thumbnails = this.querySelectorAll('.media-thumbnail');
+      thumbnails.forEach(thumbnail => {
+        thumbnail.addEventListener('click', (e) => {
+          e.preventDefault();
+          const mediaId = thumbnail.dataset.mediaId;
+          this.showMedia(mediaId);
+        });
+      });
+    }
+
+    setupKeyboardNavigation() {
+      this.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') {
+          this.showPreviousMedia();
+        } else if (e.key === 'ArrowRight') {
+          this.showNextMedia();
+        }
+      });
+    }
+
+    setupTouchGestures() {
+      let startX = 0;
+      let endX = 0;
+
+      this.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+      });
+
+      this.addEventListener('touchend', (e) => {
+        endX = e.changedTouches[0].clientX;
+        this.handleSwipe();
+      });
+
+      const handleSwipe = () => {
+        const swipeThreshold = 50;
+        const diff = startX - endX;
+        
+        if (Math.abs(diff) > swipeThreshold) {
+          if (diff > 0) {
+            this.showNextMedia();
+          } else {
+            this.showPreviousMedia();
+          }
+        }
+      };
+      
+      this.handleSwipe = handleSwipe;
+    }
+
+    showMedia(mediaId) {
+      // Hide all media items
+      const allMediaItems = this.querySelectorAll('.main-media-item');
+      allMediaItems.forEach(item => {
+        item.classList.remove('active');
+      });
+
+      // Show selected media item
+      const selectedMedia = this.querySelector(`[data-media-id="${mediaId}"]`);
+      if (selectedMedia) {
+        selectedMedia.classList.add('active');
+        this.currentMediaId = mediaId;
+      }
+
+      // Update thumbnail active state
+      const allThumbnails = this.querySelectorAll('.media-thumbnail');
+      allThumbnails.forEach(thumb => {
+        thumb.classList.remove('active');
+      });
+
+      const activeThumbnail = this.querySelector(`.media-thumbnail[data-media-id="${mediaId}"]`);
+      if (activeThumbnail) {
+        activeThumbnail.classList.add('active');
+      }
+
+      // Pause videos when switching away
+      this.pauseAllVideos();
+
+      // Handle model viewer initialization
+      if (selectedMedia.dataset.mediaType === 'model') {
+        this.initializeModelViewer(selectedMedia);
+      }
+    }
+
+    showPreviousMedia() {
+      const thumbnails = Array.from(this.querySelectorAll('.media-thumbnail'));
+      const currentIndex = thumbnails.findIndex(thumb => thumb.dataset.mediaId === this.currentMediaId);
+      const previousIndex = currentIndex > 0 ? currentIndex - 1 : thumbnails.length - 1;
+      const previousMediaId = thumbnails[previousIndex].dataset.mediaId;
+      this.showMedia(previousMediaId);
+    }
+
+    showNextMedia() {
+      const thumbnails = Array.from(this.querySelectorAll('.media-thumbnail'));
+      const currentIndex = thumbnails.findIndex(thumb => thumb.dataset.mediaId === this.currentMediaId);
+      const nextIndex = currentIndex < thumbnails.length - 1 ? currentIndex + 1 : 0;
+      const nextMediaId = thumbnails[nextIndex].dataset.mediaId;
+      this.showMedia(nextMediaId);
+    }
+
+    pauseAllVideos() {
+      const videos = this.querySelectorAll('video');
+      videos.forEach(video => {
+        if (!video.paused) {
+          video.pause();
+        }
+      });
+    }
+
+    initializeModelViewer(mediaElement) {
+      const modelViewer = mediaElement.querySelector('model-viewer');
+      if (modelViewer && !modelViewer.hasAttribute('initialized')) {
+        modelViewer.setAttribute('initialized', 'true');
+        // Add any additional model viewer setup here
+      }
+    }
+  }
+
+  // Register the custom element
+  if (!customElements.get('product-media-gallery')) {
+    customElements.define('product-media-gallery', ProductMediaGallery);
+  }
+</script>
+
+<!-- Model Viewer for 3D models -->
+<script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/model-viewer/1.12.1/model-viewer.min.js"></script>

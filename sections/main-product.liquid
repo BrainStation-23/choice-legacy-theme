@@ -1,1 +1,37 @@
-{% render 'product-review' %}
+<div class="product-container page-width">
+  <div class="product-grid flex gap-32">
+    <!-- Product Images Section -->
+    <div class="product-media w-578">
+      {% render 'product-media-gallery', product: product, block: section %}
+    </div>
+
+    <!-- Product Info Section -->
+    <div class="product-info">
+      <div class="product-header">
+        {% for block in section.blocks %}
+          {% case block.type %}
+            {% when "title" %}
+              <h1 class="product-title">{{ product.title }}</h1>
+          {% endcase %}
+        {% endfor %}
+        {% if product.vendor %}
+          <div class="product-brand">{{ product.vendor }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Main Product",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "title",
+      "name": "Title",
+      "limit": 1
+    },
+  ]
+}
+{% endschema %}

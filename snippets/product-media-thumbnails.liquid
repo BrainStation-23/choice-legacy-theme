@@ -1,0 +1,149 @@
+{% comment %}
+  Product Media Thumbnails - snippets/product-media-thumbnails.liquid
+  Generates thumbnail navigation for all media types
+{% endcomment %}
+
+<style>
+  .thumbnails-container {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .media-thumbnail {
+    flex-shrink: 0;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f5f5f5;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    padding: 0;
+    position: relative;
+  }
+
+  .media-thumbnail.active {
+    border-color: #333;
+    box-shadow: 0 0 0 1px #333;
+  }
+
+  .media-thumbnail:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  }
+
+  .thumbnail-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .thumbnail-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .media-type-indicator {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 8px;
+  }
+
+  .video-indicator {
+    background: rgba(255, 0, 0, 0.8);
+  }
+
+  .model-indicator {
+    background: rgba(0, 150, 255, 0.8);
+  }
+</style>
+
+<div class="thumbnails-container">
+  {% for media in product.media %}
+    <button 
+      class="media-thumbnail w-74 h-74 {% if forloop.first %}active{% endif %}"
+      data-media-id="{{ media.id }}"
+      data-media-type="{{ media.media_type }}"
+      type="button"
+      aria-label="View {{ media.media_type }} {{ forloop.index }}">
+      
+      <div class="thumbnail-wrapper media block relative">
+        {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 5 %}{% endcapture -%}
+
+        {% case media.media_type %}
+          {% when 'image' %}
+            {% render 'image',
+              image: media,
+              alt_text: media.alt,
+              widths: '74, 74, 74, 74',
+              src_width: 116,
+              sizes: sizes,
+              class: 'img-fit',
+              quality: 1
+            %}
+          
+          {% when 'video' %}
+            {% render 'image',
+              image: media.preview_image,
+              alt_text: media.alt,
+              widths: '74, 74, 74, 74',
+              src_width: 116,
+              sizes: sizes,
+              class: 'img-fit',
+              quality: 1
+            %}
+          
+          {% when 'external_video' %}
+            {% if media.host == 'youtube' %}
+              <img 
+                src="https://img.youtube.com/vi/{{ media.external_id }}/mqdefault.jpg"
+                alt="{{ media.alt | escape }}"
+                class="thumbnail-image"
+                loading="lazy"
+                width="74"
+                height="74"
+              />
+
+            {% elsif media.host == 'vimeo' %}
+              {% render 'image',
+                image: media.preview_image,
+                alt_text: media.alt,
+                widths: '74, 74, 74, 74',
+                src_width: 116,
+                sizes: sizes,
+                class: 'img-fit',
+                quality: 1
+              %}
+            {% endif %}
+
+          {% when 'model' %}
+            {% render 'image',
+              image: media.preview_image,
+              alt_text: media.alt,
+              widths: '74, 74, 74, 74',
+              src_width: 116,
+              sizes: sizes,
+              class: 'img-fit',
+              quality: 1
+            %}
+        {% endcase %}
+      </div>
+    </button>
+  {% endfor %}
+</div>
+

@@ -1,0 +1,277 @@
+{% comment %}
+  Reusable Image Picker Component - snippets/image-picker.liquid
+  
+  Usage: {% render 'image-picker', media_array: product.media, picker_id: 'unique-id' %}
+  
+  Parameters:
+  - media_array: Array of media objects (required)
+  - picker_id: Unique identifier for this picker instance (required)
+  - show_thumbnails: true/false (optional, default: true)
+  - thumbnail_size: Size for thumbnails (optional, default: 80)
+{% endcomment %}
+
+<style>
+  .image-picker {
+    display: block;
+    max-width: 100%;
+  }
+
+  .picker-main-display {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f9f9f9;
+    margin-bottom: 15px;
+  }
+
+  .picker-media-item {
+    display: none;
+    width: 100%;
+  }
+
+  .picker-media-item.active {
+    display: block;
+  }
+
+  .picker-image,
+  .picker-video {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .picker-external-video {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+  }
+
+  .picker-external-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .picker-model {
+    width: 100%;
+    height: 400px;
+  }
+
+  .picker-thumbnails {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 5px 0;
+  }
+
+  .picker-thumbnail {
+    flex-shrink: 0;
+    width: var(--thumbnail-size);
+    height: var(--thumbnail-size);
+    border: 2px solid transparent;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    position: relative;
+    background: none;
+    padding: 0;
+    transition: all 0.2s ease;
+  }
+
+  .picker-thumbnail:hover {
+    border-color: #ddd;
+  }
+
+  .picker-thumbnail.active {
+    border-color: #333;
+  }
+
+  .picker-thumbnail:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+  }
+
+  .picker-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .media-type-badge {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    font-size: 10px;
+    padding: 1px 3px;
+    border-radius: 3px;
+    line-height: 1;
+  }
+</style>
+
+{% assign picker_id = picker_id | default: 'image-picker-' | append: media_array.first.id %}
+{% assign show_thumbnails = show_thumbnails | default: true %}
+{% assign thumbnail_size = thumbnail_size | default: 80 %}
+
+<image-picker class="image-picker" data-picker-id="{{ picker_id }}">
+  <!-- Main Display -->
+  <div class="picker-main-display">
+    {% for media in media_array %}
+      <div class="picker-media-item {% if forloop.first %}active{% endif %}" 
+           data-media-id="{{ media.id }}" 
+           data-media-type="{{ media.media_type }}">
+        
+        {% case media.media_type %}
+          {% when 'image' %}
+            <img 
+              src="{{ media | image_url: width: 600 }}"
+              srcset="{{ media | image_url: width: 300 }} 300w,
+                      {{ media | image_url: width: 600 }} 600w,
+                      {{ media | image_url: width: 800 }} 800w"
+              sizes="(max-width: 768px) 100vw, 600px"
+              alt="{{ media.alt | escape }}"
+              class="picker-image">
+          
+          {% when 'video' %}
+            <video 
+              controls
+              preload="metadata"
+              poster="{{ media.preview_image | image_url: width: 600 }}"
+              class="picker-video">
+              {% for source in media.sources %}
+                <source src="{{ source.url }}" type="{{ source.mime_type }}">
+              {% endfor %}
+            </video>
+          
+          {% when 'external_video' %}
+            <div class="picker-external-video">
+              {% case media.host %}
+                {% when 'youtube' %}
+                  <iframe 
+                    src="https://www.youtube.com/embed/{{ media.external_id }}"
+                    frameborder="0"
+                    allowfullscreen>
+                  </iframe>
+                {% when 'vimeo' %}
+                  <iframe 
+                    src="https://player.vimeo.com/video/{{ media.external_id }}"
+                    frameborder="0"
+                    allowfullscreen>
+                  </iframe>
+              {% endcase %}
+            </div>
+          
+          {% when 'model' %}
+            <model-viewer
+              src="{{ media.sources[1].url }}"
+              poster="{{ media.preview_image | image_url: width: 600 }}"
+              alt="{{ media.alt | escape }}"
+              camera-controls
+              class="picker-model">
+            </model-viewer>
+        {% endcase %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Thumbnails -->
+  {% if show_thumbnails and media_array.size > 1 %}
+    <div class="picker-thumbnails" style="--thumbnail-size: {{ thumbnail_size }}px;">
+      {% for media in media_array %}
+        <button 
+          class="picker-thumbnail {% if forloop.first %}active{% endif %}"
+          data-media-id="{{ media.id }}"
+          type="button">
+          
+          {% case media.media_type %}
+            {% when 'image' %}
+              <img src="{{ media | image_url: width: thumbnail_size }}" alt="{{ media.alt | escape }}">
+            {% else %}
+              <img src="{{ media.preview_image | image_url: width: thumbnail_size }}" alt="{{ media.alt | escape }}">
+              <span class="media-type-badge">
+                {% case media.media_type %}
+                  {% when 'video' %}📹
+                  {% when 'external_video' %}🎥
+                  {% when 'model' %}🎯
+                {% endcase %}
+              </span>
+          {% endcase %}
+        </button>
+      {% endfor %}
+    </div>
+  {% endif %}
+</image-picker>
+
+<script>
+  class ImagePicker extends HTMLElement {
+    constructor() {
+      super();
+      this.pickerId = this.dataset.pickerId;
+      this.currentMediaId = null;
+      this.init();
+    }
+
+    init() {
+      // Set initial media
+      const firstMedia = this.querySelector('.picker-media-item');
+      if (firstMedia) {
+        this.currentMediaId = firstMedia.dataset.mediaId;
+      }
+
+      // Setup thumbnail clicks
+      this.querySelectorAll('.picker-thumbnail').forEach(thumb => {
+        thumb.addEventListener('click', () => {
+          this.switchToMedia(thumb.dataset.mediaId);
+        });
+      });
+
+      // Keyboard navigation
+      this.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') this.previousMedia();
+        if (e.key === 'ArrowRight') this.nextMedia();
+      });
+    }
+
+    switchToMedia(mediaId) {
+      // Update main display
+      this.querySelectorAll('.picker-media-item').forEach(item => {
+        item.classList.toggle('active', item.dataset.mediaId === mediaId);
+      });
+
+      // Update thumbnails
+      this.querySelectorAll('.picker-thumbnail').forEach(thumb => {
+        thumb.classList.toggle('active', thumb.dataset.mediaId === mediaId);
+      });
+
+      this.currentMediaId = mediaId;
+      
+      // Dispatch custom event
+      this.dispatchEvent(new CustomEvent('mediaChanged', {
+        detail: { mediaId, pickerId: this.pickerId }
+      }));
+    }
+
+    previousMedia() {
+      const thumbnails = Array.from(this.querySelectorAll('.picker-thumbnail'));
+      const currentIndex = thumbnails.findIndex(t => t.dataset.mediaId === this.currentMediaId);
+      const prevIndex = currentIndex > 0 ? currentIndex - 1 : thumbnails.length - 1;
+      this.switchToMedia(thumbnails[prevIndex].dataset.mediaId);
+    }
+
+    nextMedia() {
+      const thumbnails = Array.from(this.querySelectorAll('.picker-thumbnail'));
+      const currentIndex = thumbnails.findIndex(t => t.dataset.mediaId === this.currentMediaId);
+      const nextIndex = currentIndex < thumbnails.length - 1 ? currentIndex + 1 : 0;
+      this.switchToMedia(thumbnails[nextIndex].dataset.mediaId);
+    }
+  }
+
+  if (!customElements.get('image-picker')) {
+    customElements.define('image-picker', ImagePicker);
+  }
+</script>
+
