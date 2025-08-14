@@ -1027,6 +1027,9 @@ address {
 .w-48 {
   width: 48px;
 }
+.w-142 {
+  width: 142px;
+}
 .w-325 {
   width: 325px;
 }
@@ -1391,6 +1394,9 @@ address {
 }
 .gap-x-4 {
   row-gap: calc(4 * var(--space-unit));
+}
+.gap-38 {
+  gap: calc(38 * var(--space-unit));
 }
 .gap-x-4_8 {
   row-gap: calc(4.8 * var(--space-unit));
@@ -1772,6 +1778,9 @@ address {
 .pl-20 {
   padding-left: calc(20 * var(--space-unit));
 }
+.pl-24 {
+  padding-left: calc(24 * var(--space-unit));
+}
 .pl-40 {
   padding-left: calc(40 * var(--space-unit));
 }
@@ -1807,6 +1816,9 @@ address {
 }
 .pr-20 {
   padding-right: calc(20 * var(--space-unit));
+}
+.pr-24 {
+  padding-right: calc(24 * var(--space-unit));
 }
 .pr-6pct {
   padding-right: 6.1111%;
