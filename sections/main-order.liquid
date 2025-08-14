@@ -1,9 +1,11 @@
 <div class="customer-account__container flex gap-64 page-width pt-40 pb-40">
-  {% render 'customer-account-sidebar' %}
-
+  <div class="sm:hidden block">{% render 'customer-account-sidebar' %}</div>
   <div class="flex flex-col gap-16">
     <div class="flex flex-col gap-24 w-full">
-      <h2 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500">{{ 'customer.order.title' | t: name: order.name }}</h2>
+      <h2 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500 sm:text-center">
+        {{ 'customer.order.title' | t: name: order.name }}
+      </h2>
+
       <div class="flex gap-8 items-center">
         <a
           href="{{ routes.account_url }}"
@@ -18,6 +20,7 @@
           {{ order.created_at | time_tag: format: 'date_at_time' }}
         </h4>
       </div>
+      <div>Order Timeline</div>
 
       <!-- Order Items -->
       <div class="border-1 border-solid border-color rounded-12  p-24">
@@ -311,7 +314,7 @@
         </div>
       </div>
     </div>
-    <div class="flex flex-col gap-16">
+    <div class="sm:hidden  flex flex-col gap-16">
       <h1 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500">{{ 'customer.addresses.shipping_address' | t }}</h1>
 
       <div class=" border-1 border-solid border-color rounded-12 p-24">
@@ -347,7 +350,7 @@
       </div>
     </div>
 
-    <div class="flex flex-col gap-16">
+    <div class="sm:hidden flex flex-col gap-16">
       <h1 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500">{{ 'customer.addresses.billing_address' | t }}</h1>
 
       <div class=" border-1 border-solid border-color rounded-12 p-24">
@@ -378,6 +381,64 @@
             class="m-0 flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400"
           >
             {{ order.payment_status | default: '-' }}
+          </h2>
+        </div>
+      </div>
+    </div>
+
+    {% comment %} Shipping address mobile {% endcomment %}
+    <div class="sm:block hidden border-1 border-solid border-color rounded-12 sm:pt-8 sm:pb-8">
+      <div class="flex flex-col gap-8 border-b border-b-color border-b-solid sm:pl-16 sm:pr-16 sm:pt-8 sm:pb-8">
+        <h1 class="m-0 ff-general-sans fs-16-lh-22-ls-0 fw-600">{{ 'customer.order.shipping_address' | t }}</h1>
+        <div class="flex justify-between">
+          <h1 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ 'customer.order.name' | t }}</h1>
+          <h2 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ order.customer.name }}</h2>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-8 border-b border-b-color border-b-solid  sm:pl-16 sm:pr-16 sm:pt-8 sm:pb-8">
+        <div class="flex justify-between sm:pt-8 sm:pb-8 ">
+          <h1 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ 'customer.order.phone' | t }}</h1>
+          <h2 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ order.customer.phone }}</h2>
+        </div>
+      </div>
+      <div class="flex flex-col gap-8 ">
+        <div class="flex justify-between sm:pt-8 sm:pb-8   sm:pl-16 sm:pr-16">
+          <h1 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ 'customer.order.address' | t }}</h1>
+          <h2 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">
+            {{ order.shipping_address.address1 }}
+            {{ order.shipping_address.address2 }}
+            {{ order.shipping_address.city }}
+            {{ order.shipping_address.country }}
+          </h2>
+        </div>
+      </div>
+    </div>
+
+    {% comment %} billed address mobile {% endcomment %}
+    <div class="sm:block hidden border-1 border-solid border-color rounded-12 sm:pt-8 sm:pb-8">
+      <div class="flex flex-col gap-8 border-b border-b-color border-b-solid   sm:pl-16 sm:pr-16 sm:pt-8 sm:pb-8">
+        <h1 class="m-0 ff-general-sans fs-16-lh-22-ls-0 fw-600">{{ 'customer.order.billing_address' | t }}</h1>
+        <div class="flex justify-between">
+          <h1 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ 'customer.order.name' | t }}</h1>
+          <h2 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ order.customer.name }}</h2>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-8 border-b border-b-color border-b-solid  sm:pl-16 sm:pr-16 sm:pt-8 sm:pb-8">
+        <div class="flex justify-between sm:pt-8 sm:pb-8 ">
+          <h1 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ 'customer.order.phone' | t }}</h1>
+          <h2 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ order.customer.phone }}</h2>
+        </div>
+      </div>
+      <div class="flex flex-col gap-8 ">
+        <div class="flex justify-between  sm:pl-16 sm:pr-16 sm:pt-8 sm:pb-8 ">
+          <h1 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ 'customer.order.address' | t }}</h1>
+          <h2 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">
+            {{ order.billing_address.address1 }}
+            {{ order.billing_address.address2 }}
+            {{ order.billing_address.city }}
+            {{ order.billing_address.country }}
           </h2>
         </div>
       </div>
