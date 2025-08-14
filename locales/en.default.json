@@ -195,6 +195,7 @@
       "status": "Status",
       "total": "Total",
       "quantity": "Quantity",
+      "qty": "Qty",
       "payment_type": "Payment Type",
       "action": "Action",
       "none": "Customer has no orders.",

@@ -77,32 +77,7 @@
                   </span>
                 </td>
                 <td role="cell" class="pt-0 pb-0 pl-12 pr-12">
-                  {% assign status_class = '' %}
-                  {% case order.financial_status %}
-                    {% when 'paid' %}
-                      {% assign status_class = 'status-paid' %}
-                    {% when 'pending' %}
-                      {% assign status_class = 'status-pending' %}
-                    {% when 'authorized' %}
-                      {% assign status_class = 'status-authorized' %}
-                    {% when 'partially_paid' %}
-                      {% assign status_class = 'status-partially-paid' %}
-                    {% when 'partially_refunded' %}
-                      {% assign status_class = 'status-partially-refunded' %}
-                    {% when 'refunded' %}
-                      {% assign status_class = 'status-refunded' %}
-                    {% when 'voided' %}
-                      {% assign status_class = 'status-voided' %}
-                    {% when 'cancelled' %}
-                      {% assign status_class = 'status-cancelled' %}
-                    {% else %}
-                      {% assign status_class = 'status-ongoing' %}
-                  {% endcase %}
-
-                  <div class="ff-general-sans fw-400 fs-16-lh-24-ls-0 flex items-center gap-4 justify-start">
-                    <span class="rounded-full h-10 w-10 {{ status_class }}"></span>
-                    {{ order.financial_status_label }}
-                  </div>
+                  {% render 'order-financial-status', order: order %}
                 </td>
                 <td role="cell" class="pt-0 pb-0 pl-12 pr-12">
                   <span class="ff-general-sans fw-400 fs-16-lh-24-ls-0">{{ order.line_items.size }}</span>
@@ -135,28 +110,6 @@
       <!-- Mobile Card View -->
       <div class="hidden sm:flex gap-24 flex-col ">
         {%- for order in customer.orders -%}
-          {% assign status_class = '' %}
-          {% case order.financial_status %}
-            {% when 'paid' %}
-              {% assign status_class = 'status-paid' %}
-            {% when 'pending' %}
-              {% assign status_class = 'status-pending' %}
-            {% when 'authorized' %}
-              {% assign status_class = 'status-authorized' %}
-            {% when 'partially_paid' %}
-              {% assign status_class = 'status-partially-paid' %}
-            {% when 'partially_refunded' %}
-              {% assign status_class = 'status-partially-refunded' %}
-            {% when 'refunded' %}
-              {% assign status_class = 'status-refunded' %}
-            {% when 'voided' %}
-              {% assign status_class = 'status-voided' %}
-            {% when 'cancelled' %}
-              {% assign status_class = 'status-cancelled' %}
-            {% else %}
-              {% assign status_class = 'status-ongoing' %}
-          {% endcase %}
-
           <div class="border border-solid border-color  rounded-12 ">
             <!-- Order Header -->
             <div class="sm:pl-16 sm:pr-16 ">
@@ -173,10 +126,7 @@
                   </span>
                 </div>
                 <div class="flex items-center gap-4">
-                  <span class="rounded-full h-10 w-10 {{ status_class }}"></span>
-                  <span class="ff-general-sans fw-500 fs-14-lh-20-ls-0 ">
-                    {{ order.financial_status_label }}
-                  </span>
+                  {% render 'order-financial-status', order: order %}
                 </div>
               </div>
             </div>
