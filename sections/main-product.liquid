@@ -20,13 +20,16 @@
 
             {% when "price" %}
               {% render "product-price", product: product %}
+
+            {% when "rating" %}
+              {% render "product-rating", product: product %}
           {% endcase %}
         {% endfor %}
       </div>
     </div>
   </div>
 </div>
-
+{% render "product-review" %}
 {% schema %}
 {
   "name": "Main Product",
@@ -47,6 +50,11 @@
       "name": "Price",
       "limit": 1
     },
+    {
+      "type": "rating",
+      "name": "Rating",
+      "limit": 1
+    }
   ]
 }
 {% endschema %}

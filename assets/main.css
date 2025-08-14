@@ -722,6 +722,9 @@ address {
 .mb-8 {
   margin-bottom: calc(8 * var(--space-unit));
 }
+.mb-24 {
+  margin-bottom: calc(24 * var(--space-unit));
+}
 .mb-32 {
   margin-bottom: calc(32 * var(--space-unit));
 }
@@ -1801,6 +1804,9 @@ address {
 }
 .pl-6 {
   padding-left: calc(6 * var(--space-unit));
+}
+.pl-7 {
+  padding-left: calc(7 * var(--space-unit));
 }
 .pl-8 {
   padding-left: calc(8 * var(--space-unit));
