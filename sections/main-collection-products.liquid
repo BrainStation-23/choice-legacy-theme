@@ -1,0 +1,126 @@
+<script src="{{ 'products-toolbar.js' | asset_url }}" defer="defer"></script>
+
+
+<div class="container" data-num-results="{{ collection.products_count }}">
+  {%- if section.settings.enable_sorting -%}
+    {% render 'products-toolbar', results: collection %}
+  {%- endif -%}
+
+  {%- paginate collection.products by section.settings.products_per_page -%}
+    <div class="main-products-grid flex">
+      {%- if collection.filters != empty and section.settings.enable_filtering -%}
+        <div class="main-products-grid__filters">
+          {% render 'facet-filters', results: collection %}
+        </div>
+      {%- endif -%}
+
+      <div class="main-products-grid__results relative flex-auto" id="filter-results">
+        {%- if collection.products.size == 0 -%}
+          <p>{{ 'sections.collection.empty' | t }}</p>
+        {%- else -%}
+          {%- liquid
+            assign active_filters_count = 0
+            if collection.filters != empty
+              for filter in collection.filters
+                if filter.type == 'price_range'
+                  if filter.min_value.value
+                    assign active_filters_count = active_filters_count | plus: 1
+                  endif
+                  if filter.max_value.value
+                    assign active_filters_count = active_filters_count | plus: 1
+                  endif
+                else
+                  assign active_filters_count = active_filters_count | plus: filter.active_values.size
+                endif
+              endfor
+            endif
+          -%}
+
+          <ul class="grid mb-8 md:mb-12 sm:grid-cols-2 grid-cols-4"
+              data-filters-open-classes="grid mb-8 md:mb-12 sm:grid-cols-2 xl:grid-cols-3"
+              data-filters-closed-classes="grid mb-8 md:mb-12 sm:grid-cols-2 xl:grid-cols-3" role="list">
+            {%- assign rendered_product_ids = "" -%}
+            {%- for product in collection.products -%}
+              {%- assign product_index = forloop.index -%}
+              {%- for block in section.blocks -%}
+                {%- liquid
+                  unless block.settings.position == "top" or block.settings.position == "bottom"
+                    assign is_last_position = false
+
+                    if product_index == block.settings.position or is_last_position
+                      if paginate.pages == 0 or paginate.current_page == 1
+                        if active_filters_count == 0 or block.settings.hide_on_filter == false
+                          if product_index == collection.products.size and block.settings.position > product_index
+                            assign is_last_position = true
+                          endif
+                        endif
+                      endif
+                    endif
+                  endunless
+                -%}
+                {%- if is_last_position -%}
+                  {%- unless rendered_product_ids contains product.id -%}
+                    {%- assign rendered_product_ids = rendered_product_ids | append: product.id | append: "," -%}
+                    <li class="js-pagination-result">{% render 'product-card', product: product, collection: collection, image_ratio: image_ratio, show_compare: settings.enable_compare %}</li>
+                  {%- endunless -%}
+                {%- endif -%}
+              {%- endfor -%}
+
+              {%- unless is_last_position and rendered_product_ids contains product.id -%}
+                {%- assign rendered_product_ids = rendered_product_ids | append: product.id | append: "," -%}
+                <li class="js-pagination-result">{% render 'product-card', product: product, collection: collection, image_ratio: image_ratio, show_compare: settings.enable_compare %}</li>
+              {%- endunless -%}
+            {%- endfor -%}    
+          </ul>
+
+          {%- if paginate.pages > 1 -%}
+            {% render 'pagination', paginate: paginate, class: "mb-10", style: settings.pagination_style %}
+          {%- endif -%}
+        {%- endif -%}
+      </div>
+    </div>
+  {%- endpaginate -%}
+</div>
+
+{% schema %}
+    {
+      "name": "Collection products",
+      "class": "cc-collection-products section section--template mb-0",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Layout"
+        },
+        {
+          "type": "range",
+          "id": "products_per_page",
+          "min": 8,
+          "max": 50,
+          "step": 1,
+          "label": "Products per page",
+          "default": 16
+        },
+        {
+          "type": "header",
+          "content": "Sorting"
+        },
+        {
+          "type": "checkbox",
+          "id": "enable_sorting",
+          "label": "Enable sorting",
+          "default": true
+        },
+        {
+         "type": "header",
+         "content": "Filtering"
+       },
+       {
+         "type": "checkbox",
+         "id": "enable_filtering",
+         "label": "Enable filtering",
+         "info": "[Customize filters](/admin/menus)",
+         "default": true
+       }
+      ]
+    }
+    {% endschema %}

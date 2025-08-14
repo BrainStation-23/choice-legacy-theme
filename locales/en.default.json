@@ -116,6 +116,9 @@
         "kg": "kg",
         "lb": "lb"
       }
+    },
+    "collection": {
+      "empty": "No products found in this collection."
     }
   },
   "customer": {
@@ -227,6 +230,9 @@
       "previous": "Previous",
       "next": "Next",
       "page": "Page"
+    },
+    "labels": {
+      "please_select": "Please select"
     }
   },
   "products": {
@@ -236,9 +242,34 @@
         "regular_price": "Regular Price",
         "sale_price": "Sale Price"
       }
+    },
+    "filtering": {
+      "title": "Filters",
+      "applied_filters": "Applied Filters",
+      "applied_filter_count": {
+        "one": "{{ count }} Applied Filter",
+        "other": "{{ count }} Applied Filters"
+      },
+      "apply": "Apply",
+      "clear": "Clear",
+      "clear_all": "Clear all",
+      "filter": "Filter",
+      "filter_sort": "Filter & Sort",
+      "min_price_label": "From",
+      "max_price_label": "To",
+      "show_more": "Show more",
+      "show_result_count": {
+        "one": "Show {{ count }} result",
+        "other": "Show {{ count }} results"
+      }
+    },
+    "sorting": {
+      "sort_by_label": "Sort by"
     }
   },
   "accessibility": {
-    "unit_price_separator": "Unit Price Separator"
+    "unit_price_separator": "Unit Price Separator",
+    "close": "Close",
+    "loading": "Loading..."
   }
 }
