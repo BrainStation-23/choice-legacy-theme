@@ -1,0 +1,73 @@
+<div class="flex flex-3">
+  <div class="flex flex-col gap-24 flex-2">
+    <div class="flex gap-8  items-center">
+      <h1 class=" ff-general-sans fs-23-lh-24-ls-0 fw-500 m-0 ">
+        {{ 'customer.account.account_title' | t }}
+      </h1>
+      <h3 class="text-brand ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer">
+        {{ 'customer.account.edit' | t }}
+      </h3>
+    </div>
+
+    <div class="grid gap-16 grid-cols-2 flex-wrap sm:grid-cols-1  sm:gap-8 ">
+      <div>
+        <div class="border-secondary-text-10pct rounded-12  pt-10 pb-10 pr-16 pl-16">
+          <h2 class="ff-general-sans fs-12-lh-16-ls-0_6 fw-400 m-0 text-secondary-light ">
+            {{ 'customer.account.first_name' | t }}
+          </h2>
+          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.first_name }}</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="border-secondary-text-10pct rounded-12  pt-10 pb-10 pr-16 pl-16">
+          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
+            {{ 'customer.account.last_name' | t }}
+          </h2>
+          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.last_name }}</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="border-secondary-text-10pct rounded-12 pt-10 pb-10 pr-16 pl-16">
+          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
+            {{ 'customer.account.phone' | t }}
+          </h2>
+          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.phone }}</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="border-secondary-text-10pct rounded-12 pt-10 pb-10 pr-16 pl-16">
+          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
+            {{ 'customer.account.date_of_birth' | t }}
+          </h2>
+          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">
+            {% comment %} todo update date of birth {% endcomment %}
+            {{ customer.date_of_birth | default: 'date_of_birth' }}
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-8">
+        <div class="border-secondary-text-10pct rounded-12  pt-10 pb-10 pr-16 pl-16">
+          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
+            {{ 'customer.account.email' | t }}
+          </h2>
+          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.email }}</div>
+        </div>
+        <h1 class=" text-brand ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer">{{ 'customer.account.change_email' | t }}</h1>
+      </div>
+      <div>
+        <div class="border-secondary-text-10pct rounded-12  pt-10 pb-10 pr-16 pl-16">
+          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
+            {{ 'customer.account.gender' | t }}
+          </h2>
+          {% comment %} todo update actual gender {% endcomment %}
+          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.gender | default: 'Female' }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="flex flex-1 sm:hidden"></div>
+</div>

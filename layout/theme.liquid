@@ -20,7 +20,7 @@
         --color-primary-brand: {{ settings.primary_brand_color.red }}, {{ settings.primary_brand_color.green }}, {{ settings.primary_brand_color.blue }};
         --color-secondary-brand: {{ settings.secondary_brand_color.red }}, {{ settings.secondary_brand_color.green }}, {{ settings.secondary_brand_color.blue }};
         --color-border: {{ settings.border_color.red }}, {{ settings.border_color.green }}, {{ settings.border_color.blue }};
-        
+
         --page-width: {{ settings.page_width | divided_by: 10.0 }}rem;
       }
     {%- endstyle %}
@@ -60,11 +60,14 @@
 
     <main id="main-content">
       {{ content_for_layout }}
+
+      {% render 'toast' %}
     </main>
 
     {%- sections 'footer-group' -%}
 
     <script>
+      window.APP_SUB_PATH = "choice-legacy-app";
       window.theme = {
         routes: {
           cart: '{{ routes.cart_url }}',
@@ -74,7 +77,6 @@
           predictiveSearch: '{{ routes.predictive_search_url }}'
         },
       };
-      window.APP_SUB_PATH = "choice_legacy_staging"
       {% if customer %}
         window.customerLoggedIn = true;
         window.customerId = {{ customer.id }};
@@ -84,7 +86,8 @@
       {% endif %}
       window.shopDomain = '{{ shop.domain }}';
     </script>
-    <script src="{{ 'wishlist.js' | asset_url }}" defer></script>
+    <script src="{{ 'toast.js' | asset_url }}" defer></script>
     <script src="{{ 'slideshow.js' | asset_url }}" defer></script>
+    <script src="{{ 'add-to-wishlist.js' | asset_url }}" defer></script>
   </body>
 </html>

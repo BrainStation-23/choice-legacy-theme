@@ -4,6 +4,76 @@
       "label": "Add to cart"
     }
   },
+  "reward_points": {
+    "title": "Reward Point",
+    "points": {
+      "label": "Points"
+    },
+    "balance": {
+      "label": "Reward Point Balance"
+    },
+    "product_review_points": {
+      "label": "Earn Reward Points on Product Reviews",
+      "three_star": "Points Awarded for 3 Star Review: {points}",
+      "four_star": "Points Awarded for 4 Star Review: {points}",
+      "five_star": "Points Awarded for 5 Star Review: {points}"
+    },
+    "order_points": {
+      "label": "Earn Reward Points on Order",
+      "rule": "Points Awarded {points} for purchasing {amount} amount"
+    },
+    "redeem_points": {
+      "label": "Redeem Points",
+      "off": "OFF",
+      "button": "Redeem Now"
+    },
+    "reward_points": {
+      "label": "Reward Points"
+    },
+    "reward_history": {
+      "label": "Reward History"
+    },
+    "redeeming": {
+      "label": "Redeeming..."
+    },
+    "apply_to_cart_button": {
+      "label": "Apply to cart"
+    },
+    "redeem_message": "Points redeemed successfully!",
+    "apply_to_cart_message": "Discount code applied successfully!"
+  },
+  "wishlist": {
+    "title": "My Wishlist",
+    "loading": "Loading your wishlist...",
+    "empty": "Your wishlist is currently empty.",
+    "table": {
+      "image": "Image",
+      "name": "Name",
+      "price": "Price",
+      "action": "Action"
+    },
+    "buttons": {
+      "remove": "Remove",
+      "removing": "Removing..."
+    },
+    "notifications": {
+      "removed_success": "Product removed from wishlist",
+      "removed_error": "Failed to remove from wishlist",
+      "load_error": "Could not load wishlist. Please try again later.",
+      "generic_error": "Something went wrong. Please try again."
+    }
+  },
+  "review": {
+    "title": "Review",
+    "loading": "Loading your reviews...",
+    "empty": "You have not submitted any reviews yet.",
+    "table": {
+      "serial": "Serial",
+      "product": "Product",
+      "rating": "Rating",
+      "action": "Action"
+    }
+  },
   "sections": {
     "footer": {
       "social_media": "Social media",
@@ -49,6 +119,35 @@
     }
   },
   "customer": {
+    "addresses": {
+      "title": "My Addresses",
+      "address1": "Address 1",
+      "address2": "Address 2",
+      "customer_name": "Customer",
+      "shipping_address": "Shipping Address",
+      "billing_address": "Billing Address",
+      "payment_status": "Payment Status"
+    },
+    "account": {
+      "log_out": "Log out",
+      "account_title": "Account Information",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email",
+      "phone": "Contact Number",
+      "myaccount": "My Account",
+      "my_beauties_profile": "My Beauties Profile",
+      "orders": "My Orders",
+      "addresses": "Addresses",
+      "rewards": "Rewards Points",
+      "wishlist": "My Wishlist",
+      "reviews": "Reviews",
+      "logout": "Logout",
+      "date_of_birth": "Date of Birth",
+      "gender": "Gender",
+      "edit": "Edit",
+      "change_email": "Change email address"
+    },
     "login": {
       "title": "Login",
       "email": "Email",
@@ -88,6 +187,58 @@
       "phone_placeholder": "Enter your phone number",
       "send_otp": "Send OTP",
       "subtitle": "Use your credentials to access your account"
+    },
+    "order": {
+      "title": "Order History",
+      "order_number": "Order No",
+      "date": "Date",
+      "status": "Status",
+      "total": "Total",
+      "quantity": "Quantity",
+      "qty": "Qty",
+      "payment_type": "Payment Type",
+      "action": "Action",
+      "none": "Customer has no orders.",
+      "cancelled": "Cancelled",
+      "cancelled_reason": "Cancelled Reason",
+      "product": "Product",
+      "sku": "SKU",
+      "price": "Price",
+      "discount": "Discount",
+      "fulfilled_at": "Fulfilled At",
+      "track_shipment": "Track Shipment",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "tax": "Tax",
+      "total_duties": "Total Duties",
+      "total_refunded": "Total Refunded",
+      "billing_address": "Billing Address",
+      "payment_status": "Payment Status",
+      "shipping_address": "Shipping Address",
+      "fulfillment_status": "Fulfillment Status",
+      "name": "Name",
+      "phone": "Phone",
+      "address": "Address"
     }
+  },
+  "general": {
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page"
+    }
+  },
+  "products": {
+    "product": {
+      "price": {
+        "unit_price": "Unit Price",
+        "regular_price": "Regular Price",
+        "sale_price": "Sale Price"
+      }
+    }
+  },
+  "accessibility": {
+    "unit_price_separator": "Unit Price Separator"
   }
 }

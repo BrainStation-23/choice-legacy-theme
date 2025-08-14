@@ -23,6 +23,7 @@
 {% assign show_type = settings.show_product_type %}
 {% assign show_rating = settings.show_product_rating %}
 {% assign show_weight = settings.show_product_weight %}
+{% assign show_wishlist_button = settings.show_wishlist_button %}
 {% assign image_width = image_width | default: 268 %}
 {% assign image_height = image_height | default: 268 %}
 {% assign css_classes = css_classes | default: '' %}
@@ -72,6 +73,10 @@
           {% endif %}
         {% endif %}
       {% endif %}
+
+      {% if show_wishlist_button %}
+        {% render "wishlist-button", product: product, cls: "w-32 h-32 bg-transparent absolute top-16 right-16 z-2 rounded-full flex justify-center items-center border-0_727 border-solid border-color" %}
+      {% endif %}
     {% else %}
       <div class="product-card__placeholder-image">
         {{ 'product-1' | placeholder_svg_tag: "placeholder-svg" }}
@@ -79,6 +84,10 @@
       <!-- Placeholder weight -->
       {% if show_weight %}
         <div class="product-card__weight absolute bottom-8 right-8 pt-4 pr-8 pb-4 pl-8 fw-500 fs-14-lh-16-ls-0">{{ "sections.product.placeholder.weight" | t }}</div>
+      {% endif %}
+
+      {% if show_wishlist_button %}
+        {% render "wishlist-button", cls: "w-32 h-32 bg-transparent absolute top-16 right-16 z-2 rounded-full flex justify-center items-center border-0_727 border-solid border-color" %}
       {% endif %}
     {% endif %}
   </div>
