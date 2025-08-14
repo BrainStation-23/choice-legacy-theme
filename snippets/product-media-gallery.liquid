@@ -3,7 +3,21 @@
   Supports images, videos, YouTube videos, and 3D models
 {% endcomment %}
 
-<!-- Include model-viewer script for 3D models -->
+<!-- Include model-viewer script and styles for 3D models -->
+<link
+  id="ModelViewerStyle"
+  rel="stylesheet"
+  href="https://cdn.shopify.com/shopifycloud/model-viewer-ui/assets/v1.0/model-viewer-ui.css"
+  media="print"
+  onload="this.media='all'"
+>
+<link
+  id="ModelViewerOverride"
+  rel="stylesheet"
+  href="{{ 'component-model-viewer-ui.css' | asset_url }}"
+  media="print"
+  onload="this.media='all'"
+>
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
 <style>
@@ -120,7 +134,7 @@
                 {% when 'youtube' %}
                   <div class="external-video-wrapper">
                     <iframe 
-                      src="https://www.youtube.com/embed/{{ media.external_id }}?enablejsapi=1"
+                      src="https://www.youtube.com/embed/{{ media.external_id }}?enablejsapi=1&origin={{ shop.permanent_domain | prepend: 'https://' }}"
                       frameborder="0"
                       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
                       allowfullscreen
@@ -147,6 +161,7 @@
                   alt="{{ media.alt | escape }}"
                   camera-controls
                   auto-rotate
+                  environment-image="neutral"
                   class="main-media-model">
                 </model-viewer>
               </div>
@@ -260,6 +275,7 @@
 
       // Pause videos when switching away
       this.pauseAllVideos();
+      this.pauseExternalVideos();
 
       // Handle model viewer initialization
       if (selectedMedia.dataset.mediaType === 'model') {
@@ -288,6 +304,18 @@
       videos.forEach(video => {
         if (!video.paused) {
           video.pause();
+        }
+      });
+    }
+
+    pauseExternalVideos() {
+      // Pause YouTube videos by reloading iframe src
+      const youtubeIframes = this.querySelectorAll('.external-video');
+      youtubeIframes.forEach(iframe => {
+        if (iframe.src.includes('youtube.com')) {
+          const currentSrc = iframe.src;
+          iframe.src = '';
+          iframe.src = currentSrc;
         }
       });
     }
