@@ -136,6 +136,17 @@ mark {
   }
 }
 
+.button {
+  border: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: calc(14 * var(--font-unit));
+  line-height: 100%;
+  letter-spacing: 0;
+}
+
 .button--solid {
   background: rgb(var(--color-primary-brand));
   color: rgb(var(--color-background));
@@ -2351,17 +2362,6 @@ address {
   text-decoration: none;
 }
 
-.button {
-  border: none;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: calc(14 * var(--font-unit));
-  line-height: 100%;
-  letter-spacing: 0;
-}
-
 shop-login-button {
   --buttons-radius: var(--btn-border-radius, 0);
 }
@@ -2594,6 +2594,9 @@ shop-login-button {
 .border-color {
   border-color: rgb(var(--color-border));
 }
+.border-brand {
+  border-color: rgb(var(--color-primary-brand));
+}
 .border-bg {
   border-color: rgb(var(--color-background));
 }
@@ -2823,6 +2826,9 @@ img {
 .object-contain {
   object-fit: contain;
 }
+.object-position-center {
+  object-position: center;
+}
 .img-fit,
 .md\:img-fit {
   position: absolute;
@@ -3046,4 +3052,8 @@ tr:last-child td {
 
 .black-gradient {
   background: linear-gradient(180deg, rgba(0, 0, 0, 0) 4.89%, #000 100%);
+}
+
+.aspect-ratio-1-1 {
+  aspect-ratio: 1 / 1;
 }

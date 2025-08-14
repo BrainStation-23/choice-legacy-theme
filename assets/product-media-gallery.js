@@ -10,11 +10,6 @@ if (!customElements.get("product-media-gallery")) {
       init() {
         this.thumbnails = this.querySelectorAll(".media-thumbnail");
         this.setupThumbnailClickHandlers();
-
-        // Add a small delay to prevent a flash of unstyled content
-        setTimeout(() => {
-          this.classList.add("loaded");
-        }, 100);
       }
 
       setupThumbnailClickHandlers() {
@@ -31,13 +26,13 @@ if (!customElements.get("product-media-gallery")) {
 
         this.pauseAllMedia();
 
-        // Switch the main media item
+        // Switch the main media item by toggling utility classes
         this.querySelectorAll(".main-media-item").forEach((item) => {
           const isActive = item.dataset.mediaId === mediaId;
-          item.classList.toggle("active", isActive);
-
           if (isActive) {
-            // Optional: Auto-play native videos when they become active
+            item.classList.remove("opacity-0", "invisible");
+            item.classList.add("opacity-1", "visible");
+
             if (item.dataset.mediaType === "video") {
               const video = item.querySelector("video");
               if (video)
@@ -45,12 +40,20 @@ if (!customElements.get("product-media-gallery")) {
                   .play()
                   .catch((e) => console.error("Video play failed:", e));
             }
+          } else {
+            item.classList.remove("opacity-1", "visible");
+            item.classList.add("opacity-0", "invisible");
           }
         });
 
-        // Update the active thumbnail
+        // Update the active thumbnail by adding/removing your specific border classes
         this.thumbnails.forEach((thumb) => {
-          thumb.classList.toggle("active", thumb.dataset.mediaId === mediaId);
+          const isActive = thumb.dataset.mediaId === mediaId;
+          if (isActive) {
+            thumb.classList.add("border-2", "border-solid", "border-brand");
+          } else {
+            thumb.classList.remove("border-2", "border-solid", "border-brand");
+          }
         });
       }
 
@@ -58,7 +61,6 @@ if (!customElements.get("product-media-gallery")) {
         this.querySelectorAll("video").forEach((video) => video.pause());
         this.querySelectorAll("iframe").forEach((iframe) => {
           const currentSrc = iframe.src;
-          // This re-setting of the src is the most reliable way to stop embedded videos
           iframe.src = "";
           iframe.src = currentSrc.replace("&autoplay=1", "");
         });
