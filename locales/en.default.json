@@ -243,7 +243,10 @@
         "unit_price": "Unit Price",
         "regular_price": "Regular Price",
         "sale_price": "Sale Price"
-      }
+      },
+      "sku": "SKU",
+      "vendor": "Brand",
+      "product_type": "Product Type"
     }
   },
   "accessibility": {

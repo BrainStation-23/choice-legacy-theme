@@ -1,6 +1,6 @@
 <div class="product-container page-width">
   {% render "breadcrumbs" %}
-  
+
   <div class="product-grid flex gap-32">
     <!-- Product Images Section -->
     <div class="product-media w-578">
@@ -13,12 +13,15 @@
         {% for block in section.blocks %}
           {% case block.type %}
             {% when "title" %}
-              <h1 class="product-title">{{ product.title }}</h1>
+              {% render "product-title", product: product, cls: "fw-400 fs-45-lh-45-ls--1_8pct mb-32" %}
+
+            {% when "sku_vendor_type" %}
+              {% render "product-sku-vendor-type", product: product %}
+
+            {% when "price" %}
+              {% render "product-price", product: product %}
           {% endcase %}
         {% endfor %}
-        {% if product.vendor %}
-          <div class="product-brand">{{ product.vendor }}</div>
-        {% endif %}
       </div>
     </div>
   </div>
@@ -32,6 +35,16 @@
     {
       "type": "title",
       "name": "Title",
+      "limit": 1
+    },
+    {
+      "type": "sku_vendor_type",
+      "name": "Sku, vendor & type",
+      "limit": 1
+    },
+    {
+      "type": "price",
+      "name": "Price",
       "limit": 1
     },
   ]

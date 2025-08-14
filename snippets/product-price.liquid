@@ -1,0 +1,12 @@
+{% if product.price %}
+  <div class="flex flex-wrap items-center gap-8 mb-8">
+    <span class="text-primary fw-500 fs-14-lh-24-ls-0">
+      {{ product.price | money_with_currency }}
+    </span>
+    {% if product.compare_at_price > product.price %}
+      <span class="line-through fw-500 fs-23-lh-24-ls-0 text-brand">
+        {{ product.compare_at_price | money_with_currency }}
+      </span>
+    {% endif %}
+  </div>
+{% endif %}

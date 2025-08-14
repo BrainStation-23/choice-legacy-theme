@@ -326,6 +326,12 @@ h6,
   letter-spacing: 0;
 }
 
+.fs-14-lh-24-ls-0 {
+  font-size: calc(14 * var(--font-unit));
+  line-height: calc(24 * var(--font-unit));
+  letter-spacing: 0;
+}
+
 .fs-14-lh-20-ls-0_1 {
   font-size: calc(14 * var(--font-unit));
   line-height: calc(20 * var(--font-unit));
@@ -407,6 +413,12 @@ h6,
   font-size: calc(36 * var(--font-unit));
   line-height: calc(40 * var(--font-unit));
   letter-spacing: 0;
+}
+
+.fs-45-lh-45-ls--1_8pct {
+  font-size: calc(45 * var(--font-unit));
+  line-height: calc(45 * var(--font-unit));
+  letter-spacing: calc(-0.018 * var(--font-unit));
 }
 
 /* Mobile styles using media query */
@@ -709,6 +721,9 @@ address {
 }
 .mb-8 {
   margin-bottom: calc(8 * var(--space-unit));
+}
+.mb-32 {
+  margin-bottom: calc(32 * var(--space-unit));
 }
 .mb-section {
   margin-bottom: calc(var(--section-gap) * var(--fluid-1-5));
