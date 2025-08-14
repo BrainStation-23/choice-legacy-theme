@@ -5,44 +5,41 @@
       <h2 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500 sm:text-center">
         {{ 'customer.order.title' | t: name: order.name }}
       </h2>
+      {% render 'order-history-header', order: order %}
 
-      <div class="flex gap-8 items-center">
-        <a
-          href="{{ routes.account_url }}"
-          class="cursore-pointer text-brand h-16 w-16"
-        >
-          {% render 'icon-left-arrow' %}
-        </a>
-        <h3 class="m-0 fs-16-lh-22-ls-0 ff-general-sans  fw-600">
-          #{{ order.order_number | default: order.name | remove: '#' }}
-        </h3>
-        <h4 class="m-0 fs-16-lh-24-ls-0 ff-general-sans  fw-400">
-          {{ order.created_at | time_tag: format: 'date_at_time' }}
-        </h4>
-        <h4 class="m-0">
-          {% render 'order-financial-status', order: order %}
-        </h4>
+      <!-- Order Timeline Section -->
+      <div class="order-timeline-section">
+        <h3 class="ff-general-sans fs-18-lh-20-ls-0 fw-500 mb-16">Order Timeline {{ order.id }}</h3>
+        <div class="delivery-status-container border-1 border-solid border-color rounded-12 p-24">
+          <div class="delivery-status loading" data-order-id="gid://shopify/Order/{{ order.id }}">
+            Loading delivery status...
+          </div>
+
+          <!-- Timeline will be populated by JavaScript -->
+          <div id="order-timeline" class="mt-16">
+            <!-- Timeline content will be inserted here -->
+          </div>
+        </div>
       </div>
-      <div>Order Timeline</div>
 
       <!-- Order Items -->
-      <div class="border-1 border-solid border-color rounded-12  p-24">
+      <div class="border-1 border-solid border-color rounded-12 p-24">
         <div class="flex flex-col gap-16">
           <!-- Header -->
-          <div class="grid grid-cols-2fr-1fr-1fr-0-5fr-1fr  border-b border-b-color  border-b-solid sm:hidden  ">
-            <div class="flex items-center  product-header ff-general-sans fw-500  fs-16-lh-16-ls-0 pb-16  ">
+          <div class="grid grid-cols-2fr-1fr-1fr-0-5fr-1fr border-b border-b-color border-b-solid sm:hidden">
+            <div class="flex items-center product-header ff-general-sans fw-500 fs-16-lh-16-ls-0 pb-16">
               {{ 'customer.order.product' | t }}
             </div>
-            <div class=" sku-header  flex items-center  ff-general-sans fw-500  fs-16-lh-16-ls-0 pb-16">
+            <div class="sku-header flex items-center ff-general-sans fw-500 fs-16-lh-16-ls-0 pb-16">
               {{ 'customer.order.sku' | t }}
             </div>
-            <div class="price-header  flex items-center  ff-general-sans fw-500  fs-16-lh-16-ls-0 pb-16 ">
+            <div class="price-header flex items-center ff-general-sans fw-500 fs-16-lh-16-ls-0 pb-16">
               {{ 'customer.order.price' | t }}
             </div>
-            <div class="quantity-header flex items-center  ff-general-sans fw-500  fs-16-lh-16-ls-0  pb-16">
+            <div class="quantity-header flex items-center ff-general-sans fw-500 fs-16-lh-16-ls-0 pb-16">
               {{ 'customer.order.quantity' | t }}
             </div>
-            <div class="total-header flex items-center  ff-general-sans fw-500  fs-16-lh-16-ls-0  justify-end pb-16">
+            <div class="total-header flex items-center ff-general-sans fw-500 fs-16-lh-16-ls-0 justify-end pb-16">
               {{ 'customer.order.total' | t }}
             </div>
           </div>
@@ -55,12 +52,12 @@
                   {%- if line_item.url != blank -%}
                     <a
                       href="{{ line_item.url }}"
-                      class="no-underline ff-general-sans fw-500  fs-16-lh-16-ls-0 text-brand"
+                      class="no-underline ff-general-sans fw-500 fs-16-lh-16-ls-0 text-brand"
                     >
                       {{- line_item.title | escape -}}
                     </a>
                   {%- else -%}
-                    <div class="no-underline ff-general-sans fw-500  fs-16-lh-16-ls-0  text-brand">
+                    <div class="no-underline ff-general-sans fw-500 fs-16-lh-16-ls-0 text-brand">
                       {{ line_item.title | escape }}
                     </div>
                   {%- endif -%}
@@ -69,12 +66,12 @@
                   {%- unless line_item.selling_plan_allocation == null and property_size == 0 -%}
                     <div class="flex flex-col gap-4">
                       {%- unless line_item.product.has_only_default_variant -%}
-                        <span class="ff-general-sans fw-500  fs-16-lh-16-ls-0  text-brand">
+                        <span class="ff-general-sans fw-500 fs-16-lh-16-ls-0 text-brand">
                           {{- line_item.variant.title | escape -}}
                         </span>
                       {%- endunless -%}
                       {%- unless line_item.selling_plan_allocation == null -%}
-                        <span class="selling-plan ff-general-sans fw-500  fs-16-lh-16-ls-0  text-brand">
+                        <span class="selling-plan ff-general-sans fw-500 fs-16-lh-16-ls-0 text-brand">
                           {{- line_item.selling_plan_allocation.selling_plan.name -}}
                         </span>
                       {%- endunless -%}
@@ -83,14 +80,14 @@
                           {% assign property_first_char = property.first | slice: 0 %}
                           {%- if property.last != blank and property_first_char != '_' -%}
                             <span>
-                              <span class="ff-general-sans fw-500  fs-16-lh-16-ls-0 text-brand">
+                              <span class="ff-general-sans fw-500 fs-16-lh-16-ls-0 text-brand">
                                 {{- property.first }}:</span
                               >
                               <span>
                                 {%- if property.last contains '/uploads/' -%}
                                   <a
                                     href="{{ property.last }}"
-                                    class="ff-general-sans fw-500  fs-16-lh-16-ls-0  text-brand"
+                                    class="ff-general-sans fw-500 fs-16-lh-16-ls-0 text-brand"
                                   >
                                     {{- property.last | split: '/' | last -}}
                                   </a>
@@ -108,14 +105,13 @@
                   {%- if line_item.line_level_discount_allocations != blank -%}
                     <div>
                       {%- for discount_allocation in line_item.line_level_discount_allocations -%}
-                        <div class=" flex items-center ga-6">
-                          <span class="ff-general-sans fw-500  fs-16-lh-16-ls-0 ">
+                        <div class="flex items-center ga-6">
+                          <span class="ff-general-sans fw-500 fs-16-lh-16-ls-0">
                             {{- discount_allocation.discount_application.title | escape }} (-
                             {%- render 'price-display',
                               money_value: discount_allocation.amount,
                               currency_object: order.currency
                             -%}
-
                             )
                           </span>
                         </div>
@@ -126,7 +122,7 @@
               </div>
 
               <div class="flex flex-col justify-start sku-column">
-                <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0 ">{{ line_item.sku }}</div>
+                <div class="ff-general-sans fw-500 fs-16-lh-16-ls-0">{{ line_item.sku }}</div>
               </div>
 
               <div class="flex flex-col justify-start price-column">
@@ -134,20 +130,20 @@
                   {%- if line_item.original_price != line_item.final_price or line_item.unit_price_measurement -%}
                     <div>
                       {%- if line_item.original_price != line_item.final_price -%}
-                        <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0  ">
+                        <div class="ff-general-sans fw-500 fs-16-lh-16-ls-0">
                           {%- render 'price-display',
                             money_value: line_item.original_price,
                             currency_object: order.currency
                           -%}
                         </div>
-                        <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0  ">
+                        <div class="ff-general-sans fw-500 fs-16-lh-16-ls-0">
                           {%- render 'price-display',
                             money_value: line_item.final_price,
                             currency_object: order.currency
                           -%}
                         </div>
                       {%- else -%}
-                        <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0  ">
+                        <div class="ff-general-sans fw-500 fs-16-lh-16-ls-0">
                           {%- render 'price-display',
                             money_value: line_item.original_price,
                             currency_object: order.currency
@@ -155,7 +151,7 @@
                         </div>
                       {%- endif -%}
                       {%- if line_item.unit_price_measurement -%}
-                        <div class="ff-general-sans fw-500  fs-16-lh-16-ls-0  ">
+                        <div class="ff-general-sans fw-500 fs-16-lh-16-ls-0">
                           {%- capture unit_price_separator -%}/{% endcapture -%}
                           {%- capture unit_price_base_unit -%}
                         {%- if line_item.unit_price_measurement.reference_value != 1 -%}
@@ -163,7 +159,7 @@
                         {%- endif -%}
                         {{ line_item.unit_price_measurement.reference_unit }}
                       {%- endcapture -%}
-                          <span class="ff-general-sans fw-400  fs-16-lh-16-ls-0 ">
+                          <span class="ff-general-sans fw-400 fs-16-lh-16-ls-0">
                             {%- render 'price-display',
                               money_value: line_item.unit_price,
                               currency_object: order.currency
@@ -175,7 +171,7 @@
                       {%- endif -%}
                     </div>
                   {%- else -%}
-                    <span class="ff-general-sans fw-500  fs-16-lh-16-ls-0 ">
+                    <span class="ff-general-sans fw-500 fs-16-lh-16-ls-0">
                       {%- render 'price-display',
                         money_value: line_item.final_price,
                         currency_object: order.currency
@@ -186,17 +182,17 @@
               </div>
 
               <div class="flex flex-col justify-start quantity-column">
-                <div class="ff-general-sans fw-400  fs-16-lh-16-ls-0 ">
+                <div class="ff-general-sans fw-400 fs-16-lh-16-ls-0">
                   {{ line_item.quantity }}
                 </div>
               </div>
 
-              <div class="flex flex-col justify-start ">
+              <div class="flex flex-col justify-start">
                 <div class="flex justify-end">
                   {%- if line_item.original_line_price != line_item.final_line_price -%}
                     <div>
                       <div>
-                        <p class="ff-general-sans fw-400  fs-16-lh-16-ls-0 ">
+                        <p class="ff-general-sans fw-400 fs-16-lh-16-ls-0">
                           {%- render 'price-display',
                             money_value: line_item.original_line_price,
                             currency_object: order.currency
@@ -204,7 +200,7 @@
                         </p>
                       </div>
                       <div>
-                        <p class="ff-general-sans fw-400  fs-16-lh-16-ls-0 ">
+                        <p class="ff-general-sans fw-400 fs-16-lh-16-ls-0">
                           {%- render 'price-display',
                             money_value: line_item.final_line_price,
                             currency_object: order.currency
@@ -213,7 +209,7 @@
                       </div>
                     </div>
                   {%- else -%}
-                    <p class="ff-general-sans fw-400  fs-16-lh-16-ls-0 ">
+                    <p class="ff-general-sans fw-400 fs-16-lh-16-ls-0">
                       {%- render 'price-display',
                         money_value: line_item.original_line_price,
                         currency_object: order.currency
@@ -300,13 +296,13 @@
                     <span class="ff-general-sans fw-500 fs-14-lh-16-ls-0 uppercase">
                       {{ 'customer.order.sku' | t }} :
                     </span>
-                    <span class="ff-general-sans fw-400 fs-13-lh-16-ls-0_2 ">
+                    <span class="ff-general-sans fw-400 fs-13-lh-16-ls-0_2">
                       {{ line_item.sku | default: '-' }}
                     </span>
                   </div>
 
                   <!-- Quantity -->
-                  <div class="flex  gap-4">
+                  <div class="flex gap-4">
                     <span class="ff-general-sans fw-500 fs-14-lh-16-ls-0 text-primary-50pct uppercase">
                       {{ 'customer.order.qty' | t }} :
                     </span>
@@ -316,14 +312,14 @@
                   </div>
 
                   <!-- Unit Price -->
-                  <div class="flex  gap-4">
+                  <div class="flex gap-4">
                     <span class="ff-general-sans fw-500 fs-14-lh-16-ls-0 uppercase">
                       {{ 'customer.order.price' | t }} :
                     </span>
                     <div class="flex gap-4">
                       {%- if line_item.original_price != line_item.final_price or line_item.unit_price_measurement -%}
                         {%- if line_item.original_price != line_item.final_price -%}
-                          <span class="ff-general-sans fw-400 fs-13-lh-16-ls-0_2 ">
+                          <span class="ff-general-sans fw-400 fs-13-lh-16-ls-0_2">
                             {%- render 'price-display',
                               money_value: line_item.original_price,
                               currency_object: order.currency
@@ -344,7 +340,7 @@
                           </span>
                         {%- endif -%}
                         {%- if line_item.unit_price_measurement -%}
-                          <span class="ff-general-sans fw-500 fs-13-lh-16-ls-0_2 ">
+                          <span class="ff-general-sans fw-500 fs-13-lh-16-ls-0_2">
                             {%- capture unit_price_separator -%}/{% endcapture -%}
                             {%- capture unit_price_base_unit -%}
                             {%- if line_item.unit_price_measurement.reference_value != 1 -%}
@@ -373,12 +369,12 @@
 
                   <!-- Total -->
                   <div class="flex gap-4">
-                    <span class="ff-general-sans fw-600 fs-14-lh-16-ls-0  uppercase">
+                    <span class="ff-general-sans fw-600 fs-14-lh-16-ls-0 uppercase">
                       {{ 'customer.order.total' | t }} :
                     </span>
                     <div class="flex flex-col gap-1">
                       {%- if line_item.original_line_price != line_item.final_line_price -%}
-                        <span class="ff-general-sans fw-500 fs-13-lh-16-ls-0_2 ">
+                        <span class="ff-general-sans fw-500 fs-13-lh-16-ls-0_2">
                           {%- render 'price-display',
                             money_value: line_item.original_line_price,
                             currency_object: order.currency
@@ -470,7 +466,7 @@
             {%- endfor -%}
 
             {%- if order.total_duties -%}
-              <div class="flex justify-eendd items-center sm:justify-between sm:gap-8 gap-120">
+              <div class="flex justify-end items-center sm:justify-between sm:gap-8 gap-120">
                 <div class="ff-general-sans fw-600 fs-16-lh-16-ls-0 sm:fs-14-lh-16-ls-0">
                   {{ 'customer.order.total_duties' | t }}
                 </div>
@@ -506,79 +502,40 @@
         </div>
       </div>
     </div>
-    <div class="sm:hidden  flex flex-col gap-16">
-      <h1 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500">{{ 'customer.addresses.shipping_address' | t }}</h1>
 
-      <div class=" border-1 border-solid border-color rounded-12 p-24">
-        <div class="border-b border-b-color border-b-solid flex justify-between  pb-16">
-          <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0  fw-500">
+    <!-- Shipping Address Desktop -->
+    <div class="sm:hidden flex flex-col gap-16">
+      <h1 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500">{{ 'customer.addresses.shipping_address' | t }}</h1>
+      <div class="border-1 border-solid border-color rounded-12 p-24">
+        <div class="border-b border-b-color border-b-solid flex justify-between pb-16">
+          <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0 fw-500">
             {{ 'customer.addresses.customer_name' | t }}
           </h1>
-          <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0  fw-500">
+          <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0 fw-500">
             {{ 'customer.addresses.address1' | t }}
           </h1>
-          <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0  fw-500">
+          <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0 fw-500">
             {{ 'customer.addresses.address2' | t }}
           </h1>
-        </div>
-
-        <div class="flex justify-between pt-16 ">
-          <h2
-            class="customer-order-cell flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400"
-          >
-            {{ order.customer.name }}
-          </h2>
-          <h2
-            class=" m-0 flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400"
-          >
-            {{ order.shipping_address.address1 | default: '-' }}
-          </h2>
-          <h2
-            class="m-0 flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400"
-          >
-            {{ order.shipping_address.address2 | default: '-' }}
-          </h2>
-        </div>
-      </div>
-    </div>
-
-    <div class="sm:hidden flex flex-col gap-16">
-      <h1 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500">{{ 'customer.addresses.billing_address' | t }}</h1>
-
-      <div class=" border-1 border-solid border-color rounded-12 p-24">
-        <div class="border-b border-b-color border-b-solid flex justify-between  pb-16">
-          <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0  fw-500">
-            {{ 'customer.addresses.address1' | t }}
-          </h1>
-          <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0  fw-500">
-            {{ 'customer.addresses.address2' | t }}
-          </h1>
-          <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0  fw-500">
+          <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0 fw-500">
             {{ 'customer.addresses.payment_status' | t }}
           </h1>
         </div>
-
-        <div class="flex justify-between pt-16 ">
-          <h2
-            class="customer-order-cell flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400"
-          >
+        <div class="flex justify-between pt-16">
+          <h2 class="customer-order-cell flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400">
             {{ order.billing_address.address1 | default: '-' }}
           </h2>
-          <h2
-            class=" m-0 flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400"
-          >
+          <h2 class="m-0 flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400">
             {{ order.billing_address.address2 | default: '-' }}
           </h2>
-          <h2
-            class="m-0 flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400"
-          >
+          <h2 class="m-0 flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400">
             {{ order.payment_status | default: '-' }}
           </h2>
         </div>
       </div>
     </div>
 
-    {% comment %} Shipping address mobile {% endcomment %}
+    <!-- Shipping address mobile -->
     <div class="sm:block hidden border-1 border-solid border-color rounded-12 sm:pt-8 sm:pb-8">
       <div class="flex flex-col gap-8 border-b border-b-color border-b-solid sm:pl-16 sm:pr-16 sm:pt-8 sm:pb-8">
         <h1 class="m-0 ff-general-sans fs-16-lh-22-ls-0 fw-600">{{ 'customer.order.shipping_address' | t }}</h1>
@@ -587,15 +544,14 @@
           <h2 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ order.customer.name }}</h2>
         </div>
       </div>
-
-      <div class="flex flex-col gap-8 border-b border-b-color border-b-solid  sm:pl-16 sm:pr-16 sm:pt-8 sm:pb-8">
-        <div class="flex justify-between sm:pt-8 sm:pb-8 ">
+      <div class="flex flex-col gap-8 border-b border-b-color border-b-solid sm:pl-16 sm:pr-16 sm:pt-8 sm:pb-8">
+        <div class="flex justify-between sm:pt-8 sm:pb-8">
           <h1 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ 'customer.order.phone' | t }}</h1>
           <h2 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ order.customer.phone }}</h2>
         </div>
       </div>
-      <div class="flex flex-col gap-8 ">
-        <div class="flex justify-between sm:pt-8 sm:pb-8   sm:pl-16 sm:pr-16">
+      <div class="flex flex-col gap-8">
+        <div class="flex justify-between sm:pt-8 sm:pb-8 sm:pl-16 sm:pr-16">
           <h1 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ 'customer.order.address' | t }}</h1>
           <h2 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">
             {{ order.shipping_address.address1 }}
@@ -607,24 +563,23 @@
       </div>
     </div>
 
-    {% comment %} billed address mobile {% endcomment %}
+    <!-- Billing address mobile -->
     <div class="sm:block hidden border-1 border-solid border-color rounded-12 sm:pt-8 sm:pb-8">
-      <div class="flex flex-col gap-8 border-b border-b-color border-b-solid   sm:pl-16 sm:pr-16 sm:pt-8 sm:pb-8">
+      <div class="flex flex-col gap-8 border-b border-b-color border-b-solid sm:pl-16 sm:pr-16 sm:pt-8 sm:pb-8">
         <h1 class="m-0 ff-general-sans fs-16-lh-22-ls-0 fw-600">{{ 'customer.order.billing_address' | t }}</h1>
         <div class="flex justify-between">
           <h1 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ 'customer.order.name' | t }}</h1>
           <h2 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ order.customer.name }}</h2>
         </div>
       </div>
-
-      <div class="flex flex-col gap-8 border-b border-b-color border-b-solid  sm:pl-16 sm:pr-16 sm:pt-8 sm:pb-8">
-        <div class="flex justify-between sm:pt-8 sm:pb-8 ">
+      <div class="flex flex-col gap-8 border-b border-b-color border-b-solid sm:pl-16 sm:pr-16 sm:pt-8 sm:pb-8">
+        <div class="flex justify-between sm:pt-8 sm:pb-8">
           <h1 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ 'customer.order.phone' | t }}</h1>
           <h2 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ order.customer.phone }}</h2>
         </div>
       </div>
-      <div class="flex flex-col gap-8 ">
-        <div class="flex justify-between  sm:pl-16 sm:pr-16 sm:pt-8 sm:pb-8 ">
+      <div class="flex flex-col gap-8">
+        <div class="flex justify-between sm:pl-16 sm:pr-16 sm:pt-8 sm:pb-8">
           <h1 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">{{ 'customer.order.address' | t }}</h1>
           <h2 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">
             {{ order.billing_address.address1 }}
@@ -637,6 +592,203 @@
     </div>
   </div>
 </div>
+
+<script>
+  // Order delivery status functionality
+  let orderDeliveryStatusLoaded = false;
+
+  // Function to fetch delivery status for single order
+  async function fetchOrderDeliveryStatus() {
+    console.log('fetchOrderDeliveryStatus called, loaded:', orderDeliveryStatusLoaded);
+
+    if (orderDeliveryStatusLoaded) return;
+
+    const deliveryStatusElement = document.querySelector('.delivery-status');
+    const timelineContainer = document.getElementById('order-timeline');
+
+    if (!deliveryStatusElement) {
+      console.log('No delivery status element found');
+      return;
+    }
+
+    const orderId = deliveryStatusElement.getAttribute('data-order-id');
+    if (!orderId) {
+      console.log('No order ID found');
+      deliveryStatusElement.textContent = 'Order Placed';
+      return;
+    }
+
+    console.log('Fetching delivery status for order ID:', orderId);
+
+    // Show loading state
+    deliveryStatusElement.textContent = 'Loading...';
+    deliveryStatusElement.classList.add('loading');
+
+    try {
+      const apiUrl = `/apps/${APP_SUB_PATH}/customer/account/delivery-status?order_ids=${encodeURIComponent(orderId)}`;
+      console.log('API URL:', apiUrl);
+
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('API Response:', result);
+
+      if (result.success && result.data && result.data[orderId]) {
+        const orderData = result.data[orderId];
+
+        // Update delivery status
+        deliveryStatusElement.classList.remove('loading');
+        deliveryStatusElement.textContent = orderData.deliveryStatus;
+        deliveryStatusElement.setAttribute('data-consignment-id', orderData.consignment_id || '');
+        deliveryStatusElement.setAttribute('data-last-event-date', orderData.lastEventDate || '');
+
+        // Add status-specific classes for styling
+        deliveryStatusElement.classList.remove('status-placed', 'status-transit', 'status-delivered', 'status-error');
+        const statusClass = orderData.deliveryStatus.toLowerCase().replace(/\s+/g, '-');
+        deliveryStatusElement.classList.add(`status-${statusClass}`);
+
+        // Create timeline if events data is available
+        if (orderData.events && Array.isArray(orderData.events)) {
+          createOrderTimeline(orderData.events, timelineContainer);
+        } else {
+          // Create simple timeline with current status
+          createSimpleTimeline(orderData, timelineContainer);
+        }
+
+        console.log('Order delivery status updated successfully');
+      } else {
+        console.log('No data found for order:', orderId);
+        deliveryStatusElement.classList.remove('loading');
+        deliveryStatusElement.textContent = 'Order Placed';
+        deliveryStatusElement.classList.add('status-placed');
+
+        // Create default timeline
+        createSimpleTimeline({ deliveryStatus: 'Order Placed' }, timelineContainer);
+      }
+    } catch (error) {
+      console.error('Error fetching delivery status:', error);
+
+      deliveryStatusElement.classList.remove('loading');
+      deliveryStatusElement.textContent = 'Order Placed';
+      deliveryStatusElement.classList.add('status-error');
+
+      // Show error message in timeline
+      if (timelineContainer) {
+        timelineContainer.innerHTML = `
+          <div class="timeline-error ff-general-sans fs-14-lh-16-ls-0 text-red-600">
+            Unable to load delivery timeline. Please try again later.
+          </div>
+        `;
+      }
+    }
+
+    orderDeliveryStatusLoaded = true;
+  }
+
+  // Function to create order timeline from events
+  function createOrderTimeline(events, container) {
+    if (!container || !events || events.length === 0) return;
+
+    const timelineHTML = events
+      .map((event, index) => {
+        const isLast = index === events.length - 1;
+        const eventDate = event.happenedAt ? new Date(event.happenedAt).toLocaleString() : 'Unknown date';
+
+        return `
+        <div class="timeline-item flex gap-16 pb-16 ${!isLast ? 'border-b border-b-color border-b-solid' : ''}">
+          <div class="timeline-marker flex-shrink-0 w-12 h-12 rounded-full ${
+            isLast ? 'bg-green-500' : 'bg-blue-500'
+          } flex items-center justify-center">
+            <div class="w-6 h-6 rounded-full bg-white"></div>
+          </div>
+          <div class="timeline-content flex-1">
+            <div class="ff-general-sans fw-500 fs-14-lh-16-ls-0 text-brand mb-4">
+              ${event.status || 'Status Update'}
+            </div>
+            <div class="ff-general-sans fw-400 fs-12-lh-14-ls-0 text-primary-70pct">
+              ${eventDate}
+            </div>
+            ${
+              event.description
+                ? `
+              <div class="ff-general-sans fw-400 fs-13-lh-16-ls-0 text-primary-80pct mt-4">
+                ${event.description}
+              </div>
+            `
+                : ''
+            }
+          </div>
+        </div>
+      `;
+      })
+      .join('');
+
+    container.innerHTML = `
+      <div class="timeline-container">
+        <h4 class="ff-general-sans fw-500 fs-16-lh-18-ls-0 mb-16">Delivery Timeline</h4>
+        ${timelineHTML}
+      </div>
+    `;
+  }
+
+  // Function to create simple timeline with just current status
+  function createSimpleTimeline(orderData, container) {
+    if (!container) return;
+
+    const currentDate = new Date().toLocaleString();
+    const status = orderData.deliveryStatus || 'Order Placed';
+
+    container.innerHTML = `
+      <div class="timeline-container">
+        <h4 class="ff-general-sans fw-500 fs-16-lh-18-ls-0 mb-16">Delivery Status</h4>
+        <div class="timeline-item flex gap-16">
+          <div class="timeline-marker flex-shrink-0 w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center">
+            <div class="w-6 h-6 rounded-full bg-white"></div>
+          </div>
+          <div class="timeline-content flex-1">
+            <div class="ff-general-sans fw-500 fs-14-lh-16-ls-0 text-brand mb-4">
+              ${status}
+            </div>
+            <div class="ff-general-sans fw-400 fs-12-lh-14-ls-0 text-primary-70pct">
+              ${orderData.lastEventDate ? new Date(orderData.lastEventDate).toLocaleString() : currentDate}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Initialize when DOM is ready
+  document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(() => {
+      fetchOrderDeliveryStatus();
+    }, 300);
+  });
+
+  function startDeliveryStatusRefresh() {
+    setInterval(() => {
+      if (document.querySelector('.delivery-status')) {
+        orderDeliveryStatusLoaded = false;
+        fetchOrderDeliveryStatus();
+      }
+    }, 120000);
+  }
+
+  startDeliveryStatusRefresh();
+</script>
 
 {% schema %}
 {
