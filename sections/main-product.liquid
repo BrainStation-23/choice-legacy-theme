@@ -23,6 +23,9 @@
 
             {% when "rating" %}
               {% render "product-rating", product: product %}
+
+            {% when "weight" %}
+              {% render "product-weight", product: product %}
           {% endcase %}
         {% endfor %}
       </div>
@@ -53,6 +56,11 @@
     {
       "type": "rating",
       "name": "Rating",
+      "limit": 1
+    },
+    {
+      "type": "weight",
+      "name": "Weight",
       "limit": 1
     }
   ]

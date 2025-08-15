@@ -55,23 +55,19 @@
       
       <!-- Product Weight Display -->
       {% if show_weight %}
-        {% if product.variants.first.weight %}
-          {% assign weight_unit = product.variants.first.weight_unit %}
-          {% assign weight_value = product.variants.first.weight %}
-          {% if weight_unit == 'g' and weight_value >= 1000 %}
-            {% assign display_weight = weight_value | divided_by: 1000.0 | round: 1 %}
-            <div class="product-card__weight absolute bottom-8 right-8 pt-4 pr-8 pb-4 pl-8 fw-500 fs-14-lh-16-ls-0">{{ display_weight }}{{ "sections.product.placeholder.kg" | t }}</div>
-          {% elsif weight_unit == 'kg' %}
-            <div class="product-card__weight absolute bottom-8 right-8 pt-4 pr-8 pb-4 pl-8 fw-500 fs-14-lh-16-ls-0">{{ weight_value | round: 1 }}{{ "sections.product.placeholder.kg" | t }}</div>
-          {% elsif weight_unit == 'oz' and weight_value >= 16 %}
-            {% assign display_weight = weight_value | divided_by: 16.0 | round: 1 %}
-            <div class="product-card__weight absolute bottom-8 right-8 pt-4 pr-8 pb-4 pl-8 fw-500 fs-14-lh-16-ls-0">{{ display_weight }}{{ "sections.product.placeholder.lb" | t }}</div>
-          {% elsif weight_unit == 'lb' %}
-            <div class="product-card__weight absolute bottom-8 right-8 pt-4 pr-8 pb-4 pl-8 fw-500 fs-14-lh-16-ls-0">{{ weight_value | round: 1 }}{{ "sections.product.placeholder.lb" | t }}</div>
-          {% else %}
+        {%- if product.variants.first.weight > 0 -%}
+          {%- liquid
+            assign a_weight = product.variants.first.weight
+            for variant in product.variants
+              if variant.weight != a_weight
+                assign a_weight = false
+              endif
+            endfor
+          -%}
+          {%- if a_weight -%}
             <div class="product-card__weight absolute bottom-8 right-8 pt-4 pr-8 pb-4 pl-8 fw-500 fs-14-lh-16-ls-0">{{ weight_value }}{{ weight_unit }}</div>
-          {% endif %}
-        {% endif %}
+          {%- endif -%}
+        {%- endif -%}
       {% endif %}
 
       {% if show_wishlist_button %}

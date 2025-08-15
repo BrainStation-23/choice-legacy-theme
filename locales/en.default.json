@@ -246,7 +246,8 @@
       },
       "sku": "SKU",
       "vendor": "Brand",
-      "product_type": "Product Type"
+      "product_type": "Product Type",
+      "weight": "Weight"
     }
   },
   "accessibility": {

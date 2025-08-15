@@ -1,0 +1,13 @@
+{%- if product.variants.first.weight > 0 -%}
+  {%- liquid
+    assign a_weight = product.variants.first.weight
+    for variant in product.variants
+      if variant.weight != a_weight
+        assign a_weight = false
+      endif
+    endfor
+  -%}
+  {%- if a_weight -%}
+    <div class="fw-500 fs-14-lh-20-ls-0_1 text-primary mb-8">{{ 'products.product.weight' | t }}: {{ product.variants.first.weight | weight_with_unit: product.variants.first.weight_unit }}</div>
+  {%- endif -%}
+{%- endif -%}
