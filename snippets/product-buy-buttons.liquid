@@ -1,0 +1,11 @@
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+{%- form 'product', product -%}
+  <div class="flex gap-8" {{ block.shopify_attributes }}>
+    <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+    {% render "product-form", show_cart_icon: true, cls: "fs-16-lh-100pct-ls-0" %}
+
+    {{ form | payment_button }}
+  </div>
+{%- endform -%}

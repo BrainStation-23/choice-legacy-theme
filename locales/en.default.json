@@ -235,6 +235,9 @@
     },
     "404": {
       "title": "Page not found"
+    },
+    "cart": {
+      "add_to_cart": "Add to cart"
     }
   },
   "products": {
