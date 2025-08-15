@@ -13,19 +13,22 @@
         {% for block in section.blocks %}
           {% case block.type %}
             {% when "title" %}
-              {% render "product-title", product: product, cls: "fw-400 fs-45-lh-45-ls--1_8pct mb-32" %}
+              {% render "product-title", block: block, product: product, cls: "fw-400 fs-45-lh-45-ls--1_8pct mb-32" %}
 
             {% when "sku_vendor_type" %}
-              {% render "product-sku-vendor-type", product: product %}
+              {% render "product-sku-vendor-type", block: block, product: product %}
 
             {% when "price" %}
-              {% render "product-price", product: product %}
+              {% render "product-price", block: block, product: product %}
 
             {% when "rating" %}
-              {% render "product-rating", product: product %}
+              {% render "product-rating", block: block, product: product %}
 
             {% when "weight" %}
-              {% render "product-weight", product: product %}
+              {% render "product-weight", block: block, product: product %}
+
+            {% when "buy_buttons" %}
+              {% render "product-buy-buttons", block: block, product: product %}
           {% endcase %}
         {% endfor %}
       </div>
@@ -61,6 +64,11 @@
     {
       "type": "weight",
       "name": "Weight",
+      "limit": 1
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Buy buttons",
       "limit": 1
     }
   ]

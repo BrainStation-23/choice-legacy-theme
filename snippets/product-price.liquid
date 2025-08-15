@@ -1,5 +1,5 @@
 {% if product.price %}
-  <div class="flex flex-wrap items-center gap-8 mb-8">
+  <div class="flex flex-wrap items-center gap-8 mb-8" {{ block.shopify_attributes }}>
     <span class="text-primary fw-500 fs-14-lh-24-ls-0">
       {{ product.price | money_with_currency }}
     </span>

@@ -1,4 +1,4 @@
-<div class="flex gap-8 mb-8">
+<div class="flex gap-8 mb-8" {{ block.shopify_attributes }}>
   <span class="fw-500 fs-14-lh-20-ls-0_1 text-secondary">{{ 'products.product.sku' | t }}: {{ product.selected_or_first_available_variant.sku }}</span>
   {% if product.vendor %}<span class="fw-500 fs-14-lh-20-ls-0_1 text-secondary flex gap-8">{{ 'products.product.vendor' | t }}<span class="text-brand">{{ product.vendor }}</span></span>{% endif %}
   {% if product.type %}<span class="fw-500 fs-14-lh-20-ls-0_1 text-secondary flex gap-8">{{ 'products.product.product_type' | t }}<span class="text-brand">{{ product.type }}</span></span>{% endif %}

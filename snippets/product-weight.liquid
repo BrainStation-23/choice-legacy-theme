@@ -8,6 +8,6 @@
     endfor
   -%}
   {%- if a_weight -%}
-    <div class="fw-500 fs-14-lh-20-ls-0_1 text-primary mb-8">{{ 'products.product.weight' | t }}: {{ product.variants.first.weight | weight_with_unit: product.variants.first.weight_unit }}</div>
+    <div class="fw-500 fs-14-lh-20-ls-0_1 text-primary mb-8" {{ block.shopify_attributes }}>{{ 'products.product.weight' | t }}: {{ product.variants.first.weight | weight_with_unit: product.variants.first.weight_unit }}</div>
   {%- endif -%}
 {%- endif -%}
