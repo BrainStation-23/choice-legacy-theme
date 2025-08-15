@@ -1,12 +1,12 @@
 <div class="product-container page-width">
   {% render "breadcrumbs" %}
-
+  
   <div class="product-grid flex gap-32">
     <!-- Product Images Section -->
     <div class="product-media w-578">
       {% render 'product-media-gallery', product: product, block: section %}
     </div>
-
+    
     <!-- Product Info Section -->
     <div class="product-info">
       <div class="product-header">
@@ -14,31 +14,36 @@
           {% case block.type %}
             {% when "title" %}
               {% render "product-title", block: block, product: product, cls: "fw-400 fs-45-lh-45-ls--1_8pct mb-32" %}
-
+            
             {% when "sku_vendor_type" %}
               {% render "product-sku-vendor-type", block: block, product: product %}
-
+            
             {% when "price" %}
               {% render "product-price", block: block, product: product %}
-
+            
             {% when "rating" %}
               {% render "product-rating", block: block, product: product %}
-
+            
             {% when "weight" %}
               {% render "product-weight", block: block, product: product %}
-
+            
             {% when "buy_buttons" %}
               {% render "product-buy-buttons", block: block, product: product %}
-
+            
             {% when "offer_button" %}
               {% render "product-offer-button", block: block %}
+
+            {% when "icon_with_text" %}
+              {% render "product-icon-with-text", block: block %}
           {% endcase %}
         {% endfor %}
       </div>
     </div>
   </div>
 </div>
+
 {% render "product-review" %}
+
 {% schema %}
 {
   "name": "Main Product",
@@ -91,7 +96,24 @@
           "label": "Offer button url"
         }
       ]
-    }
+    },
+    {
+      "type": "icon_with_text",
+      "name": "Icon with text",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Fastest Delivery"
+        }
+      ]
+    },
   ]
 }
 {% endschema %}

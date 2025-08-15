@@ -1012,6 +1012,9 @@ address {
 .h-28 {
   height: 28px;
 }
+.h-24 {
+  height: 24px;
+}
 .h-20 {
   height: 20px;
 }
@@ -1092,6 +1095,9 @@ address {
 }
 .w-28 {
   width: 28px;
+}
+.w-24 {
+  width: 24px;
 }
 .w-14 {
   width: 14px;
