@@ -44,105 +44,6 @@ mark {
   color: rgb(var(--color-primary-text));
 }
 
-/* Text color utilities */
-.text-inherit {
-  color: inherit;
-}
-.text-bg {
-  color: rgb(var(--color-background));
-}
-.text-primary {
-  color: rgb(var(--color-primary-text));
-}
-.text-primary-70pct {
-  color: rgba(var(--color-primary-text), 0.7);
-}
-.text-label {
-  color: rgb(var(--color-primary-label));
-}
-.text-label-light {
-  color: rgba(var(--color-primary-label), 0.7);
-}
-.text-secondary {
-  color: rgb(var(--color-secondary-text));
-}
-.text-secondary-light {
-  color: rgba(var(--color-secondary-text), 0.6);
-}
-.text-primary-optional {
-  color: #90989c;
-}
-.bg-secondary-light-20pct {
-  background-color: rgba(var(--color-secondary-text), 0.02);
-}
-.text-brand {
-  color: rgb(var(--color-primary-brand));
-}
-.text-brand-2 {
-  color: rgb(var(--color-secondary-brand));
-}
-.svg-brand path {
-  stroke: rgb(var(--color-primary-brand));
-  fill: rgb(var(--color-primary-brand));
-}
-.svg-bg path {
-  stroke: rgb(var(--color-background));
-}
-.svg-primary-optional path {
-  stroke: #90989c;
-  fill: #90989c;
-}
-
-/* Background color utilities */
-.bg-bg {
-  background-color: rgb(var(--color-background));
-}
-.bg-primary {
-  background-color: rgb(var(--color-primary-text));
-}
-.bg-label {
-  background-color: rgb(var(--color-primary-label));
-}
-.bg-secondary {
-  background-color: rgb(var(--color-secondary-text));
-}
-.bg-brand {
-  background-color: rgb(var(--color-primary-brand));
-}
-.bg-brand-2 {
-  background-color: rgb(var(--color-secondary-brand));
-}
-.bg-light-blue {
-  background-color: #e7f1ff;
-}
-.bg-light-gray {
-  background-color: #efeeec;
-}
-.bg-success-light {
-  background-color: #dbffd8;
-}
-.bg-transparent {
-  background-color: transparent;
-}
-.bg-none {
-  background: none;
-}
-@media screen and (max-width: 768px) {
-  .sm\:bg-none {
-    background: none;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .sm\:bg-none {
-    background: none;
-  }
-
-  .sm\:border-box {
-    box-sizing: border-box;
-  }
-}
-
 .button {
   border: none;
   border: none;
@@ -192,6 +93,111 @@ mark {
   color: white;
   font-variant-emoji: text;
   margin-right: 4px;
+}
+
+/* Text color utilities */
+.text-inherit {
+  color: inherit;
+}
+.text-bg {
+  color: rgb(var(--color-background));
+}
+.text-primary {
+  color: rgb(var(--color-primary-text));
+}
+.text-primary-70pct {
+  color: rgba(var(--color-primary-text), 0.7);
+}
+.text-label {
+  color: rgb(var(--color-primary-label));
+}
+.text-label-light {
+  color: rgba(var(--color-primary-label), 0.7);
+}
+.text-secondary {
+  color: rgb(var(--color-secondary-text));
+}
+.text-secondary-light {
+  color: rgba(var(--color-secondary-text), 0.6);
+}
+.text-primary-optional {
+  color: #90989c;
+}
+.bg-secondary-light-20pct {
+  background-color: rgba(var(--color-secondary-text), 0.02);
+}
+.text-brand {
+  color: rgb(var(--color-primary-brand));
+}
+.text-brand-2 {
+  color: rgb(var(--color-secondary-brand));
+}
+.text-yellow {
+  color: #ffff01;
+}
+.svg-brand path {
+  stroke: rgb(var(--color-primary-brand));
+  fill: rgb(var(--color-primary-brand));
+}
+.svg-bg path {
+  stroke: rgb(var(--color-background));
+}
+.svg-primary-optional path {
+  stroke: #90989c;
+  fill: #90989c;
+}
+
+/* Background color utilities */
+.bg-bg {
+  background-color: rgb(var(--color-background));
+}
+.bg-primary {
+  background-color: rgb(var(--color-primary-text));
+}
+.bg-label {
+  background-color: rgb(var(--color-primary-label));
+}
+.bg-secondary {
+  background-color: rgb(var(--color-secondary-text));
+}
+.bg-brand {
+  background-color: rgb(var(--color-primary-brand));
+}
+.bg-brand-2 {
+  background-color: rgb(var(--color-secondary-brand));
+}
+.bg-light-blue {
+  background-color: #e7f1ff;
+}
+.bg-light-gray {
+  background-color: #efeeec;
+}
+.bg-success-light {
+  background-color: #dbffd8;
+}
+.bg-transparent {
+  background-color: transparent;
+}
+.bg-none {
+  background: none;
+}
+.bg-red {
+  background: #ff3b3c;
+}
+@media screen and (max-width: 768px) {
+  .sm\:bg-none {
+    background: none;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .sm\:bg-none {
+    background: none;
+  }
+
+  .sm\:border-box {
+    box-sizing: border-box;
+  }
 }
 
 :root {
@@ -2637,6 +2643,9 @@ shop-login-button {
 .border-2 {
   border-width: 2px;
 }
+.border-4 {
+  border-width: 4px;
+}
 .border-solid {
   border-style: solid;
 }
@@ -2648,6 +2657,9 @@ shop-login-button {
 }
 .border-bg {
   border-color: rgb(var(--color-background));
+}
+.border-yellow {
+  border-color: #ffff01;
 }
 .border-b {
   border-bottom-width: 1px;

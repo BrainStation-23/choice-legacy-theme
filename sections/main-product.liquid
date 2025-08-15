@@ -29,6 +29,9 @@
 
             {% when "buy_buttons" %}
               {% render "product-buy-buttons", block: block, product: product %}
+
+            {% when "offer_button" %}
+              {% render "product-offer-button", block: block %}
           {% endcase %}
         {% endfor %}
       </div>
@@ -70,6 +73,24 @@
       "type": "buy_buttons",
       "name": "Buy buttons",
       "limit": 1
+    },
+    {
+      "type": "offer_button",
+      "name": "Offer button",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "offer_button_text",
+          "label": "Offer button text",
+          "default": "On Going Offers"
+        },
+        {
+          "type": "url",
+          "id": "offer_button_url",
+          "label": "Offer button url"
+        }
+      ]
     }
   ]
 }
