@@ -9,35 +9,36 @@
     
     <!-- Product Info Section -->
     <div class="product-info">
-      <div class="product-header">
-        {% for block in section.blocks %}
-          {% case block.type %}
-            {% when "title" %}
-              {% render "product-title", block: block, product: product, cls: "fw-400 fs-45-lh-45-ls--1_8pct mb-32" %}
-            
-            {% when "sku_vendor_type" %}
-              {% render "product-sku-vendor-type", block: block, product: product %}
-            
-            {% when "price" %}
-              {% render "product-price", block: block, product: product %}
-            
-            {% when "rating" %}
-              {% render "product-rating", block: block, product: product %}
-            
-            {% when "weight" %}
-              {% render "product-weight", block: block, product: product %}
-            
-            {% when "buy_buttons" %}
-              {% render "product-buy-buttons", block: block, product: product %}
-            
-            {% when "offer_button" %}
-              {% render "product-offer-button", block: block %}
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when "title" %}
+            {% render "product-title", block: block, product: product, cls: "fw-400 fs-45-lh-45-ls--1_8pct mb-32" %}
+          
+          {% when "sku_vendor_type" %}
+            {% render "product-sku-vendor-type", block: block, product: product %}
+          
+          {% when "price" %}
+            {% render "product-price", block: block, product: product %}
+          
+          {% when "rating" %}
+            {% render "product-rating", block: block, product: product %}
+          
+          {% when "weight" %}
+            {% render "product-weight", block: block, product: product %}
+          
+          {% when "buy_buttons" %}
+            {% render "product-buy-buttons", block: block, product: product %}
+          
+          {% when "offer_button" %}
+            {% render "product-offer-button", block: block %}
 
-            {% when "icon_with_text" %}
-              {% render "product-icon-with-text", block: block %}
-          {% endcase %}
-        {% endfor %}
-      </div>
+          {% when "icon_with_text" %}
+            {% render "product-icon-with-text", block: block %}
+
+          {% when "editor_note" %}
+            {% render "product-editor-note", block: block, product: product %}    
+        {% endcase %}
+      {% endfor %}
     </div>
   </div>
 </div>
@@ -114,6 +115,19 @@
         }
       ]
     },
+    {
+      "type": "editor_note",
+      "name": "Editor Note",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "editor_note_title",
+          "label": "Editor Note Title",
+          "default": "Editor's Note"
+        }
+      ]
+    }
   ]
 }
 {% endschema %}

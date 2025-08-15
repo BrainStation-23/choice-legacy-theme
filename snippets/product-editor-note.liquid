@@ -1,0 +1,10 @@
+{% if product.metafields.custom.editor_note.value != blank %}
+  <div class="mt-24 mb-36 flex flex-col gap-8" {{ block.shopify_attributes }}>
+    {% if block.settings.editor_note_title != blank %}
+      <h3 class="editor-note-title fs-17-lh-24-ls-0 fw-600 ff-general-sans">{{ block.settings.editor_note_title }}</h3>
+    {% endif %}
+    <div class="fs-14-lh-20-ls-0_1 fw-500 text-label">
+      {{ product.metafields.custom.editor_note.value }}
+    </div>
+  </div>
+{% endif %}

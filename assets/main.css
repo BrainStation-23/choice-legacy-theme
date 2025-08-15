@@ -330,9 +330,7 @@ h6,
 .fs-12-lh-16-ls-0_072 {
   font-size: calc(12 * var(--font-unit));
   line-height: calc(16 * var(--font-unit));
-  letter-spacing: calc(
-    0.006 * var(--font-unit)
-  ); /* 0.072px at base font unit */
+  letter-spacing: calc(0.006 * var(--font-unit));
 }
 
 .fs-13-lh-16-ls-0_2 {
@@ -408,6 +406,12 @@ h6,
 
 .fs-16-lh-24-ls-0 {
   font-size: calc(16 * var(--font-unit));
+  line-height: calc(24 * var(--font-unit));
+  letter-spacing: 0;
+}
+
+.fs-17-lh-24-ls-0 {
+  font-size: calc(17 * var(--font-unit));
   line-height: calc(24 * var(--font-unit));
   letter-spacing: 0;
 }
@@ -755,6 +759,9 @@ address {
 .mb-32 {
   margin-bottom: calc(32 * var(--space-unit));
 }
+.mb-36 {
+  margin-bottom: calc(36 * var(--space-unit));
+}
 .mb-section {
   margin-bottom: calc(var(--section-gap) * var(--fluid-1-5));
 }
@@ -814,6 +821,9 @@ address {
 }
 .mt-8 {
   margin-top: calc(8 * var(--space-unit));
+}
+.mt-24 {
+  margin-top: calc(24 * var(--space-unit));
 }
 
 @media screen and (max-width: 768px) {
