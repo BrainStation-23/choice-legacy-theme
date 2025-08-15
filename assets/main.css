@@ -173,6 +173,27 @@ mark {
   cursor: not-allowed;
 }
 
+.shopify-payment-button__button,
+.shopify-payment-button__button--unbranded {
+  font-weight: 600 !important;
+  font-size: calc(16 * var(--font-unit)) !important;
+  line-height: 100% !important;
+  letter-spacing: 0 !important;
+  padding: calc(16 * var(--space-unit)) !important;
+  background: rgb(var(--color-primary-brand)) !important;
+  color: rgb(var(--color-background)) !important;
+  border-radius: 6px !important;
+  min-height: calc(56 * calc(var(--space-unit))) !important;
+}
+
+.shopify-payment-button__button::before,
+.shopify-payment-button__button--unbranded ::before {
+  content: "⚡";
+  color: white;
+  font-variant-emoji: text;
+  margin-right: 4px;
+}
+
 :root {
   --fluid-vw: 100vw;
   --fluid-max-vw: 1536;
