@@ -372,6 +372,32 @@
       });
     }
 
+    function createStarRating(rating) {
+      let starsHtml = "";
+      for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+          starsHtml += `<span class="text-brand" style="font-size: 20px">★</span>`;
+        } else {
+          starsHtml += `<span class="text-bg" style="font-size: 20px;">★</span>`;
+        }
+      }
+      return starsHtml;
+    }
+
+    // Helper function to format date
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const options = { year: "numeric", month: "short", day: "numeric" };
+      return date.toLocaleDateString("en-US", options);
+    }
+
+    // Helper function to get product title
+    function getProductTitle(productId) {
+      // You might need to pass this data or fetch it separately
+      // For now, using a placeholder or you can integrate with your product data
+      return "Product Title"; // Replace with actual product title logic
+    }
+
     // Fetch and Display Reviews
     async function fetchReviews() {
       if (!reviewListContainer || !productId) return;
@@ -468,43 +494,57 @@
         return;
       }
 
+      const gridContainer = document.createElement("div");
+      gridContainer.className =
+        "product-reviews-grid grid grid-cols-5 lg:grid-cols-4 md:grid-cols-3 gap-24 md:gap-16";
+
       reviewsArray.forEach((review) => {
         const reviewItem = document.createElement("div");
-        reviewItem.className = "review-item";
+        reviewItem.className = "p-8 box-shadow flex flex-col gap-16";
 
-        const ratingStarsHTML = Array(5)
-          .fill(0)
-          .map((_, i) => {
-            const isFilled = i < review.rating;
-            return `<span class="star" style="color:${
-              isFilled ? starColorFilled : starColorEmpty
-            };">${isFilled ? "&#9733;" : "&#9734;"}</span>`;
-          })
-          .join("");
+        // Get product title (you may need to adjust this based on your data structure)
+        const productTitle = getProductTitle(review.productId);
 
+        const imageHtml = review.reviewImage
+          ? `<img src="${review.reviewImage}" class="w-220 h-228 alt="${productTitle}" loading="lazy">`
+          : `<div></div>`;
+
+        // Format date
         const reviewDate = review.reviewPlacedAt
-          ? new Date(review.reviewPlacedAt).toLocaleDateString()
+          ? formatDate(review.reviewPlacedAt)
           : "N/A";
 
-        reviewItem.innerHTML = `
-                    <div class="review-header">
+        const ratingStarsHTML = createStarRating(review.rating);
 
-                        <span class="review-date">${reviewDate}</span>
-                    </div>
-                    <div class="review-rating">${ratingStarsHTML}</div>
-                    <p class="review-text">${escapeHTML(
-                      review.reviewText || ""
-                    )}</p>
-                    ${
-                      review.reviewImage
-                        ? `<a href="${review.reviewImage}" target="_blank" rel="noopener noreferrer" class="review-image-link">
-         <img src="${review.reviewImage}" alt="Review Image" class="review-uploaded-image" loading="lazy">
-       </a>`
-                        : ""
-                    }
-                `;
-        reviewListContainer.appendChild(reviewItem);
+        reviewItem.innerHTML = `
+          <div class="relative flex justify-center">
+            ${imageHtml}
+            <div class="absolute bottom-16 bg-brand-2 pt-8 pr-10 pb-8 pl-10 flex gap-4_8 rounded-100">
+              ${ratingStarsHTML}
+            </div>
+          </div>
+          <div class="flex flex-col gap-8">
+            <div class="fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
+              ${productTitle}
+            </div>
+            <div class="ff-general-sans fs-14-lh-20-ls-0 fw-400 text-secondary">
+              ${escapeHTML(review.reviewText || "")}
+            </div>
+          </div>
+          <div class="flex flex-col gap-4">
+            <span class="fs-12-lh-16-ls-0_6pct ff-general-sans fw-400 text-label">
+              ${reviewDate}
+            </span>
+            <span class="fs-12-lh-16-ls-0_6pct ff-general-sans fw-400 text-label">
+              By ${review.customerName || "Anonymous"}
+            </span>
+          </div>
+        `;
+
+        gridContainer.appendChild(reviewItem);
       });
+
+      reviewListContainer.appendChild(gridContainer);
     }
 
     function escapeHTML(str) {

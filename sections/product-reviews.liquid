@@ -1,0 +1,62 @@
+<div
+  class="review-extension-container"
+  id="product-review-app-{{ section.id }}"
+  data-section-id="{{ section.id }}"
+  data-product-id="{{ product.id }}"
+  data-product-handle="{{ product.handle }}"
+  data-customer-id="{{ customer.id }}"
+  data-customer-name="{{ customer.name }}"
+  data-shop-domain="{{ shop.permanent_domain }}"
+  data-star-filled-color="#FFD700"
+  data-star-empty-color="#CCCCCC"
+>
+
+  <div class="page-width">
+    <div class="review-summary" id="review-summary-{{ section.id }}"></div>
+
+    <button class="button button--outline flex items-center gap-4 fs-16-lh-100pct-ls-0">{% render "icon-plus", cls: "w-28 h-28" %} {{ 'products.product.review.write_review' | t }}</button>
+
+    <div class="review-form">
+      <form id="review-submission-form-{{ section.id }}">
+        <div class="form-group">
+          <label>Image</label>
+          <input type="file" id="reviewImage-{{ section.id }}" name="reviewImage" accept="image/*" required>
+          <div class="field-error" id="reviewImage-error-{{ section.id }}" style="display: none;"></div>
+        </div>
+        
+        <div class="form-group">
+          <label>Rating</label>
+          <div class="star-rating" id="form-star-rating-{{ section.id }}">
+            {% for i in (1..5) %}
+              <span class="star" data-value="{{ i }}">&#9734;</span>
+            {% endfor %}
+          </div>
+          <input type="hidden" name="rating" id="rating-value-{{ section.id }}" required>
+          <div class="field-error" id="rating-error-{{ section.id }}" style="display: none;"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="reviewText-{{ section.id }}">Review</label>
+          <textarea id="reviewText-{{ section.id }}" name="reviewText" rows="4" required></textarea>
+          <div class="field-error" id="reviewText-error-{{ section.id }}" style="display: none;"></div>
+        </div>
+
+        <button type="submit" id="submit-review-btn-{{ section.id }}">Submit Review</button>
+        <div class="reviews-message" id="form-message-{{ section.id }}" style="display:none; margin-top:10px;"></div>
+      </form>
+    </div>
+
+    <div class="reviews-list" id="reviews-list-{{ section.id }}">
+      <div class="review-spinner" id="reviews-spinner-{{ section.id }}"><div></div></div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ 'products-review.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Product reviews",
+  "settings": []
+}
+{% endschema %}

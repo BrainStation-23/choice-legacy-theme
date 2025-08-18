@@ -250,7 +250,10 @@
       "sku": "SKU",
       "vendor": "Brand",
       "product_type": "Product Type",
-      "weight": "Weight"
+      "weight": "Weight",
+      "review": {
+        "write_review": "Write Review"
+      }
     }
   },
   "accessibility": {

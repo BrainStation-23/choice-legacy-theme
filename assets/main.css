@@ -621,6 +621,9 @@ address {
 .bottom-8 {
   bottom: 8px;
 }
+.bottom-16 {
+  bottom: 16px;
+}
 .left-0 {
   left: 0;
 }
@@ -905,10 +908,6 @@ address {
   .md\:right-11p-52 {
     right: calc(11% - 52px);
   }
-
-  .md\:gap-16 {
-    gap: 16px;
-  }
 }
 @media screen and (min-width: 1024px) and (max-width: 1439px) {
   .lg\:grid-cols-2 {
@@ -998,6 +997,9 @@ address {
 }
 .h-254 {
   height: 254px;
+}
+.h-228 {
+  height: 228px;
 }
 .h-225 {
   height: 225px;
@@ -1091,6 +1093,9 @@ address {
 }
 .w-240 {
   width: 240px;
+}
+.w-220 {
+  width: 220px;
 }
 .w-177 {
   width: 177px;
@@ -1574,6 +1579,10 @@ address {
     gap: calc(10 * var(--space-unit));
   }
 
+  .md\:gap-16 {
+    gap: 16px;
+  }
+
   .md\:gap-32 {
     gap: calc(32 * var(--space-unit));
   }
@@ -1908,6 +1917,9 @@ address {
 }
 .pr-8 {
   padding-right: calc(8 * var(--space-unit));
+}
+.pr-10 {
+  padding-right: calc(10 * var(--space-unit));
 }
 .pr-12 {
   padding-right: calc(12 * var(--space-unit));
