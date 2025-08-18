@@ -139,6 +139,10 @@ mark {
   stroke: rgb(var(--color-primary-brand));
   fill: rgb(var(--color-primary-brand));
 }
+.svg-primary-text path {
+  stroke: rgb(var(--color-primary-text));
+  fill: rgb(var(--color-primary-text));
+}
 .svg-bg path {
   stroke: rgb(var(--color-background));
 }
@@ -300,6 +304,12 @@ h6,
 /* Desktop styles */
 :root {
   --font-unit: 0.1rem; /* 1px */
+}
+
+.rte {
+  display: flex;
+  flex-direction: column;
+  gap: calc(8 * var(--space-unit));
 }
 
 /* Desktop Typography */
@@ -2679,6 +2689,9 @@ shop-login-button {
 }
 .border-b {
   border-bottom-width: 1px;
+}
+.border-b-2 {
+  border-bottom-width: 2px;
 }
 
 .border-b-color {

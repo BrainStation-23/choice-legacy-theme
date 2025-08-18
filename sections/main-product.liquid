@@ -36,12 +36,20 @@
             {% render "product-icon-with-text", block: block %}
 
           {% when "editor_note" %}
-            {% render "product-editor-note", block: block, product: product %}    
+            {% render "product-editor-note", block: block, product: product %}
+
+          {% when "product_description" %}
+            {% render "product-description", block: block, product: product %}
+
+          {% when "collapsible_metafield" %}
+            {% render "product-collapsible-content", block: block, product: product %}
         {% endcase %}
       {% endfor %}
     </div>
   </div>
 </div>
+
+<script src="{{ 'collapsible-content.js' | asset_url }}" defer></script>
 
 {% render "product-review" %}
 
@@ -125,6 +133,38 @@
           "id": "editor_note_title",
           "label": "Editor Note Title",
           "default": "Editor's Note"
+        }
+      ]
+    },
+    {
+      "type": "product_description",
+      "name": "Product description",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "description_title",
+          "label": "Description Title",
+          "default": "Description"
+        }
+      ]
+    },
+    {
+      "type": "collapsible_metafield",
+      "name": "Collapsible content",
+      "settings": [
+        {
+          "type": "text",
+          "id": "content_title",
+          "label": "Content Title",
+          "default": "Key Features"
+        },
+        {
+          "type": "text",
+          "id": "metafield_key",
+          "label": "Metafield Key",
+          "info": "Enter the metafield key (e.g., key_features, how_to_use, ingredients)",
+          "default": "key_features"
         }
       ]
     }
