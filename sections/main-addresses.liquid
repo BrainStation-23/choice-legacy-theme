@@ -24,15 +24,58 @@
             <a href="#" class="no-underline text-brand ff-general-sans fw-600 fs-14-lh-20-ls-0 m-0">
               {{- 'customer.addresses.edit_address' | t -}}
             </a>
-            <a href="#" class="no-underline text-brand ff-general-sans fw-600 fs-14-lh-20-ls-0 m-0">
+            <button
+              type="button"
+              data-address="{{ address.id }}"
+              data-confirm="{{ 'customer.addresses.delete_confirm' | t }}"
+              class="button--link no-underline text-brand ff-general-sans fw-600 fs-14-lh-20-ls-0 m-0 bg-transparent border-0 cursor-pointer"
+            >
               {{- 'customer.addresses.delete' | t -}}
-            </a>
+            </button>
           </div>
         </div>
       {%- endfor -%}
     </div>
+
+    <!-- Hidden Delete Forms -->
+    {% for address in customer.addresses %}
+      <form class="hidden customer-address__delete-form-{{ address.id }}" method="POST" action="{{ address.url }}">
+        <input type="hidden" name="_method" value="delete">
+        <button
+          data-confirm-address-delete="{{ address.id }}"
+          type="submit"
+          id="delete-{{ address.id }}"
+        >
+          {{ 'customer.addresses.delete' | t }}
+        </button>
+      </form>
+    {% endfor %}
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    // Delete functionality
+    const deleteButtons = document.querySelectorAll('.customer-address__delete');
+
+    deleteButtons.forEach((button) => {
+      button.addEventListener('click', function () {
+        const addressId = this.getAttribute('data-address');
+        const confirmMessage = this.getAttribute('data-confirm');
+
+        if (confirm(confirmMessage)) {
+          const deleteForm = document.querySelector(`.customer-address__delete-form-${addressId}`);
+          if (deleteForm) {
+            const submitButton = deleteForm.querySelector('button[type="submit"]');
+            if (submitButton) {
+              submitButton.click();
+            }
+          }
+        }
+      });
+    });
+  });
+</script>
 
 {% schema %}
 {

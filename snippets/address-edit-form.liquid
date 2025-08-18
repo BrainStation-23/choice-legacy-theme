@@ -1,0 +1,222 @@
+{%- comment -%}
+  This is the customer address edit form snippet.
+  It includes fields for editing customer address details like first name, last name, company, address, etc.
+  The form is used to update a customer's address information on the store.
+{%- endcomment -%}
+
+<div class="customer-address__edit-form">
+  <div class="add-new-address__top">
+    <span class="add-new-address__heading font-size-32 font-size-mobile-20 font-weight-600">
+      {{- 'customer.addresses.edit_address' | t -}}
+    </span>
+    <button tabindex="0" class="customer-address-edit-close-button transparent-bg">{% render 'icon-close' %}</button>
+  </div>
+  {% form 'customer_address', address %}
+    <div class="customer-address-form--fields">
+      <div class="customer-address-flex">
+        <div class="label-input-container--flex">
+          <label for="AddressFirstNameNew" class="label-input font-size-12 font-size-mobile-12 font-weight-600">
+            {{- 'customer.addresses.first_name' | t -}}
+          </label>
+
+          <div class="customer-address__first-name input svg-container svg-container--left common-form__field">
+            <input
+              type="text"
+              name="address[first_name]"
+              value="{{ form.first_name }}"
+              placeholder="{{ 'customer.addresses.placeholder.first_name' | t }}"
+              class="input font-size-14 font-size-mobile-12"
+              id="AddressFirstNameNew"
+            >
+          </div>
+        </div>
+
+        <div class="label-input-container--flex">
+          <label for="AddressLastNameNew" class="label-input font-size-12 font-size-mobile-12 font-weight-600">
+            {{- 'customer.addresses.last_name' | t -}}
+          </label>
+
+          <div class="customer-address__last-name input svg-container svg-container--left common-form__field">
+            <input
+              type="text"
+              name="address[last_name]"
+              value="{{ form.last_name }}"
+              placeholder="{{ 'customer.addresses.placeholder.last_name' | t }}"
+              class="input font-size-14 font-size-mobile-12"
+              id="AddressLastNameNew"
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="customer-address-block">
+        <label for="AddressCompanyNew" class="label-input font-size-12 font-size-mobile-12 font-weight-600">
+          {{- 'customer.addresses.company' | t -}}
+        </label>
+
+        <div class="customer-address__company input svg-container svg-container--left common-form__field">
+          <input
+            type="text"
+            name="address[company]"
+            value="{{ form.company }}"
+            placeholder="{{ 'customer.addresses.placeholder.company' | t }}"
+            class="input font-size-14 font-size-mobile-12"
+            id="AddressCompanyNew"
+          >
+        </div>
+      </div>
+
+      <div class="customer-address-block">
+        <label for="AddressAddress1New" class="label-input font-size-12 font-size-mobile-12 font-weight-600">
+          {{- 'customer.addresses.address1' | t -}}
+        </label>
+
+        <div class="customer-address__address1 input svg-container svg-container--left common-form__field">
+          <input
+            type="text"
+            name="address[address1]"
+            value="{{ form.address1 }}"
+            placeholder="{{ 'customer.addresses.placeholder.address1' | t }}"
+            class="input font-size-14 font-size-mobile-12"
+            id="AddressAddress1New"
+          >
+        </div>
+      </div>
+
+      <div class="customer-address-block font-size-12 font-size-mobile-12">
+        <label for="AddressAddress2New" class="label-input">{{ 'customer.addresses.address2' | t }}</label>
+
+        <div class="customer-address__address2 input svg-container svg-container--left common-form__field">
+          <input
+            type="text"
+            name="address[address2]"
+            value="{{ form.address2 }}"
+            placeholder="{{ 'customer.addresses.address2' | t }}"
+            class="input font-size-14 font-size-mobile-12"
+            id="AddressAddress2New"
+          >
+        </div>
+      </div>
+
+      <div class="customer-address-block">
+        <label for="AddressProvinceNew" class="label-input font-size-12 font-size-mobile-12 font-weight-600">
+          {{- 'customer.addresses.province' | t -}}
+        </label>
+
+        <div class="customer-address__province input svg-container svg-container--left common-form__field">
+          <input
+            type="text"
+            name="address[province]"
+            value="{{ form.province }}"
+            placeholder="{{ 'customer.addresses.placeholder.province' | t }}"
+            class="input font-size-14 font-size-mobile-12"
+            id="AddressProvinceNew"
+          >
+        </div>
+      </div>
+
+      <div class="customer-address-flex">
+        <div class="label-input-container--flex">
+          <label for="AddressCityNew" class="label-input font-size-12 font-size-mobile-12 font-weight-600">
+            {{- 'customer.addresses.city' | t -}}
+          </label>
+
+          <div class="customer-address__city input svg-container svg-container--left common-form__field">
+            <input
+              type="text"
+              name="address[city]"
+              value="{{ form.city }}"
+              placeholder="{{ 'customer.addresses.placeholder.city' | t }}"
+              class="input font-size-14 font-size-mobile-12"
+              id="AddressCityNew"
+            >
+          </div>
+        </div>
+
+        <div class="label-input-container--flex">
+          <label for="AddressCountryNew" class="label-input font-size-12 font-size-mobile-12 font-weight-600">
+            {{- 'customer.addresses.country' | t -}}
+          </label>
+
+          <div class="customer-address__country input svg-container svg-container--left common-form__field">
+            <select
+              tabindex="0"
+              name="address[country]"
+              placeholder="{{ 'customer.addresses.placeholder.country' | t }}"
+              class="input customer-address__country-select font-size-14 font-size-mobile-12"
+              data-default-country="{{ form.country }}"
+              data-country-select="{{ address.id }}"
+              id="AddressCountryNew"
+            >
+              {{ all_country_option_tags }}
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="customer-address-flex">
+        <div class="label-input-container--flex">
+          <label for="AddressZipNew" class="label-input font-size-12 font-size-mobile-12 font-weight-600">
+            {{- 'customer.addresses.zip' | t -}}
+          </label>
+
+          <div class="customer-address__zip input svg-container svg-container--left common-form__field">
+            <input
+              type="text"
+              name="address[zip]"
+              value="{{ form.zip }}"
+              placeholder="{{ 'customer.addresses.placeholder.zip' | t }}"
+              class="input font-size-14 font-size-mobile-12"
+              id="AddressZipNew"
+            >
+          </div>
+        </div>
+
+        <div class="label-input-container--flex font-size-12 font-size-mobile-12">
+          <label for="AddressPhoneNew" class="label-input font-size-12 font-weight-600">
+            {{- 'customer.addresses.phone' | t -}}
+          </label>
+
+          <div class="customer-address__phone input svg-container svg-container--left common-form__field">
+            <input
+              type="tel"
+              name="address[phone]"
+              value="{{ form.phone }}"
+              placeholder="{{ 'customer.addresses.placeholder.phone' | t }}"
+              class="input font-size-14 font-size-mobile-12"
+              id="AddressPhoneNew"
+            >
+          </div>
+        </div>
+      </div>
+
+      <div class="customer-address__checkbox">
+        {{ form.set_as_default_checkbox }}
+        <label
+          for="address_default_address_{{ form.id }}"
+          class="customer-addresses-set_default font-size-14 font-size-mobile-14 font-weight-400"
+        >
+          {{ 'customer.addresses.set_default' | t }}
+        </label>
+      </div>
+    </div>
+
+    <div class="customer-address-flex-buttons">
+      <button
+        class="button solid-button font-size-14 font-size-mobile-14"
+        id="customer-address-update-id"
+      >
+        {{ 'customer.addresses.update' | t }}
+      </button>
+
+      <button
+        data-address="{{ address.id }}"
+        class="button outline-button customer-edit__cancel font-size-14 font-size-mobile-14"
+        type="reset"
+        id="customer-address-update-cancel-id"
+      >
+        {{ 'customer.addresses.cancel' | t }}
+      </button>
+    </div>
+  {% endform %}
+</div>

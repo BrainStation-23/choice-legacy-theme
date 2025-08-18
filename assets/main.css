@@ -150,6 +150,11 @@ mark {
   padding: 10px 16px;
 }
 
+.button--link {
+  color: rgb(var(--color-primary-brand));
+  border: none;
+}
+
 .button:disabled {
   background: rgb(var(--color-primary-brand));
   cursor: not-allowed;
