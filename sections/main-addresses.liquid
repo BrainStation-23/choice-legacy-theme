@@ -1,0 +1,42 @@
+<div class="customer-account__container flex gap-64 page-width pt-40 pb-40">
+  <div class="sm:hidden block">{% render 'customer-account-sidebar' %}</div>
+  <div class="flex flex-col gap-24">
+    <h2 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500">{{ 'customer.addresses.manage_address' | t }}</h2>
+    <div class="grid grid-cols-2 gap-24">
+      {%- for address in customer.addresses -%}
+        <div
+          class="
+             border border-solid  rounded-12 pt-24  pb-24 flex flex-col gap-16
+            {% if address == customer.default_address %} border-color-brand {% else %} border-color {% endif %}
+          "
+        >
+          <h1 class=" pl-24 pr-24 ff-general-sans fw-600 fs-16-lh-22-ls-0 m-0">
+            {{ address.first_name }}
+            {{ address.last_name }}
+          </h1>
+          <p class="pl-24 pr-24 ff-general-sans fw-400 fs-14-lh-20-ls-0 m-0">
+            {{ address.address1 }}
+            {{ address.city }}, {{ address.province }}
+            {{ address.zip }},{{ address.country }}
+          </p>
+
+          <div class="mt-auto flex justify-between pl-24 pr-24 border-t border-t-color border-t-solid pt-16 ">
+            <a href="#" class="no-underline text-brand ff-general-sans fw-600 fs-14-lh-20-ls-0 m-0">
+              {{- 'customer.addresses.edit_address' | t -}}
+            </a>
+            <a href="#" class="no-underline text-brand ff-general-sans fw-600 fs-14-lh-20-ls-0 m-0">
+              {{- 'customer.addresses.delete' | t -}}
+            </a>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Address",
+  "settings": []
+}
+{% endschema %}

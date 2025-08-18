@@ -2576,19 +2576,32 @@ shop-login-button {
 .border-color {
   border-color: rgb(var(--color-border));
 }
+.border-color-brand {
+  border-color: rgb(var(--color-primary-brand));
+}
 .border-bg {
   border-color: rgb(var(--color-background));
 }
 .border-b {
   border-bottom-width: 1px;
 }
+.border-t {
+  border-top-width: 1px;
+}
 
 .border-b-color {
   border-bottom-color: rgb(var(--color-border));
 }
+.border-t-color {
+  border-top-color: rgb(var(--color-border));
+}
 
 .border-b-solid {
   border-bottom-style: solid;
+}
+
+.border-t-solid {
+  border-top-style: solid;
 }
 
 .opacity-0 {

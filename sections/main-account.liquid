@@ -48,7 +48,6 @@
       return;
     }
 
-
     // Show loading state for all elements
     deliveryStatusElements.forEach((element) => {
       element.textContent = 'Loading...';
@@ -109,6 +108,10 @@
       window.location.href = '/account/logout';
       return;
     }
+    if (contentType === 'addresses') {
+      window.location.href = '/account/addresses';
+      return;
+    }
 
     const targetContent = document.getElementById(contentType + '-content');
     if (targetContent) {
@@ -145,9 +148,7 @@
 {% schema %}
 {
   "name": "Main Account",
-  "settings": [
-   
-  ],
+  "settings": [],
   "blocks": [
     {
       "type": "redeem_offer",

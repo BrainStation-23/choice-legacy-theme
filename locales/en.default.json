@@ -126,7 +126,10 @@
       "customer_name": "Customer",
       "shipping_address": "Shipping Address",
       "billing_address": "Billing Address",
-      "payment_status": "Payment Status"
+      "payment_status": "Payment Status",
+      "manage_address": "Manage Addresses",
+      "edit_address": "Edit Address",
+      "delete": "Delete "
     },
     "account": {
       "log_out": "Log out",
