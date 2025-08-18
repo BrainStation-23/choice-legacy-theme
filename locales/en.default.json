@@ -131,7 +131,18 @@
       "edit_address": "Edit Address",
       "delete": "Delete ",
       "delete_confirm": "Are you sure you want to delete this address?",
-      "no_addresses": "No addresses found."
+      "no_addresses": "No addresses found.",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "company": "Company",
+      "city": "City",
+      "zip": "ZIP/Postal Code",
+      "province": "Province",
+      "country": "Country",
+      "set_default": "Set as default",
+      "phone": "Phone",
+      "update": "Update",
+      "cancel": "Cancel"
     },
     "account": {
       "log_out": "Log out",
