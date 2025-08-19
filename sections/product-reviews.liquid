@@ -39,14 +39,25 @@
 
     <!-- Write Review Button -->
     <div>
-      <button 
-        class="button button--outline flex items-center gap-4 fs-16-lh-100pct-ls-0 write-review-btn" 
-        id="write-review-btn-{{ section.id }}"
-        type="button"
-      >
-        {% render "icon-plus", cls: "w-28 h-28" %} 
-        {{ 'products.product.review.write_review' | t }}
-      </button>
+      {% if customer %}
+        <button 
+          class="button button--outline flex items-center gap-4 fs-16-lh-100pct-ls-0 write-review-btn" 
+          id="write-review-btn-{{ section.id }}"
+          type="button"
+        >
+          {% render "icon-plus", cls: "w-28 h-28" %} 
+          {{ 'products.product.review.write_review' | t }}
+        </button>
+      {% else %}
+        <a 
+          class="button button--outline flex items-center gap-4 fs-16-lh-100pct-ls-0 inline-flex w-auto" 
+          href="{{ routes.account_login_url }}"
+          type="button"
+        >
+          {% render "icon-plus", cls: "w-28 h-28" %} 
+          {{ 'products.product.review.write_review' | t }}
+        </a>
+      {% endif %}
     </div>
 
     <!-- Reviews List -->
@@ -65,7 +76,7 @@
         <h3 class="review-modal-title fw-400 fs-36-lh-40-ls-0">{{ 'products.product.review.write_review' | t }}</h3>
       </div>
 
-      <button class="review-modal-close bg-transparent border-none" id="review-modal-close-{{ section.id }}" type="button">
+      <button class="review-modal-close bg-transparent border-none cursor-pointer" id="review-modal-close-{{ section.id }}" type="button">
         {% render "icon-close", cls: "absolute top-24 right-24 svg-primary-optional" %}
       </button>
 
