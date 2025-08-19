@@ -1,75 +1,25 @@
 {{ 'home-page-review.css' | asset_url | stylesheet_tag }}
 
 <style>
-  .homepage-product-review__section-{{ section.id }} {
-    background-color: rgb(var(--color-secondary-brand));
-    padding-top: 88px;
-    padding-bottom: 64px;
-  }
-
-
-  .homepage-product-review__section-{{ section.id }} .custom-pagination {
-    background: rgb(var(--color-background));
-  }
-
-
-  @media (max-width: 768px) {
-
-    .homepage-product-review__section-{{ section.id }} {
-      background-color: rgb(var(--color-secondary-brand));
-      padding-top: 24px;
-      padding-bottom: 24px;
-    }
-
-    .homepage-product-review__desktop-only {
-      display: none;
-    }
-    .homepage-product-review__mobile-tablet-only {
-      display: block;
-    }
-
-    .homepage-product-review__mobile-tablet-only .swiper-container {
-      position: relative;
-      padding-bottom: 20px;
-    }
-
-    .swiper-slide:last-child {
-      margin-right: 0;
-    }
-
-    .homepage-product-review__mobile-tablet-only .swiper-container .swiper-wrapper {
-      gap: 16px !important;
-    }
-
-    /* Product review carousel mode styles */
-    .swiper-container[data-carousel-mode="true"] .homepage-product-review__card {
-      width: var(--slide-width-mobile, 220px);
-      flex-shrink: 0;
-    }
-
-    .homepage-product-review__card {
-      text-align: left;
-    }
-  }
-
-  @media screen and (min-width: 1024px) and (max-width: 1146px) {
-    .homepage-product-review__grid {
-      min-height: 450px;
-    }
-  }
-
   @media screen and (min-width: 768px) and (max-width: 1023px) {
-    .homepage-product-review__grid {
-      min-height: 500px;
-    }
-
     .homepage-product-review__card {
       width: calc(33% - 16px);
     }
   }
+  #load-more-container {
+    display: block;
+  }
+
+  @media screen and (max-width: 768px) {
+    #load-more-container {
+      display: none;
+    }
+  }
+
+  /* Read more button styles for mobile */
 </style>
 
-<section class="homepage-product-review__section homepage-product-review__section-{{ section.id }}">
+<section class="homepage-product-review__section homepage-product-review__section-{{ section.id }} bg-brand-2 pt-88 pb-64 sm:pt-24 sm:pb-24">
   <div class="homepage-product-review__container page-width gap-48 sm:gap-8">
     {% if section.settings.title != blank %}
       <h2 class="homepage-product-review__title ff-bebas-neue ft-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct">
@@ -78,41 +28,25 @@
     {% endif %}
 
     <!-- Desktop Grid Content -->
-    <div id="homepage-product-review__desktop-content" class="homepage-product-review__desktop-only">
+    <div id="homepage-product-review__desktop-content" class="homepage-product-review__desktop-only grid sm:hidden">
       <div class="homepage-product-review__loading">
         <div class="homepage-product-review__spinner"></div>
       </div>
     </div>
 
-    <!-- Load More Button -->
-    <div
-      id="load-more-container"
-      class="homepage-product-review__load-more-container sm:hidden sm:m-0"
-    >
-      <button
-        id="load-more-btn"
-        class="homepage-product-review__load-more-btn ff-general-sans fs-16-lh-100pct-ls-0 fw-600 sm:hidden "
-      >
-        {{ 'sections.product_review.load_more' | t }}
-      </button>
-    </div>
-
     <!-- Mobile/Tablet Slideshow Content -->
-    <div id="homepage-product-review__mobile-content" class="homepage-product-review__mobile-tablet-only">
+    <div
+      id="homepage-product-review__mobile-content"
+      class="homepage-product-review__mobile-tablet-only hidden sm:block "
+    >
       <slideshow-component
         data-autoplay="false"
+        data-pause-on-hover="false"
+        data-enable-carousel="true"
         data-show-progress-bar="true"
-        data-slides-per-view-desktop="3"
-        data-slides-per-view-tablet="2"
-        data-slides-per-view-mobile="2"
-        data-single-slide-view="true"
-        data-carousel-mode="true"
-        data-slide-width-mobile="284px"
-        data-slide-width-tablet="284px"
-        data-slide-width-desktop="284px"
       >
-        <div class="swiper-container flex flex-col gap-16">
-          <div class="swiper-wrapper" id="mobile-slides-container">
+        <div class="swiper-container flex flex-col gap-16 w-220">
+          <div class="swiper-wrapper " id="mobile-slides-container">
             <div class="homepage-product-review__loading">
               <div class="homepage-product-review__spinner"></div>
             </div>
@@ -120,6 +54,19 @@
           {% render 'slideshow-progress-bar' %}
         </div>
       </slideshow-component>
+    </div>
+
+    <!-- Load More Button - Shows on desktop only -->
+    <div
+      id="load-more-container"
+      class="homepage-product-review__load-more-container sm:hidden"
+    >
+      <button
+        id="load-more-btn"
+        class="homepage-product-review__load-more-btn ff-general-sans fs-16-lh-100pct-ls-0 fw-600"
+      >
+        {{ 'sections.product_review.load_more' | t }}
+      </button>
     </div>
   </div>
 </section>
@@ -148,6 +95,31 @@
         }{% unless forloop.last %},{% endunless %}
       {% endfor %}
     };
+
+    // Function to truncate text and add read more link - FOR MOBILE ONLY
+    function truncateTextWithReadMore(text, productHandle, maxLength = 100) {
+      // Always add "Read more" button regardless of text length
+      if (!text) {
+        return text;
+      }
+      
+      // If text is longer than maxLength, truncate it
+      if (text.length > maxLength) {
+        const truncatedText = text.substring(0, maxLength);
+        const lastSpaceIndex = truncatedText.lastIndexOf(' ');
+        const finalText = lastSpaceIndex > 0 ? truncatedText.substring(0, lastSpaceIndex) : truncatedText;
+        return `${finalText}... <span class="homepage-product-review__read-more text-brand no-underline cursor-pointer ff-general-sans fs-14-lh-20-ls-0 fw-500" onclick="window.location.href='/products/${productHandle}'">Read more</span>`;
+      } else {
+        // Even for short text, add "Read more" button
+        return `${text} <span class="homepage-product-review__read-more text-brand no-underline cursor-pointer ff-general-sans fs-14-lh-20-ls-0 fw-500" onclick="window.location.href='/products/${productHandle}'">Read more</span>`;
+      }
+    }
+
+    // Function to get product handle
+    function getProductHandle(productId) {
+      const product = allProducts[productId];
+      return product ? product.handle : '';
+    }
 
     // Function to calculate initial grid height estimate
     function calculateGridHeight(reviewCount) {
@@ -329,12 +301,16 @@
       // Generate desktop grid content
       const desktopReviewsHtml = reviews.map(review => {
         const productTitle = getProductTitle(review.productId);
+        const productHandle = getProductHandle(review.productId);
+        // Desktop: Show full text (no truncation)
+        const fullText = review.reviewText;
+        
         const imageHtml = review.reviewImage
           ? `<img src="${review.reviewImage}" alt="${productTitle}" class="homepage-product-review__image" loading="lazy" onload="handleImageLoad()">`
           : `<div class="homepage-product-review__image" style="background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 0.8rem;">No Image</div>`;
 
         return `
-          <div class="homepage-product-review__card gap-16 box-shadow">
+          <div class="homepage-product-review__card gap-16 box-shadow md:w-33pct sm:h-500">
             <div class="homepage-product-review__image-container homepage-product-review__content-top">
               ${imageHtml}
               <div class="homepage-product-review__rating box-shadow gap-4">
@@ -345,8 +321,8 @@
               <div class="homepage-product-review__product-title fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
                 ${productTitle}
               </div>
-              <div class="homepage-product-review__text ff-general-sans fs-14-lh-20-ls-0 fw-400">
-                ${review.reviewText}
+              <div class="homepage-product-review__text ff-general-sans fs-14-lh-20-ls-0 fw-400 sm:flex-1 sm:overflow-hidden ">
+                ${fullText}
               </div>
             </div>
             <div class="homepage-product-review__content-bottom gap-4 pl-6 pr-6">
@@ -364,13 +340,17 @@
       // Generate mobile slideshow content
       const mobileSlidesHtml = reviews.map(review => {
         const productTitle = getProductTitle(review.productId);
+        const productHandle = getProductHandle(review.productId);
+        // Mobile: Show truncated text with "Read more"
+        const truncatedText = truncateTextWithReadMore(review.reviewText, productHandle, 100);
+        
         const imageHtml = review.reviewImage
           ? `<img src="${review.reviewImage}" alt="${productTitle}" class="homepage-product-review__image" loading="lazy">`
           : `<div class="homepage-product-review__image" style="background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 0.8rem;">No Image</div>`;
 
         return `
-          <div class="swiper-slide">
-            <div class="homepage-product-review__card-items homepage-product-review__card gap-16 box-shadow" style="width: 284px;">
+          <div class="swiper-slide" style="margin: 0 !important;">
+            <div class="homepage-product-review__card-items homepage-product-review__card sm:h-500 md:w-33pct gap-16 box-shadow" style="width: 220px">
               <div class="homepage-product-review__image-container homepage-product-review__content-top">
                 ${imageHtml}
                 <div class="homepage-product-review__rating box-shadow gap-4">
@@ -381,8 +361,8 @@
                 <div class="homepage-product-review__product-title fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
                   ${productTitle}
                 </div>
-                <div class="homepage-product-review__text ff-general-sans fs-14-lh-20-ls-0 fw-400">
-                  ${review.reviewText}
+                <div class="homepage-product-review__text ff-general-sans fs-14-lh-20-ls-0 fw-400 sm:flex-1 sm:overflow-hidden">
+                  ${truncatedText}
                 </div>
               </div>
               <div class="homepage-product-review__content-bottom gap-4 pl-6 pr-6">
@@ -411,7 +391,7 @@
         gridElement.style.minHeight = `${estimatedHeight}px`;
       } else {
         // Initial load or full refresh
-        desktopContent.innerHTML = `<div class="homepage-product-review__grid gap-16" style="height: ${estimatedHeight}px; min-height: ${estimatedHeight}px;">${desktopReviewsHtml}</div>`;
+        desktopContent.innerHTML = `<div class="homepage-product-review__grid gap-16" style="height: ${estimatedHeight}px; min-height: ${estimatedHeight}px; ">${desktopReviewsHtml}</div>`;
       }
 
       // Calculate precise height after render (for ALL reviews)

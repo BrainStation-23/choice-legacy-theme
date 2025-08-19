@@ -768,6 +768,9 @@ address {
   .md\:gap-16 {
     gap: 16px;
   }
+  .md\:w-33pct {
+    width: calc(33% - 16px);
+  }
 }
 @media screen and (min-width: 1024px) and (max-width: 1439px) {
   .lg\:grid-cols-2 {
@@ -926,6 +929,9 @@ address {
 }
 .w-293 {
   width: 293px;
+}
+.w-220 {
+  width: 220px;
 }
 .w-268 {
   width: 268px;
@@ -1124,6 +1130,9 @@ address {
   .sm\:h-224 {
     height: 224px;
   }
+  .sm\:h-500 {
+    height: 500px;
+  }
   .sm\:max-h-0 {
     max-height: 0;
   }
@@ -1225,6 +1234,9 @@ address {
 
   .sm\:flex-1_0_0 {
     flex: 1 0 0;
+  }
+  .sm\:flex-1 {
+    flex: 1;
   }
 
   .sm\:flex-row-reverse {
@@ -1621,7 +1633,9 @@ address {
 .pb-88 {
   padding-bottom: calc(88 * var(--space-unit));
 }
-
+.pb-64 {
+  padding-bottom: calc(64 * var(--space-unit));
+}
 .pl-6pct {
   padding-left: 6.1111%;
 }
