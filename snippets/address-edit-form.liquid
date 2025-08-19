@@ -18,7 +18,7 @@
         autocomplete: '',
         required: false,
         class: '',
-        value: form.first_name,
+        value: address.first_name,
       %}
 
       {%- assign lastNameLabel = 'customer.addresses.last_name' | t -%}
@@ -33,7 +33,7 @@
         autocomplete: '',
         required: false,
         class: '',
-        value: form.last_name,
+        value: address.last_name,
       %}
 
       {%- assign companyLabel = 'customer.addresses.company' | t -%}
@@ -48,7 +48,7 @@
         autocomplete: '',
         required: false,
         class: '',
-        value: form.company,
+        value: address.company,
       %}
 
       {%- assign address1Label = 'customer.addresses.address1' | t -%}
@@ -63,7 +63,7 @@
         autocomplete: '',
         required: false,
         class: '',
-        value: form.address1,
+        value: address.address1,
       %}
 
       {%- assign address2Label = 'customer.addresses.address2' | t -%}
@@ -78,7 +78,7 @@
         autocomplete: '',
         required: false,
         class: '',
-        value: form.address2,
+        value: address.address2,
       %}
 
       {%- assign provinceLabel = 'customer.addresses.province' | t -%}
@@ -93,7 +93,7 @@
         autocomplete: '',
         required: false,
         class: '',
-        value: form.province,
+        value: address.province,
       %}
       {%- assign cityLabel = 'customer.addresses.city' | t -%}
       {%- assign cityPlaceholder = 'customer.addresses.city' | t -%}
@@ -107,7 +107,7 @@
         autocomplete: '',
         required: false,
         class: '',
-        value: form.city,
+        value: address.city,
       %}
 
       <div class="label-input-container--flex">
@@ -142,7 +142,7 @@
         autocomplete: '',
         required: false,
         class: '',
-        value: form.zip,
+        value: address.zip,
       %}
 
       {%- assign phoneLabel = 'customer.addresses.phone' | t -%}
@@ -157,7 +157,7 @@
         autocomplete: '',
         required: false,
         class: '',
-        value: form.phone,
+        value: address.phone,
       %}
 
       <div class="customer-address__checkbox">
@@ -176,7 +176,7 @@
         class="button--solid border-none rounded-12 cursor-pointer ff-general-sans fw-600  fs-16-lh-100pct-ls-0 "
         id="customer-address-update-id"
       >
-        {{ 'customer.addresses.update' | t }}
+        {{ 'customer.addresses.save' | t }}
       </button>
 
       <button

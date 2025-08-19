@@ -142,7 +142,8 @@
       "set_default": "Set as default",
       "phone": "Phone",
       "update": "Update",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "save": "Save"
     },
     "account": {
       "log_out": "Log out",
