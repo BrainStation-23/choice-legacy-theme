@@ -6,13 +6,15 @@
       width: calc(33% - 16px);
     }
   }
+
+  /* Hide load more button on mobile and tablet */
   #load-more-container {
     display: block;
   }
 
-  @media screen and (max-width: 768px) {
+  @media screen and (max-width: 1023px) {
     #load-more-container {
-      display: none;
+      display: none !important;
     }
   }
 
@@ -44,6 +46,7 @@
         data-pause-on-hover="false"
         data-enable-carousel="true"
         data-show-progress-bar="true"
+        data-auto-load-more="true"
       >
         <div class="swiper-container flex flex-col gap-16 w-220">
           <div class="swiper-wrapper " id="mobile-slides-container">
@@ -59,7 +62,7 @@
     <!-- Load More Button - Shows on desktop only -->
     <div
       id="load-more-container"
-      class="homepage-product-review__load-more-container sm:hidden"
+      class="homepage-product-review__load-more-container sm:hidden lg:block"
     >
       <button
         id="load-more-btn"
@@ -82,6 +85,7 @@
     let currentPage = 1;
     let displayedReviews = []; // Store currently displayed reviews
     let hasMoreReviews = true;
+    let isLoadingMore = false; // Prevent multiple simultaneous requests
 
     // Image loading tracking
     let imageLoadCount = 0;
@@ -95,6 +99,11 @@
         }{% unless forloop.last %},{% endunless %}
       {% endfor %}
     };
+
+    // Function to check if current screen is mobile/tablet
+    function isMobileOrTablet() {
+      return window.innerWidth <= 1023;
+    }
 
     // Function to truncate text and add read more link - FOR MOBILE ONLY
     function truncateTextWithReadMore(text, productHandle, maxLength = 100) {
@@ -227,14 +236,28 @@
     // Fixed fetchReviews function to prevent height calculation issues
     async function fetchReviews(page = 1, append = false) {
       try {
+        // Prevent multiple simultaneous requests
+        if (isLoadingMore && append) {
+          return;
+        }
+        
+        if (append) {
+          isLoadingMore = true;
+        }
+
         // Show loading state
         if (!append) {
           desktopContent.innerHTML = '<div class="homepage-product-review__loading"><div class="homepage-product-review__spinner"></div></div>';
           mobileSlidesContainer.innerHTML = '<div class="homepage-product-review__loading"><div class="homepage-product-review__spinner"></div></div>';
-          loadMoreContainer.style.display = 'none';
+          // Only hide load more if it exists and we're on desktop
+          if (loadMoreContainer && !isMobileOrTablet()) {
+            loadMoreContainer.style.display = 'none';
+          }
         } else {
-          loadMoreBtn.classList.add('loading');
-          loadMoreBtn.disabled = true;
+          if (!isMobileOrTablet()) {
+            loadMoreBtn.classList.add('loading');
+            loadMoreBtn.disabled = true;
+          }
         }
 
         // Set limit based on whether it's initial load or load more
@@ -268,8 +291,8 @@
           // Display reviews with ALL reviews (not just new ones)
           displayReviews(displayedReviews, append); // Pass append flag
           
-          // Show/hide load more button based on hasMore from backend
-          if (hasMoreReviews && displayedReviews.length > 0) {
+          // Show/hide load more button based on hasMore from backend AND screen size
+          if (hasMoreReviews && displayedReviews.length > 0 && !isMobileOrTablet()) {
             loadMoreContainer.style.display = 'block';
           } else {
             loadMoreContainer.style.display = 'none';
@@ -291,8 +314,13 @@
         loadMoreContainer.style.display = 'none';
       } finally {
         // Remove loading state
-        loadMoreBtn.classList.remove('loading');
-        loadMoreBtn.disabled = false;
+        if (!isMobileOrTablet()) {
+          loadMoreBtn.classList.remove('loading');
+          loadMoreBtn.disabled = false;
+        }
+        if (append) {
+          isLoadingMore = false;
+        }
       }
     }
 
@@ -418,6 +446,22 @@
           if (typeof slideshowComponent.initializeCustomBullets === 'function') {
             slideshowComponent.initializeCustomBullets();
           }
+
+          // Add slide change listener for auto-loading more reviews on mobile/tablet
+          if (slideshowComponent.swiper && isMobileOrTablet()) {
+            slideshowComponent.swiper.on('slideChange', function() {
+              const swiper = this;
+              const currentSlide = swiper.realIndex;
+              const totalSlides = swiper.slides.length;
+              
+              // Check if we're on the last slide or close to it (within 2 slides)
+              if (currentSlide >= totalSlides - 2 && hasMoreReviews && !isLoadingMore) {
+                console.log('Near end of slides, loading more reviews...');
+                currentPage++;
+                fetchReviews(currentPage, true);
+              }
+            });
+          }
         }, 100);
       }
     }
@@ -442,16 +486,34 @@
         if (displayedReviews && displayedReviews.length > 0) {
           updateGridHeightAfterRender(displayedReviews.length);
         }
+        
+        // Handle load more button visibility on resize
+        if (hasMoreReviews && displayedReviews.length > 0 && !isMobileOrTablet()) {
+          loadMoreContainer.style.display = 'block';
+        } else {
+          loadMoreContainer.style.display = 'none';
+        }
       }, 250); // Debounce resize events
     });
 
+    // Function to load more reviews for mobile slideshow
+    function loadMoreForMobile() {
+      if (hasMoreReviews && !isLoadingMore && isMobileOrTablet()) {
+        currentPage++;
+        fetchReviews(currentPage, true);
+      }
+    }
+
     // Load More Button Event Listener
     loadMoreBtn.addEventListener('click', function() {
-      if (hasMoreReviews && !loadMoreBtn.disabled) {
+      if (hasMoreReviews && !loadMoreBtn.disabled && !isMobileOrTablet()) {
         currentPage++;
         fetchReviews(currentPage, true);
       }
     });
+
+    // Make loadMoreForMobile available globally for slideshow component
+    window.loadMoreReviewsForMobile = loadMoreForMobile;
 
     // Global function for external "Load More" functionality
     window.updateReviewGridHeight = function(totalReviews) {

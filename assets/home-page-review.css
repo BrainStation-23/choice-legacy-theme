@@ -32,8 +32,6 @@
   flex-direction: column;
   margin: calc(0px);
   width: calc(25% - 16px);
-  min-height: 320px; /* Minimum height for consistency */
-  height: auto; /* Allow cards to grow with content */
   box-sizing: border-box; /* Include padding in width calculation */
 }
 
