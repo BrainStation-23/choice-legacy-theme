@@ -1,12 +1,15 @@
-{% if product.price %}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+<div id="price-{{ section.id }}" class="price">
   <div class="flex flex-wrap items-center gap-8 mb-8" {{ block.shopify_attributes }}>
-    <span class="text-primary fw-500 fs-14-lh-24-ls-0">
-      {{ product.price | money_with_currency }}
+    
+    <span data-product-price class="text-primary fw-500 fs-14-lh-24-ls-0">
+      {{ current_variant.price | money_with_currency }}
     </span>
-    {% if product.compare_at_price > product.price %}
-      <span class="line-through fw-500 fs-23-lh-24-ls-0 text-brand">
-        {{ product.compare_at_price | money_with_currency }}
-      </span>
-    {% endif %}
+
+    <span data-compare-price class="line-through fw-500 fs-23-lh-24-ls-0 text-brand {% if current_variant.compare_at_price <= current_variant.price %}hidden{% endif %}">
+      {{ current_variant.compare_at_price | money_with_currency }}
+    </span>
+
   </div>
-{% endif %}
+</div>

@@ -3,12 +3,12 @@
   
   <div class="product-grid flex gap-32">
     <!-- Product Images Section -->
-    <div class="product-media w-578">
+    <div id="product-media-{{ section.id }}" class="product-media w-578">
       {% render 'product-media-gallery', product: product, block: section %}
     </div>
     
     <!-- Product Info Section -->
-    <div class="product-info">
+    <div id="product-info-{{ section.id }}" class="product-info">
       {% for block in section.blocks %}
         {% case block.type %}
           {% when "title" %}
@@ -25,6 +25,9 @@
           
           {% when "weight" %}
             {% render "product-weight", block: block, product: product %}
+
+          {% when "variant_picker" %}
+            {% render 'product-variant-picker', product: product, block: block %}
           
           {% when "buy_buttons" %}
             {% render "product-buy-buttons", block: block, product: product %}
@@ -81,6 +84,11 @@
     {
       "type": "weight",
       "name": "Weight",
+      "limit": 1
+    },
+    {
+      "type": "variant_picker",
+      "name": "Variant picker",
       "limit": 1
     },
     {

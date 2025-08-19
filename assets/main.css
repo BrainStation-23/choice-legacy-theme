@@ -2307,21 +2307,6 @@ address {
   transition-duration: 150ms;
 }
 
-.js .js-hidden,
-.no-js .no-js-hidden {
-  display: none;
-}
-@media (max-width: 768.98px) {
-  .header__icon.js .js-hidden.md\:block,
-  .header__icon .no-js .no-js-hidden.md\:block {
-    display: none;
-  }
-}
-
-.no-js .no-js-visible {
-  display: block;
-}
-
 .visually-hidden {
   position: absolute;
   width: 1px;

@@ -1,0 +1,122 @@
+<variant-picker class="variant-picker-element" data-section-id="{{ section.id }}" data-product-url="{{ product.url | within: collection }}">
+  {%- for option in product.options_with_values -%}
+    <fieldset class="variant-picker__option-group" role="radiogroup">
+      <legend class="variant-picker__option-name">{{ option.name }}</legend>
+      <div class="variant-picker__values">
+        {%- for value in option.values -%}
+          <div class="variant-picker__value-wrapper">
+            <input
+              type="radio"
+              id="option-{{ option.position }}-{{ forloop.index }}"
+              name="option-{{ option.position }}"
+              value="{{ value | escape }}"
+              {% if option.selected_value == value %}checked{% endif %}
+              class="variant-picker__radio-input"
+            >
+            <label
+              for="option-{{ option.position }}-{{ forloop.index }}"
+              class="variant-picker__label"
+            >
+              {{ value }}
+            </label>
+          </div>
+        {%- endfor -%}
+      </div>
+    </fieldset>
+  {%- endfor -%}
+</variant-picker>
+
+<script>
+  class VariantPicker extends HTMLElement {
+    constructor() {
+      super();
+      this.variants = {{ product.variants | json }};
+      this.addEventListener('change', this.onVariantChange);
+    }
+
+    onVariantChange() {
+      const selectedVariant = this.getSelectedVariant();
+      if (!selectedVariant) return;
+
+      const browserUrl = `${this.dataset.productUrl}?variant=${selectedVariant.id}`;
+      const fetchUrl = `${browserUrl}&section_id=${this.dataset.sectionId}`;
+
+      this.updateURL(browserUrl);
+      this.fetchAndUpdateSection(fetchUrl, selectedVariant);
+    }
+
+    getSelectedVariant() {
+      const selectedOptions = Array.from(this.querySelectorAll('input[type="radio"]:checked')).map(input => input.value);
+      return this.variants.find(variant => {
+        return variant.options.every((optionValue, index) => {
+          return selectedOptions[index] === optionValue;
+        });
+      });
+    }
+
+    updateURL(url) {
+      window.history.replaceState({}, '', url);
+    }
+
+    fetchAndUpdateSection(url, variant) {
+      const productGrid = document.querySelector('.product-grid');
+      if (productGrid) productGrid.style.opacity = '0.5';
+
+      fetch(url)
+        .then(response => response.text())
+        .then(responseText => {
+          const newHtml = new DOMParser().parseFromString(responseText, 'text/html');
+          
+          const newInfo = newHtml.querySelector(`#product-info-${this.dataset.sectionId}`);
+          const oldInfo = document.querySelector(`#product-info-${this.dataset.sectionId}`);
+          if (newInfo && oldInfo) {
+            oldInfo.innerHTML = newInfo.innerHTML;
+          }
+
+          const newMedia = newHtml.querySelector(`#product-media-${this.dataset.sectionId}`);
+          const oldMedia = document.querySelector(`#product-media-${this.dataset.sectionId}`);
+          if (newMedia && oldMedia) {
+            oldMedia.innerHTML = newMedia.innerHTML;
+          }
+          
+          this.setActiveMedia(variant);
+        })
+        .catch(e => {
+          console.error('Variant Picker: Error during fetch:', e);
+        })
+        .finally(() => {
+          if (productGrid) productGrid.style.opacity = '1';
+        });
+    }
+    
+    setActiveMedia(variant) {
+      if (!variant || !variant.featured_media) return;
+      
+      const featuredMediaId = variant.featured_media.id.toString();
+      const mediaGallery = document.querySelector(`#product-media-${this.dataset.sectionId}`);
+      if (!mediaGallery) return;
+
+      mediaGallery.querySelectorAll('.main-media-item').forEach(item => {
+        if (item.dataset.mediaId === featuredMediaId) {
+          item.classList.remove('opacity-0', 'invisible');
+          item.classList.add('opacity-1', 'visible');
+        } else {
+          item.classList.remove('opacity-1', 'visible');
+          item.classList.add('opacity-0', 'invisible');
+        }
+      });
+
+      mediaGallery.querySelectorAll('.media-thumbnail').forEach(thumb => {
+        if (thumb.dataset.mediaId === featuredMediaId) {
+          thumb.classList.add('border-2', 'border-solid', 'border-brand');
+        } else {
+          thumb.classList.remove('border-2', 'border-solid', 'border-brand');
+        }
+      });
+    }
+  }
+
+  if (!customElements.get('variant-picker')) {
+    customElements.define('variant-picker', VariantPicker);
+  }
+</script>
