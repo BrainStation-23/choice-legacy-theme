@@ -1,8 +1,11 @@
-// products-review.js - Updated with Modal Functionality
+// products-review.js - Updated with Toast Notification Integration
 (function () {
   const reviewAppContainers = document.querySelectorAll(
     ".review-extension-container"
   );
+
+  // Initialize Toast Manager
+  const toastManager = new ToastNotificationManager();
 
   reviewAppContainers.forEach((container) => {
     const sectionId = container.dataset.sectionId;
@@ -379,14 +382,8 @@
           const result = await response.json();
           uploadedImageUrl = result.reviewImage;
 
-          if (formMessage) {
-            formMessage.textContent = "Image uploaded successfully!";
-            formMessage.classList.add("success-text");
-            formMessage.style.display = "block";
-            setTimeout(() => {
-              if (formMessage) formMessage.style.display = "none";
-            }, 3000);
-          }
+          // Use toast notification for image upload success
+          toastManager.show("Image uploaded successfully!", "success", 3000);
         } catch (error) {
           console.error("Error uploading image:", error);
           showFieldError("reviewImage", `Upload failed: ${error.message}`);
@@ -411,20 +408,16 @@
         }
 
         if (isUploadingImage) {
-          if (formMessage) {
-            formMessage.style.display = "block";
-            formMessage.textContent =
-              "Please wait, image is still uploading...";
-            formMessage.style.color = "orange";
-          }
+          toastManager.show(
+            "Please wait, image is still uploading...",
+            "error",
+            4000
+          );
           return;
         }
 
         if (submitButton) submitButton.disabled = true;
-        if (formMessage) {
-          formMessage.style.display = "block";
-          formMessage.textContent = "Submitting review...";
-        }
+        toastManager.show("Submitting review...", "success", 2000);
 
         const reviewData = {
           reviewText: reviewTextInput.value.trim(),
@@ -448,11 +441,11 @@
           if (!response.ok) {
             if (result.details && Array.isArray(result.details)) {
               parseBackendErrors(result.details);
-              if (formMessage) {
-                formMessage.textContent =
-                  result.message || "Please fix the errors above";
-                formMessage.style.color = "red";
-              }
+              toastManager.show(
+                result.message || "Please fix the errors above",
+                "error",
+                4000
+              );
             } else {
               throw new Error(
                 result.message || `HTTP error! status: ${response.status}`
@@ -460,11 +453,11 @@
             }
           } else {
             // Success
-            if (formMessage) {
-              formMessage.textContent =
-                result.message || "Review submitted successfully!";
-              formMessage.style.color = "green";
-            }
+            toastManager.show(
+              result.message || "Review submitted successfully!",
+              "success",
+              3000
+            );
 
             // Close modal and refresh reviews
             setTimeout(() => {
@@ -474,16 +467,13 @@
           }
         } catch (error) {
           console.error("Error submitting review:", error);
-          if (formMessage) {
-            formMessage.textContent = `Error: ${
-              error.message || "Could not submit review."
-            }`;
-          }
+          toastManager.show(
+            `Error: ${error.message || "Could not submit review."}`,
+            "error",
+            4000
+          );
         } finally {
           if (submitButton) submitButton.disabled = false;
-          setTimeout(() => {
-            if (formMessage) formMessage.style.display = "none";
-          }, 5000);
         }
       });
     }
@@ -613,7 +603,7 @@
         const productTitle = getProductTitle(review.productId);
 
         const imageHtml = review.reviewImage
-          ? `<img src="${review.reviewImage}" class="w-220 h-228 alt="${productTitle}" loading="lazy">`
+          ? `<img src="${review.reviewImage}" class="w-full h-full" alt="${productTitle}" loading="lazy">`
           : `<div></div>`;
 
         const reviewDate = review.reviewPlacedAt

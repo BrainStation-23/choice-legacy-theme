@@ -53,6 +53,7 @@
     {{ content_for_header }}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.7/swiper-bundle.min.js" defer></script>
+    <script src="{{ 'toast.js' | asset_url }}" defer></script>
   </head>
 
   <body class="color-scheme">
@@ -67,7 +68,7 @@
     {%- sections 'footer-group' -%}
 
     <script>
-      window.APP_SUB_PATH = "generic-name";
+      window.APP_SUB_PATH = "choice-legacy-app";
       window.theme = {
         routes: {
           cart: '{{ routes.cart_url }}',
@@ -86,7 +87,6 @@
       {% endif %}
       window.shopDomain = '{{ shop.domain }}';
     </script>
-    <script src="{{ 'toast.js' | asset_url }}" defer></script>
     <script src="{{ 'slideshow.js' | asset_url }}" defer></script>
     <script src="{{ 'add-to-wishlist.js' | asset_url }}" defer></script>
   </body>
