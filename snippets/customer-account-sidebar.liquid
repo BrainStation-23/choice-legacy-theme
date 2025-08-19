@@ -3,7 +3,7 @@
     padding: 16px;
     border: 1px solid rgba(var(--color-secondary-text), 0.1);
     border-radius: 6px;
-    width: 296px;
+    /* width: 296px; */
   }
   .customer-account__sidebar-items {
     padding: 0 !important;
@@ -147,7 +147,7 @@
   }
 </style>
 
-<aside class="customer-account__sidebar">
+<aside class="customer-account__sidebar w-296 sm:w-full">
   <div class="customer-account__sidebar-selected" onclick="toggleDropdown()">
     <div class="selected-content" id="selected-item-content">
       {% render 'accounts-icon' %}

@@ -852,6 +852,9 @@ address {
   }
 }
 @media screen and (max-width: 768px) {
+  .sm\:grid-cols-1 {
+    grid-template-columns: 1fr;
+  }
   .sm\:mt-0 {
     margin-top: 0;
   }
@@ -992,6 +995,9 @@ address {
 }
 .w-293 {
   width: 293px;
+}
+.w-296 {
+  width: 296px;
 }
 .w-268 {
   width: 268px;
@@ -1318,6 +1324,12 @@ address {
   .sm\:flex-1_0_0 {
     flex: 1 0 0;
   }
+  .sm\:flex-1 {
+    flex: 1;
+  }
+  .sm\:flex-2 {
+    flex: 2;
+  }
 
   .sm\:flex-row-reverse {
     flex-direction: row-reverse;
@@ -1485,7 +1497,7 @@ address {
 }
 @media screen and (max-width: 768px) {
   .sm\:flex {
-    display: flex !important;
+    display: flex;
   }
 
   .sm\:justify-between {
