@@ -150,16 +150,27 @@
         <p class="ff-general-sans fs-14-lh-16-ls-0 fw-400 text-secondary-light mb-16">Enter your new email</p>
 
         <div class="input-container mb-16">
-          <input
-            type="email"
-            id="newEmailInput"
-            class="modal-input"
-            placeholder="newemail@example.com"
-          >
+          {%- assign emailLabel = 'customer.account.email' | t -%}
+          {%- assign emailPlaceholder = 'customer.account.email' | t -%}
+          {% render 'input',
+            type: 'email',
+            id: 'newEmailInput',
+            name: 'customer[newEmailInput]',
+            label: emailLabel,
+            placeholder: emailPlaceholder,
+            autocomplete: 'email',
+            required: false,
+            class: 'w-full',
+            value: customer.email
+          %}
         </div>
 
-        <button class="send-otp-btn" id="sendOtpBtn" onclick="sendOTP()">
-          <span id="sendOtpText">Send OTP</span>
+        <button
+          class="send-otp-btn button--solid bg-brand border-none rounded-6 w-full"
+          id="sendOtpBtn"
+          onclick="sendOTP()"
+        >
+          <span id="sendOtpText">{{ 'customer.account.send_otp' | t }}</span>
           <div id="sendOtpSpinner" style="display: none;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 2V6M12 18V22M4.93 4.93L7.76 7.76M16.24 16.24L19.07 19.07M2 12H6M18 12H22M4.93 19.07L7.76 16.24M16.24 7.76L19.07 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -181,16 +192,23 @@
           >
         </div>
 
-        <div class="otp-container mb-16">
+        <div class="otp-container flex justify-center mb-16">
           {% render 'otp-input' %}
         </div>
 
-        <p class="resend-text ff-general-sans fs-14-lh-16-ls-0 fw-400 cursor-pointer" onclick="resendOTP()">
-          Resend Code
+        <p
+          class="resend-text ff-general-sans fs-14-lh-16-ls-0 fw-400 cursor-pointer text-brand text-center mb-16"
+          onclick="resendOTP()"
+        >
+          {{ 'customer.account.resend_otp' | t }}
         </p>
 
-        <button class="submit-btn" id="submitBtn" onclick="verifyOTPAndSubmit()">
-          <span id="submitText">Submit</span>
+        <button
+          class="submit-btn button--solid bg-brand border-none rounded-6 w-full"
+          id="submitBtn"
+          onclick="verifyOTPAndSubmit()"
+        >
+          <span id="submitText">{{ 'customer.account.submit' | t }}</span>
           <div id="submitSpinner" style="display: none;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M12 2V6M12 18V22M4.93 4.93L7.76 7.76M16.24 16.24L19.07 19.07M2 12H6M18 12H22M4.93 19.07L7.76 16.24M16.24 7.76L19.07 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -266,60 +284,6 @@
     border-radius: 8px;
     font-size: 14px;
     background-color: #f8f8f8;
-  }
-
-  .modal-input:focus {
-    outline: none;
-    border-color: #007bff;
-  }
-
-  .send-otp-btn,
-  .submit-btn {
-    width: 100%;
-    padding: 12px 16px;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-  }
-
-  .send-otp-btn {
-    background-color: transparent;
-    border: 2px solid #ff69b4;
-    color: #ff69b4;
-  }
-
-  .send-otp-btn:hover {
-    background-color: #ff69b4;
-    color: white;
-  }
-
-  .submit-btn {
-    background-color: #ff69b4;
-    color: white;
-  }
-
-  .submit-btn:hover {
-    background-color: #e555a0;
-  }
-
-  .resend-text {
-    text-align: center;
-    color: #ff69b4;
-    margin-bottom: 16px;
-  }
-
-  .resend-text:hover {
-    text-decoration: underline;
-  }
-
-  .mb-16 {
-    margin-bottom: 16px;
   }
 
   .otp-container {

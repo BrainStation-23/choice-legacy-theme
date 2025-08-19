@@ -168,7 +168,10 @@
       "update_error": "There was an error updating your account.",
       "update_error_generic": "An error occurred while updating your account. Please try again later.",
       "save": "Save",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "send_otp": "Send OTP",
+      "resend_otp": "Resend OTP",
+      "submit": "Submit"
     },
     "login": {
       "title": "Login",
