@@ -531,9 +531,6 @@
       } catch (error) {
         console.error("Error fetching reviews:", error);
         allProductReviews = [];
-        if (reviewListContainer) {
-          reviewListContainer.innerHTML = `<p class="reviews-message error-text">Could not load reviews. ${error.message}</p>`;
-        }
         calculateAndRenderSummary(allProductReviews);
       } finally {
         if (reviewsSpinner) reviewsSpinner.style.display = "none";
@@ -544,7 +541,6 @@
       if (!reviewSummaryContainer) return;
 
       if (!reviewsArray || reviewsArray.length === 0) {
-        reviewSummaryContainer.innerHTML = `<p class="error-text">No reviews yet.</p>`;
         return;
       }
 
@@ -661,12 +657,6 @@
       console.warn(
         `[Product Reviews App ${sectionId}]: Missing productId, productHandle, or shopDomain. Cannot fetch reviews.`
       );
-      if (reviewListContainer)
-        reviewListContainer.innerHTML =
-          '<p class="reviews-message">Configuration error (missing product/store data).</p>';
-      if (reviewSummaryContainer)
-        reviewSummaryContainer.innerHTML =
-          "<p class='error-text'>Could not load review summary due to configuration error.</p>";
       if (reviewsSpinner) reviewsSpinner.style.display = "none";
     }
   });
