@@ -252,7 +252,14 @@
       "product_type": "Product Type",
       "weight": "Weight",
       "review": {
-        "write_review": "Write Review"
+        "write_review": "Write Review",
+        "upload_image": "Upload Image",
+        "click_to_upload": "Add",
+        "rating": "Rating",
+        "description": "Add description",
+        "description_placeholder": "Share your thoughts about this product...",
+        "submit": "Submit",
+        "no_rating": "No rating"
       }
     }
   },

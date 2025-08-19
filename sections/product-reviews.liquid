@@ -1,5 +1,27 @@
+<style>
+/* Modal Styles */
+.review-modal {
+  display: none;
+}
+
+.review-modal.show {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Image Upload Styles */
+.image-upload-area input[type="file"] {
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+</style>
+
 <div
-  class="review-extension-container"
+  class="review-extension-container pt-56 pb-56"
   id="product-review-app-{{ section.id }}"
   data-section-id="{{ section.id }}"
   data-product-id="{{ product.id }}"
@@ -7,47 +29,102 @@
   data-customer-id="{{ customer.id }}"
   data-customer-name="{{ customer.name }}"
   data-shop-domain="{{ shop.permanent_domain }}"
-  data-star-filled-color="#FFD700"
-  data-star-empty-color="#CCCCCC"
+  data-star-filled-color="#FB6F92"
+  data-star-empty-color="#CBD3D7"
+  data-show-empty="{{ section.settings.show_empty_reviews | default: false }}"
 >
-
-  <div class="page-width">
+  <div class="page-width flex flex-col gap-24">
+    <!-- Review Summary -->
     <div class="review-summary" id="review-summary-{{ section.id }}"></div>
 
-    <button class="button button--outline flex items-center gap-4 fs-16-lh-100pct-ls-0">{% render "icon-plus", cls: "w-28 h-28" %} {{ 'products.product.review.write_review' | t }}</button>
-
-    <div class="review-form">
-      <form id="review-submission-form-{{ section.id }}">
-        <div class="form-group">
-          <label>Image</label>
-          <input type="file" id="reviewImage-{{ section.id }}" name="reviewImage" accept="image/*" required>
-          <div class="field-error" id="reviewImage-error-{{ section.id }}" style="display: none;"></div>
-        </div>
-        
-        <div class="form-group">
-          <label>Rating</label>
-          <div class="star-rating" id="form-star-rating-{{ section.id }}">
-            {% for i in (1..5) %}
-              <span class="star" data-value="{{ i }}">&#9734;</span>
-            {% endfor %}
-          </div>
-          <input type="hidden" name="rating" id="rating-value-{{ section.id }}" required>
-          <div class="field-error" id="rating-error-{{ section.id }}" style="display: none;"></div>
-        </div>
-
-        <div class="form-group">
-          <label for="reviewText-{{ section.id }}">Review</label>
-          <textarea id="reviewText-{{ section.id }}" name="reviewText" rows="4" required></textarea>
-          <div class="field-error" id="reviewText-error-{{ section.id }}" style="display: none;"></div>
-        </div>
-
-        <button type="submit" id="submit-review-btn-{{ section.id }}">Submit Review</button>
-        <div class="reviews-message" id="form-message-{{ section.id }}" style="display:none; margin-top:10px;"></div>
-      </form>
+    <!-- Write Review Button -->
+    <div>
+      <button 
+        class="button button--outline flex items-center gap-4 fs-16-lh-100pct-ls-0 write-review-btn" 
+        id="write-review-btn-{{ section.id }}"
+        type="button"
+      >
+        {% render "icon-plus", cls: "w-28 h-28" %} 
+        {{ 'products.product.review.write_review' | t }}
+      </button>
     </div>
 
+    <!-- Reviews List -->
     <div class="reviews-list" id="reviews-list-{{ section.id }}">
-      <div class="review-spinner" id="reviews-spinner-{{ section.id }}"><div></div></div>
+      <div class="review-spinner" id="reviews-spinner-{{ section.id }}">
+        <div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Review Modal -->
+  <div class="review-modal fixed left-0 top-0 w-full h-full z-1000 overlay" id="review-modal-{{ section.id }}">
+    <div class="review-modal-content bg-bg w-375 pt-40 pr-32 pb-40 pl-32 rounded-16 relative">
+      <!-- Modal Header -->
+      <div class="review-modal-header">
+        <h3 class="review-modal-title fw-400 fs-36-lh-40-ls-0">{{ 'products.product.review.write_review' | t }}</h3>
+      </div>
+
+      <button class="review-modal-close bg-transparent border-none" id="review-modal-close-{{ section.id }}" type="button">
+        {% render "icon-close", cls: "absolute top-24 right-24 svg-primary-optional" %}
+      </button>
+
+      <!-- Review Form -->
+      <div class="review-form">
+        <form id="review-submission-form-{{ section.id }}" class="flex flex-col gap-16">
+          <!-- Image Upload Section -->
+          <div class="form-group flex flex-col gap-8">
+            <label class="fs-14-lh-20-ls-0_1 fw-500" for="reviewImage-{{ section.id }}">
+              {{ 'products.product.review.upload_image' | t | default: 'Upload Image' }}
+            </label>
+            <div class="image-upload-area relative flex gap-8" id="image-upload-area-{{ section.id }}">
+              <input type="file" id="reviewImage-{{ section.id }}" name="reviewImage" accept="image/*" required>
+              <div class="upload-placeholder w-60 h-60 bg-brand-2 border-1 border-dashed border-brand pt-10 pr-16 pb-10 pl-16 rounded-6 flex flex-col items-center justify-center w-full">
+                <div class="w-28 h-28 flex items-center justify-center">
+                  <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2.41992 12.3008C1.125 12.3008 0.433594 11.6211 0.433594 10.3379V4.17969C0.433594 2.89648 1.125 2.21094 2.41992 2.21094H3.87891C4.33594 2.21094 4.49414 2.13477 4.78711 1.83594L5.25 1.35547C5.56055 1.0332 5.87695 0.880859 6.46875 0.880859H8.92383C9.51562 0.880859 9.83203 1.0332 10.1426 1.35547L10.6055 1.83594C10.8984 2.13477 11.0566 2.21094 11.5078 2.21094H13.002C14.2969 2.21094 14.9824 2.89648 14.9824 4.17969V10.3379C14.9824 11.6211 14.2969 12.3008 13.002 12.3008H2.41992ZM12.6094 5.5625C13.0371 5.5625 13.3887 5.2168 13.3887 4.78906C13.3887 4.36133 13.0371 4.00977 12.6094 4.00977C12.1816 4.00977 11.8301 4.36133 11.8301 4.78906C11.8301 5.2168 12.1816 5.56836 12.6094 5.5625ZM7.71094 10.3965C9.45117 10.3965 10.8457 9.00195 10.8457 7.25C10.8457 5.50391 9.45117 4.10352 7.71094 4.10352C5.9707 4.10352 4.57031 5.50391 4.57031 7.25C4.57031 9.00195 5.9707 10.3965 7.71094 10.3965ZM7.71094 9.23047C6.62109 9.23047 5.73633 8.35156 5.73633 7.25C5.73633 6.1543 6.61523 5.26953 7.71094 5.26953C8.80664 5.26953 9.68555 6.1543 9.68555 7.25C9.68555 8.35156 8.80664 9.23047 7.71094 9.23047Z" fill="#FB6F92"/>
+                  </svg>
+                </div>
+                <p class="text-brand fw-500 fs-11-lh-11-ls--2_5">{{ 'products.product.review.click_to_upload' | t | default: 'Click to upload or drag and drop' }}</p>
+              </div>
+              <div class="image-preview w-60 h-60 rounded-6" id="image-preview-{{ section.id }}" style="display: none;">
+                <img src="" alt="Preview" id="preview-img-{{ section.id }}" width="60" height="60" class="rounded-6 h-60 w-60" />
+              </div>
+            </div>
+            <div class="field-error error-text" id="reviewImage-error-{{ section.id }}" style="display: none;"></div>
+          </div>
+          
+          <!-- Rating Section -->
+          <div class="form-group flex flex-col gap-8">
+            <label class="fs-14-lh-20-ls-0_1 fw-500">{{ 'products.product.review.rating' | t | default: 'Rating' }}</label>
+            <div class="review-feedback">
+              <div class="star-rating flex gap-16" id="form-star-rating-{{ section.id }}">
+                {% for i in (1..5) %}
+                  <span class="star text-brand" data-value="{{ i }}" style="font-size: 24px;">★</span>
+                {% endfor %}
+              </div>
+            </div>
+            <input type="hidden" name="rating" id="rating-value-{{ section.id }}" required>
+            <div class="field-error error-text" id="rating-error-{{ section.id }}" style="display: none;"></div>
+          </div>
+
+          <!-- Review Text Section -->
+          <div class="form-group flex flex-col gap-8">
+            {% assign review_id = 'reviewText-' | append: section.id %}
+            {% assign review_label = 'products.product.review.description' | t %}
+            {% render "textarea", id: review_id, label: review_label, required: true, name: "reviewText" %}
+            <div class="field-error error-text" id="reviewText-error-{{ section.id }}" style="display: none;"></div>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="submit-review-btn button button--solid rounded-6 w-full fs-16-lh-100pct-ls-0" id="submit-review-btn-{{ section.id }}">
+            {{ 'products.product.review.submit' | t | default: 'Submit' }}
+          </button>
+          
+          <!-- Form Message -->
+          <div class="reviews-message" id="form-message-{{ section.id }}" style="display:none;"></div>
+        </form>
+      </div>
     </div>
   </div>
 </div>
@@ -57,6 +134,13 @@
 {% schema %}
 {
   "name": "Product reviews",
-  "settings": []
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_empty_reviews",
+      "label": "Show empty reviews message",
+      "default": true
+    }
+  ]
 }
 {% endschema %}

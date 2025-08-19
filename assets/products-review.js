@@ -1,12 +1,13 @@
-// products-review.js
+// products-review.js - Updated with Modal Functionality
 (function () {
   const reviewAppContainers = document.querySelectorAll(
     ".review-extension-container"
   );
+
   reviewAppContainers.forEach((container) => {
     const sectionId = container.dataset.sectionId;
     const productId = container.dataset.productId;
-    const productHandle = container.dataset.productHandle; // Add this line to get product handle
+    const productHandle = container.dataset.productHandle;
     const shopDomain = container.dataset.shopDomain;
     const starColorFilled = container.dataset.starFilledColor || "#FFD700";
     const starColorEmpty = container.dataset.starEmptyColor || "#CCCCCC";
@@ -14,6 +15,16 @@
 
     const API_BASE_URL = `/apps/${APP_SUB_PATH}/customer/product-review`;
 
+    // Modal elements
+    const writeReviewBtn = container.querySelector(
+      `#write-review-btn-${sectionId}`
+    );
+    const reviewModal = container.querySelector(`#review-modal-${sectionId}`);
+    const modalCloseBtn = container.querySelector(
+      `#review-modal-close-${sectionId}`
+    );
+
+    // Form elements
     const reviewForm = container.querySelector(
       `#review-submission-form-${sectionId}`
     );
@@ -30,6 +41,7 @@
     const ratingValueInput = container.querySelector(
       `#rating-value-${sectionId}`
     );
+    const ratingText = container.querySelector(`#rating-text-${sectionId}`);
     const reviewsSpinner = container.querySelector(
       `#reviews-spinner-${sectionId}`
     );
@@ -40,6 +52,14 @@
       `#reviewImage-${sectionId}`
     );
     const reviewTextInput = container.querySelector(`#reviewText-${sectionId}`);
+    const imagePreview = container.querySelector(`#image-preview-${sectionId}`);
+    const previewImg = container.querySelector(`#preview-img-${sectionId}`);
+    const removeImageBtn = container.querySelector(
+      `#remove-image-${sectionId}`
+    );
+    const imageUploadArea = container.querySelector(
+      `#image-upload-area-${sectionId}`
+    );
 
     // Error display elements
     const imageErrorDiv = container.querySelector(
@@ -56,6 +76,100 @@
     let uploadedImageUrl = null;
     let isUploadingImage = false;
     let allProductReviews = [];
+
+    // Rating text mapping
+    const ratingTexts = {
+      0: "No rating",
+      1: "Poor",
+      2: "Fair",
+      3: "Good",
+      4: "Very Good",
+      5: "Excellent",
+    };
+
+    // Modal functionality
+    function openModal() {
+      if (reviewModal) {
+        reviewModal.classList.add("show");
+        document.body.style.overflow = "hidden";
+      }
+    }
+
+    function closeModal() {
+      if (reviewModal) {
+        reviewModal.classList.remove("show");
+        document.body.style.overflow = "";
+        resetForm();
+      }
+    }
+
+    function resetForm() {
+      if (reviewForm) {
+        reviewForm.reset();
+        currentRating = 0;
+        uploadedImageUrl = null;
+        hideAllFieldErrors();
+
+        // Reset rating display
+        if (ratingValueInput) ratingValueInput.value = "";
+        if (ratingText) ratingText.textContent = ratingTexts[0];
+
+        // Reset stars
+        if (ratingStarsContainer) {
+          ratingStarsContainer.querySelectorAll(".star").forEach((s) => {
+            s.style.color = starColorEmpty;
+            s.classList.remove("filled");
+          });
+        }
+
+        // Reset image preview
+        if (imagePreview) imagePreview.style.display = "none";
+        if (previewImg) previewImg.src = "";
+
+        // Hide form message
+        if (formMessage) formMessage.style.display = "none";
+      }
+    }
+
+    // Event listeners for modal
+    if (writeReviewBtn) {
+      writeReviewBtn.addEventListener("click", openModal);
+    }
+
+    if (modalCloseBtn) {
+      modalCloseBtn.addEventListener("click", closeModal);
+    }
+
+    // Close modal when clicking outside
+    if (reviewModal) {
+      reviewModal.addEventListener("click", function (e) {
+        if (e.target === reviewModal) {
+          closeModal();
+        }
+      });
+    }
+
+    // Close modal with Escape key
+    document.addEventListener("keydown", function (e) {
+      if (
+        e.key === "Escape" &&
+        reviewModal &&
+        reviewModal.classList.contains("show")
+      ) {
+        closeModal();
+      }
+    });
+
+    // Image preview functionality
+    if (removeImageBtn) {
+      removeImageBtn.addEventListener("click", function () {
+        if (reviewImageInput) reviewImageInput.value = "";
+        uploadedImageUrl = null;
+        if (imagePreview) imagePreview.style.display = "none";
+        if (previewImg) previewImg.src = "";
+        hideFieldError("reviewImage");
+      });
+    }
 
     // Validation functions
     function showFieldError(fieldName, message) {
@@ -104,7 +218,7 @@
         showFieldError("reviewText", "Review text is required");
         isValid = false;
       }
-      console.log(reviewImageInput, uploadedImageUrl);
+
       // Validate image (if required)
       if (!reviewImageInput || !uploadedImageUrl) {
         showFieldError("reviewImage", "Please upload an image");
@@ -118,13 +232,11 @@
       if (!errorDetails || !Array.isArray(errorDetails)) return;
 
       errorDetails.forEach((error) => {
-        // Parse error format: "\"fieldName\": "Error message"
         const match = error.match(/^"([^"]+)": "?(.+)"?$/);
         if (match) {
           const fieldName = match[1];
-          const message = match[2].replace(/^"|"$/g, ""); // Remove quotes from message
+          const message = match[2].replace(/^"|"$/g, "");
 
-          // Map backend field names to frontend field names
           const fieldMap = {
             rating: "rating",
             reviewText: "reviewText",
@@ -153,6 +265,7 @@
       });
     }
 
+    // Initialize stars
     if (ratingStarsContainer) {
       ratingStarsContainer
         .querySelectorAll(".star")
@@ -162,44 +275,48 @@
     // Star Rating Logic for Form
     if (ratingStarsContainer) {
       const stars = ratingStarsContainer.querySelectorAll(".star");
+
       stars.forEach((star) => {
         star.addEventListener("click", function () {
           currentRating = parseInt(this.dataset.value);
           if (ratingValueInput) ratingValueInput.value = currentRating;
-          hideFieldError("rating"); // Hide error when rating is selected
+          if (ratingText) ratingText.textContent = ratingTexts[currentRating];
+          hideFieldError("rating");
 
-          stars.forEach((s) => {
-            const sValue = parseInt(s.dataset.value);
-            s.innerHTML = sValue <= currentRating ? "&#9733;" : "&#9734;";
-            s.style.color =
-              sValue <= currentRating ? starColorFilled : starColorEmpty;
-          });
+          updateStarDisplay(stars, currentRating);
         });
+
         star.addEventListener("mouseover", function () {
           const hoverValue = parseInt(this.dataset.value);
-          stars.forEach((s) => {
-            const sValue = parseInt(s.dataset.value);
-            s.innerHTML = sValue <= hoverValue ? "&#9733;" : "&#9734;";
-            s.style.color =
-              sValue <= hoverValue ? starColorFilled : starColorEmpty;
-          });
+          updateStarDisplay(stars, hoverValue);
         });
       });
+
       ratingStarsContainer.addEventListener("mouseout", function () {
-        stars.forEach((s) => {
-          const sValue = parseInt(s.dataset.value);
-          s.innerHTML = sValue <= currentRating ? "&#9733;" : "&#9734;";
-          s.style.color =
-            sValue <= currentRating ? starColorFilled : starColorEmpty;
-        });
+        updateStarDisplay(stars, currentRating);
       });
     }
 
+    function updateStarDisplay(stars, rating) {
+      stars.forEach((s) => {
+        const sValue = parseInt(s.dataset.value);
+        if (sValue <= rating) {
+          s.style.color = starColorFilled;
+          s.classList.add("filled");
+        } else {
+          s.style.color = starColorEmpty;
+          s.classList.remove("filled");
+        }
+      });
+    }
+
+    // Image upload functionality
     if (reviewImageInput) {
       reviewImageInput.addEventListener("change", async function () {
         const file = this.files[0];
         if (!file) {
           uploadedImageUrl = null;
+          if (imagePreview) imagePreview.style.display = "none";
           return;
         }
 
@@ -228,6 +345,16 @@
         }
 
         hideFieldError("reviewImage");
+
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          if (previewImg) previewImg.src = e.target.result;
+          if (imagePreview) imagePreview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+
+        // Upload image
         isUploadingImage = true;
         if (submitButton) submitButton.disabled = true;
 
@@ -254,7 +381,7 @@
 
           if (formMessage) {
             formMessage.textContent = "Image uploaded successfully!";
-            formMessage.style.color = "green";
+            formMessage.classList.add("success-text");
             formMessage.style.display = "block";
             setTimeout(() => {
               if (formMessage) formMessage.style.display = "none";
@@ -265,6 +392,7 @@
           showFieldError("reviewImage", `Upload failed: ${error.message}`);
           uploadedImageUrl = null;
           this.value = "";
+          if (imagePreview) imagePreview.style.display = "none";
         } finally {
           isUploadingImage = false;
           if (submitButton) submitButton.disabled = false;
@@ -296,14 +424,13 @@
         if (formMessage) {
           formMessage.style.display = "block";
           formMessage.textContent = "Submitting review...";
-          formMessage.style.color = "blue";
         }
 
         const reviewData = {
           reviewText: reviewTextInput.value.trim(),
           rating: currentRating,
           productId: productId,
-          productHandle: productHandle, // Add product handle to the review data
+          productHandle: productHandle,
           reviewImage: uploadedImageUrl,
         };
 
@@ -320,7 +447,6 @@
 
           if (!response.ok) {
             if (result.details && Array.isArray(result.details)) {
-              // Handle backend validation errors
               parseBackendErrors(result.details);
               if (formMessage) {
                 formMessage.textContent =
@@ -340,20 +466,11 @@
               formMessage.style.color = "green";
             }
 
-            // Reset form
-            this.reset();
-            currentRating = 0;
-            uploadedImageUrl = null;
-            hideAllFieldErrors();
-
-            if (ratingValueInput) ratingValueInput.value = "";
-            if (ratingStarsContainer) {
-              ratingStarsContainer.querySelectorAll(".star").forEach((s) => {
-                s.innerHTML = "&#9734;";
-                s.style.color = starColorEmpty;
-              });
-            }
-            fetchReviews();
+            // Close modal and refresh reviews
+            setTimeout(() => {
+              closeModal();
+              fetchReviews();
+            }, 1500);
           }
         } catch (error) {
           console.error("Error submitting review:", error);
@@ -361,7 +478,6 @@
             formMessage.textContent = `Error: ${
               error.message || "Could not submit review."
             }`;
-            formMessage.style.color = "red";
           }
         } finally {
           if (submitButton) submitButton.disabled = false;
@@ -384,17 +500,13 @@
       return starsHtml;
     }
 
-    // Helper function to format date
     function formatDate(dateString) {
       const date = new Date(dateString);
       const options = { year: "numeric", month: "short", day: "numeric" };
       return date.toLocaleDateString("en-US", options);
     }
 
-    // Helper function to get product title
     function getProductTitle(productId) {
-      // You might need to pass this data or fetch it separately
-      // For now, using a placeholder or you can integrate with your product data
       return "Product Title"; // Replace with actual product title logic
     }
 
@@ -411,6 +523,7 @@
             "Content-Type": "application/json",
           },
         });
+
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({
             message: "Failed to fetch reviews with status: " + response.status,
@@ -419,6 +532,7 @@
             errorData.message || `HTTP error! status: ${response.status}`
           );
         }
+
         const reviewResponse = await response?.json();
         console.log("Product review data:", reviewResponse?.data);
         allProductReviews = reviewResponse?.data || [];
@@ -428,7 +542,7 @@
         console.error("Error fetching reviews:", error);
         allProductReviews = [];
         if (reviewListContainer) {
-          reviewListContainer.innerHTML = `<p class="reviews-message">Could not load reviews. ${error.message}</p>`;
+          reviewListContainer.innerHTML = `<p class="reviews-message error-text">Could not load reviews. ${error.message}</p>`;
         }
         calculateAndRenderSummary(allProductReviews);
       } finally {
@@ -440,7 +554,7 @@
       if (!reviewSummaryContainer) return;
 
       if (!reviewsArray || reviewsArray.length === 0) {
-        reviewSummaryContainer.innerHTML = `<p>No reviews yet.</p>`;
+        reviewSummaryContainer.innerHTML = `<p class="error-text">No reviews yet.</p>`;
         return;
       }
 
@@ -470,14 +584,8 @@
       }
 
       for (let i = 0; i < emptyStars; i++) {
-        starsHTML += `<span class="star" style="color:${starColorEmpty}; font-size: 1.2em;">&#9734;</span>`;
+        starsHTML += `<span class="star" style="font-size: 24px;">&#9734;</span>`;
       }
-
-      reviewSummaryContainer.innerHTML = `
-                <div class="summary-average-rating">
-                  ${starsHTML} (${totalReviews})
-                </div>
-            `;
     }
 
     function renderReviews(reviewsArray) {
@@ -502,14 +610,12 @@
         const reviewItem = document.createElement("div");
         reviewItem.className = "p-8 box-shadow flex flex-col gap-16";
 
-        // Get product title (you may need to adjust this based on your data structure)
         const productTitle = getProductTitle(review.productId);
 
         const imageHtml = review.reviewImage
           ? `<img src="${review.reviewImage}" class="w-220 h-228 alt="${productTitle}" loading="lazy">`
           : `<div></div>`;
 
-        // Format date
         const reviewDate = review.reviewPlacedAt
           ? formatDate(review.reviewPlacedAt)
           : "N/A";
@@ -558,7 +664,7 @@
         .replace(/'/g, "&#039;");
     }
 
-    // Update the validation check to include productHandle
+    // Initialize the app
     if (productId && productHandle && shopDomain) {
       fetchReviews();
     } else {
@@ -570,7 +676,7 @@
           '<p class="reviews-message">Configuration error (missing product/store data).</p>';
       if (reviewSummaryContainer)
         reviewSummaryContainer.innerHTML =
-          "<p>Could not load review summary due to configuration error.</p>";
+          "<p class='error-text'>Could not load review summary due to configuration error.</p>";
       if (reviewsSpinner) reviewsSpinner.style.display = "none";
     }
   });
