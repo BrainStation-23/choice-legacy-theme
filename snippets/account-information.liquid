@@ -114,7 +114,11 @@
           %}
         </div>
 
-        <h1 class="text-brand ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer" id="change-email-link">
+        <h1
+          class="text-brand ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer"
+          id="change-email-link"
+          onclick="openEmailModal()"
+        >
           {{ 'customer.account.change_email' | t }}
         </h1>
       </div>
@@ -132,8 +136,76 @@
   <div class="flex flex-1 sm:hidden"></div>
 </div>
 
+<!-- Email Change Modal -->
+<div id="emailModal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2 class="ff-general-sans fs-18-lh-20-ls-0 fw-600 m-0">OTP VERIFICATION</h2>
+      <span class="close-modal" onclick="closeEmailModal()">&times;</span>
+    </div>
+
+    <div class="modal-body">
+      <!-- Step 1: Email Input -->
+      <div id="emailStep" class="step-content">
+        <p class="ff-general-sans fs-14-lh-16-ls-0 fw-400 text-secondary-light mb-16">Enter your new email</p>
+
+        <div class="input-container mb-16">
+          <input
+            type="email"
+            id="newEmailInput"
+            class="modal-input"
+            placeholder="newemail@example.com"
+          >
+        </div>
+
+        <button class="send-otp-btn" id="sendOtpBtn" onclick="sendOTP()">
+          <span id="sendOtpText">Send OTP</span>
+          <div id="sendOtpSpinner" style="display: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2V6M12 18V22M4.93 4.93L7.76 7.76M16.24 16.24L19.07 19.07M2 12H6M18 12H22M4.93 19.07L7.76 16.24M16.24 7.76L19.07 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </button>
+      </div>
+
+      <!-- Step 2: OTP Input -->
+      <div id="otpStep" class="step-content" style="display: none;">
+        <p class="ff-general-sans fs-14-lh-16-ls-0 fw-400 text-secondary-light mb-16">Enter your new email</p>
+
+        <div class="input-container mb-16">
+          <input
+            type="email"
+            id="displayEmailInput"
+            class="modal-input"
+            readonly
+          >
+        </div>
+
+        <div class="otp-container mb-16">
+          {% render 'otp-input' %}
+        </div>
+
+        <p class="resend-text ff-general-sans fs-14-lh-16-ls-0 fw-400 cursor-pointer" onclick="resendOTP()">
+          Resend Code
+        </p>
+
+        <button class="submit-btn" id="submitBtn" onclick="verifyOTPAndSubmit()">
+          <span id="submitText">Submit</span>
+          <div id="submitSpinner" style="display: none;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2V6M12 18V22M4.93 4.93L7.76 7.76M16.24 16.24L19.07 19.07M2 12H6M18 12H22M4.93 19.07L7.76 16.24M16.24 7.76L19.07 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <style>
-  #saveSpinner svg {
+  #saveSpinner svg,
+  #sendOtpSpinner svg,
+  #submitSpinner svg {
     animation: spin 1s linear infinite;
   }
 
@@ -144,6 +216,115 @@
     to {
       transform: rotate(360deg);
     }
+  }
+
+  /* Modal Styles */
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+
+  .modal-content {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    width: 90%;
+    max-width: 400px;
+    position: relative;
+  }
+
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .close-modal {
+    font-size: 24px;
+    color: #999;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .close-modal:hover {
+    color: #333;
+  }
+
+  .modal-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #f8f8f8;
+  }
+
+  .modal-input:focus {
+    outline: none;
+    border-color: #007bff;
+  }
+
+  .send-otp-btn,
+  .submit-btn {
+    width: 100%;
+    padding: 12px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .send-otp-btn {
+    background-color: transparent;
+    border: 2px solid #ff69b4;
+    color: #ff69b4;
+  }
+
+  .send-otp-btn:hover {
+    background-color: #ff69b4;
+    color: white;
+  }
+
+  .submit-btn {
+    background-color: #ff69b4;
+    color: white;
+  }
+
+  .submit-btn:hover {
+    background-color: #e555a0;
+  }
+
+  .resend-text {
+    text-align: center;
+    color: #ff69b4;
+    margin-bottom: 16px;
+  }
+
+  .resend-text:hover {
+    text-decoration: underline;
+  }
+
+  .mb-16 {
+    margin-bottom: 16px;
+  }
+
+  .otp-container {
+    display: flex;
+    justify-content: center;
   }
 </style>
 
@@ -224,5 +405,209 @@
     document.getElementById('saveCancel').style.display = 'none';
 
     // Disable input fields again if needed
+  }
+
+  // Email Modal Functions
+  function openEmailModal() {
+    document.getElementById('emailModal').style.display = 'flex';
+    document.getElementById('emailStep').style.display = 'block';
+    document.getElementById('otpStep').style.display = 'none';
+  }
+
+  function closeEmailModal() {
+    document.getElementById('emailModal').style.display = 'none';
+    // Reset modal state
+    document.getElementById('emailStep').style.display = 'block';
+    document.getElementById('otpStep').style.display = 'none';
+    document.getElementById('newEmailInput').value = '';
+  }
+
+  async function sendOTP() {
+    const newEmail = document.getElementById('newEmailInput').value.trim();
+
+    if (!newEmail) {
+      alert('Please enter a valid email address');
+      return;
+    }
+
+    // Show spinner, hide text
+    document.getElementById('sendOtpText').style.display = 'none';
+    document.getElementById('sendOtpSpinner').style.display = 'inline-block';
+
+    // Disable the button
+    document.getElementById('sendOtpBtn').style.pointerEvents = 'none';
+    document.getElementById('sendOtpBtn').style.opacity = '0.6';
+
+    try {
+      // Get customer phone from the existing phone field
+      const customerPhone = document
+        .querySelector('#phone-field .ff-general-sans.fs-14-lh-16-ls-0.fw-500')
+        .textContent.trim();
+
+      const response = await fetch(`/apps/${APP_SUB_PATH}/customer/account/send-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phone: customerPhone,
+          register: false,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Show OTP step
+        document.getElementById('emailStep').style.display = 'none';
+        document.getElementById('otpStep').style.display = 'block';
+        document.getElementById('displayEmailInput').value = newEmail;
+
+        console.log('OTP sent successfully');
+      } else {
+        console.error('Error sending OTP:', result.message);
+        alert('Error sending OTP: ' + result.message);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      alert('Network error occurred. Please try again.');
+    } finally {
+      // Hide spinner, show text
+      document.getElementById('sendOtpText').style.display = 'inline';
+      document.getElementById('sendOtpSpinner').style.display = 'none';
+
+      // Re-enable the button
+      document.getElementById('sendOtpBtn').style.pointerEvents = 'auto';
+      document.getElementById('sendOtpBtn').style.opacity = '1';
+    }
+  }
+
+  async function resendOTP() {
+    // Reuse the sendOTP function logic
+    await sendOTP();
+  }
+
+  async function verifyOTPAndSubmit() {
+    // Get OTP value (you'll need to implement this based on your otp-input component)
+    const otpValue = getOTPValue(); // This function needs to be implemented based on your OTP input component
+    const newEmail = document.getElementById('displayEmailInput').value;
+
+    if (!otpValue || otpValue.length < 6) {
+      alert('Please enter the complete 6-digit OTP');
+      return;
+    }
+
+    // Show spinner, hide text
+    document.getElementById('submitText').style.display = 'none';
+    document.getElementById('submitSpinner').style.display = 'inline-block';
+
+    // Disable the button
+    document.getElementById('submitBtn').style.pointerEvents = 'none';
+    document.getElementById('submitBtn').style.opacity = '0.6';
+
+    try {
+      // Get customer phone from the existing phone field
+      const customerPhone = document
+        .querySelector('#phone-field .ff-general-sans.fs-14-lh-16-ls-0.fw-500')
+        .textContent.trim();
+
+      // Step 1: Confirm OTP
+      const otpResponse = await fetch(`/apps/${APP_SUB_PATH}/customer/account/confirm-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phone: customerPhone,
+          otp: parseInt(otpValue),
+        }),
+      });
+
+      const otpResult = await otpResponse.json();
+
+      if (!otpResult.success) {
+        console.error('Error confirming OTP:', otpResult.message);
+        alert('Error confirming OTP: ' + otpResult.message);
+        return;
+      }
+
+      // Step 2: Update customer with new email
+      const customerId = document.getElementById('customerId').textContent;
+      const firstName = document.getElementById('firstName-input').value;
+      const lastName = document.getElementById('lastName-input').value;
+
+      const updateResponse = await fetch(`/apps/${APP_SUB_PATH}/customer/account/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customerId: customerId,
+          firstName: firstName,
+          lastName: lastName,
+          email: newEmail,
+        }),
+      });
+
+      const updateResult = await updateResponse.json();
+
+      if (updateResult.success) {
+        // Update the email in the main form
+        document.getElementById('email-input').value = newEmail;
+
+        // Close the modal
+        closeEmailModal();
+
+        console.log('Email updated successfully');
+        alert('Email updated successfully');
+      } else {
+        console.error('Error updating customer:', updateResult.message);
+        alert('Error updating customer: ' + updateResult.message);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      alert('Network error occurred. Please try again.');
+    } finally {
+      // Hide spinner, show text
+      document.getElementById('submitText').style.display = 'inline';
+      document.getElementById('submitSpinner').style.display = 'none';
+
+      // Re-enable the button
+      document.getElementById('submitBtn').style.pointerEvents = 'auto';
+      document.getElementById('submitBtn').style.opacity = '1';
+    }
+  }
+
+  // Helper function to get OTP value - you'll need to implement this based on your otp-input component
+  function getOTPValue() {
+    // Check for different possible OTP input structures
+
+    // Method 1: Try to find inputs with otp-related classes or data attributes
+    let otpInputs = document.querySelectorAll('.otp-input input, .otp-digit, [data-otp-input], .digit-input');
+
+    // Method 2: If not found, try to find all number inputs within the OTP container
+    if (otpInputs.length === 0) {
+      const otpContainer = document.querySelector('.otp-container');
+      if (otpContainer) {
+        otpInputs = otpContainer.querySelectorAll('input[type="text"], input[type="number"], input[maxlength="1"]');
+      }
+    }
+
+    // Method 3: If still not found, try to find all single-character inputs
+    if (otpInputs.length === 0) {
+      otpInputs = document.querySelectorAll('input[maxlength="1"]');
+    }
+
+    // Method 4: Debug - log what inputs are found
+    console.log('Found OTP inputs:', otpInputs);
+
+    let otpValue = '';
+    otpInputs.forEach((input, index) => {
+      console.log(`Input ${index}:`, input.value);
+      otpValue += input.value || '';
+    });
+
+    console.log('Collected OTP value:', otpValue);
+    return otpValue;
   }
 </script>
