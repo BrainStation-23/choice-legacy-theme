@@ -1,36 +1,85 @@
 <div class="flex flex-3">
+  <h1 class="hidden" id="customerId">{{ customer.id }}</h1>
   <div class="flex flex-col gap-24 flex-2">
-    <div class="flex gap-8  items-center">
-      <h1 class=" ff-general-sans fs-23-lh-24-ls-0 fw-500 m-0 ">
+    <div class="flex gap-8 items-center">
+      <h1 class="ff-general-sans fs-23-lh-24-ls-0 fw-500 m-0">
         {{ 'customer.account.account_title' | t }}
       </h1>
-      <h3 class="text-brand ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer">
-        {{ 'customer.account.edit' | t }}
-      </h3>
+      <div id="actionButtons">
+        <h3
+          class="text-brand ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer"
+          id="editButton"
+          onclick="toggleEditMode()"
+        >
+          {{ 'customer.account.edit' | t }}
+        </h3>
+
+        <!-- Save and Cancel buttons (hidden by default) -->
+        <div id="saveCancel" class="flex gap-8" style="display: none;">
+          <h3
+            class=" ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer"
+            id="saveButton"
+            onclick="saveChanges()"
+            style="color: green"
+          >
+            <span id="saveText">{{ 'customer.account.save' | t }}</span>
+            <div id="saveSpinner" style="display: none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2V6M12 18V22M4.93 4.93L7.76 7.76M16.24 16.24L19.07 19.07M2 12H6M18 12H22M4.93 19.07L7.76 16.24M16.24 7.76L19.07 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </h3>
+          <h3
+            class="text-brand ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer"
+            id="cancelButton"
+            onclick="cancelEdit()"
+            style="color:red"
+          >
+            {{ 'customer.account.cancel' | t }}
+          </h3>
+        </div>
+      </div>
     </div>
 
-    <div class="grid gap-16 grid-cols-2 flex-wrap sm:grid-cols-1  sm:gap-8 ">
-      <div>
-        <div class="border-secondary-text-10pct rounded-12  pt-10 pb-10 pr-16 pl-16">
-          <h2 class="ff-general-sans fs-12-lh-16-ls-0_6 fw-400 m-0 text-secondary-light ">
-            {{ 'customer.account.first_name' | t }}
-          </h2>
-          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.first_name }}</div>
-        </div>
+    <div class="grid gap-16 grid-cols-2 flex-wrap sm:grid-cols-1 sm:gap-8">
+      <!-- First Name -->
+      <div id="firstName-input-container">
+        {%- assign firstNameLabel = 'customer.account.first_name' | t -%}
+        {%- assign firstNamePlaceholder = 'customer.account.first_name' | t -%}
+        {% render 'input',
+          type: 'text',
+          id: 'firstName-input',
+          name: 'customer[first_name]',
+          label: firstNameLabel,
+          placeholder: firstNamePlaceholder,
+          autocomplete: 'given-name',
+          required: false,
+          class: 'w-full',
+          value: customer.first_name
+        %}
+      </div>
+
+      <!-- Last Name -->
+
+      <div id="lastName-input-container">
+        {%- assign lastNameLabel = 'customer.account.last_name' | t -%}
+        {%- assign lastNamePlaceholder = 'customer.account.last_name' | t -%}
+        {% render 'input',
+          type: 'text',
+          id: 'lastName-input',
+          name: 'customer[last_name]',
+          label: lastNameLabel,
+          placeholder: lastNamePlaceholder,
+          autocomplete: 'family-name',
+          required: false,
+          class: 'w-full',
+          value: customer.last_name
+        %}
       </div>
 
       <div>
-        <div class="border-secondary-text-10pct rounded-12  pt-10 pb-10 pr-16 pl-16">
-          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
-            {{ 'customer.account.last_name' | t }}
-          </h2>
-          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.last_name }}</div>
-        </div>
-      </div>
-
-      <div>
-        <div class="border-secondary-text-10pct rounded-12 pt-10 pb-10 pr-16 pl-16">
-          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
+        <div class=" bg-light-gray border-secondary-text-10pct rounded-12 pt-10 pb-10 pr-16 pl-16" id="phone-field">
+          <h2 class="ff-general-sans fs-12-lh-16-ls-0_6 fw-400 m-0 text-secondary-light">
             {{ 'customer.account.phone' | t }}
           </h2>
           <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.phone }}</div>
@@ -38,32 +87,43 @@
       </div>
 
       <div>
-        <div class="border-secondary-text-10pct rounded-12 pt-10 pb-10 pr-16 pl-16">
-          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
+        <div class=" bg-light-gray border-secondary-text-10pct rounded-12 pt-10 pb-10 pr-16 pl-16" id="dob-field">
+          <h2 class="ff-general-sans fs-12-lh-16-ls-0_6 fw-400 m-0 text-secondary-light">
             {{ 'customer.account.date_of_birth' | t }}
           </h2>
           <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">
-            {% comment %} todo update date of birth {% endcomment %}
             {{ customer.date_of_birth | default: 'date_of_birth' }}
           </div>
         </div>
       </div>
 
       <div class="flex flex-col gap-8">
-        <div class="border-secondary-text-10pct rounded-12  pt-10 pb-10 pr-16 pl-16">
-          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
-            {{ 'customer.account.email' | t }}
-          </h2>
-          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.email }}</div>
+        <div id="email-input-container">
+          {%- assign emailLabel = 'customer.account.email' | t -%}
+          {%- assign emailPlaceholder = 'customer.account.email' | t -%}
+          {% render 'input',
+            type: 'email',
+            id: 'email-input',
+            name: 'customer[email]',
+            label: emailLabel,
+            placeholder: emailPlaceholder,
+            autocomplete: 'email',
+            required: false,
+            class: 'w-full',
+            value: customer.email
+          %}
         </div>
-        <h1 class=" text-brand ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer">{{ 'customer.account.change_email' | t }}</h1>
+
+        <h1 class="text-brand ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer" id="change-email-link">
+          {{ 'customer.account.change_email' | t }}
+        </h1>
       </div>
+
       <div>
-        <div class="border-secondary-text-10pct rounded-12  pt-10 pb-10 pr-16 pl-16">
-          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
+        <div class=" bg-light-gray border-secondary-text-10pct rounded-12 pt-10 pb-10 pr-16 pl-16" id="gender-field">
+          <h2 class="ff-general-sans fs-12-lh-16-ls-0_6 fw-400 m-0 text-secondary-light">
             {{ 'customer.account.gender' | t }}
           </h2>
-          {% comment %} todo update actual gender {% endcomment %}
           <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.gender | default: 'Female' }}</div>
         </div>
       </div>
@@ -71,3 +131,98 @@
   </div>
   <div class="flex flex-1 sm:hidden"></div>
 </div>
+
+<style>
+  #saveSpinner svg {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+
+<script>
+  function toggleEditMode() {
+    // Hide edit button, show save/cancel buttons
+    document.getElementById('editButton').style.display = 'none';
+    document.getElementById('saveCancel').style.display = 'flex';
+
+    // Enable input fields (you'll need to add this logic based on your input component)
+    // Example: document.getElementById('firstName-input').disabled = false;
+  }
+
+  async function saveChanges() {
+    // Show spinner, hide text
+    document.getElementById('saveText').style.display = 'none';
+    document.getElementById('saveSpinner').style.display = 'inline-block';
+
+    // Disable the save button to prevent multiple clicks
+    document.getElementById('saveButton').style.pointerEvents = 'none';
+    document.getElementById('saveButton').style.opacity = '0.6';
+
+    try {
+      // Get form values
+      const customerId = document.getElementById('customerId').textContent;
+      const firstName = document.getElementById('firstName-input').value;
+      const lastName = document.getElementById('lastName-input').value;
+      const email = document.getElementById('email-input').value;
+
+      // Make API call
+      const response = await fetch(`/apps/${APP_SUB_PATH}/customer/account/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customerId: customerId,
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Success - show edit button, hide save/cancel buttons
+        document.getElementById('editButton').style.display = 'block';
+        document.getElementById('saveCancel').style.display = 'none';
+
+        // Disable input fields again if needed
+        // Show success message if needed
+        console.log('Customer updated successfully');
+      } else {
+        // Handle error
+        console.error('Error updating customer:', result.message);
+        alert('Error updating customer: ' + result.message);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      alert('Network error occurred. Please try again.');
+    } finally {
+      // Hide spinner, show text
+      document.getElementById('saveText').style.display = 'inline';
+      document.getElementById('saveSpinner').style.display = 'none';
+
+      // Re-enable the save button
+      document.getElementById('saveButton').style.pointerEvents = 'auto';
+      document.getElementById('saveButton').style.opacity = '1';
+    }
+  }
+
+  function cancelEdit() {
+    // Add your cancel logic here (reset form values if needed)
+
+    // Show edit button, hide save/cancel buttons
+    document.getElementById('editButton').style.display = 'block';
+    document.getElementById('saveCancel').style.display = 'none';
+
+    // Disable input fields again if needed
+  }
+</script>

@@ -163,7 +163,12 @@
       "date_of_birth": "Date of Birth",
       "gender": "Gender",
       "edit": "Edit",
-      "change_email": "Change email address"
+      "change_email": "Change email address",
+      "update_success": "Your account has been updated successfully.",
+      "update_error": "There was an error updating your account.",
+      "update_error_generic": "An error occurred while updating your account. Please try again later.",
+      "save": "Save",
+      "cancel": "Cancel"
     },
     "login": {
       "title": "Login",
@@ -239,6 +244,9 @@
     }
   },
   "general": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
     "pagination": {
       "label": "Pagination",
       "previous": "Previous",
