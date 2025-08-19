@@ -43,7 +43,7 @@
 
     <div class="grid gap-16 grid-cols-2 flex-wrap sm:grid-cols-1 sm:gap-8">
       <!-- First Name -->
-      <div id="firstName-input-container">
+      <div>
         {%- assign firstNameLabel = 'customer.account.first_name' | t -%}
         {%- assign firstNamePlaceholder = 'customer.account.first_name' | t -%}
         {% render 'input',
@@ -61,7 +61,7 @@
 
       <!-- Last Name -->
 
-      <div id="lastName-input-container">
+      <div>
         {%- assign lastNameLabel = 'customer.account.last_name' | t -%}
         {%- assign lastNamePlaceholder = 'customer.account.last_name' | t -%}
         {% render 'input',
@@ -78,7 +78,7 @@
       </div>
 
       <div>
-        <div class=" bg-light-gray border-secondary-text-10pct rounded-12 pt-10 pb-10 pr-16 pl-16" id="phone-field">
+        <div class="bg-light-gray border-secondary-text-10pct rounded-12 pt-10 pb-10 pr-16 pl-16" id="phone-field">
           <h2 class="ff-general-sans fs-12-lh-16-ls-0_6 fw-400 m-0 text-secondary-light">
             {{ 'customer.account.phone' | t }}
           </h2>
@@ -98,7 +98,7 @@
       </div>
 
       <div class="flex flex-col gap-8">
-        <div id="email-input-container">
+        <div>
           {%- assign emailLabel = 'customer.account.email' | t -%}
           {%- assign emailPlaceholder = 'customer.account.email' | t -%}
           {% render 'input',
@@ -137,19 +137,27 @@
 </div>
 
 <!-- Email Change Modal -->
-<div id="emailModal" class="modal-overlay" style="display: none;">
-  <div class="modal-content">
-    <div class="modal-header">
-      <h2 class="ff-general-sans fs-18-lh-20-ls-0 fw-600 m-0">OTP VERIFICATION</h2>
-      <span class="close-modal" onclick="closeEmailModal()">&times;</span>
+<div
+  id="emailModal"
+  class="fixed top-0 left-0 w-full h-full bg-primary-light-50pct flex justify-center items-center z-1000"
+  style="display: none;"
+>
+  <div class=" p-24 flex flex-col gap-24 relative bg-bg rounded-16 w-90pct max-w-400">
+    <div class="flex justify-between ">
+      <h2 class="ff-bebas-neue fs-36-lh-40-ls-0 fw-400 m-0">{{ 'customer.account.otp_verification' | t }}</h2>
+      <span class=" fs-14-lh-100pct-ls-0 cursor-pointer" onclick="closeEmailModal()">
+        {%- render 'icon-cross' -%}
+      </span>
     </div>
 
-    <div class="modal-body">
+    <div class="modal-body flex flex-col gap-16">
       <!-- Step 1: Email Input -->
-      <div id="emailStep" class="step-content">
-        <p class="ff-general-sans fs-14-lh-16-ls-0 fw-400 text-secondary-light mb-16">Enter your new email</p>
+      <div id="emailStep" class=" flex flex-col gap-16">
+        <p class="ff-general-sans fs-23-lh-24-ls-0 fw-500">
+          {{ 'customer.account.enter_your_new_email' | t }}
+        </p>
 
-        <div class="input-container mb-16">
+        <div>
           {%- assign emailLabel = 'customer.account.email' | t -%}
           {%- assign emailPlaceholder = 'customer.account.email' | t -%}
           {% render 'input',
@@ -166,38 +174,40 @@
         </div>
 
         <button
-          class="send-otp-btn button--solid bg-brand border-none rounded-6 w-full"
+          class="button--solid bg-brand border-none rounded-6 w-full"
           id="sendOtpBtn"
           onclick="sendOTP()"
         >
-          <span id="sendOtpText">{{ 'customer.account.send_otp' | t }}</span>
+          <span id="sendOtpText" class="ff-general-sans  fs-14-lh-100pct-ls-0 fw-600">
+            {{- 'customer.account.send_otp' | t -}}
+          </span>
           <div id="sendOtpSpinner" style="display: none;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2V6M12 18V22M4.93 4.93L7.76 7.76M16.24 16.24L19.07 19.07M2 12H6M18 12H22M4.93 19.07L7.76 16.24M16.24 7.76L19.07 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+            {% render 'icon-spinner' %}
           </div>
         </button>
       </div>
 
       <!-- Step 2: OTP Input -->
-      <div id="otpStep" class="step-content" style="display: none;">
-        <p class="ff-general-sans fs-14-lh-16-ls-0 fw-400 text-secondary-light mb-16">Enter your new email</p>
+      <div id="otpStep" class=" flex flex-col gap-16" style="display: none;">
+        <p class="ff-general-sans fs-23-lh-24-ls-0 fw-500">
+          {{ 'customer.account.enter_your_new_email' | t }}
+        </p>
 
-        <div class="input-container mb-16">
+        <div>
           <input
             type="email"
             id="displayEmailInput"
-            class="modal-input"
+            class="modal-input w-full pt-12 pb-12 pl-16 pr-16"
             readonly
           >
         </div>
 
-        <div class="otp-container flex justify-center mb-16">
+        <div class="otp-container flex justify-center ">
           {% render 'otp-input' %}
         </div>
 
         <p
-          class="resend-text ff-general-sans fs-14-lh-16-ls-0 fw-400 cursor-pointer text-brand text-center mb-16"
+          class="resend-text ff-general-sans  fs-14-lh-100pct-ls-0 fw-600 cursor-pointer text-brand text-center"
           onclick="resendOTP()"
         >
           {{ 'customer.account.resend_otp' | t }}
@@ -208,11 +218,11 @@
           id="submitBtn"
           onclick="verifyOTPAndSubmit()"
         >
-          <span id="submitText">{{ 'customer.account.submit' | t }}</span>
+          <span id="submitText" class="ff-general-sans  fs-16-lh-100pct-ls-0  fw-600">
+            {{- 'customer.account.submit' | t -}}
+          </span>
           <div id="submitSpinner" style="display: none;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2V6M12 18V22M4.93 4.93L7.76 7.76M16.24 16.24L19.07 19.07M2 12H6M18 12H22M4.93 19.07L7.76 16.24M16.24 7.76L19.07 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+            {% render 'icon-spinner' %}
           </div>
         </button>
       </div>
@@ -236,56 +246,6 @@
     }
   }
 
-  /* Modal Styles */
-  .modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-  }
-
-  .modal-content {
-    background: white;
-    border-radius: 16px;
-    padding: 24px;
-    width: 90%;
-    max-width: 400px;
-    position: relative;
-  }
-
-  .modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-
-  .close-modal {
-    font-size: 24px;
-    color: #999;
-    cursor: pointer;
-    line-height: 1;
-  }
-
-  .close-modal:hover {
-    color: #333;
-  }
-
-  .modal-input {
-    width: 100%;
-    padding: 12px 16px;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    font-size: 14px;
-    background-color: #f8f8f8;
-  }
-
   .otp-container {
     display: flex;
     justify-content: center;
@@ -297,28 +257,21 @@
     // Hide edit button, show save/cancel buttons
     document.getElementById('editButton').style.display = 'none';
     document.getElementById('saveCancel').style.display = 'flex';
-
-    // Enable input fields (you'll need to add this logic based on your input component)
-    // Example: document.getElementById('firstName-input').disabled = false;
   }
 
   async function saveChanges() {
-    // Show spinner, hide text
     document.getElementById('saveText').style.display = 'none';
     document.getElementById('saveSpinner').style.display = 'inline-block';
 
-    // Disable the save button to prevent multiple clicks
     document.getElementById('saveButton').style.pointerEvents = 'none';
     document.getElementById('saveButton').style.opacity = '0.6';
 
     try {
-      // Get form values
       const customerId = document.getElementById('customerId').textContent;
       const firstName = document.getElementById('firstName-input').value;
       const lastName = document.getElementById('lastName-input').value;
       const email = document.getElementById('email-input').value;
 
-      // Make API call
       const response = await fetch(`/apps/${APP_SUB_PATH}/customer/account/update`, {
         method: 'POST',
         headers: {
@@ -336,12 +289,8 @@
 
       if (result.success) {
         // Success - show edit button, hide save/cancel buttons
-        document.getElementById('editButton').style.display = 'block';
+        document.getElementById('editButton').style.display = 'flex';
         document.getElementById('saveCancel').style.display = 'none';
-
-        // Disable input fields again if needed
-        // Show success message if needed
-        console.log('Customer updated successfully');
       } else {
         // Handle error
         console.error('Error updating customer:', result.message);
@@ -362,26 +311,21 @@
   }
 
   function cancelEdit() {
-    // Add your cancel logic here (reset form values if needed)
 
-    // Show edit button, hide save/cancel buttons
-    document.getElementById('editButton').style.display = 'block';
+    document.getElementById('editButton').style.display = 'flex';
     document.getElementById('saveCancel').style.display = 'none';
-
-    // Disable input fields again if needed
   }
 
   // Email Modal Functions
   function openEmailModal() {
     document.getElementById('emailModal').style.display = 'flex';
-    document.getElementById('emailStep').style.display = 'block';
+    document.getElementById('emailStep').style.display = 'flex';
     document.getElementById('otpStep').style.display = 'none';
   }
 
   function closeEmailModal() {
     document.getElementById('emailModal').style.display = 'none';
-    // Reset modal state
-    document.getElementById('emailStep').style.display = 'block';
+    document.getElementById('emailStep').style.display = 'flex';
     document.getElementById('otpStep').style.display = 'none';
     document.getElementById('newEmailInput').value = '';
   }
@@ -403,7 +347,6 @@
     document.getElementById('sendOtpBtn').style.opacity = '0.6';
 
     try {
-      // Get customer phone from the existing phone field
       const customerPhone = document
         .querySelector('#phone-field .ff-general-sans.fs-14-lh-16-ls-0.fw-500')
         .textContent.trim();
@@ -424,7 +367,7 @@
       if (result.success) {
         // Show OTP step
         document.getElementById('emailStep').style.display = 'none';
-        document.getElementById('otpStep').style.display = 'block';
+        document.getElementById('otpStep').style.display = 'flex';
         document.getElementById('displayEmailInput').value = newEmail;
 
         console.log('OTP sent successfully');
@@ -436,7 +379,6 @@
       console.error('Network error:', error);
       alert('Network error occurred. Please try again.');
     } finally {
-      // Hide spinner, show text
       document.getElementById('sendOtpText').style.display = 'inline';
       document.getElementById('sendOtpSpinner').style.display = 'none';
 

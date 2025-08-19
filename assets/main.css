@@ -69,9 +69,7 @@ mark {
 .text-secondary-light {
   color: rgba(var(--color-secondary-text), 0.6);
 }
-.bg-secondary-light-20pct {
-  background-color: rgba(var(--color-secondary-text), 0.02);
-}
+
 .text-brand {
   color: rgb(var(--color-primary-brand));
 }
@@ -119,6 +117,12 @@ mark {
 }
 .bg-none {
   background: none;
+}
+.bg-secondary-light-20pct {
+  background-color: rgba(var(--color-secondary-text), 0.02);
+}
+.bg-primary-light-50pct {
+  background-color: rgba(var(--color-primary-text), 0.5);
 }
 @media screen and (max-width: 768px) {
   .sm\:bg-none {
@@ -986,6 +990,9 @@ address {
 }
 .w-full {
   width: 100%;
+}
+.w-90pct {
+  width: 90%;
 }
 .w-1134 {
   width: 1134px;
@@ -2549,6 +2556,9 @@ shop-login-button {
 }
 .rounded-100 {
   border-radius: 100px;
+}
+.rounded-16 {
+  border-radius: 16px;
 }
 .rounded-12 {
   border-radius: 12px;
