@@ -32,6 +32,8 @@
       super();
       this.variants = {{ product.variants | json }};
       this.addEventListener('change', this.onVariantChange);
+
+      this._selectVariantFromUrl();
     }
 
     onVariantChange() {
@@ -43,6 +45,28 @@
 
       this.updateURL(browserUrl);
       this.fetchAndUpdateSection(fetchUrl, selectedVariant);
+    }
+
+    _selectVariantFromUrl() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const variantIdFromUrl = urlParams.get('variant');
+      if (!variantIdFromUrl) return;
+
+      const targetVariant = this.variants.find(variant => variant.id.toString() === variantIdFromUrl);
+      if (!targetVariant) return;
+
+      targetVariant.options.forEach((optionValue, index) => {
+        const optionPosition = index + 1;
+        const selector = `input[name="option-${optionPosition}"][value="${optionValue}"]`;
+        const radioButton = this.querySelector(selector);
+        if (radioButton) {
+          radioButton.checked = true;
+        }
+      });
+
+      // --- THE FIX ---
+      // Manually set the media to match the variant from the URL on page load.
+      this.setActiveMedia(targetVariant);
     }
 
     getSelectedVariant() {
