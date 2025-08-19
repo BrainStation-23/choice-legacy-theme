@@ -70,7 +70,7 @@
 </style>
 
 <section class="homepage-product-review__section homepage-product-review__section-{{ section.id }}">
-  <div class="homepage-product-review__container page-width gap-48">
+  <div class="homepage-product-review__container page-width gap-48 sm:gap-8">
     {% if section.settings.title != blank %}
       <h2 class="homepage-product-review__title ff-bebas-neue ft-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct">
         {{ section.settings.title }}
@@ -87,12 +87,11 @@
     <!-- Load More Button -->
     <div
       id="load-more-container"
-      class="homepage-product-review__load-more-container"
-      style="display: none; text-align: center; margin-top: 8px;"
+      class="homepage-product-review__load-more-container sm:hidden sm:m-0"
     >
       <button
         id="load-more-btn"
-        class="homepage-product-review__load-more-btn ff-general-sans fs-16-lh-100pct-ls-0 fw-600"
+        class="homepage-product-review__load-more-btn ff-general-sans fs-16-lh-100pct-ls-0 fw-600 sm:hidden "
       >
         {{ 'sections.product_review.load_more' | t }}
       </button>
@@ -342,7 +341,7 @@
                 ${createStarRating(review.rating)}
               </div>
             </div>
-            <div class="homepage-product-review__content-middle gap-8">
+            <div class="homepage-product-review__content-middle gap-8 pl-6 pr-6">
               <div class="homepage-product-review__product-title fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
                 ${productTitle}
               </div>
@@ -350,7 +349,7 @@
                 ${review.reviewText}
               </div>
             </div>
-            <div class="homepage-product-review__content-bottom gap-4">
+            <div class="homepage-product-review__content-bottom gap-4 pl-6 pr-6">
               <span class="homepage-product-review__review-date fs-12-lh-16-ls-0_6pct ff-general-sans fw-400">
                 ${formatDate(review.reviewPlacedAt)}
               </span>
@@ -378,7 +377,7 @@
                   ${createStarRating(review.rating)}
                 </div>
               </div>
-              <div class="homepage-product-review__content-middle gap-8">
+              <div class="homepage-product-review__content-middle gap-8 pl-6 pr-6 ">
                 <div class="homepage-product-review__product-title fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
                   ${productTitle}
                 </div>
@@ -386,7 +385,7 @@
                   ${review.reviewText}
                 </div>
               </div>
-              <div class="homepage-product-review__content-bottom gap-4">
+              <div class="homepage-product-review__content-bottom gap-4 pl-6 pr-6">
                 <span class="homepage-product-review__review-date fs-12-lh-16-ls-0_6 ff-general-sans fw-400">
                   ${formatDate(review.reviewPlacedAt)}
                 </span>

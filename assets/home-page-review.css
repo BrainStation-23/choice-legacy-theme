@@ -134,7 +134,6 @@
   flex-direction: column;
   text-align: left;
   min-height: 80px; /* Ensure minimum space for content */
-  padding: 4px 0; /* Add small padding */
 }
 
 .homepage-product-review__content-bottom {
@@ -142,7 +141,6 @@
   flex-direction: column;
   text-align: left;
   margin-top: auto; /* Push to bottom */
-  padding-top: 8px; /* Add space above bottom content */
   flex-shrink: 0; /* Prevent shrinking */
 }
 

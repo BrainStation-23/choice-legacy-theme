@@ -799,6 +799,9 @@ address {
   .sm\:m-0-auto {
     margin: 0 auto;
   }
+  .sm\:m-0 {
+    margin: 0;
+  }
   .sm\:left-8 {
     left: 8px;
   }
