@@ -6,19 +6,6 @@
       width: calc(33% - 16px);
     }
   }
-
-  /* Hide load more button on mobile and tablet */
-  #load-more-container {
-    display: block;
-  }
-
-  @media screen and (max-width: 1023px) {
-    #load-more-container {
-      display: none !important;
-    }
-  }
-
-  /* Read more button styles for mobile */
 </style>
 
 <section class="homepage-product-review__section homepage-product-review__section-{{ section.id }} bg-brand-2 pt-88 pb-64 sm:pt-24 sm:pb-24">
@@ -62,7 +49,7 @@
     <!-- Load More Button - Shows on desktop only -->
     <div
       id="load-more-container"
-      class="homepage-product-review__load-more-container sm:hidden lg:block"
+      class="homepage-product-review__load-more-container block sm:hidden "
     >
       <button
         id="load-more-btn"

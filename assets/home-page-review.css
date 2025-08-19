@@ -6,7 +6,6 @@
   box-sizing: border-box;
   margin: calc(0px);
   overflow-anchor: none;
-  /* Dynamic height - will be set by JavaScript */
   min-height: 400px;
   transition: height 0.3s ease;
 }
