@@ -60,6 +60,8 @@
                 environment-image="neutral">
               </model-viewer>
           {%- endcase -%}
+
+          {% render "wishlist-button", cls: "w-32 h-32 absolute top-24 right-24" %}
         </div>
       {%- endfor -%}
     </div>

@@ -71,7 +71,7 @@
       {% endif %}
 
       {% if show_wishlist_button %}
-        {% render "wishlist-button", product: product, cls: "w-32 h-32 bg-transparent absolute top-16 right-16 z-2 rounded-full flex justify-center items-center border-0_727 border-solid border-color" %}
+        {% render "wishlist-button", product: product, cls: "w-32 h-32 bg-transparent absolute top-16 right-16 z-2" %}
       {% endif %}
     {% else %}
       <div class="product-card__placeholder-image">
@@ -83,7 +83,7 @@
       {% endif %}
 
       {% if show_wishlist_button %}
-        {% render "wishlist-button", cls: "w-32 h-32 bg-transparent absolute top-16 right-16 z-2 rounded-full flex justify-center items-center border-0_727 border-solid border-color" %}
+        {% render "wishlist-button", cls: "w-32 h-32 bg-transparent absolute top-16 right-16 z-2" %}
       {% endif %}
     {% endif %}
   </div>
