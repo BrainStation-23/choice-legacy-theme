@@ -1,9 +1,23 @@
-<variant-picker class="variant-picker-element" data-section-id="{{ section.id }}" data-product-url="{{ product.url | within: collection }}">
+<style>
+.variant-picker__radio-input:checked + .variant-picker__label {
+  border-color: rgb(var(--color-primary-brand));
+  border-width: 2px;
+}
+</style>
+
+<variant-picker class="variant-picker-element block mt-24 mb-24" data-section-id="{{ section.id }}" data-product-url="{{ product.url | within: collection }}">
   {%- for option in product.options_with_values -%}
-    <fieldset class="variant-picker__option-group" role="radiogroup">
-      <legend class="variant-picker__option-name">{{ option.name }}</legend>
-      <div class="variant-picker__values">
+    <fieldset class="variant-picker__option-group border-none m-0 p-0 flex flex-col gap-8" role="radiogroup">
+      <legend class="variant-picker__option-name fw-500 fs-14-lh-20-ls-0_1 text-primary block">{{ option.name }}</legend>
+      <div class="variant-picker__values flex flex-wrap gap-8">
         {%- for value in option.values -%}
+          {%- liquid
+            assign is_color_option = false
+            assign downcased_option_name = option.name | downcase
+            if downcased_option_name == 'color' or downcased_option_name == 'colour'
+              assign is_color_option = true
+            endif
+          -%}
           <div class="variant-picker__value-wrapper">
             <input
               type="radio"
@@ -11,11 +25,11 @@
               name="option-{{ option.position }}"
               value="{{ value | escape }}"
               {% if option.selected_value == value %}checked{% endif %}
-              class="variant-picker__radio-input"
+              class="variant-picker__radio-input h-0 p-0 border-none w-0 opacity-0 pointer-events-none absolute"
             >
             <label
               for="option-{{ option.position }}-{{ forloop.index }}"
-              class="variant-picker__label"
+              class="variant-picker__label flex items-center justify-center relative border-1 border-solid border-color min-w-64 h-44 cursor-pointer left-0-priority pointer-events-auto fw-500 fs-13-lh-16-ls-0_2-priority rounded-100 pt-18 pr-16 pb-18 pl-16 {% if is_color_option %}variant-picker__label--swatch{% endif %}"
             >
               {{ value }}
             </label>
@@ -32,7 +46,6 @@
       super();
       this.variants = {{ product.variants | json }};
       this.addEventListener('change', this.onVariantChange);
-
       this._selectVariantFromUrl();
     }
 
@@ -45,12 +58,16 @@
 
       this.updateURL(browserUrl);
       this.fetchAndUpdateSection(fetchUrl, selectedVariant);
+      this._updateLegends(selectedVariant);
     }
 
     _selectVariantFromUrl() {
       const urlParams = new URLSearchParams(window.location.search);
       const variantIdFromUrl = urlParams.get('variant');
-      if (!variantIdFromUrl) return;
+      if (!variantIdFromUrl) {
+        this._updateLegends(this.getSelectedVariant());
+        return;
+      };
 
       const targetVariant = this.variants.find(variant => variant.id.toString() === variantIdFromUrl);
       if (!targetVariant) return;
@@ -59,14 +76,21 @@
         const optionPosition = index + 1;
         const selector = `input[name="option-${optionPosition}"][value="${optionValue}"]`;
         const radioButton = this.querySelector(selector);
-        if (radioButton) {
-          radioButton.checked = true;
-        }
+        if (radioButton) radioButton.checked = true;
       });
 
-      // --- THE FIX ---
-      // Manually set the media to match the variant from the URL on page load.
       this.setActiveMedia(targetVariant);
+      this._updateLegends(targetVariant);
+    }
+
+    _updateLegends(variant) {
+      if (!variant) return;
+      this.querySelectorAll('.variant-picker__option-group').forEach((fieldset, index) => {
+        const legend = fieldset.querySelector('.variant-picker__option-name');
+        const optionName = legend.textContent.split(':')[0].trim();
+        const selectedValue = variant.options[index];
+        legend.textContent = `${optionName}: ${selectedValue}`;
+      });
     }
 
     getSelectedVariant() {
@@ -93,21 +117,15 @@
           
           const newInfo = newHtml.querySelector(`#product-info-${this.dataset.sectionId}`);
           const oldInfo = document.querySelector(`#product-info-${this.dataset.sectionId}`);
-          if (newInfo && oldInfo) {
-            oldInfo.innerHTML = newInfo.innerHTML;
-          }
+          if (newInfo && oldInfo) oldInfo.innerHTML = newInfo.innerHTML;
 
           const newMedia = newHtml.querySelector(`#product-media-${this.dataset.sectionId}`);
           const oldMedia = document.querySelector(`#product-media-${this.dataset.sectionId}`);
-          if (newMedia && oldMedia) {
-            oldMedia.innerHTML = newMedia.innerHTML;
-          }
+          if (newMedia && oldMedia) oldMedia.innerHTML = newMedia.innerHTML;
           
           this.setActiveMedia(variant);
         })
-        .catch(e => {
-          console.error('Variant Picker: Error during fetch:', e);
-        })
+        .catch(e => console.error('Variant Picker: Error during fetch:', e))
         .finally(() => {
           if (productGrid) productGrid.style.opacity = '1';
         });
