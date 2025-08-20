@@ -182,31 +182,68 @@
         });
     }
     
-    setActiveMedia(variant) {
-      if (!variant || !variant.featured_media) return;
-      
-      const featuredMediaId = variant.featured_media.id.toString();
-      const mediaGallery = document.querySelector(`#product-media-${this.dataset.sectionId}`);
-      if (!mediaGallery) return;
-
-      mediaGallery.querySelectorAll('.main-media-item').forEach(item => {
-        if (item.dataset.mediaId === featuredMediaId) {
-          item.classList.remove('opacity-0', 'invisible');
-          item.classList.add('opacity-1', 'visible');
-        } else {
-          item.classList.remove('opacity-1', 'visible');
-          item.classList.add('opacity-0', 'invisible');
-        }
-      });
-
-      mediaGallery.querySelectorAll('.media-thumbnail').forEach(thumb => {
-        if (thumb.dataset.mediaId === featuredMediaId) {
-          thumb.classList.add('border-2', 'border-solid', 'border-brand');
-        } else {
-          thumb.classList.remove('border-2', 'border-solid', 'border-brand');
-        }
-      });
+    // Replace the setActiveMedia method in your variant picker with this:
+setActiveMedia(variant) {
+  if (!variant || !variant.featured_media) return;
+  
+  const featuredMediaId = variant.featured_media.id.toString();
+  
+  // Try to find the product media gallery element
+  const mediaGalleryElement = document.querySelector('product-media-gallery');
+  
+  if (mediaGalleryElement) {
+    // Use the new gallery's method to set active media
+    const success = mediaGalleryElement.setActiveMediaById(featuredMediaId);
+    if (success) {
+      console.log('Successfully changed to variant media:', featuredMediaId);
+      return;
     }
+  }
+  
+  // Fallback: try to find gallery by section ID
+  const mediaGallery = document.querySelector(`#product-media-${this.dataset.sectionId}`);
+  if (!mediaGallery) return;
+  
+  const galleryElement = mediaGallery.querySelector('product-media-gallery');
+  if (galleryElement) {
+    const success = galleryElement.setActiveMediaById(featuredMediaId);
+    if (success) {
+      console.log('Successfully changed to variant media via section:', featuredMediaId);
+      return;
+    }
+  }
+  
+  // Final fallback for old gallery structure
+  console.log('Using fallback method for media change');
+  mediaGallery.querySelectorAll('.main-media-item, .swiper-slide').forEach(item => {
+    if (item.dataset.mediaId === featuredMediaId) {
+      if (item.classList.contains('swiper-slide')) {
+        // If it's a swiper slide, we need to trigger slide change
+        const swiperContainer = item.closest('.swiper');
+        if (swiperContainer && swiperContainer.swiper) {
+          const slideIndex = Array.from(item.parentNode.children).indexOf(item);
+          swiperContainer.swiper.slideTo(slideIndex);
+        }
+      } else {
+        // Old structure
+        item.classList.remove('opacity-0', 'invisible');
+        item.classList.add('opacity-1', 'visible');
+      }
+    } else if (item.classList.contains('main-media-item')) {
+      item.classList.remove('opacity-1', 'visible');
+      item.classList.add('opacity-0', 'invisible');
+    }
+  });
+
+  // Update thumbnails
+  mediaGallery.querySelectorAll('.media-thumbnail').forEach(thumb => {
+    if (thumb.dataset.mediaId === featuredMediaId) {
+      thumb.classList.add('border-2', 'border-solid', 'border-brand');
+    } else {
+      thumb.classList.remove('border-2', 'border-solid', 'border-brand');
+    }
+  });
+}
   }
 
   if (!customElements.get('variant-picker')) {
