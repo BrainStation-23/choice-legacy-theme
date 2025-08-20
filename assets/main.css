@@ -468,6 +468,14 @@ h6,
   letter-spacing: calc(-0.018 * var(--font-unit));
 }
 
+@media screen and (min-width: 769px) and (max-width: 1023px) {
+  .md\:fs-36-lh-40-ls-0 {
+    font-size: calc(36 * var(--font-unit));
+    line-height: calc(40 * var(--font-unit));
+    letter-spacing: 0;
+  }
+}
+
 /* Mobile styles using media query */
 @media (max-width: 768px) {
   .sm\:fs-12-lh-16-ls-0_6pct {
@@ -1268,6 +1276,10 @@ address {
   .lg\:h-500 {
     height: 500px;
   }
+
+  .lg\:w-50pct {
+    width: 50%;
+  }
 }
 
 @media screen and (min-width: 769px) and (max-width: 1023px) {
@@ -1297,6 +1309,10 @@ address {
 
   .md\:w-720 {
     width: 720px;
+  }
+
+  .md\:w-380 {
+    width: 380px;
   }
 
   .md\:h-300 {

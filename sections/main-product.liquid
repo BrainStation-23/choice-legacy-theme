@@ -1,18 +1,18 @@
 <div class="product-container page-width">
   {% render "breadcrumbs" %}
   
-  <div class="product-grid flex gap-32">
+  <div class="product-grid flex gap-32 md:gap-24">
     <!-- Product Images Section -->
-    <div id="product-media-{{ section.id }}" class="product-media w-578">
+    <div id="product-media-{{ section.id }}" class="product-media w-578 lg:w-50pct md:w-380">
       {% render 'product-media-gallery', product: product, block: section %}
     </div>
     
     <!-- Product Info Section -->
-    <div id="product-info-{{ section.id }}" class="product-info">
+    <div id="product-info-{{ section.id }}" class="product-info lg:w-50pct">
       {% for block in section.blocks %}
         {% case block.type %}
           {% when "title" %}
-            {% render "product-title", block: block, product: product, cls: "fw-400 fs-45-lh-45-ls--1_8pct mb-32" %}
+            {% render "product-title", block: block, product: product, cls: "fw-400 fs-45-lh-45-ls--1_8pct md:fs-36-lh-40-ls-0 mb-32" %}
           
           {% when "sku_vendor_type" %}
             {% render "product-sku-vendor-type", block: block, product: product %}
