@@ -18,6 +18,26 @@
   height: 100%;
   cursor: pointer;
 }
+
+@media (max-width: 768px) {
+  .product-reviews-grid.hidden.md\\:grid {
+    display: none !important;
+  }
+  
+  slideshow-component.block.md\\:hidden {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 769px) {
+  slideshow-component.block.md\\:hidden {
+    display: none !important;
+  }
+  
+  .product-reviews-grid.hidden.md\\:grid {
+    display: grid !important;
+  }
+}
 </style>
 
 <div

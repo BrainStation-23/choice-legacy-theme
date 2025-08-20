@@ -588,54 +588,109 @@
         return;
       }
 
+      // Create slideshow component wrapper for mobile
+      const slideshowComponent = document.createElement("slideshow-component");
+      slideshowComponent.setAttribute("data-autoplay", "false");
+      slideshowComponent.setAttribute("data-autoplay-delay", "5000");
+      slideshowComponent.setAttribute("data-pause-on-hover", "true");
+      slideshowComponent.setAttribute("data-enable-carousel", "true");
+      slideshowComponent.setAttribute("data-show-progress-bar", "false");
+      slideshowComponent.className =
+        "flex-col gap-16 hidden md:hidden lg:hidden sm:flex";
+
+      // Create swiper container for mobile
+      const swiperContainer = document.createElement("div");
+      swiperContainer.className =
+        "swiper-container overflow-hidden pt-10 pr-4 pb-10 pl-4";
+
+      const swiperWrapper = document.createElement("div");
+      swiperWrapper.className = "swiper-wrapper flex";
+
+      // Create grid container for desktop
       const gridContainer = document.createElement("div");
       gridContainer.className =
-        "product-reviews-grid grid grid-cols-5 lg:grid-cols-4 md:grid-cols-3 gap-24 md:gap-16";
+        "product-reviews-grid grid sm:hidden grid-cols-5 lg:grid-cols-4 md:grid-cols-3 gap-24 md:gap-16";
 
       reviewsArray.forEach((review) => {
-        const reviewItem = document.createElement("div");
-        reviewItem.className = "p-8 box-shadow flex flex-col gap-16";
-
         const productTitle = getProductTitle(review.productId);
-
+        const reviewDate = review.reviewPlacedAt
+          ? formatDate(review.reviewPlacedAt)
+          : "N/A";
+        const ratingStarsHTML = createStarRating(review.rating);
         const imageHtml = review.reviewImage
           ? `<img src="${review.reviewImage}" class="w-full h-full" alt="${productTitle}" loading="lazy">`
           : `<div></div>`;
 
-        const reviewDate = review.reviewPlacedAt
-          ? formatDate(review.reviewPlacedAt)
-          : "N/A";
+        // Desktop grid item
+        const desktopReviewItem = document.createElement("div");
+        desktopReviewItem.className = "p-8 box-shadow flex flex-col gap-16";
+        desktopReviewItem.innerHTML = `
+      <div class="relative flex justify-center h-220">
+        ${imageHtml}
+        <div class="absolute bottom-16 bg-brand-2 pt-8 pr-10 pb-8 pl-10 flex gap-4_8 rounded-100">
+          ${ratingStarsHTML}
+        </div>
+      </div>
+      <div class="flex flex-col gap-8">
+        <div class="fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
+          ${productTitle}
+        </div>
+        <div class="ff-general-sans fs-14-lh-20-ls-0 fw-400 text-secondary">
+          ${escapeHTML(review.reviewText || "")}
+        </div>
+      </div>
+      <div class="flex flex-col gap-4">
+        <span class="fs-12-lh-16-ls-0_6pct ff-general-sans fw-400 text-label">
+          ${reviewDate}
+        </span>
+        <span class="fs-12-lh-16-ls-0_6pct ff-general-sans fw-400 text-label">
+          By ${review.customerName || "Anonymous"}
+        </span>
+      </div>
+    `;
 
-        const ratingStarsHTML = createStarRating(review.rating);
+        // Mobile swiper slide
+        const mobileReviewItem = document.createElement("div");
+        mobileReviewItem.className = "swiper-slide w-auto";
+        mobileReviewItem.style.boxSizing = "border-box";
+        mobileReviewItem.innerHTML = `
+      <div class="p-8 box-shadow flex flex-col gap-16 w-300">
+        <div class="relative flex justify-center h-220">
+          ${imageHtml}
+          <div class="absolute bottom-16 bg-brand-2 pt-8 pr-10 pb-8 pl-10 flex gap-4_8 rounded-100">
+            ${ratingStarsHTML}
+          </div>
+        </div>
+        <div class="flex flex-col gap-8">
+          <div class="fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
+            ${productTitle}
+          </div>
+          <div class="ff-general-sans fs-14-lh-20-ls-0 fw-400 text-secondary">
+            ${escapeHTML(review.reviewText || "")}
+          </div>
+        </div>
+        <div class="flex flex-col gap-4">
+          <span class="fs-12-lh-16-ls-0_6pct ff-general-sans fw-400 text-label">
+            ${reviewDate}
+          </span>
+          <span class="fs-12-lh-16-ls-0_6pct ff-general-sans fw-400 text-label">
+            By ${review.customerName || "Anonymous"}
+          </span>
+        </div>
+      </div>
+    `;
 
-        reviewItem.innerHTML = `
-          <div class="relative flex justify-center">
-            ${imageHtml}
-            <div class="absolute bottom-16 bg-brand-2 pt-8 pr-10 pb-8 pl-10 flex gap-4_8 rounded-100">
-              ${ratingStarsHTML}
-            </div>
-          </div>
-          <div class="flex flex-col gap-8">
-            <div class="fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
-              ${productTitle}
-            </div>
-            <div class="ff-general-sans fs-14-lh-20-ls-0 fw-400 text-secondary">
-              ${escapeHTML(review.reviewText || "")}
-            </div>
-          </div>
-          <div class="flex flex-col gap-4">
-            <span class="fs-12-lh-16-ls-0_6pct ff-general-sans fw-400 text-label">
-              ${reviewDate}
-            </span>
-            <span class="fs-12-lh-16-ls-0_6pct ff-general-sans fw-400 text-label">
-              By ${review.customerName || "Anonymous"}
-            </span>
-          </div>
-        `;
-
-        gridContainer.appendChild(reviewItem);
+        // Add to respective containers
+        gridContainer.appendChild(desktopReviewItem);
+        swiperWrapper.appendChild(mobileReviewItem);
       });
 
+      // Assemble mobile slideshow
+      swiperContainer.appendChild(swiperWrapper);
+      slideshowComponent.appendChild(swiperContainer);
+
+      // Add both containers to the review list
+      reviewListContainer.appendChild(slideshowComponent);
       reviewListContainer.appendChild(gridContainer);
     }
 

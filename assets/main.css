@@ -1021,6 +1021,9 @@ address {
 .h-254 {
   height: 254px;
 }
+.h-220 {
+  height: 220px;
+}
 .h-228 {
   height: 228px;
 }
@@ -1280,6 +1283,10 @@ address {
   .lg\:w-50pct {
     width: 50%;
   }
+
+  .lg\:hidden {
+    display: none;
+  }
 }
 
 @media screen and (min-width: 769px) and (max-width: 1023px) {
@@ -1317,6 +1324,10 @@ address {
 
   .md\:h-300 {
     height: 300px;
+  }
+
+  .md\:hidden {
+    display: none;
   }
 }
 .border-collapse {
