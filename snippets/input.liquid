@@ -1,11 +1,19 @@
 <style>
-  .password-toggle-eye-open svg,
-  .password-toggle-eye-close svg {
-    stroke: rgba(var(--color-primary-text), 0.7);
-  }
-  .password-toggle-eye-close {
-    display: none;
-  }
+   /* .password-toggle-eye-open svg,
+   .password-toggle-eye-close svg {
+     stroke: rgba(var(--color-primary-text), 0.7);
+   }
+   .password-toggle-eye-close {
+     display: none;
+   } */
+  #password-toggle-eye-open-{{ id }},
+   #password-toggle-eye-open-{{ id }} {
+     stroke: rgba(var(--color-primary-text), 0.7);
+   }
+
+   #password-toggle-eye-close-{{ id }} {
+     display: none;
+   }
 </style>
 
 <div class="relative {{ class }}">
@@ -38,6 +46,7 @@
       type="button"
       class="password-toggle-eye-open toggle-password absolute right-12 top-50pct translate-y--50 cursor-pointer h-28 w-28 p-0 flex items-center justify-center"
       data-target="{{ id }}"
+      id="password-toggle-eye-open-{{ id }}"
     >
       {% render 'open-eye' %}
     </span>
@@ -45,6 +54,7 @@
       type="button"
       class="password-toggle-eye-close toggle-password absolute right-12 top-50pct translate-y--50 cursor-pointer h-28 w-28 p-0 flex items-center justify-center"
       data-target="{{ id }}"
+      id="password-toggle-eye-close-{{ id }}"
     >
       {% render 'close-eye' %}
     </span>

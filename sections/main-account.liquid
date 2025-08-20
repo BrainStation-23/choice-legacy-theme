@@ -7,11 +7,27 @@
         {% render 'account-information', customer: customer %}
       </div>
 
+      <div id="my_beauties_profile-content" class="account-content-section" style="display: none;">
+        <div id="my_beauties_profile-section">
+          {% comment %} Add your beauties profile content here {% endcomment %}
+          <h2>My Beauties Profile</h2>
+          <p>Customize your beauty preferences and profile.</p>
+        </div>
+      </div>
+
       <div id="orders-content" class="account-content-section" style="display: none;">
         <div id="orders-section">
           {% render 'orders-list', orders: customer.orders %}
         </div>
       </div>
+
+      {% comment %}
+        <div id="addresses-content" class="account-content-section" style="display: none;">
+          <div id="addresses-section">
+            {% render 'customer-addresses', customer: customer %}
+          </div>
+        </div>
+      {% endcomment %}
 
       <div id="rewards-content" class="account-content-section" style="display: none;">
         <div id="rewards-section">
@@ -25,7 +41,7 @@
         </div>
       </div>
 
-      <div id="reviews-content" class="account-content-section" style="display: block;">
+      <div id="reviews-content" class="account-content-section" style="display: none;">
         <div id="reviews-section">
           {% render 'reviews' %}
         </div>
@@ -92,45 +108,127 @@
     deliveryStatusLoaded = true;
   }
 
+  // Enhanced showAccountContent function with query parameter and URL path support
   async function showAccountContent(contentType) {
+    // Hide all content sections
     const contentSections = document.querySelectorAll('.account-content-section');
     contentSections.forEach((section) => {
       section.style.display = 'none';
     });
 
-    if (contentType === 'coming-soon') {
-      alert('This section is coming soon!');
-      document.getElementById('my-profile-content').style.display = 'block';
-      return;
-    }
-
+    // Handle special cases that redirect to other pages
     if (contentType === 'logout') {
       window.location.href = '/account/logout';
       return;
     }
+
+    // Handle addresses - redirect to addresses page
     if (contentType === 'addresses') {
       window.location.href = '/account/addresses';
       return;
     }
 
-    const targetContent = document.getElementById(contentType + '-content');
+    // Handle coming soon sections
+    if (contentType === 'coming-soon') {
+      alert('This section is coming soon!');
+      // Fall back to my-profile
+      contentType = 'my_profile';
+    }
+
+    // Normalize contentType for content ID matching
+    let targetContentType = contentType;
+
+    // Map content types to their corresponding content IDs
+    const contentMapping = {
+      'my-profile': 'my-profile',
+      my_profile: 'my-profile',
+      my_beauties_profile: 'my_beauties_profile',
+      orders: 'orders',
+      addresses: 'addresses',
+      rewards: 'rewards',
+      wishlist: 'wishlist',
+      reviews: 'reviews',
+    };
+
+    targetContentType = contentMapping[contentType] || 'my-profile';
+
+    // Show the target content section
+    const targetContent = document.getElementById(targetContentType + '-content');
     if (targetContent) {
       targetContent.style.display = 'block';
 
-      if (contentType === 'orders') {
+      // Handle specific section logic
+      if (targetContentType === 'orders') {
         setTimeout(() => {
           fetchDeliveryStatuses();
         }, 100);
       }
+    } else {
+      // Fallback to my-profile if content section doesn't exist
+      const profileContent = document.getElementById('my-profile-content');
+      if (profileContent) {
+        profileContent.style.display = 'block';
+      }
     }
   }
 
+  // Get initial content type from URL parameters and path
+  function getInitialContentType() {
+    const currentPath = window.location.pathname;
+    const urlParams = new URLSearchParams(window.location.search);
+    const navParam = urlParams.get('nav');
+
+    // Check URL path for sub-pages first (highest priority)
+    if (currentPath.includes('/account/orders')) {
+      return 'orders';
+    }
+    if (currentPath.includes('/account/addresses')) {
+      return 'addresses';
+    }
+    if (currentPath.includes('/account/rewards')) {
+      return 'rewards';
+    }
+
+    // Then check query parameter
+    if (navParam) {
+      return navParam;
+    }
+
+    // Check for legacy hash-based navigation
+    if (window.location.hash === '#orders-section') {
+      return 'orders';
+    }
+
+    // Check for pagination (legacy orders page detection)
+    if (window.location.search.includes('page=')) {
+      return 'orders';
+    }
+
+    // Return default
+    return 'my_profile';
+  }
+
+  // Initialize page content based on URL parameters
+  function initializePageContent() {
+    const initialContentType = getInitialContentType();
+    showAccountContent(initialContentType);
+  }
+
+  // Handle browser back/forward navigation
+  function handlePopState() {
+    const contentType = getInitialContentType();
+    showAccountContent(contentType);
+  }
+
+  // Make showAccountContent globally available
   window.showAccountContent = showAccountContent;
 
+  // Initialize when DOM is ready
   document.addEventListener('DOMContentLoaded', function () {
-    if (window.location.hash === '#orders-section' || window.location.search.includes('page=')) {
-      showAccountContent('orders');
-    }
+    initializePageContent();
+
+    // Listen for browser navigation events
+    window.addEventListener('popstate', handlePopState);
   });
 </script>
 
@@ -140,6 +238,11 @@
       flex-direction: column;
       gap: 16px !important;
     }
+  }
+
+  /* Content section transitions */
+  .account-content-section {
+    transition: opacity 0.2s ease-in-out;
   }
 
   /* Loading and status styles */

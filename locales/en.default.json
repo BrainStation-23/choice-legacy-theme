@@ -139,7 +139,8 @@
       "set_default": "Set as default",
       "phone": "Phone",
       "update": "Update",
-      "cancel": "Cancel"
+      "cancel": "Cancel",
+      "save": "Save"
     },
     "account": {
       "log_out": "Log out",
@@ -160,7 +161,17 @@
       "gender": "Gender",
       "edit": "Edit",
       "change_email": "Change email address",
-      "title": "Order"
+      "title": "Order",
+      "update_success": "Your account has been updated successfully.",
+      "update_error": "There was an error updating your account.",
+      "update_error_generic": "An error occurred while updating your account. Please try again later.",
+      "save": "Save",
+      "cancel": "Cancel",
+      "send_otp": "Send OTP",
+      "resend_otp": "Resend OTP",
+      "submit": "Submit",
+      "otp_verification": "OTP VERIFICATION",
+      "enter_your_new_email": "Enter your new email"
     },
     "login": {
       "title": "Login",
@@ -236,6 +247,9 @@
     }
   },
   "general": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
     "pagination": {
       "label": "Pagination",
       "previous": "Previous",
