@@ -1,14 +1,14 @@
 <div class="flex gap-8 items-center">
   <a
-    href="{{ routes.account_url }}"
+    href="{{ routes.account_url }}?nav=orders"
     class="cursore-pointer text-brand h-16 w-16"
   >
     {% render 'icon-left-arrow' %}
   </a>
-  <h3 class="m-0 fs-16-lh-22-ls-0 ff-general-sans  fw-600">
+  <h3 class="m-0 fs-16-lh-22-ls-0 ff-general-sans fw-600">
     #{{ order.order_number | default: order.name | remove: '#' }}
   </h3>
-  <h4 class="m-0 fs-16-lh-24-ls-0 ff-general-sans  fw-400">
+  <h4 class="m-0 fs-16-lh-24-ls-0 ff-general-sans fw-400">
     {{ order.created_at | time_tag: format: 'date_at_time' }}
   </h4>
   <h4 class="m-0">
