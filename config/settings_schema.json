@@ -208,6 +208,12 @@
         "id": "show_product_weight",
         "default": true,
         "label": "Show product weight"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_wishlist_button",
+        "default": true,
+        "label": "Show wishlist button"
       }
     ]
   }

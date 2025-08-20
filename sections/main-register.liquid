@@ -442,6 +442,24 @@
           sendOtpButton.textContent = 'Send OTP';
         }
       });
+
+      otpInput.addEventListener('input', () => {
+        if (correctOtpCode) {
+          if (Number(otpInput.value) === correctOtpCode) {
+            otpMessage.textContent = 'OTP matched!';
+            otpMessage.classList.remove('text-error-text');
+            otpMessage.classList.add('text-success-text');
+            isOtpMatched = true;
+            submitButton.disabled = false;
+          } else {
+            otpMessage.textContent = "OTP doesn't match.";
+            otpMessage.classList.remove('text-success-text');
+            otpMessage.classList.add('text-error-text');
+            isOtpMatched = false;
+            submitButton.disabled = true;
+          }
+        }
+      });
     }
 
     // Form validation listeners

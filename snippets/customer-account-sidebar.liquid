@@ -1,9 +1,9 @@
 <style>
   .customer-account__sidebar {
-    flex: 1 0 0;
     padding: 16px;
     border: 1px solid rgba(var(--color-secondary-text), 0.1);
     border-radius: 6px;
+    /* width: 296px; */
   }
   .customer-account__sidebar-items {
     padding: 0 !important;
@@ -147,8 +147,7 @@
   }
 </style>
 
-<aside class="customer-account__sidebar">
-  <!-- Mobile Selected Item (Initially "My Profile") -->
+<aside class="customer-account__sidebar w-296 sm:w-full">
   <div class="customer-account__sidebar-selected" onclick="toggleDropdown()">
     <div class="selected-content" id="selected-item-content">
       {% render 'accounts-icon' %}
@@ -166,7 +165,7 @@
     <ul class="customer-account__sidebar-items">
       <div
         class="customer-account__sidebar-item my-profile gap-8"
-        onclick="selectItem(this, 'brash-icon', '{{ 'customer.account.myaccount' | t }}')"
+        onclick="selectItem(this, 'accounts-icon', '{{ 'customer.account.myaccount' | t }}', 'my-profile')"
       >
         {% render 'accounts-icon' %}
         <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
@@ -175,7 +174,7 @@
       </div>
       <div
         class="customer-account__sidebar-item gap-8"
-        onclick="selectItem(this, 'brash-icon', '{{ 'customer.account.my_beauties_profile' | t }}')"
+        onclick="selectItem(this, 'brash-icon', '{{ 'customer.account.my_beauties_profile' | t }}', 'my_beauties_profile')"
       >
         {% render 'brash-icon' %}
         <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
@@ -185,7 +184,7 @@
 
       <div
         class="customer-account__sidebar-item gap-8"
-        onclick="selectItem(this, 'order-menu-icon', '{{ 'customer.account.orders' | t }}')"
+        onclick="selectItem(this, 'order-menu-icon', '{{ 'customer.account.orders' | t }}', 'orders')"
       >
         {% render 'order-menu-icon' %}
         <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
@@ -194,27 +193,25 @@
       </div>
       <div
         class="customer-account__sidebar-item gap-8"
-        onclick="selectItem(this, 'address-icon', '{{ 'customer.account.addresses' | t }}')"
+        onclick="selectItem(this, 'address-icon', '{{ 'customer.account.addresses' | t }}', 'addresses')"
       >
         {% render 'address-icon' %}
         <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
           {{ 'customer.account.addresses' | t }}
         </h2>
       </div>
-      <a href="/pages/reward-points">
       <div
         class="customer-account__sidebar-item gap-8"
-        onclick="selectItem(this, 'reward-icon', '{{ 'customer.account.rewards' | t }}')"
+        onclick="selectItem(this, 'reward-icon', '{{ 'customer.account.rewards' | t }}', 'rewards')"
       >
-         {% render 'reward-icon' %}
-          <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
-            {{ 'customer.account.rewards' | t }}
-          </h2>
-        </div>
-      </a>
+        {% render 'reward-icon' %}
+        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+          {{ 'customer.account.rewards' | t }}
+        </h2>
+      </div>
       <div
         class="customer-account__sidebar-item gap-8"
-        onclick="selectItem(this, 'love-icon', '{{ 'customer.account.wishlist' | t }}')"
+        onclick="selectItem(this, 'love-icon', '{{ 'customer.account.wishlist' | t }}', 'wishlist')"
       >
         {% render 'love-icon' %}
         <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
@@ -223,7 +220,7 @@
       </div>
       <div
         class="customer-account__sidebar-item gap-8"
-        onclick="selectItem(this, 'star-icon', '{{ 'customer.account.reviews' | t }}')"
+        onclick="selectItem(this, 'star-icon', '{{ 'customer.account.reviews' | t }}', 'reviews')"
       >
         {% render 'star-icon' %}
         <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
@@ -232,7 +229,7 @@
       </div>
       <div
         class="customer-account__sidebar-item gap-8"
-        onclick="selectItem(this, 'logout-icon', '{{ 'customer.account.logout' | t }}')"
+        onclick="selectItem(this, 'logout-icon', '{{ 'customer.account.logout' | t }}', 'logout')"
       >
         {% render 'logout-icon' %}
         <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
@@ -252,26 +249,28 @@
     arrow.classList.toggle('expanded');
   }
 
-  function selectItem(element, iconName, title) {
+  function selectItem(element, iconName, title, contentType) {
     // Update the selected item display
     const selectedContent = document.getElementById('selected-item-content');
     const iconHtml = element.querySelector('svg') ? element.querySelector('svg').outerHTML : '';
 
     selectedContent.innerHTML = `
-    ${iconHtml}
-    <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
-      ${title}
-    </h2>
-  `;
+      ${iconHtml}
+      <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+        ${title}
+      </h2>
+    `;
+
+    // Call the function from main-account.liquid to show content
+    if (window.showAccountContent) {
+      window.showAccountContent(contentType);
+    }
 
     // Close the dropdown
     const dropdown = document.getElementById('dropdown-menu');
     const arrow = document.getElementById('dropdown-arrow');
     dropdown.classList.remove('expanded');
     arrow.classList.remove('expanded');
-
-    // Add your navigation logic here
-    // For example: window.location.href = '/account/' + page;
   }
 
   // Close dropdown when clicking outside
@@ -280,7 +279,7 @@
     const dropdown = document.getElementById('dropdown-menu');
     const arrow = document.getElementById('dropdown-arrow');
 
-    if (!sidebar.contains(event.target)) {
+    if (sidebar && !sidebar.contains(event.target)) {
       dropdown.classList.remove('expanded');
       arrow.classList.remove('expanded');
     }

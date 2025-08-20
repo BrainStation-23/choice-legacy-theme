@@ -60,11 +60,14 @@
 
     <main id="main-content">
       {{ content_for_layout }}
+
+      {% render 'toast' %}
     </main>
 
     {%- sections 'footer-group' -%}
 
     <script>
+      window.APP_SUB_PATH = "generic-name";
       window.theme = {
         routes: {
           cart: '{{ routes.cart_url }}',
@@ -84,7 +87,8 @@
       {% endif %}
       window.shopDomain = '{{ shop.domain }}';
     </script>
-    <script src="{{ 'wishlist.js' | asset_url }}" defer></script>
+    <script src="{{ 'toast.js' | asset_url }}" defer></script>
     <script src="{{ 'slideshow.js' | asset_url }}" defer></script>
+    <script src="{{ 'add-to-wishlist.js' | asset_url }}" defer></script>
   </body>
 </html>
