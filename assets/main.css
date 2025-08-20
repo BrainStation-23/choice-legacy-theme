@@ -2683,6 +2683,9 @@ shop-login-button {
 .border-1 {
   border-width: 1px;
 }
+.border-1_5 {
+  border-width: 1.5px;
+}
 .border-2 {
   border-width: 2px;
 }
