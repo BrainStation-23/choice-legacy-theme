@@ -30,7 +30,7 @@
 {% assign loading = loading | default: 'lazy' %}
 {% assign image_ratio = 1 %}
 
-<div class="product-card bg-bg h-full cursor-pointer relative flex flex-col transition-transform w-240 lg:w-full md:w-full sm:w-auto {{ css_classes }} {% if settings.show_product_card_box_shadow %}box-shadow{% endif %}" {% if product %}data-product-id="{{ product.id }}"{% endif %}>
+<div class="product-card bg-bg h-full cursor-pointer relative flex flex-col transition-transform {% if width != "auto" %}w-240 lg:w-full md:w-full sm:w-auto{% else %}w-auto{% endif %} {{ css_classes }} {% if settings.show_product_card_box_shadow %}box-shadow{% endif %}" {% if product %}data-product-id="{{ product.id }}"{% endif %}>
   <div class="product-card__image-container w-full relative overflow-hidden">
     {% if product and product != empty %}
       {% if product.featured_image %}
@@ -55,27 +55,23 @@
       
       <!-- Product Weight Display -->
       {% if show_weight %}
-        {% if product.variants.first.weight %}
-          {% assign weight_unit = product.variants.first.weight_unit %}
-          {% assign weight_value = product.variants.first.weight %}
-          {% if weight_unit == 'g' and weight_value >= 1000 %}
-            {% assign display_weight = weight_value | divided_by: 1000.0 | round: 1 %}
-            <div class="product-card__weight absolute bottom-8 right-8 pt-4 pr-8 pb-4 pl-8 fw-500 fs-14-lh-16-ls-0">{{ display_weight }}{{ "sections.product.placeholder.kg" | t }}</div>
-          {% elsif weight_unit == 'kg' %}
-            <div class="product-card__weight absolute bottom-8 right-8 pt-4 pr-8 pb-4 pl-8 fw-500 fs-14-lh-16-ls-0">{{ weight_value | round: 1 }}{{ "sections.product.placeholder.kg" | t }}</div>
-          {% elsif weight_unit == 'oz' and weight_value >= 16 %}
-            {% assign display_weight = weight_value | divided_by: 16.0 | round: 1 %}
-            <div class="product-card__weight absolute bottom-8 right-8 pt-4 pr-8 pb-4 pl-8 fw-500 fs-14-lh-16-ls-0">{{ display_weight }}{{ "sections.product.placeholder.lb" | t }}</div>
-          {% elsif weight_unit == 'lb' %}
-            <div class="product-card__weight absolute bottom-8 right-8 pt-4 pr-8 pb-4 pl-8 fw-500 fs-14-lh-16-ls-0">{{ weight_value | round: 1 }}{{ "sections.product.placeholder.lb" | t }}</div>
-          {% else %}
+        {%- if product.variants.first.weight > 0 -%}
+          {%- liquid
+            assign a_weight = product.variants.first.weight
+            for variant in product.variants
+              if variant.weight != a_weight
+                assign a_weight = false
+              endif
+            endfor
+          -%}
+          {%- if a_weight -%}
             <div class="product-card__weight absolute bottom-8 right-8 pt-4 pr-8 pb-4 pl-8 fw-500 fs-14-lh-16-ls-0">{{ weight_value }}{{ weight_unit }}</div>
-          {% endif %}
-        {% endif %}
+          {%- endif -%}
+        {%- endif -%}
       {% endif %}
 
       {% if show_wishlist_button %}
-        {% render "wishlist-button", product: product, cls: "w-32 h-32 bg-transparent absolute top-16 right-16 z-2 rounded-full flex justify-center items-center border-0_727 border-solid border-color" %}
+        {% render "wishlist-button", product: product, cls: "w-32 h-32 bg-transparent absolute top-16 right-16 z-2" %}
       {% endif %}
     {% else %}
       <div class="product-card__placeholder-image">
@@ -87,7 +83,7 @@
       {% endif %}
 
       {% if show_wishlist_button %}
-        {% render "wishlist-button", cls: "w-32 h-32 bg-transparent absolute top-16 right-16 z-2 rounded-full flex justify-center items-center border-0_727 border-solid border-color" %}
+        {% render "wishlist-button", cls: "w-32 h-32 bg-transparent absolute top-16 right-16 z-2" %}
       {% endif %}
     {% endif %}
   </div>

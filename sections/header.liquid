@@ -93,60 +93,6 @@
 {% render "desktop-menu", section: section %}
 
 <script>
-  // CollapsibleContent Web Component
-  class CollapsibleContent extends HTMLElement {
-    constructor() {
-      super();
-      this.isExpanded = false;
-    }
-
-    connectedCallback() {
-      this.setupEventListeners();
-    }
-
-    setupEventListeners() {
-      const header = this.querySelector('.mobile-mega-menu__category-header');
-      if (header) {
-        header.addEventListener('click', (e) => {
-          e.preventDefault();
-          this.toggle();
-        });
-      }
-    }
-
-    toggle() {
-      // Close all other collapsible content elements first (accordion behavior)
-      const allCollapsibles = document.querySelectorAll('collapsible-content');
-      allCollapsibles.forEach((collapsible) => {
-        if (collapsible !== this && collapsible.isExpanded) {
-          collapsible.collapse();
-        }
-      });
-
-      // Toggle this one
-      this.isExpanded = !this.isExpanded;
-
-      if (this.isExpanded) {
-        this.classList.add('expanded');
-      } else {
-        this.classList.remove('expanded');
-      }
-    }
-
-    expand() {
-      this.isExpanded = true;
-      this.classList.add('expanded');
-    }
-
-    collapse() {
-      this.isExpanded = false;
-      this.classList.remove('expanded');
-    }
-  }
-
-  // Register the web component
-  customElements.define('collapsible-content', CollapsibleContent);
-
   function toggleMobileMenu() {
     const mobileMenu = document.getElementById('mobileMegaMenu');
     const menuButton = document.getElementById('menuIcon');

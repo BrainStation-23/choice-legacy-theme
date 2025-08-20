@@ -1,6 +1,6 @@
 {% if customer %}
   <button 
-    class="wishlist-btn cursor-pointer {{ cls }}" 
+    class="wishlist-btn bg-bg cursor-pointer border-0_727 border-solid border-color rounded-full flex justify-center items-center {{ cls }}" 
     data-product-handle="{{ product.handle }}"
   >
     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -9,7 +9,7 @@
   </button>
 {% else %}
   <a 
-    class="cursor-pointer {{ cls }}" 
+    class="bg-bg cursor-pointer border-0_727 border-solid border-color rounded-full flex justify-center items-center {{ cls }}" 
     href="{{ routes.account_login_url }}"
   >
     <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">

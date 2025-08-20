@@ -1,9 +1,4 @@
 {
-  "cart": {
-    "add_to_cart": {
-      "label": "Add to cart"
-    }
-  },
   "reward_points": {
     "title": "Reward Point",
     "points": {
@@ -96,7 +91,6 @@
         "product_title": "Product Title"
       }
     },
-
     "product_review": {
       "by": "by",
       "product_title": "Title not found",
@@ -116,6 +110,9 @@
         "kg": "kg",
         "lb": "lb"
       }
+    },
+    "cart": {
+      "title": "Cart"
     }
   },
   "customer": {
@@ -165,6 +162,7 @@
       "gender": "Gender",
       "edit": "Edit",
       "change_email": "Change email address",
+      "title": "Order",
       "update_success": "Your account has been updated successfully.",
       "update_error": "There was an error updating your account.",
       "update_error_generic": "An error occurred while updating your account. Please try again later.",
@@ -258,6 +256,20 @@
       "previous": "Previous",
       "next": "Next",
       "page": "Page"
+    },
+    "breadcrumbs": {
+      "home": "Home",
+      "products": "Products",
+      "collections": "Collections"
+    },
+    "search": {
+      "title": "Search"
+    },
+    "404": {
+      "title": "Page not found"
+    },
+    "cart": {
+      "add_to_cart": "Add to cart"
     }
   },
   "products": {
@@ -266,6 +278,20 @@
         "unit_price": "Unit Price",
         "regular_price": "Regular Price",
         "sale_price": "Sale Price"
+      },
+      "sku": "SKU",
+      "vendor": "Brand",
+      "product_type": "Product Type",
+      "weight": "Weight",
+      "review": {
+        "write_review": "Write Review",
+        "upload_image": "Upload Image",
+        "click_to_upload": "Add",
+        "rating": "Rating",
+        "description": "Add description",
+        "description_placeholder": "Share your thoughts about this product...",
+        "submit": "Submit",
+        "no_rating": "No rating"
       }
     }
   },

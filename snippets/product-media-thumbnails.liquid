@@ -1,0 +1,63 @@
+<div class="thumbnails-container flex flex-wrap gap-8 w-full">
+  {% for media in product.media %}
+    <span
+      class="media-thumbnail w-74 h-74 background-transparent relative cursor-pointer transition-transform p-0 
+             {% if forloop.first %}border-2 border-solid border-brand{% endif %}"
+      data-media-id="{{ media.id }}"
+      data-media-type="{{ media.media_type }}"
+      role="button"
+      tabindex="0"
+      aria-label="View {{ media.media_type }} {{ forloop.index }}">
+
+      <div class="thumbnail-wrapper media block relative w-full h-full flex items-center justify-center">
+        {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 2, lg: 3, xl: 5 %}{% endcapture -%}
+
+        {% case media.media_type %}
+          {% when 'image' %}
+            {% render 'image',
+              image: media,
+              alt_text: media.alt,
+              widths: '74, 74, 74, 74',
+              src_width: 116,
+              sizes: sizes,
+              class: 'img-fit',
+              quality: 1
+            %}
+
+          {% when 'video', 'model' %}
+            {% render 'image',
+              image: media.preview_image,
+              alt_text: media.alt,
+              widths: '74, 74, 74, 74',
+              src_width: 116,
+              sizes: sizes,
+              class: 'img-fit',
+              quality: 1
+            %}
+
+          {% when 'external_video' %}
+            {% if media.host == 'youtube' %}
+              <img
+                src="https://img.youtube.com/vi/{{ media.external_id }}/mqdefault.jpg"
+                alt="{{ media.alt | escape }}"
+                class="thumbnail-image w-full h-full object-cover object-position-center"
+                loading="lazy"
+                width="74"
+                height="74"
+              />
+            {% elsif media.host == 'vimeo' %}
+              {% render 'image',
+                image: media.preview_image,
+                alt_text: media.alt,
+                widths: '74, 74, 74, 74',
+                src_width: 116,
+                sizes: sizes,
+                class: 'img-fit',
+                quality: 1
+              %}
+            {% endif %}
+        {% endcase %}
+      </div>
+    </span>
+  {% endfor %}
+</div>
