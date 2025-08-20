@@ -48,14 +48,26 @@
             </li>
           {% endif %}
           
-          <li class="breadcrumbs__item list-style-none flex items-center gap-12">
+          <li class="breadcrumbs__item list-style-none flex sm:hidden items-center gap-12">
             {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
             <span class="breadcrumbs__text fw-500 fs-14-lh-20-ls-0_1 text-primary-optional" aria-current="page">{{ product.title }}</span>
           </li>
 
+          <li class="breadcrumbs__item list-style-none flex items-center gap-12">
+            {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
+            <span class="breadcrumbs__text fw-500 fs-14-lh-20-ls-0_1 text-primary-optional" aria-current="page">
+              {% assign words = product.title | split: ' ' %}
+              {% if words.size > 4 %}
+                {{ words.first }}... {{ words[-3] }} {{ words[-2] }} {{ words[-1] }}
+              {% else %}
+                {{ product.title }}
+              {% endif %}
+            </span>
+          </li>
+
         {% comment %} Collection pages {% endcomment %}
         {% when 'collection' %}
-          <li class="breadcrumbs__item list-style-none flex items-center gap-12">
+          <li class="breadcrumbs__item list-style-none hidden sm:flex items-center gap-12">
             {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
             <span class="breadcrumbs__text fw-500 fs-14-lh-20-ls-0_1 text-primary-optional" aria-current="page">{{ collection.title }}</span>
           </li>

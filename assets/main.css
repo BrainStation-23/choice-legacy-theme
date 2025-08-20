@@ -538,6 +538,12 @@ h6,
     letter-spacing: calc(0.012 * var(--font-unit));
   }
 
+  .sm\:fs-26-lh-26-ls-1_2 {
+    font-size: calc(26 * var(--font-unit));
+    line-height: calc(26 * var(--font-unit));
+    letter-spacing: calc(0.012 * var(--font-unit));
+  }
+
   .sm\:fs-26-lh-40-lh-0 {
     font-size: calc(26 * var(--font-unit));
     line-height: calc(40 * var(--font-unit));
@@ -568,6 +574,12 @@ h6,
 
 .fw-900 {
   font-weight: 900;
+}
+
+@media screen and (max-width: 768px) {
+  .sm\:fw-400 {
+    font-weight: 400;
+  }
 }
 
 .box-shadow {
@@ -864,7 +876,15 @@ address {
 
 @media screen and (max-width: 768px) {
   .sm\:mr-10 {
-    margin-right: 10px;
+    margin-right: calc(10 * var(--space-unit));
+  }
+
+  .sm\:mb-16 {
+    margin-bottom: calc(16 * var(--space-unit));
+  }
+
+  .sm\:mb-24 {
+    margin-bottom: calc(24 * var(--space-unit));
   }
 }
 .block {
@@ -1394,6 +1414,9 @@ address {
   }
   .sm\:h-88 {
     height: 88px;
+  }
+  .sm\:h-275 {
+    height: 275px;
   }
   .sm\:h-224 {
     height: 224px;
