@@ -4,6 +4,12 @@
     border-color: rgb(var(--color-primary-brand));
     border-width: 2px;
   }
+
+  .variant-picker__label.unavailable {
+    text-decoration: line-through;
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
 </style>
 
 <variant-picker class="variant-picker-element block mt-24 mb-24 flex flex-col gap-16" data-section-id="{{ section.id }}" data-product-url="{{ product.url | within: collection }}">
@@ -60,6 +66,7 @@
       this.variants = {{ product.variants | json }};
       this.addEventListener('change', this.onVariantChange);
       this._selectVariantFromUrl();
+      this._updateAvailability();
     }
 
     onVariantChange() {
@@ -72,6 +79,37 @@
       this.updateURL(browserUrl);
       this.fetchAndUpdateSection(fetchUrl, selectedVariant);
       this._updateLegends(selectedVariant);
+      this._updateAvailability();
+    }
+
+    _updateAvailability() {
+      const currentSelections = Array.from(this.querySelectorAll('.variant-picker__option-group')).map(fieldset => 
+        fieldset.querySelector('input:checked')?.value
+      );
+
+      this.querySelectorAll('.variant-picker__option-group').forEach((fieldset, optionIndex) => {
+        fieldset.querySelectorAll('.variant-picker__value-wrapper').forEach(wrapper => {
+          const input = wrapper.querySelector('input');
+          const label = wrapper.querySelector('label');
+          const value = input.value;
+
+          let tempOptions = [...currentSelections];
+          tempOptions[optionIndex] = value;
+
+          const isAvailable = this.variants.some(variant => {
+            const matches = variant.options.every((opt, i) => opt === tempOptions[i]);
+            return matches && variant.available;
+          });
+
+          if (isAvailable) {
+            label.classList.remove('unavailable');
+            input.disabled = false;
+          } else {
+            label.classList.add('unavailable');
+            input.disabled = true;
+          }
+        });
+      });
     }
 
     _selectVariantFromUrl() {
