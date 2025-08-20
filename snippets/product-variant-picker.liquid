@@ -1,8 +1,9 @@
 <style>
-.variant-picker__radio-input:checked + .variant-picker__label {
-  border-color: rgb(var(--color-primary-brand));
-  border-width: 2px;
-}
+  .variant-picker__radio-input:checked + .variant-picker__label,
+  .variant-picker__radio-input:checked + .variant-picker__label--swatch {
+    border-color: rgb(var(--color-primary-brand));
+    border-width: 2px;
+  }
 </style>
 
 <variant-picker class="variant-picker-element block mt-24 mb-24 flex flex-col gap-16" data-section-id="{{ section.id }}" data-product-url="{{ product.url | within: collection }}">
@@ -16,6 +17,9 @@
             assign downcased_option_name = option.name | downcase
             if downcased_option_name == 'color' or downcased_option_name == 'colour'
               assign is_color_option = true
+              assign color_handle = value | handle
+              assign color_swatch_image_file = color_handle | append: '.png'
+              assign color_swatch_asset_url = images[color_swatch_image_file] | image_url: width: 44
             endif
           -%}
           <div class="variant-picker__value-wrapper">
@@ -29,9 +33,18 @@
             >
             <label
               for="option-{{ option.position }}-{{ forloop.index }}"
-              class="variant-picker__label flex items-center justify-center relative border-1 border-solid border-color min-w-64 h-44 cursor-pointer left-0-priority pointer-events-auto fw-500 fs-13-lh-16-ls-0_2-priority rounded-100 pt-18 pr-16 pb-18 pl-16 {% if is_color_option %}variant-picker__label--swatch{% endif %}"
+              class="variant-picker__label flex items-center justify-center relative cursor-pointer left-0-priority pointer-events-auto fw-500 fs-13-lh-16-ls-0_2-priority border-0 border-solid {% if is_color_option %}variant-picker__label--swatch w-36 h-36 rounded-12{% else %}min-w-64 h-44 border-1 border-color rounded-100 pt-18 pr-16 pb-18 pl-16{% endif %}"
+              style="
+                {%- if is_color_option -%}
+                  {%- if images[color_swatch_image_file] != blank -%}
+                    background-image: url({{ color_swatch_asset_url }});
+                  {%- else -%}
+                    background-color: {{ value.swatch.color }};
+                  {%- endif -%}
+                {%- endif -%}
+              "
             >
-              {{ value }}
+              {% if is_color_option == false %}{{ value }}{% endif %}
             </label>
           </div>
         {%- endfor -%}

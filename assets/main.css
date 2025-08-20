@@ -1049,6 +1049,9 @@ address {
 .h-40 {
   height: 40px;
 }
+.h-36 {
+  height: 36px;
+}
 .h-32 {
   height: 32px;
 }
@@ -1144,6 +1147,9 @@ address {
 }
 .w-40 {
   width: 40px;
+}
+.w-36 {
+  width: 36px;
 }
 .w-32 {
   width: 32px;
@@ -2711,6 +2717,9 @@ shop-login-button {
 
 .border-0_727 {
   border-width: 0.727px;
+}
+.border-0 {
+  border-width: 0px;
 }
 .border-1 {
   border-width: 1px;
