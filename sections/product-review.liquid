@@ -9,17 +9,17 @@
 </style>
 
 <section class="homepage-product-review__section homepage-product-review__section-{{ section.id }} bg-brand-2 pt-88 pb-64 sm:pt-24 sm:pb-24">
-  <div class="homepage-product-review__container page-width gap-48 sm:gap-8">
+  <div class="homepage-product-review__container page-width gap-48 sm:gap-8 flex flex-col text-center">
     {% if section.settings.title != blank %}
-      <h2 class="homepage-product-review__title ff-bebas-neue ft-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct">
+      <h2 class="homepage-product-review__title ff-bebas-neue ft-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct m-0">
         {{ section.settings.title }}
       </h2>
     {% endif %}
 
     <!-- Desktop Grid Content -->
     <div id="homepage-product-review__desktop-content" class="homepage-product-review__desktop-only grid sm:hidden">
-      <div class="homepage-product-review__loading">
-        <div class="homepage-product-review__spinner"></div>
+      <div class="homepage-product-review__loading flex justify-center items-center h-200">
+        <div class="homepage-product-review__spinner w-40 h-40 spinner-4"></div>
       </div>
     </div>
 
@@ -37,8 +37,8 @@
       >
         <div class="swiper-container flex flex-col gap-16 w-220">
           <div class="swiper-wrapper " id="mobile-slides-container">
-            <div class="homepage-product-review__loading">
-              <div class="homepage-product-review__spinner"></div>
+            <div class="homepage-product-review__loading flex justify-center items-center h-200">
+              <div class="homepage-product-review__spinner w-40 h-40 spinner-4"></div>
             </div>
           </div>
           {% render 'slideshow-progress-bar' %}
@@ -49,11 +49,11 @@
     <!-- Load More Button - Shows on desktop only -->
     <div
       id="load-more-container"
-      class="homepage-product-review__load-more-container block sm:hidden "
+      class="homepage-product-review__load-more-container flex  sm:hidden justify-center w-full"
     >
       <button
         id="load-more-btn"
-        class="homepage-product-review__load-more-btn ff-general-sans fs-16-lh-100pct-ls-0 fw-600"
+        class="homepage-product-review__load-more-btn button--solid border-none ff-general-sans fs-16-lh-100pct-ls-0 fw-600"
       >
         {{ 'sections.product_review.load_more' | t }}
       </button>
@@ -201,9 +201,9 @@
       let starsHtml = '';
       for (let i = 1; i <= 5; i++) {
         if (i <= rating) {
-          starsHtml += '<span class="homepage-product-review__star">★</span>';
+          starsHtml += '<span class="homepage-product-review__star text-brand fs-21-lh-24-ls-1_2">★</span>';
         } else {
-          starsHtml += '<span class="homepage-product-review__star homepage-product-review__star--empty">★</span>';
+          starsHtml += '<span class="homepage-product-review__star text-bg homepage-product-review__star--empty fs-21-lh-24-ls-1_2">★</span>';
         }
       }
       return starsHtml;
@@ -234,8 +234,8 @@
 
         // Show loading state
         if (!append) {
-          desktopContent.innerHTML = '<div class="homepage-product-review__loading"><div class="homepage-product-review__spinner"></div></div>';
-          mobileSlidesContainer.innerHTML = '<div class="homepage-product-review__loading"><div class="homepage-product-review__spinner"></div></div>';
+          desktopContent.innerHTML = '<div class="homepage-product-review__loading flex justify-center items-center h-200"><div class="homepage-product-review__spinner w-40 h-40 spinner-4"></div></div>';
+          mobileSlidesContainer.innerHTML = '<div class="homepage-product-review__loading flex justify-center items-center h-200"><div class="homepage-product-review__spinner w-40 h-40 spinner-4"></div></div>';
           // Only hide load more if it exists and we're on desktop
           if (loadMoreContainer && !isMobileOrTablet()) {
             loadMoreContainer.style.display = 'none';
@@ -321,30 +321,30 @@
         const fullText = review.reviewText;
         
         const imageHtml = review.reviewImage
-          ? `<img src="${review.reviewImage}" alt="${productTitle}" class="homepage-product-review__image" loading="lazy" onload="handleImageLoad()">`
-          : `<div class="homepage-product-review__image" style="background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 0.8rem;">No Image</div>`;
+          ? `<img src="${review.reviewImage}" alt="${productTitle}" class="homepage-product-review__image h-full w-full object-cover" loading="lazy" onload="handleImageLoad()">`
+          : `<div class="homepage-product-review__image h-full w-full object-cover" style="background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 0.8rem;">No Image</div>`;
 
         return `
           <div class="homepage-product-review__card gap-16 box-shadow md:w-33pct sm:h-500">
-            <div class="homepage-product-review__image-container homepage-product-review__content-top">
+            <div class="homepage-product-review__image-container homepage-product-review__content-top relative w-full h-204 overflow-hidden shrink-0">
               ${imageHtml}
-              <div class="homepage-product-review__rating box-shadow gap-4">
+              <div class="homepage-product-review__rating absolute bottom-16 left-50pct translate-x--50 flex text-brand-2 pt-8 pb-8 pl-10 pr-10 rounded-20 box-shadow gap-4">
                 ${createStarRating(review.rating)}
               </div>
             </div>
-            <div class="homepage-product-review__content-middle gap-8 pl-6 pr-6">
-              <div class="homepage-product-review__product-title fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
+            <div class="homepage-product-review__content-middle flex flex-col text-left  flex-1 min-h-80  gap-8 pl-6 pr-6">
+              <div class="homepage-product-review__product-title fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400 uppercase">
                 ${productTitle}
               </div>
               <div class="homepage-product-review__text ff-general-sans fs-14-lh-20-ls-0 fw-400 sm:flex-1 sm:overflow-hidden ">
                 ${fullText}
               </div>
             </div>
-            <div class="homepage-product-review__content-bottom gap-4 pl-6 pr-6">
-              <span class="homepage-product-review__review-date fs-12-lh-16-ls-0_6pct ff-general-sans fw-400">
+            <div class="homepage-product-review__content-bottom gap-4 pl-6 pr-6 flex flex-col text-left mt-auto shrink-0 ">
+              <span class="homepage-product-review__review-date text-primary-90pct fs-12-lh-16-ls-0_6pct ff-general-sans fw-400">
                 ${formatDate(review.reviewPlacedAt)}
               </span>
-              <span class="homepage-product-review__customer-name fs-12-lh-16-ls-0_6pct ff-general-sans fw-400">
+              <span class="homepage-product-review__customer-name fs-12-lh-16-ls-0_6pct ff-general-sans fw-400 text-primary-90pct">
                 By ${review.customerName}
               </span>
             </div>
@@ -360,31 +360,31 @@
         const truncatedText = truncateTextWithReadMore(review.reviewText, productHandle, 100);
         
         const imageHtml = review.reviewImage
-          ? `<img src="${review.reviewImage}" alt="${productTitle}" class="homepage-product-review__image" loading="lazy">`
-          : `<div class="homepage-product-review__image" style="background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 0.8rem;">No Image</div>`;
+          ? `<img src="${review.reviewImage}" alt="${productTitle}" class="homepage-product-review__image h-full w-full object-cover" loading="lazy">`
+          : `<div class="homepage-product-review__image h-full w-full object-cover" style="background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 0.8rem;">No Image</div>`;
 
         return `
           <div class="swiper-slide" style="margin: 0 !important;">
             <div class="homepage-product-review__card-items homepage-product-review__card sm:h-500 md:w-33pct gap-16 box-shadow" style="width: 220px">
-              <div class="homepage-product-review__image-container homepage-product-review__content-top">
+              <div class="homepage-product-review__image-container homepage-product-review__content-top relative w-full h-204 overflow-hidden shrink-0 ">
                 ${imageHtml}
-                <div class="homepage-product-review__rating box-shadow gap-4">
+                <div class="homepage-product-review__rating absolute bottom-16 left-50pct translate-x--50 flex text-brand-2 pt-8 pb-8 pl-10 pr-10 rounded-20 box-shadow gap-4">
                   ${createStarRating(review.rating)}
                 </div>
               </div>
-              <div class="homepage-product-review__content-middle gap-8 pl-6 pr-6 ">
-                <div class="homepage-product-review__product-title fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
+              <div class="homepage-product-review__content-middle gap-8 pl-6 pr-6 flex flex-col text-left  flex-1 min-h-80">
+                <div class="homepage-product-review__product-title fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400 uppercase">
                   ${productTitle}
                 </div>
                 <div class="homepage-product-review__text ff-general-sans fs-14-lh-20-ls-0 fw-400 sm:flex-1 sm:overflow-hidden">
                   ${truncatedText}
                 </div>
               </div>
-              <div class="homepage-product-review__content-bottom gap-4 pl-6 pr-6">
-                <span class="homepage-product-review__review-date fs-12-lh-16-ls-0_6 ff-general-sans fw-400">
+              <div class="homepage-product-review__content-bottom gap-4 pl-6 pr-6 flex flex-col text-left mt-auto shrink-0 ">
+                <span class="homepage-product-review__review-date text-primary-90pct fs-12-lh-16-ls-0_6 ff-general-sans fw-400">
                   ${formatDate(review.reviewPlacedAt)}
                 </span>
-                <span class="homepage-product-review__customer-name fs-12-lh-16-ls-0_6 ff-general-sans fw-400">
+                <span class="homepage-product-review__customer-name fs-12-lh-16-ls-0_6 ff-general-sans fw-400 text-primary-90pct ">
                   By ${review.customerName}
                 </span>
               </div>
@@ -406,7 +406,7 @@
         gridElement.style.minHeight = `${estimatedHeight}px`;
       } else {
         // Initial load or full refresh
-        desktopContent.innerHTML = `<div class="homepage-product-review__grid gap-16" style="height: ${estimatedHeight}px; min-height: ${estimatedHeight}px; ">${desktopReviewsHtml}</div>`;
+        desktopContent.innerHTML = `<div class="homepage-product-review__grid flex  gap-16 w-full flex-wrap items-content-start border-box " style="height: ${estimatedHeight}px; min-height: ${estimatedHeight}px; ">${desktopReviewsHtml}</div>`;
       }
 
       // Calculate precise height after render (for ALL reviews)
@@ -454,13 +454,13 @@
     }
 
     function displayNoReviews() {
-      const noReviewsHtml = '<div class="homepage-product-review__empty fs-36-lh-40-ls-0pct fw-500">No reviews available at the moment.</div>';
+      const noReviewsHtml = '<div class="homepage-product-review__empty text-secondary fs-23-lh-24-ls-0 p-32  text-center fs-36-lh-40-ls-0pct fw-500">No reviews available at the moment.</div>';
       desktopContent.innerHTML = noReviewsHtml;
       mobileSlidesContainer.innerHTML = `<div class="swiper-slide">${noReviewsHtml}</div>`;
     }
 
     function displayError() {
-      const errorHtml = '<div class="homepage-product-review__error fs-36-lh-40-ls-0pct fw-500">Unable to load reviews. Please try again later.</div>';
+      const errorHtml = '<div class="homepage-product-review__error text-brand  fs-23-lh-24-ls-0 p-32  text-center fs-36-lh-40-ls-0pct fw-500">Unable to load reviews. Please try again later.</div>';
       desktopContent.innerHTML = errorHtml;
       mobileSlidesContainer.innerHTML = `<div class="swiper-slide">${errorHtml}</div>`;
     }
