@@ -24,9 +24,14 @@ if (!customElements.get("product-media-gallery")) {
                 slidesPerView: 1,
                 spaceBetween: 0,
                 loop: false,
-                grabCursor: true,
+                grabCursor: false,
 
-                // Navigation
+                // Disable touch/drag interactions
+                allowTouchMove: false,
+                simulateTouch: false,
+                touchStartPreventDefault: false,
+
+                // Navigation (keep for programmatic control)
                 navigation: {
                   nextEl: ".slideshow-nav-button-next",
                   prevEl: ".slideshow-nav-button-prev",
@@ -57,10 +62,6 @@ if (!customElements.get("product-media-gallery")) {
                     this.pauseAllMedia();
                   },
                 },
-
-                // Touch settings
-                touchRatio: 1,
-                touchAngle: 45,
 
                 // Performance
                 watchOverflow: true,

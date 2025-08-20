@@ -1142,6 +1142,9 @@ address {
 .h-40 {
   height: 40px;
 }
+.h-38 {
+  height: 38px;
+}
 .h-36 {
   height: 36px;
 }
@@ -1256,6 +1259,9 @@ address {
 }
 .w-40 {
   width: 40px;
+}
+.w-38 {
+  width: 38px;
 }
 .w-36 {
   width: 36px;

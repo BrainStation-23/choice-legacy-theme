@@ -417,7 +417,6 @@
         }
 
         if (submitButton) submitButton.disabled = true;
-        toastManager.show("Submitting review...", "success", 2000);
 
         const reviewData = {
           reviewText: reviewTextInput.value.trim(),
