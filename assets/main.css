@@ -812,6 +812,9 @@ address {
 .grid-cols-2fr-1fr-1fr-0-5fr-1fr {
   grid-template-columns: 2fr 1fr 1fr 0.5fr 1fr;
 }
+.w-25pct {
+  width: calc(25% - 16px);
+}
 
 @media screen and (min-width: 769px) and (max-width: 1023px) {
   .md\:grid-cols-2 {
@@ -1319,6 +1322,9 @@ address {
 }
 .flex-wrap {
   flex-wrap: wrap;
+}
+.flex-column-wrap {
+  flex-flow: column wrap;
 }
 .items-start {
   align-items: flex-start;
