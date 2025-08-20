@@ -1,26 +1,8 @@
 <style>
-  .customer-account__sidebar {
-    flex: 1 0 0;
-    padding: 16px;
-    border: 1px solid rgba(var(--color-secondary-text), 0.1);
-    border-radius: 6px;
-  }
-  .customer-account__sidebar-items {
-    padding: 0 !important;
-    list-style: none;
-    margin: 0;
-  }
-  .customer-account__sidebar-item {
-    display: flex;
-    align-items: center;
-    padding: 12px 0px !important;
-    color: rgba(var(--color-primary-text), 0.9);
-  }
-
   .customer-account__sidebar-item:hover {
     border-bottom: 2px solid rgb(var(--color-primary-brand));
     cursor: pointer;
-    color: rgb(var(--color-primary-brand)); /* hover icon + text color */
+    color: rgb(var(--color-primary-brand));
   }
   .customer-account__sidebar-item:hover .account-sidebar-item-title {
     color: rgb(var(--color-primary-brand));
@@ -30,212 +12,136 @@
     width: 28px !important;
   }
 
-  .account-sidebar-item-title {
-    margin: 0 !important;
-    color: rgba(var(--color-primary-text), 0.9);
+  /* Active tab styling */
+  .customer-account__sidebar-item.active {
+    border-bottom: 2px solid rgb(var(--color-primary-brand));
+    color: rgb(var(--color-primary-brand));
   }
 
-  /* Mobile Styles */
+  .customer-account__sidebar-item.active .account-sidebar-item-title {
+    color: rgb(var(--color-primary-brand));
+    font-weight: 600;
+  }
+
   @media (max-width: 768px) {
-    .customer-account__sidebar {
-      border: none;
-      padding: 0;
-      position: relative;
-    }
-
-    /* Selected/Visible Item */
-    .customer-account__sidebar-selected {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px;
-      border-bottom: 1px solid rgba(var(--color-secondary-text), 0.1);
-      cursor: pointer;
-      width: 100%;
-      margin-bottom: 0;
-    }
-
     .customer-account__sidebar-selected:hover {
       border-color: rgba(var(--color-primary-brand), 0.3);
-    }
-
-    .selected-content {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .dropdown-arrow {
-      transition: transform 0.3s ease;
-      width: 20px;
-      height: 20px;
-      color: rgba(var(--color-primary-text), 0.6);
     }
 
     .dropdown-arrow.expanded {
       transform: rotate(180deg);
     }
 
-    /* Dropdown Menu */
-    .customer-account__sidebar-dropdown {
-      position: absolute;
-      top: 100%;
-      left: 0;
-      right: 0;
-      background: rgb(var(--color-background));
-      border: 1px solid rgba(var(--color-secondary-text), 0.1);
-      border-radius: 6px;
-      margin-top: 4px;
-      z-index: 100;
-      overflow: hidden;
-      max-height: 0;
-      opacity: 0;
-      transition: all 0.3s ease;
-    }
-
     .customer-account__sidebar-dropdown.expanded {
       max-height: 500px;
       opacity: 1;
     }
-
-    .customer-account__sidebar-item {
-      padding: 16px !important;
-      border-bottom: 1px solid rgba(var(--color-secondary-text), 0.05);
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-
-    .customer-account__sidebar-item:last-child {
-      border-bottom: none;
-    }
-
-    .customer-account__sidebar-item:hover {
-      border-bottom: 1px solid rgba(var(--color-secondary-text), 0.05);
-    }
-
-    .customer-account__sidebar-item:last-child:hover {
-      border-bottom: none;
-    }
-    .customer-account__sidebar-item.my-profile {
-      display: none;
-    }
-  }
-
-  /* Desktop Styles */
-  @media (min-width: 769px) {
-    .customer-account__sidebar-selected {
-      display: none;
-    }
-
-    .customer-account__sidebar-dropdown {
-      position: static !important;
-      max-height: none !important;
-      opacity: 1 !important;
-      background: none !important;
-      border: none !important;
-      box-shadow: none !important;
-      margin: 0 !important;
-      overflow: visible !important;
-    }
-
-    .dropdown-arrow {
-      display: none;
-    }
-    .customer-account__sidebar-item.my-profile {
-      display: flex;
-    }
   }
 </style>
 
-<aside class="customer-account__sidebar">
-  <!-- Mobile Selected Item (Initially "My Profile") -->
-  <div class="customer-account__sidebar-selected" onclick="toggleDropdown()">
-    <div class="selected-content" id="selected-item-content">
+<aside class="customer-account__sidebar w-296 sm:w-full p-16 border-1 border-solid  border-color rounded-6 sm:border-none sm:relative sm:p-0">
+  <div
+    class="customer-account__sidebar-selected hidden sm:flex  items-center justify-between sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid m-0 cursor-pointer w-full"
+    onclick="toggleDropdown()"
+  >
+    <div class="selected-content sm:flex gap-8 items-center " id="selected-item-content">
       {% render 'accounts-icon' %}
-      <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+      <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500 text-primary-90pct m-0">
         {{ 'customer.account.myaccount' | t }}
       </h2>
     </div>
-    <div class="dropdown-arrow" id="dropdown-arrow">
+    <div
+      class="dropdown-arrow hidden sm:block sm:transition-transform-2s sm:w-20 sm:h-20 sm:text-primary-60pct"
+      id="dropdown-arrow"
+    >
       {% render 'icon-arrow-down' %}
     </div>
   </div>
 
   <!-- Dropdown Menu Items -->
-  <div class="customer-account__sidebar-dropdown box-shadow" id="dropdown-menu">
-    <ul class="customer-account__sidebar-items">
+  <div
+    class="customer-account__sidebar-dropdown box-shadow static max-h-none opacity-1  bg-none border-none box-shadow-none m-0 overflow-visible sm:absolute sm:top-100pct sm:left-0 sm:right-0 sm:bg-bg sm:border-1 sm:border-solid sm:border-color sm:rounded-6 sm:mt-4 sm:z-100 sm:overflow-hidden sm:max-h-0 sm:opacity-0 sm:transition-transform-all"
+    id="dropdown-menu"
+  >
+    <ul class="customer-account__sidebar-items m-0 p-0 list-style-none">
       <div
-        class="customer-account__sidebar-item my-profile gap-8"
-        onclick="selectItem(this, 'brash-icon', '{{ 'customer.account.myaccount' | t }}')"
+        class="customer-account__sidebar-item  my-profile gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct sm:hidden sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
+        data-tab="my-profile"
+        onclick="selectItem(this, 'accounts-icon', '{{ 'customer.account.myaccount' | t }}', 'my-profile')"
       >
         {% render 'accounts-icon' %}
-        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500 text-primary-90pct m-0">
           {{ 'customer.account.myaccount' | t }}
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8"
-        onclick="selectItem(this, 'brash-icon', '{{ 'customer.account.my_beauties_profile' | t }}')"
+        class="customer-account__sidebar-item gap-8  flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        data-tab="my-beauties-profile"
+        onclick="selectItem(this, 'brash-icon', '{{ 'customer.account.my_beauties_profile' | t }}', 'my_beauties_profile')"
       >
         {% render 'brash-icon' %}
-        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500 text-primary-90pct m-0">
           {{ 'customer.account.my_beauties_profile' | t }}
         </h2>
       </div>
 
       <div
-        class="customer-account__sidebar-item gap-8"
-        onclick="selectItem(this, 'order-menu-icon', '{{ 'customer.account.orders' | t }}')"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0  sm:p-16 text-primary-90pct sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
+        data-tab="orders"
+        onclick="selectItem(this, 'order-menu-icon', '{{ 'customer.account.orders' | t }}', 'orders')"
       >
         {% render 'order-menu-icon' %}
-        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500 text-primary-90pct m-0">
           {{ 'customer.account.orders' | t }}
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8"
-        onclick="selectItem(this, 'address-icon', '{{ 'customer.account.addresses' | t }}')"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        data-tab="addresses"
+        onclick="selectItem(this, 'address-icon', '{{ 'customer.account.addresses' | t }}', 'addresses')"
       >
         {% render 'address-icon' %}
-        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500 text-primary-90pct m-0">
           {{ 'customer.account.addresses' | t }}
         </h2>
       </div>
-      <a href="/pages/reward-points">
       <div
-        class="customer-account__sidebar-item gap-8"
-        onclick="selectItem(this, 'reward-icon', '{{ 'customer.account.rewards' | t }}')"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        data-tab="rewards"
+        onclick="selectItem(this, 'reward-icon', '{{ 'customer.account.rewards' | t }}', 'rewards')"
       >
-         {% render 'reward-icon' %}
-          <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
-            {{ 'customer.account.rewards' | t }}
-          </h2>
-        </div>
-      </a>
+        {% render 'reward-icon' %}
+        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500 text-primary-90pct m-0">
+          {{ 'customer.account.rewards' | t }}
+        </h2>
+      </div>
       <div
-        class="customer-account__sidebar-item gap-8"
-        onclick="selectItem(this, 'love-icon', '{{ 'customer.account.wishlist' | t }}')"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        data-tab="wishlist"
+        onclick="selectItem(this, 'love-icon', '{{ 'customer.account.wishlist' | t }}', 'wishlist')"
       >
         {% render 'love-icon' %}
-        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500 text-primary-90pct m-0">
           {{ 'customer.account.wishlist' | t }}
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8"
-        onclick="selectItem(this, 'star-icon', '{{ 'customer.account.reviews' | t }}')"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        data-tab="reviews"
+        onclick="selectItem(this, 'star-icon', '{{ 'customer.account.reviews' | t }}', 'reviews')"
       >
         {% render 'star-icon' %}
-        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500 text-primary-90pct m-0">
           {{ 'customer.account.reviews' | t }}
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8"
-        onclick="selectItem(this, 'logout-icon', '{{ 'customer.account.logout' | t }}')"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        data-tab="logout"
+        onclick="selectItem(this, 'logout-icon', '{{ 'customer.account.logout' | t }}', 'logout')"
       >
         {% render 'logout-icon' %}
-        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500 text-primary-90pct m-0">
           {{ 'customer.account.logout' | t }}
         </h2>
       </div>
@@ -244,6 +150,161 @@
 </aside>
 
 <script>
+  // Navigation state management with query parameters and URL path detection
+  class SidebarNavigation {
+    constructor() {
+      this.defaultTab = 'my-profile';
+      this.validTabs = ['my-profile', 'my_beauties_profile', 'orders', 'addresses', 'rewards', 'wishlist', 'reviews'];
+      this.init();
+    }
+
+    init() {
+      this.setupEventListeners();
+      this.loadInitialTab();
+    }
+
+    setupEventListeners() {
+      // Handle browser back/forward buttons
+      window.addEventListener('popstate', () => this.loadTabFromURL());
+    }
+
+    loadInitialTab() {
+      const tabFromURL = this.getTabFromURL();
+      this.setActiveTab(tabFromURL);
+      this.updateMobileSelectedItem(tabFromURL);
+    }
+
+    loadTabFromURL() {
+      const tabFromURL = this.getTabFromURL();
+      this.setActiveTab(tabFromURL);
+      this.updateMobileSelectedItem(tabFromURL);
+    }
+
+    getTabFromURL() {
+      const currentPath = window.location.pathname;
+      const urlParams = new URLSearchParams(window.location.search);
+      const navParam = urlParams.get('nav');
+
+      // First, check URL path for sub-pages (highest priority)
+      if (currentPath.includes('/account/orders')) {
+        return 'orders';
+      }
+      if (currentPath.includes('/account/addresses')) {
+        return 'addresses';
+      }
+      if (currentPath.includes('/account/rewards')) {
+        return 'rewards';
+      }
+
+      // Then check query parameter
+      if (navParam) {
+        // Convert underscore to hyphen for data-tab matching
+        const normalizedParam = navParam.replace(/_/g, '-');
+
+        // Check if the tab exists in DOM
+        const tabExists = document.querySelector(`[data-tab="${normalizedParam}"]`);
+        return tabExists ? normalizedParam : this.defaultTab;
+      }
+
+      // Check for legacy hash-based navigation
+      if (window.location.hash === '#orders-section') {
+        return 'orders';
+      }
+
+      // Check for pagination (legacy orders page detection)
+      if (window.location.search.includes('page=')) {
+        return 'orders';
+      }
+
+      // Default fallback
+      return this.defaultTab;
+    }
+
+    navigateToTab(contentType) {
+      // Handle logout separately
+      if (contentType === 'logout') {
+        window.location.href = '{{ routes.account_logout_url }}';
+        return;
+      }
+
+      // Handle special redirects for sub-pages
+      if (contentType === 'addresses') {
+        window.location.href = '/account/addresses';
+        return;
+      }
+
+      // Convert contentType to match data-tab format
+      const tabName = contentType.replace(/_/g, '-');
+
+      // For main account page navigation, update URL with query parameter
+      if (window.location.pathname === '/account' || window.location.pathname.endsWith('/account')) {
+        const url = new URL(window.location);
+        url.searchParams.set('nav', contentType); // Keep original format for URL
+        history.pushState({ tab: contentType }, '', url);
+
+        // Update UI
+        this.setActiveTab(tabName);
+        this.updateMobileSelectedItem(tabName);
+        this.closeMobileDropdown();
+      } else {
+        // If we're on a sub-page, redirect to main account page with nav parameter
+        window.location.href = `/account?nav=${contentType}`;
+      }
+    }
+
+    setActiveTab(tabName) {
+      // Remove active class from all items
+      const allItems = document.querySelectorAll('.customer-account__sidebar-item[data-tab]');
+      allItems.forEach((item) => item.classList.remove('active'));
+
+      // Add active class to selected item
+      const activeItem = document.querySelector(`[data-tab="${tabName}"]`);
+      if (activeItem) {
+        activeItem.classList.add('active');
+      }
+
+      // Call external content function if it exists (for integration with main-account.liquid)
+      if (window.showAccountContent) {
+        // Convert back to underscore format for showAccountContent
+        const contentType = tabName.replace(/-/g, '_');
+        window.showAccountContent(contentType);
+      }
+    }
+
+    updateMobileSelectedItem(tabName) {
+      const selectedContent = document.getElementById('selected-item-content');
+      const activeItem = document.querySelector(`[data-tab="${tabName}"]`);
+
+      if (activeItem && selectedContent) {
+        const icon = activeItem.querySelector('svg') || activeItem.children[0];
+        const title = activeItem.querySelector('.account-sidebar-item-title');
+
+        if (icon && title) {
+          selectedContent.innerHTML = `
+            ${icon.outerHTML}
+            <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+              ${title.textContent}
+            </h2>
+          `;
+        }
+      }
+    }
+
+    closeMobileDropdown() {
+      const dropdown = document.getElementById('dropdown-menu');
+      const arrow = document.getElementById('dropdown-arrow');
+      if (dropdown && arrow) {
+        dropdown.classList.remove('expanded');
+        arrow.classList.remove('expanded');
+      }
+    }
+  }
+
+  // Initialize navigation when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    window.sidebarNavigation = new SidebarNavigation();
+  });
+
   function toggleDropdown() {
     const dropdown = document.getElementById('dropdown-menu');
     const arrow = document.getElementById('dropdown-arrow');
@@ -252,26 +313,33 @@
     arrow.classList.toggle('expanded');
   }
 
-  function selectItem(element, iconName, title) {
+  function selectItem(element, iconName, title, contentType) {
     // Update the selected item display
     const selectedContent = document.getElementById('selected-item-content');
     const iconHtml = element.querySelector('svg') ? element.querySelector('svg').outerHTML : '';
 
     selectedContent.innerHTML = `
-    ${iconHtml}
-    <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
-      ${title}
-    </h2>
-  `;
+      ${iconHtml}
+      <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500">
+        ${title}
+      </h2>
+    `;
+
+    // Use the new navigation system
+    if (window.sidebarNavigation) {
+      window.sidebarNavigation.navigateToTab(contentType);
+    } else {
+      // Fallback for immediate execution before DOMContentLoaded
+      if (window.showAccountContent) {
+        window.showAccountContent(contentType);
+      }
+    }
 
     // Close the dropdown
     const dropdown = document.getElementById('dropdown-menu');
     const arrow = document.getElementById('dropdown-arrow');
     dropdown.classList.remove('expanded');
     arrow.classList.remove('expanded');
-
-    // Add your navigation logic here
-    // For example: window.location.href = '/account/' + page;
   }
 
   // Close dropdown when clicking outside
@@ -280,7 +348,7 @@
     const dropdown = document.getElementById('dropdown-menu');
     const arrow = document.getElementById('dropdown-arrow');
 
-    if (!sidebar.contains(event.target)) {
+    if (sidebar && !sidebar.contains(event.target)) {
       dropdown.classList.remove('expanded');
       arrow.classList.remove('expanded');
     }

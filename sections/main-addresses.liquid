@@ -1,0 +1,318 @@
+<!-- Main Address Management Template -->
+<div class="customer-account__container flex flex-row sm:flex-col  gap-64 page-width pt-40 pb-40 sm:pt-16 sm:pb-16 sm:gap-24">
+  <div class="">{% render 'customer-account-sidebar' %}</div>
+  <div class="flex flex-col gap-24 sm:w-full">
+    <div class="flex gap-24" id="manage-address-heading">
+      <h2 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500">
+        {{ 'customer.addresses.manage_address' | t }}
+      </h2>
+      <button id="add-address-btn" class="button--outline fs-14-lh-100pct-ls-0 fw-600 cursor-pointer border-1_5">
+        {{ 'customer.addresses.add_address' | t }}
+      </button>
+    </div>
+
+    <div id="address-list-container" class="grid grid-cols-2  sm:grid-cols-1 gap-24">
+      {%- for address in customer.addresses -%}
+        <div
+          id="address-card-{{ address.id }}"
+          class="
+             border border-solid  rounded-12 pt-24  pb-24 flex flex-col gap-16
+            {% if address == customer.default_address %} border-color-brand {% else %} border-color {% endif %}
+          "
+        >
+          <h1 id="address-name-{{ address.id }}" class=" pl-24 pr-24 ff-general-sans fw-600 fs-16-lh-22-ls-0 m-0">
+            {{ address.first_name }}
+            {{ address.last_name }}
+          </h1>
+          <p id="address-details-{{ address.id }}" class="pl-24 pr-24 ff-general-sans fw-400 fs-14-lh-20-ls-0 m-0">
+            {{ address.address1 }}
+            {{ address.address2 }}
+            {{ address.company }}
+            {{ address.city }}, {{ address.province }}
+            {{ address.zip }},{{ address.country }}
+          </p>
+
+          <div
+            id="address-actions-{{ address.id }}"
+            class="mt-auto flex justify-between pl-24 pr-24 border-t border-t-color border-t-solid pt-16 "
+          >
+            <button
+              type="button"
+              data-address="{{ address.id }}"
+              id="edit-address-btn-{{ address.id }}"
+              class="button--link  no-underline text-brand ff-general-sans fw-600 fs-14-lh-20-ls-0 m-0 bg-transparent border-0 cursor-pointer"
+            >
+              {{- 'customer.addresses.edit_address' | t -}}
+            </button>
+            <button
+              type="button"
+              data-address="{{ address.id }}"
+              data-confirm="{{ 'customer.addresses.delete_confirm' | t }}"
+              id="delete-address-btn-{{ address.id }}"
+              class="button--link  no-underline text-brand ff-general-sans fw-600 fs-14-lh-20-ls-0 m-0 bg-transparent border-0 cursor-pointer"
+            >
+              {{- 'customer.addresses.delete' | t -}}
+            </button>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    <!-- Add Address Form Container -->
+    <div id="add-form-container" style="display: none;">
+      <div id="add-form-wrapper" class="flex flex-col gap-24 sm:w-full">
+        <div id="add-form-header" class="mb-24 flex sm:flex items-center gap-16 ">
+          <div id="add-back-arrow" class="sm:flex-1 cursor-pointer">
+            {% render 'icon-left-arrow' %}
+          </div>
+          <h2 id="add-heading" class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500 sm:flex-2 text-left">
+            {{- 'customer.addresses.add_address' | t -}}
+          </h2>
+        </div>
+        {% render 'address-add-form' %}
+      </div>
+    </div>
+
+    <!-- Address Edit Form Include -->
+    {% for address in customer.addresses %}
+      <div
+        id="edit-form-container-{{ address.id }}"
+        data-address-edit-form="{{ address.id }}"
+        style="display: none;"
+      >
+        <!-- Updated Address Edit Form -->
+        <div id="edit-form-wrapper-{{ address.id }}" class="flex flex-col gap-24 sm:w-full">
+          <!-- Fixed: Updated edit heading to match manage heading style -->
+          <div id="edit-form-header-{{ address.id }}" class="mb-24 flex sm:flex items-center gap-16">
+            <div id="back-arrow-{{ address.id }}" class="sm:flex-1 cursor-pointer" data-address-id="{{ address.id }}">
+              {% render 'icon-left-arrow' %}
+            </div>
+            <h2
+              id="edit-heading-{{ address.id }}"
+              class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500 sm:flex-2 text-left"
+            >
+              {{- 'customer.addresses.edit_address' | t -}}
+            </h2>
+          </div>
+
+          {% comment %} Fixed: Added proper action URL {% endcomment %}
+          {% render 'address-edit-form', address: address %}
+        </div>
+      </div>
+    {% endfor %}
+
+    <!-- Hidden Delete Forms -->
+    {% for address in customer.addresses %}
+      <form id="delete-form-{{ address.id }}" style="display: none;" method="POST" action="{{ address.url }}">
+        <input type="hidden" name="_method" value="delete">
+        <button
+          data-confirm-address-delete="{{ address.id }}"
+          type="submit"
+          id="delete-submit-btn-{{ address.id }}"
+          class="button--link"
+        >
+          {{ 'customer.addresses.delete' | t }}
+        </button>
+      </form>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const addressListContainer = document.getElementById('address-list-container');
+    const manageAddressHeading = document.getElementById('manage-address-heading');
+    const addFormContainer = document.getElementById('add-form-container');
+
+    // Single event listener for all button clicks using event delegation
+    document.addEventListener('click', function (e) {
+      const clickedElementId = e.target.id;
+
+      // Handle Add Address Button Click
+      if (clickedElementId === 'add-address-btn') {
+        e.preventDefault();
+
+        // Hide the manage address heading and address list
+        manageAddressHeading.style.display = 'none';
+        addressListContainer.style.setProperty('display', 'none', 'important');
+
+        // Hide all edit forms
+        const allEditForms = document.querySelectorAll('[id^="edit-form-container-"]');
+        allEditForms.forEach((container) => {
+          container.style.display = 'none';
+        });
+
+        // Show the add form
+        addFormContainer.style.display = 'flex';
+        return;
+      }
+
+      // Handle Add Form Back Arrow Click
+      if (clickedElementId === 'add-back-arrow' || e.target.closest('#add-back-arrow')) {
+        e.preventDefault();
+
+        // Hide the add form
+        addFormContainer.style.display = 'none';
+
+        // Hide all edit forms
+        const allEditForms = document.querySelectorAll('[id^="edit-form-container-"]');
+        allEditForms.forEach((container) => {
+          container.style.display = 'none';
+        });
+
+        // Show the manage address heading and address list
+        manageAddressHeading.style.display = 'flex';
+        addressListContainer.style.display = 'grid';
+        return;
+      }
+
+      // Check if the clicked element or its parent is a back arrow for edit forms
+      let backArrowElement = null;
+      let addressId = null;
+
+      // First check if the clicked element itself is a back arrow
+      if (clickedElementId && clickedElementId.startsWith('back-arrow-')) {
+        backArrowElement = e.target;
+        addressId = backArrowElement.getAttribute('data-address-id');
+      }
+      // If not, check if the clicked element is inside a back arrow container
+      else {
+        backArrowElement = e.target.closest('[id^="back-arrow-"]');
+        if (backArrowElement) {
+          addressId = backArrowElement.getAttribute('data-address-id');
+        }
+      }
+
+      // Handle Back Arrow Button Clicks (Cancel Edit)
+      if (backArrowElement && addressId) {
+        e.preventDefault();
+
+        // Hide all edit forms
+        const allEditForms = document.querySelectorAll('[id^="edit-form-container-"]');
+        allEditForms.forEach((container) => {
+          container.style.display = 'none';
+        });
+
+        // Hide add form
+        addFormContainer.style.display = 'none';
+
+        // Show the manage address heading and address list
+        manageAddressHeading.style.display = 'flex';
+        addressListContainer.style.display = 'grid';
+        return; // Exit early to prevent other handlers
+      }
+
+      // Handle Edit Address Button Clicks
+      if (clickedElementId && clickedElementId.startsWith('edit-address-btn-')) {
+        const addressId = e.target.getAttribute('data-address');
+        const editFormContainer = document.getElementById(`edit-form-container-${addressId}`);
+
+        if (editFormContainer) {
+          // Hide the manage address heading and address list
+          manageAddressHeading.style.display = 'none';
+          addressListContainer.style.setProperty('display', 'none', 'important');
+
+          // Hide add form
+          addFormContainer.style.display = 'none';
+
+          // Hide all other edit forms
+          const allEditForms = document.querySelectorAll('[id^="edit-form-container-"]');
+          allEditForms.forEach((container) => {
+            container.style.display = 'none';
+          });
+
+          // Show the specific edit form
+          editFormContainer.style.display = 'block';
+
+          // Set the correct country value
+          const countrySelect = editFormContainer.querySelector('select[name="address[country]"]');
+          if (countrySelect) {
+            const defaultCountry = countrySelect.getAttribute('data-default-country');
+            if (defaultCountry) {
+              countrySelect.value = defaultCountry;
+            }
+          }
+        }
+      }
+
+      // Handle Delete Address Button Clicks
+      if (clickedElementId && clickedElementId.startsWith('delete-address-btn-')) {
+        const addressId = e.target.getAttribute('data-address');
+        const confirmMessage = e.target.getAttribute('data-confirm');
+
+        if (confirm(confirmMessage)) {
+          const deleteForm = document.getElementById(`delete-form-${addressId}`);
+          if (deleteForm) {
+            const submitButton = document.getElementById(`delete-submit-btn-${addressId}`);
+            if (submitButton) {
+              submitButton.click();
+            }
+          }
+        }
+      }
+    });
+
+    // Enhanced form submission handling
+    document.addEventListener('submit', function (e) {
+      const form = e.target;
+
+      // Check if this is an address form (edit or add)
+      const editContainer = form.closest('[id^="edit-form-container-"]');
+      const addContainer = form.closest('#add-form-container');
+
+      if (editContainer || addContainer) {
+        console.log('Address form submitted');
+
+        // Find the submit button for this specific form
+        const submitButton = form.querySelector('button[type="submit"]');
+
+        if (submitButton) {
+          const originalText = submitButton.textContent;
+          submitButton.textContent = 'Saving...';
+          submitButton.disabled = true;
+
+          // Reset button after a delay (in case of errors)
+          setTimeout(() => {
+            submitButton.textContent = originalText;
+            submitButton.disabled = false;
+          }, 5000);
+        }
+      }
+    });
+
+    // Handle page reload after successful submission
+    const urlParams = new URLSearchParams(window.location.search);
+    if (
+      urlParams.get('updated') === 'true' ||
+      urlParams.get('added') === 'true' ||
+      window.location.hash === '#updated' ||
+      window.location.hash === '#added'
+    ) {
+      // Hide all forms
+      const allEditForms = document.querySelectorAll('[id^="edit-form-container-"]');
+      allEditForms.forEach((container) => {
+        container.style.display = 'none';
+      });
+      addFormContainer.style.display = 'none';
+
+      // Show both heading and address list after successful update/add
+      manageAddressHeading.style.display = 'block';
+      addressListContainer.style.display = 'grid';
+    }
+  });
+</script>
+
+<style>
+  /* Make checkbox input larger on all devices */
+  [id^='set-default-address-checkbox-'] input {
+    width: 20px;
+    height: 20px;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Address",
+  "settings": []
+}
+{% endschema %}

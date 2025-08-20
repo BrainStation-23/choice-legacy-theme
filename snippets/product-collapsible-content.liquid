@@ -1,0 +1,17 @@
+{% assign metafield_value = product.metafields.custom[block.settings.metafield_key].value %}
+{% if metafield_value != blank %}
+  <collapsible-content class="block" {{ block.shopify_attributes }} data-border-map='{"border-b": "border-b-2", "border-b-color": "border-brand"}'>
+    <div class="collapsible-trigger flex items-center justify-between cursor-pointer user-select-none border-b border-b-solid border-b-color" data-collapsible-trigger>
+      <h3 class="fw-500 fs-16-lh-20-ls-0_1 ff-general-sans uppercase m-0 pt-12 pb-12">{{ block.settings.content_title }}</h3>
+      <div class="collapsible-icon w-20 h-20 flex items-center justify-center transition-transform" data-collapsible-icon>
+        {% render 'icon-plus', cls: 'icon-plus svg-brand w-28 h-28 block svg-primary-text' %}
+        {% render "icon-minus", cls: 'icon-minus w-28 h-28 hidden svg-brand' %}
+      </div>
+    </div>
+    <div class="collapsible-content flex flex-col gap-16 list-style-none m-0 p-0 overflow-hidden max-h-0 transition-transform" data-collapsible-content>
+      <div class="metafield-content fs-16-lh-24-ls-0 fw-400 pt-16 pb-16 text-secondary rte">
+        {{ metafield_value }}
+      </div>
+    </div>
+  </collapsible-content>
+{% endif %}

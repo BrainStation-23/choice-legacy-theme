@@ -4,7 +4,7 @@
 }
 
 @media screen and (max-width: 768px) {
-  .icon--minus {
+  footer .icon--minus {
     display: none;
   }
 

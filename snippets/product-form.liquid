@@ -1,1 +1,6 @@
-<button class="button button--outline fs-14-lh-100pct-ls-0 fw-600">{{ 'cart.add_to_cart.label' | t }}</button>
+<button class="button button--outline flex items-center justify-center gap-4 {{ cls }}">
+  {% if show_cart_icon %}
+    {% render "cart-icon" %}
+  {% endif %}
+  {{ 'general.cart.add_to_cart' | t }}
+</button>

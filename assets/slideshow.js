@@ -18,6 +18,84 @@ class SlideshowComponent extends HTMLElement {
     }
   }
 
+  // Helper method to get responsive values based on breakpoints
+  getResponsiveValue(baseAttribute) {
+    const breakpoints = {
+      mobile: { max: 768, suffix: "-mobile" },
+      tablet: { min: 769, max: 1023, suffix: "-tablet" },
+      laptop: { min: 1024, max: 1439, suffix: "-laptop" },
+      desktop: { min: 1440, suffix: "-desktop" },
+    };
+
+    // Check for device-specific values first
+    for (const [device, config] of Object.entries(breakpoints)) {
+      const value =
+        this.dataset[baseAttribute + config.suffix.replace("-", "")];
+      if (value !== undefined) {
+        return { [device]: value, ...breakpoints[device] };
+      }
+    }
+
+    // Fallback to base attribute or default
+    const fallbackValue = this.dataset[baseAttribute];
+    return fallbackValue;
+  }
+
+  // Create Swiper breakpoints configuration
+  createBreakpointsConfig() {
+    const breakpoints = {};
+
+    // Get responsive values for numberOfItems
+    const mobileItems = this.dataset.numberOfItemsMobile;
+    const tabletItems = this.dataset.numberOfItemsTablet;
+    const laptopItems = this.dataset.numberOfItemsLaptop;
+    const desktopItems = this.dataset.numberOfItemsDesktop;
+
+    // Get responsive values for gap
+    const mobileGap = this.dataset.gapMobile;
+    const tabletGap = this.dataset.gapTablet;
+    const laptopGap = this.dataset.gapLaptop;
+    const desktopGap = this.dataset.gapDesktop;
+
+    // Default values
+    const defaultItems = parseInt(this.dataset.numberOfItems) || 1;
+    const defaultGap = parseInt(this.dataset.gap) || 16;
+
+    // Mobile (up to 768px)
+    if (mobileItems || mobileGap) {
+      breakpoints[0] = {
+        slidesPerView: parseInt(mobileItems) || defaultItems,
+        spaceBetween: parseInt(mobileGap) || defaultGap,
+      };
+    }
+
+    // Tablet (769px to 1023px)
+    if (tabletItems || tabletGap) {
+      breakpoints[769] = {
+        slidesPerView: parseInt(tabletItems) || defaultItems,
+        spaceBetween: parseInt(tabletGap) || defaultGap,
+      };
+    }
+
+    // Laptop (1024px to 1439px)
+    if (laptopItems || laptopGap) {
+      breakpoints[1024] = {
+        slidesPerView: parseInt(laptopItems) || defaultItems,
+        spaceBetween: parseInt(laptopGap) || defaultGap,
+      };
+    }
+
+    // Desktop (1440px and above)
+    if (desktopItems || desktopGap) {
+      breakpoints[1440] = {
+        slidesPerView: parseInt(desktopItems) || defaultItems,
+        spaceBetween: parseInt(desktopGap) || defaultGap,
+      };
+    }
+
+    return breakpoints;
+  }
+
   init() {
     this.swiperContainer = this.querySelector(".swiper-container");
     this.prevButton = this.querySelector(".slideshow-nav-button-prev");
@@ -52,6 +130,12 @@ class SlideshowComponent extends HTMLElement {
       },
     };
 
+    // Add responsive breakpoints
+    const responsiveBreakpoints = this.createBreakpointsConfig();
+    if (Object.keys(responsiveBreakpoints).length > 0) {
+      swiperOptions.breakpoints = responsiveBreakpoints;
+    }
+
     if (enableCarousel) {
       Object.assign(swiperOptions, {
         grabCursor: true,
@@ -84,13 +168,27 @@ class SlideshowComponent extends HTMLElement {
       swiperOptions.slidesPerView = 1;
       swiperOptions.centeredSlides = false;
       swiperOptions.centerInsufficientSlides = true;
-      swiperOptions.breakpoints = {
-        769: {
+
+      // Merge with existing breakpoints if any, otherwise create new ones
+      if (!swiperOptions.breakpoints) {
+        swiperOptions.breakpoints = {};
+      }
+
+      // Add the partial slides breakpoint, but don't override existing responsive settings
+      if (!swiperOptions.breakpoints[769]) {
+        swiperOptions.breakpoints[769] = {
           slidesPerView: 1.2,
           centeredSlides: true,
           spaceBetween: gap,
-        },
-      };
+        };
+      } else {
+        // If there's already a tablet breakpoint, add the partial slides settings to it
+        swiperOptions.breakpoints[769] = {
+          ...swiperOptions.breakpoints[769],
+          slidesPerView: swiperOptions.breakpoints[769].slidesPerView || 1.2,
+          centeredSlides: true,
+        };
+      }
     } else {
       swiperOptions.slidesPerView = 1;
     }

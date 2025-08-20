@@ -1,0 +1,38 @@
+<div class="review-page-container flex flex-col gap-24">
+  <h2 class="ff-general-sans fw-500 fs-23-lh-24-ls-0 text-left text-primary">{{ 'review.title' | t }}</h2>
+
+  <div id="review-loader">
+    <p class="fw-500 fs-14-lh-16-ls-0">{{ 'review.loading' | t }}</p>
+  </div>
+  
+  <table class="review-desktop-view table sm:hidden" style="display: none;">
+    <thead>
+      <tr class="h-48">
+        <th class="fs-16-lh-16-ls-0 fw-500 ff-general-sans text-primary-70pct">{{ 'review.table.serial' | t }}</th>
+        <th class="fs-16-lh-16-ls-0 fw-500 ff-general-sans text-primary-70pct">{{ 'review.table.product' | t }}</th>
+        <th class="fs-16-lh-16-ls-0 fw-500 ff-general-sans text-primary-70pct text-center">{{ 'review.table.rating' | t }}</th>
+        <th class="fs-16-lh-16-ls-0 fw-500 ff-general-sans text-primary-70pct text-right">{{ 'review.table.action' | t }}</th>
+      </tr>
+    </thead>
+    <tbody id="customer-review-items-desktop">
+    </tbody>
+  </table>
+
+  <div id="customer-review-items-mobile" class="review-mobile-view  hidden sm:flex flex-col gap-24" style="display: none;">
+  </div>
+
+  <div id="empty-review-message" style="display: none;">
+    <p>{{ 'review.empty' | t }}</p>
+  </div>
+</div>
+<script>
+  window.allProductsData = {
+    {%- for product in collections.all.products -%}
+      "{{ product.handle }}": {
+        "title": {{ product.title | json }},
+        "image": {{ product.featured_image | image_url: width: 100 | json }}
+      }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  };
+</script>
+<script src="{{ 'reviews.js' | asset_url }}" defer></script>

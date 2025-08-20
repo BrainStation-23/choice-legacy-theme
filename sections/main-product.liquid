@@ -1,1 +1,181 @@
-{% render 'product-review' %}
+<div class="product-container page-width">
+  {% render "breadcrumbs" %}
+  
+  <div class="product-grid flex sm:flex-col gap-32 md:gap-24">
+    <!-- Product Images Section -->
+    <div id="product-media-{{ section.id }}" class="product-media w-578 lg:w-50pct md:w-380 sm:w-full">
+      {% render 'product-media-gallery', product: product, block: section %}
+    </div>
+    
+    <!-- Product Info Section -->
+    <div id="product-info-{{ section.id }}" class="product-info lg:w-50pct">
+      {% for block in section.blocks %}
+        {% case block.type %}
+          {% when "title" %}
+            {% render "product-title", block: block, product: product %}
+          
+          {% when "sku_vendor_type" %}
+            {% render "product-sku-vendor-type", block: block, product: product %}
+          
+          {% when "price" %}
+            {% render "product-price", block: block, product: product %}
+          
+          {% when "rating" %}
+            {% render "product-rating", block: block, product: product %}
+          
+          {% when "weight" %}
+            {% render "product-weight", block: block, product: product %}
+
+          {% when "variant_picker" %}
+            {% render 'product-variant-picker', product: product, block: block %}
+          
+          {% when "buy_buttons" %}
+            {% render "product-buy-buttons", block: block, product: product %}
+          
+          {% when "offer_button" %}
+            {% render "product-offer-button", block: block %}
+
+          {% when "icon_with_text" %}
+            {% render "product-icon-with-text", block: block %}
+
+          {% when "editor_note" %}
+            {% render "product-editor-note", block: block, product: product %}
+
+          {% when "product_description" %}
+            {% render "product-description", block: block, product: product %}
+
+          {% when "collapsible_metafield" %}
+            {% render "product-collapsible-content", block: block, product: product %}
+        {% endcase %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<script src="{{ 'collapsible-content.js' | asset_url }}" defer></script>
+<script src="{{ 'product-recommendations.js' | asset_url }}" defer></script>
+<script src="{{ 'slideshow.js' | asset_url }}" defer></script>
+
+{% schema %}
+{
+  "name": "Main Product",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "title",
+      "name": "Title",
+      "limit": 1
+    },
+    {
+      "type": "sku_vendor_type",
+      "name": "Sku, vendor & type",
+      "limit": 1
+    },
+    {
+      "type": "price",
+      "name": "Price",
+      "limit": 1
+    },
+    {
+      "type": "rating",
+      "name": "Rating",
+      "limit": 1
+    },
+    {
+      "type": "weight",
+      "name": "Weight",
+      "limit": 1
+    },
+    {
+      "type": "variant_picker",
+      "name": "Variant picker",
+      "limit": 1
+    },
+    {
+      "type": "buy_buttons",
+      "name": "Buy buttons",
+      "limit": 1
+    },
+    {
+      "type": "offer_button",
+      "name": "Offer button",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "offer_button_text",
+          "label": "Offer button text",
+          "default": "On Going Offers"
+        },
+        {
+          "type": "url",
+          "id": "offer_button_url",
+          "label": "Offer button url"
+        }
+      ]
+    },
+    {
+      "type": "icon_with_text",
+      "name": "Icon with text",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Fastest Delivery"
+        }
+      ]
+    },
+    {
+      "type": "editor_note",
+      "name": "Editor Note",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "editor_note_title",
+          "label": "Editor Note Title",
+          "default": "Editor's Note"
+        }
+      ]
+    },
+    {
+      "type": "product_description",
+      "name": "Product description",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "description_title",
+          "label": "Description Title",
+          "default": "Description"
+        }
+      ]
+    },
+    {
+      "type": "collapsible_metafield",
+      "name": "Collapsible content",
+      "settings": [
+        {
+          "type": "text",
+          "id": "content_title",
+          "label": "Content Title",
+          "default": "Key Features"
+        },
+        {
+          "type": "text",
+          "id": "metafield_key",
+          "label": "Metafield Key",
+          "info": "Enter the metafield key (e.g., key_features, how_to_use, ingredients)",
+          "default": "key_features"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

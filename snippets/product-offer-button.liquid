@@ -1,0 +1,3 @@
+{% if block.settings.offer_button_text != blank and block.settings.offer_button_url != blank %}
+  <a class="button button--solid block w-full text-center bg-red text-yellow rounded-6 border-4 border-solid border-yellow fw-600 fs-16-lh-100pct-ls-0 mb-24" href="{{ block.settings.offer_button_url }}" {{ block.shopify_attributes }}>{{ block.settings.offer_button_text }}</a>
+{% endif %}

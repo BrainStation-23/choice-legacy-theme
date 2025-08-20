@@ -107,7 +107,11 @@
               value: form.phone
             %}
           </div>
-          <button type="button" id="send-otp-button" class=" ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
+          <button
+            type="button"
+            id="send-otp-button"
+            class="button--solid  border-none rounded-6 cursor-pointer  ff-general-sans fs-14-lh-100pct-ls-0 fw-600"
+          >
             {{ 'customer.register.send_otp' | t }}
           </button>
         </div>
@@ -163,8 +167,7 @@
       <!-- External Register Button -->
       <button
         id="register-submit-button-external"
-        class=" ff-general-sans fs-14-lh-100pct-ls-0 fw-600 pt-18 pb-18 pl-10 pr-10"
-        disabled
+        class=" button--solid  border-none rounded-6 cursor-pointer  ff-general-sans fs-14-lh-100pct-ls-0 fw-600 pt-18 pb-18 pl-10 pr-10"
       >
         {{ 'customer.register.submit' | t }}
       </button>
@@ -440,6 +443,24 @@
           phoneInput.disabled = false;
           sendOtpButton.disabled = false;
           sendOtpButton.textContent = 'Send OTP';
+        }
+      });
+
+      otpInput.addEventListener('input', () => {
+        if (correctOtpCode) {
+          if (Number(otpInput.value) === correctOtpCode) {
+            otpMessage.textContent = 'OTP matched!';
+            otpMessage.classList.remove('text-error-text');
+            otpMessage.classList.add('text-success-text');
+            isOtpMatched = true;
+            submitButton.disabled = false;
+          } else {
+            otpMessage.textContent = "OTP doesn't match.";
+            otpMessage.classList.remove('text-success-text');
+            otpMessage.classList.add('text-error-text');
+            isOtpMatched = false;
+            submitButton.disabled = true;
+          }
         }
       });
     }

@@ -1,0 +1,19 @@
+{%- comment -%}
+  Custom Price Display Snippet
+  ---------------------------
+  This snippet displays a monetary value with specific formatting
+  for Bangladeshi Taka (BDT).
+
+  Accepts:
+  - money_value: The amount to be displayed (e.g., order.total_net_amount, product.price).
+  - currency_object: The currency object to check against (e.g., order.currency, cart.currency).
+
+  Usage:
+  {% render 'custom-price-display', money_value: order.total_net_amount, currency_object: order.currency %}
+{%- endcomment -%}
+
+{%- if currency_object == 'BDT' and money_value > 0 -%}
+  <span class="bdt-symbol">৳</span>&nbsp;{{ money_value | money_without_currency }}
+{%- else -%}
+  {{ money_value | money | default: '৳ 0.00' }}
+{%- endif -%}
