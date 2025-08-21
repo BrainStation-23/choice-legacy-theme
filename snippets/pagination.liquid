@@ -1,0 +1,93 @@
+{%- if paginate.pages > 1 -%}
+  <div class="flex justify-center pt-24">
+    <nav role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
+      <ul role="list" class="flex gap-8 m-0 p-0 list-style-none ">
+        {%- if paginate.previous -%}
+          <li class="pl-12 pr-12 pt-10 pb-10 border border-color border-solid rounded-6">
+            <a
+              href="{{ paginate.previous.url }}#{{ section_id | default: 'pagination-section' }}"
+              class="text-primary  flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-500 fs-14-lh-20-ls-0_1"
+              aria-label="{{ 'general.pagination.previous' | t }}"
+            >
+              {% render 'icon-left-arrow' %}
+            </a>
+          </li>
+        {%- endif -%}
+
+        {%- for part in paginate.parts -%}
+          <li class="pl-12 pr-12 pt-10 pb-10 border border-color border-solid rounded-6">
+            {%- if part.is_link -%}
+              <a
+                href="{{ part.url }}#{{ section_id | default: 'pagination-section' }}"
+                class="text-primary  flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-500 fs-14-lh-20-ls-0_1"
+                aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
+              >
+                {{- part.title -}}
+              </a>
+            {%- else -%}
+              {%- if part.title == paginate.current_page -%}
+                <span
+                  aria-current="page"
+                  aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
+                  class="text-brand  flex items-center justify-center h-32 w-32  no-underline ff-general-sans fw-500 fs-14-lh-20-ls-0_1"
+                >
+                  {{- part.title -}}
+                </span>
+              {%- else -%}
+                <span class="flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-500 fs-14-lh-20-ls-0_1">
+                  {{- part.title -}}
+                </span>
+              {%- endif -%}
+            {%- endif -%}
+          </li>
+        {%- endfor -%}
+
+        {%- if paginate.next -%}
+          <li class="pl-12 pr-12 pt-10 pb-10 border border-color border-solid rounded-6  ">
+            <a
+              href="{{ paginate.next.url }}#{{ section_id | default: 'pagination-section' }}"
+              class="flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-500 fs-14-lh-20-ls-0_1"
+              aria-label="{{ 'general.pagination.next' | t }}"
+            >
+              {% render 'icon-right-arrow' %}
+            </a>
+          </li>
+        {%- endif -%}
+      </ul>
+    </nav>
+  </div>
+
+  <script>
+    // Handle pagination clicks to stay on specific section
+    document.addEventListener('DOMContentLoaded', function () {
+      const paginationLinks = document.querySelectorAll('.pagination-link');
+
+      paginationLinks.forEach((link) => {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          const url = this.href;
+
+          window.location.href = url;
+
+          setTimeout(() => {
+            if (window.showAccountContent) {
+              // Extract section from hash or use default
+              const hash = new URL(url).hash.replace('#', '');
+              const section = hash.replace('-section', '') || 'orders';
+              window.showAccountContent(section);
+            }
+          }, 100);
+        });
+      });
+
+      // Check if we came from pagination and show appropriate section
+      const currentHash = window.location.hash.replace('#', '');
+      if (currentHash && currentHash.includes('-section')) {
+        if (window.showAccountContent) {
+          const section = currentHash.replace('-section', '');
+          window.showAccountContent(section);
+        }
+      }
+    });
+  </script>
+{%- endif -%}

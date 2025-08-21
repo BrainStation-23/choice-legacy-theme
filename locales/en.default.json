@@ -1,8 +1,79 @@
 {
+  "reward_points": {
+    "title": "Reward Point",
+    "points": {
+      "label": "Points"
+    },
+    "balance": {
+      "label": "Reward Point Balance"
+    },
+    "product_review_points": {
+      "label": "Earn Reward Points on Product Reviews",
+      "three_star": "Points Awarded for 3 Star Review: {points}",
+      "four_star": "Points Awarded for 4 Star Review: {points}",
+      "five_star": "Points Awarded for 5 Star Review: {points}"
+    },
+    "order_points": {
+      "label": "Earn Reward Points on Order",
+      "rule": "Points Awarded {points} for purchasing {amount} amount"
+    },
+    "redeem_points": {
+      "label": "Redeem Points",
+      "off": "OFF",
+      "button": "Redeem Now"
+    },
+    "reward_points": {
+      "label": "Reward Points"
+    },
+    "reward_history": {
+      "label": "Reward History"
+    },
+    "redeeming": {
+      "label": "Redeeming..."
+    },
+    "apply_to_cart_button": {
+      "label": "Apply to cart"
+    },
+    "redeem_message": "Points redeemed successfully!",
+    "apply_to_cart_message": "Discount code applied successfully!"
+  },
+  "wishlist": {
+    "title": "My Wishlist",
+    "loading": "Loading your wishlist...",
+    "empty": "Your wishlist is currently empty.",
+    "table": {
+      "image": "Image",
+      "name": "Name",
+      "price": "Price",
+      "action": "Action"
+    },
+    "buttons": {
+      "remove": "Remove",
+      "removing": "Removing..."
+    },
+    "notifications": {
+      "removed_success": "Product removed from wishlist",
+      "removed_error": "Failed to remove from wishlist",
+      "load_error": "Could not load wishlist. Please try again later.",
+      "generic_error": "Something went wrong. Please try again."
+    }
+  },
+  "review": {
+    "title": "Review",
+    "loading": "Loading your reviews...",
+    "empty": "You have not submitted any reviews yet.",
+    "table": {
+      "serial": "Serial",
+      "product": "Product",
+      "rating": "Rating",
+      "action": "Action"
+    }
+  },
   "sections": {
     "footer": {
       "social_media": "Social media",
-      "payment_methods_alt": "Payment methods"
+      "payment_methods_alt": "Payment methods",
+      "all_right": "All rights reserved."
     },
     "header": {
       "account": "My Account",
@@ -20,12 +91,12 @@
         "product_title": "Product Title"
       }
     },
-
     "product_review": {
       "by": "by",
       "product_title": "Title not found",
       "no_reviews_available": "No reviews available at the moment.",
-      "unable_to_load_reviews": "Unable to load reviews. Please try again later."
+      "unable_to_load_reviews": "Unable to load reviews. Please try again later.",
+      "load_more": "Load More "
     },
     "product": {
       "placeholder": {
@@ -39,6 +110,192 @@
         "kg": "kg",
         "lb": "lb"
       }
+    },
+    "cart": {
+      "title": "Cart"
     }
+  },
+  "customer": {
+    "addresses": {
+      "title": "My Addresses",
+      "address1": "Address 1",
+      "address2": "Address 2",
+      "customer_name": "Customer",
+      "shipping_address": "Shipping Address",
+      "billing_address": "Billing Address",
+      "payment_status": "Payment Status",
+      "manage_address": "Manage Addresses",
+      "edit_address": "Edit Address",
+      "delete": "Delete ",
+      "delete_confirm": "Are you sure you want to delete this address?",
+      "no_addresses": "No addresses found.",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "company": "Company",
+      "city": "City",
+      "zip": "ZIP/Postal Code",
+      "province": "Province",
+      "country": "Country",
+      "set_default": "Set as default",
+      "phone": "Phone",
+      "update": "Update",
+      "cancel": "Cancel",
+      "save": "Save",
+      "add_address": "Add Address"
+    },
+    "account": {
+      "log_out": "Log out",
+      "account_title": "Account Information",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email",
+      "phone": "Contact Number",
+      "myaccount": "My Account",
+      "my_beauties_profile": "My Beauties Profile",
+      "orders": "My Orders",
+      "addresses": "Addresses",
+      "rewards": "Rewards Points",
+      "wishlist": "My Wishlist",
+      "reviews": "Reviews",
+      "logout": "Logout",
+      "date_of_birth": "Date of Birth",
+      "gender": "Gender",
+      "edit": "Edit",
+      "change_email": "Change email address",
+      "title": "Order",
+      "update_success": "Your account has been updated successfully.",
+      "update_error": "There was an error updating your account.",
+      "update_error_generic": "An error occurred while updating your account. Please try again later.",
+      "save": "Save",
+      "cancel": "Cancel",
+      "send_otp": "Send OTP",
+      "resend_otp": "Resend OTP",
+      "submit": "Submit",
+      "otp_verification": "OTP VERIFICATION",
+      "enter_your_new_email": "Enter your new email"
+    },
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "phone": "Phone Number",
+      "password": "Password",
+      "forgot_password": "Forgot your password?",
+      "sign_in": "Login",
+      "create_account": "Create an account",
+      "new_customer": "New customer?",
+      "guest_title": "Guest Checkout",
+      "guest_continue": "Continue as Guest.",
+      "verify_otp": "Verify OTP",
+      "otp_not_received": "Did not receive the OTP?",
+      "resend_otp": "Resend OTP"
+    },
+    "recover_password": {
+      "title": "Forget password",
+      "subtext": "Please enter your email address to receive a verification code.",
+      "success": "A verification code has been sent to your email address.",
+      "submit": " Reset Password",
+      "cancel": "Cancel",
+      "confirm_password": "Confirm Password",
+      "new_password": "New Password"
+    },
+    "register": {
+      "title": "Create an account",
+      "first_name": "First Name",
+      "last_name": "Last Name",
+      "email": "Email",
+      "phone": "Phone Number",
+      "password": "Password",
+      "confirm_password": "Confirm Password",
+      "submit": "Submit",
+      "cancel": "Cancel",
+      "log_in": "Return to login",
+      "error_heading": "Error",
+      "phone_placeholder": "Enter your phone number",
+      "send_otp": "Send OTP",
+      "subtitle": "Use your credentials to access your account"
+    },
+    "order": {
+      "title": "Order History",
+      "order_number": "Order No",
+      "date": "Date",
+      "status": "Status",
+      "total": "Total",
+      "quantity": "Quantity",
+      "qty": "Qty",
+      "payment_type": "Payment Type",
+      "action": "Action",
+      "none": "Customer has no orders.",
+      "cancelled": "Cancelled",
+      "cancelled_reason": "Cancelled Reason",
+      "product": "Product",
+      "sku": "SKU",
+      "price": "Price",
+      "discount": "Discount",
+      "fulfilled_at": "Fulfilled At",
+      "track_shipment": "Track Shipment",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "tax": "Tax",
+      "total_duties": "Total Duties",
+      "total_refunded": "Total Refunded",
+      "billing_address": "Billing Address",
+      "payment_status": "Payment Status",
+      "shipping_address": "Shipping Address",
+      "fulfillment_status": "Fulfillment Status",
+      "name": "Name",
+      "phone": "Phone",
+      "address": "Address"
+    }
+  },
+  "general": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "pagination": {
+      "label": "Pagination",
+      "previous": "Previous",
+      "next": "Next",
+      "page": "Page"
+    },
+    "breadcrumbs": {
+      "home": "Home",
+      "products": "Products",
+      "collections": "Collections"
+    },
+    "search": {
+      "title": "Search"
+    },
+    "404": {
+      "title": "Page not found"
+    },
+    "cart": {
+      "add_to_cart": "Add to cart"
+    }
+  },
+  "products": {
+    "product": {
+      "price": {
+        "unit_price": "Unit Price",
+        "regular_price": "Regular Price",
+        "sale_price": "Sale Price"
+      },
+      "sku": "SKU",
+      "vendor": "Brand",
+      "product_type": "Product Type",
+      "weight": "Weight",
+      "review": {
+        "write_review": "Write Review",
+        "upload_image": "Upload Image",
+        "click_to_upload": "Add",
+        "rating": "Rating",
+        "description": "Add description",
+        "description_placeholder": "Share your thoughts about this product...",
+        "submit": "Submit",
+        "no_rating": "No rating"
+      }
+    }
+  },
+  "accessibility": {
+    "unit_price_separator": "Unit Price Separator"
   }
 }

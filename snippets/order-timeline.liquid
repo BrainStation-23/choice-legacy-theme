@@ -1,0 +1,209 @@
+<!-- Order Timeline Section -->
+<div class="order-timeline-section">
+  <h3 class="ff-general-sans fs-18-lh-20-ls-0 fw-500 mb-16">Order Timeline {{ order.id }}</h3>
+  <div class="delivery-status-container border-1 border-solid border-color rounded-12 p-24">
+    <div class="delivery-status loading" data-order-id="gid://shopify/Order/{{ order.id }}">
+      Loading delivery status...
+    </div>
+
+    <!-- Timeline will be populated by JavaScript -->
+    <div id="order-timeline" class="mt-16">
+      <!-- Timeline content will be inserted here -->
+    </div>
+  </div>
+</div>
+<script>
+  // Order delivery status functionality
+  let orderDeliveryStatusLoaded = false;
+
+  // Function to fetch delivery status for single order
+  async function fetchOrderDeliveryStatus() {
+    console.log('fetchOrderDeliveryStatus called, loaded:', orderDeliveryStatusLoaded);
+
+    if (orderDeliveryStatusLoaded) return;
+
+    const deliveryStatusElement = document.querySelector('.delivery-status');
+    const timelineContainer = document.getElementById('order-timeline');
+
+    if (!deliveryStatusElement) {
+      console.log('No delivery status element found');
+      return;
+    }
+
+    const orderId = deliveryStatusElement.getAttribute('data-order-id');
+    if (!orderId) {
+      console.log('No order ID found');
+      deliveryStatusElement.textContent = 'Order Placed';
+      return;
+    }
+
+    console.log('Fetching delivery status for order ID:', orderId);
+
+    // Show loading state
+    deliveryStatusElement.textContent = 'Loading...';
+    deliveryStatusElement.classList.add('loading');
+
+    try {
+      const apiUrl = `/apps/${APP_SUB_PATH}/customer/account/delivery-status?order_ids=${encodeURIComponent(orderId)}`;
+      console.log('API URL:', apiUrl);
+
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+      });
+
+      console.log('Response status:', response.status);
+      console.log('Response ok:', response.ok);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('API Response:', result);
+
+      if (result.success && result.data && result.data[orderId]) {
+        const orderData = result.data[orderId];
+
+        // Update delivery status
+        deliveryStatusElement.classList.remove('loading');
+        deliveryStatusElement.textContent = orderData.deliveryStatus;
+        deliveryStatusElement.setAttribute('data-consignment-id', orderData.consignment_id || '');
+        deliveryStatusElement.setAttribute('data-last-event-date', orderData.lastEventDate || '');
+
+        // Add status-specific classes for styling
+        deliveryStatusElement.classList.remove('status-placed', 'status-transit', 'status-delivered', 'status-error');
+        const statusClass = orderData.deliveryStatus.toLowerCase().replace(/\s+/g, '-');
+        deliveryStatusElement.classList.add(`status-${statusClass}`);
+
+        // Create timeline if events data is available
+        if (orderData.events && Array.isArray(orderData.events)) {
+          createOrderTimeline(orderData.events, timelineContainer);
+        } else {
+          // Create simple timeline with current status
+          createSimpleTimeline(orderData, timelineContainer);
+        }
+
+        console.log('Order delivery status updated successfully');
+      } else {
+        console.log('No data found for order:', orderId);
+        deliveryStatusElement.classList.remove('loading');
+        deliveryStatusElement.textContent = 'Order Placed';
+        deliveryStatusElement.classList.add('status-placed');
+
+        // Create default timeline
+        createSimpleTimeline({ deliveryStatus: 'Order Placed' }, timelineContainer);
+      }
+    } catch (error) {
+      console.error('Error fetching delivery status:', error);
+
+      deliveryStatusElement.classList.remove('loading');
+      deliveryStatusElement.textContent = 'Order Placed';
+      deliveryStatusElement.classList.add('status-error');
+
+      // Show error message in timeline
+      if (timelineContainer) {
+        timelineContainer.innerHTML = `
+          <div class="timeline-error ff-general-sans fs-14-lh-16-ls-0 text-red-600">
+            Unable to load delivery timeline. Please try again later.
+          </div>
+        `;
+      }
+    }
+
+    orderDeliveryStatusLoaded = true;
+  }
+
+  // Function to create order timeline from events
+  function createOrderTimeline(events, container) {
+    if (!container || !events || events.length === 0) return;
+
+    const timelineHTML = events
+      .map((event, index) => {
+        const isLast = index === events.length - 1;
+        const eventDate = event.happenedAt ? new Date(event.happenedAt).toLocaleString() : 'Unknown date';
+
+        return `
+        <div class="timeline-item flex gap-16 pb-16 ${!isLast ? 'border-b border-b-color border-b-solid' : ''}">
+          <div class="timeline-marker flex-shrink-0 w-12 h-12 rounded-full ${
+            isLast ? 'bg-green-500' : 'bg-blue-500'
+          } flex items-center justify-center">
+            <div class="w-6 h-6 rounded-full bg-white"></div>
+          </div>
+          <div class="timeline-content flex-1">
+            <div class="ff-general-sans fw-500 fs-14-lh-16-ls-0 text-brand mb-4">
+              ${event.status || 'Status Update'}
+            </div>
+            <div class="ff-general-sans fw-400 fs-12-lh-14-ls-0 text-primary-70pct">
+              ${eventDate}
+            </div>
+            ${
+              event.description
+                ? `
+              <div class="ff-general-sans fw-400 fs-13-lh-16-ls-0 text-primary-80pct mt-4">
+                ${event.description}
+              </div>
+            `
+                : ''
+            }
+          </div>
+        </div>
+      `;
+      })
+      .join('');
+
+    container.innerHTML = `
+      <div class="timeline-container">
+        <h4 class="ff-general-sans fw-500 fs-16-lh-18-ls-0 mb-16">Delivery Timeline</h4>
+        ${timelineHTML}
+      </div>
+    `;
+  }
+
+  function createSimpleTimeline(orderData, container) {
+    if (!container) return;
+
+    const currentDate = new Date().toLocaleString();
+    const status = orderData.deliveryStatus || 'Order Placed';
+
+    container.innerHTML = `
+      <div class="timeline-container">
+        <h4 class="ff-general-sans fw-500 fs-16-lh-18-ls-0 mb-16">Delivery Status</h4>
+        <div class="timeline-item flex gap-16">
+          <div class="timeline-marker flex-shrink-0 w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center">
+            <div class="w-6 h-6 rounded-full bg-white"></div>
+          </div>
+          <div class="timeline-content flex-1">
+            <div class="ff-general-sans fw-500 fs-14-lh-16-ls-0 text-brand mb-4">
+              ${status}
+            </div>
+            <div class="ff-general-sans fw-400 fs-12-lh-14-ls-0 text-primary-70pct">
+              ${orderData.lastEventDate ? new Date(orderData.lastEventDate).toLocaleString() : currentDate}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Initialize when DOM is ready
+  document.addEventListener('DOMContentLoaded', function () {
+    setTimeout(() => {
+      fetchOrderDeliveryStatus();
+    }, 300);
+  });
+
+  function startDeliveryStatusRefresh() {
+    setInterval(() => {
+      if (document.querySelector('.delivery-status')) {
+        orderDeliveryStatusLoaded = false;
+        fetchOrderDeliveryStatus();
+      }
+    }, 120000);
+  }
+
+  startDeliveryStatusRefresh();
+</script>

@@ -1,0 +1,93 @@
+<style>
+  .mobile-mega-menu.active {
+    transform: translateX(0);
+  }
+
+  collapsible-content.expanded .mobile-mega-menu__category-toggle {
+    transform: rotate(-90deg);
+  }
+
+  collapsible-content.expanded .mobile-mega-menu__subcategory-list {
+    min-height: 550px;
+    padding: 16px 0;
+  }
+
+  .mobile-mega-menu__subcategory-item:hover {
+    color: rgb(var(--color-primary-brand));
+  }
+</style>
+
+<div class="mobile-mega-menu box-shadow fixed top-0 left-0 w-325 z-9999 translate-x--100 transition-transform overflow-y-auto bg-bg" style="height: calc(100vh - var(--header-height, 80px));" id="mobileMegaMenu" data-accordion>
+  <div class="mobile-mega-menu__content flex flex-col gap-32 pt-24 pr-16 pb-24 pl-16 h-full">
+    <!-- Categories Section -->
+    <div class="mobile-mega-menu__categories flex flex-col gap-16 flex-1">
+      {%- if section.settings.main_menu != blank -%}
+        {%- for link in linklists[section.settings.main_menu].links -%}
+          <collapsible-content class="mobile-mega-menu__category block">
+            <div class="mobile-mega-menu__category-header collapsible-trigger flex items-center justify-between cursor-pointer user-select-none" data-collapsible-trigger>
+              <h3 class="mobile-mega-menu__category-title fw-400 fs-21-lh-24-ls-1_2pct uppercase m-0">{{ link.title }}</h3>
+              <div class="mobile-mega-menu__category-toggle collapsible-icon w-20 h-20 flex items-center justify-center transition-transform" data-collapsible-icon>
+                {% render 'icon-arrow', cls: 'icon-arrow svg-brand w-12 h-12' %}
+              </div>
+            </div>
+            {%- if link.links != blank -%}
+              <ul class="mobile-mega-menu__subcategory-list collapsible-content flex flex-col gap-16 list-style-none m-0 p-0 overflow-hidden max-h-0 transition-transform" data-collapsible-content>
+                {%- for child_link in link.links -%}
+                  {%- if child_link.links != blank -%}
+                    {%- for grandchild_link in child_link.links -%}
+                      <li class="mobile-mega-menu__subcategory-item">
+                        <a
+                          href="{{ grandchild_link.url }}"
+                          class="mobile-mega-menu__subcategory-link text-primary fw-500 fs-14-lh-20-ls-0_1 no-underline block transition-transform"
+                        >
+                          {{- grandchild_link.title -}}
+                        </a>
+                      </li>
+                    {%- endfor -%}
+                  {%- else -%}
+                    <li class="mobile-mega-menu__subcategory-item">
+                      <a
+                        href="{{ child_link.url }}"
+                        class="mobile-mega-menu__subcategory-link text-primary fw-500 fs-14-lh-20-ls-0_1"
+                      >
+                        {{- child_link.title -}}
+                      </a>
+                    </li>
+                  {%- endif -%}
+                {%- endfor -%}
+              </ul>
+            {%- endif -%}
+          </collapsible-content>
+        {%- endfor -%}
+      {%- endif -%}
+    </div>
+
+    <!-- Promotional Section -->
+    {%- if section.settings.mega_menu_image != blank -%}
+      <div class="mobile-mega-menu__promo mt-auto">
+        <div
+          class="mobile-mega-menu__promo-image media block relative w-293 h-200 overflow-hidden"
+          style="padding-top: 200px; padding-left: 293px;"
+        >
+          {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
+          {%- if section.settings.mega_menu_image_link != blank -%}
+            <a href="{{ section.settings.mega_menu_image_link }}" class="mega-menu__image-link">
+          {%- endif -%}
+            {% render 'image',
+              image: section.settings.mega_menu_image,
+              widths: '400, 400, 400, 400',
+              src_width: 400,
+              sizes: sizes,
+              class: 'img-fit',
+              quality: 1
+            %}
+          {%- if section.settings.mega_menu_image_link != blank -%}
+            </a>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+  </div>
+</div>
+
+<script src="{{ 'collapsible-content.js' | asset_url }}" defer></script>

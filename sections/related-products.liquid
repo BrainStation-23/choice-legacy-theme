@@ -1,0 +1,119 @@
+  <product-recommendations
+    class="related-products block pt-48 pb-48 sm:pt-16 sm:pb-16"
+    data-section-id="{{ section.id }}"
+    data-product-id="{{ product.id }}"
+    data-url="{{ routes.product_recommendations_url }}?section_id={{ section.id }}"
+    data-limit="{{ section.settings.products_to_show | default: 4 }}"
+    data-intent="{{ section.settings.intent | default: 'related' }}"
+  >
+    <div class="page-width">
+      <div class="pt-4 pb-4 pl-4 pr-4 flex flex-col gap-48 overflow-hidden">
+        {% if recommendations.performed and recommendations.products_count > 0 %}
+          <slideshow-component
+            data-autoplay="{{ section.settings.autoplay }}"
+            data-autoplay-delay="{{ section.settings.autoplay_delay | default: 5000 }}"
+            data-pause-on-hover="{{ section.settings.pause_on_hover }}"
+            data-show-progress-bar="false"
+            data-number-of-items-mobile="2"
+            data-number-of-items-tablet="3"
+            data-number-of-items-laptop="4"
+            data-number-of-items-desktop="5"
+            data-gap-mobile="8"
+            data-gap-tablet="10"
+            data-gap-laptop="12"
+            data-gap-desktop="16"
+            class="flex flex-col gap-16"
+          >
+            {% if section.settings.heading != blank %}
+            <div class="flex justify-between items-end relative">
+                <h2 class="fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct text-center">
+                  {{ section.settings.heading }}
+                </h2>
+
+                <div class="flex justify-end gap-24">
+                  {% render 'nav-button', cls: 'slideshow-nav-button-prev static transform-none bg-transparent w-28 h-28', icon_cls: 'icon-arrow-left' %}
+                  {% render 'nav-button', cls: 'slideshow-nav-button-next static transform-none bg-transparent w-28 h-28' %}
+                </div>
+              </div>
+            {% endif %}
+            <div class="swiper-container">
+              <div class="swiper-wrapper flex items-stretch">
+                {% for recommendation in recommendations.products %}
+                  <div class="swiper-slide w-auto h-auto flex flex-col">
+                    <div class="flex-1">
+                      {% render 'product-card', product: recommendation, width: "auto"  %}
+                    </div>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </slideshow-component>
+        {% endif %}
+      </div>
+    </div>
+  </product-recommendations>
+
+{% schema %}
+{
+  "name": "Related products",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "default": "SIMILAR ITEMS",
+      "label": "Heading"
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 1,
+      "max": 50,
+      "step": 1,
+      "default": 16,
+      "label": "Number of products to show"
+    },
+    {
+      "type": "select",
+      "id": "intent",
+      "label": "Recommendation intent",
+      "default": "related",
+      "options": [
+        {
+          "value": "related",
+          "label": "Related"
+        },
+        {
+          "value": "complementary", 
+          "label": "Complementary"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Slideshow"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "default": false,
+      "label": "Auto-play carousel"
+    },
+    {
+      "type": "range",
+      "id": "autoplay_delay",
+      "min": 1000,
+      "max": 9000,
+      "step": 500,
+      "default": 5000,
+      "label": "Auto-play delay (ms)",
+      "info": "Time between slide transitions"
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "default": true,
+      "label": "Pause on hover"
+    }
+  ]
+}
+{% endschema %}

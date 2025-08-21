@@ -1,358 +1,377 @@
-<div class="container">
-  <div id="login">
-    <div class="section__header text-center">
-      <h1 class="h2">{{ 'customer.login.title' | t }}</h1>
+<div class=" w-full flex justify-center pt-48 pb-88 page-width ">
+  <!-- LOGIN FORM -->
+  <div id="login" class=" flex gap-32  flex-col min-w-406  ">
+    <div class=" gap-8 flex flex-col items-center">
+      <h1 class=" ff-bebas-neue fs-36-lh-40-ls-0 fw-400 uppercase">{{ 'customer.login.title' | t }}</h1>
+      <div class="  flex gap-12 items-center flex-row justify-center">
+        <h2 class="ff-general-sans fs-16-lh-22-ls-0 fw-600">
+          {{ 'customer.login.new_customer' | t }}
+        </h2>
+        <a
+          href="{{ routes.account_register_url }}"
+          class="ff-general-sans fs-14-lh-100pct-ls-0 fw-600 no-underline text-brand "
+        >
+          {{ 'customer.login.create_account' | t -}}
+        </a>
+      </div>
     </div>
-
-    {%- if section.settings.enable_shop_login_button -%}
-      <div class="text-center">
-        {{- shop | login_button -}}
-
-        <p class="mt-4 mb-4">
-          {{ 'customer.login.alternate_provider_separator' | t }}
-        </p>
-      </div>
-    {%- endif -%}
-
-    {%- form 'customer_login', class: 'form form-width mx-auto', novalidate: 'novalidate' -%}
-      {%- if form.errors -%}
-        <div class="alert mb-8 bg-error-bg text-error-text" tabindex="-1" autofocus>
-          {{ form.errors | default_errors }}
-        </div>
-      {%- endif -%}
-
-      <div class="form__field required" style="display: none;">
-        <label class="label" for="customer-email">{{ 'customer.login.email' | t }}</label>
-        <input
-          type="email"
-          class="input w-full"
-          id="customer-email"
-          name="customer[email]"
-          autocomplete="email"
-          {%- if form.errors contains 'form' %}
-            aria-invalid="true"
-          {%- endif %}
-          aria-required="true"
-          required
-        >
-      </div>
-
-      <div class="form__field required">
-        <label class="label" for="customer-phone">{{ 'customer.login.phone' | t }}</label>
-        <input
-          type="number"
-          class="input w-full"
-          id="customer-phone"
-          name="customer[phone]"
-          autocomplete="phone"
-          {%- if form.errors contains 'form' %}
-            aria-invalid="true"
-          {%- endif %}
-          aria-required="true"
-          required
-        >
-      </div>
-
-      {%- if form.password_needed -%}
-        <div class="form__field required">
-          <label class="label" for="customer-password">{{ 'customer.login.password' | t }}</label>
-          <div class="login-password relative">
-            <input
-              type="password"
-              class="login-password__input input w-full"
-              id="customer-password"
-              name="customer[password]"
-              {%- if form.errors contains 'form' %}
-                aria-invalid="true"
-              {%- endif %}
-              aria-required="true"
-              required
-            >
-            <a class="login-password__recover-link link flex items-center absolute text-sm js-recover" href="#recover">
-              {{- 'customer.login.forgot_password' | t -}}
-            </a>
+    <div class=" flex  gap-16 flex-col">
+      {%- form 'customer_login', novalidate: 'novalidate', class: 'login-submit-form flex flex-col gap-16' -%}
+        {%- if form.errors -%}
+          <div class="alert alert-error" tabindex="-1" autofocus>
+            {{ form.errors | default_errors }}
           </div>
+        {%- endif -%}
+
+        <!-- Hidden Email Field -->
+        <div class=" hidden">
+          <input
+            type="email"
+            class="form-input"
+            id="customer-email"
+            name="customer[email]"
+            autocomplete="email"
+            {%- if form.errors contains 'form' %}
+              aria-invalid="true"
+            {%- endif %}
+            aria-required="true"
+            required
+          >
         </div>
-      {%- endif -%}
+        {%- assign phoneLabel = 'customer.login.phone' | t -%}
+        {%- assign placeholder = 'customer.login.phone' | t -%}
 
-      <div class="mt-6">
-        <button id="login-submit-button" class="btn btn--primary w-full" style="display: none;">
-          {{ 'customer.login.sign_in' | t }}
-        </button>
-      </div>
-    {%- endform -%}
+        {%
+          render 'input',
+          type: 'number',
+          id: 'customer-phone',
+          name: 'customer[phone]',
+          label: phoneLabel,
+          placeholder: placeholder,
+          autocomplete: 'tel',
+          required: true,
+          class: 'login-input-phone-field',
+          invalid: form.errors contains 'form'
+        %}
 
-    <div class="mt-6 form-width" style="margin:20px auto;">
+        <!-- Password Field -->
+        {%- if form.password_needed -%}
+          {%- assign passwordLabel = 'customer.login.password' | t -%}
+          {%- assign passwordPlaceholder = 'customer.login.password' | t -%}
+
+          {%
+            render 'input',
+            type: 'password',
+            id: 'customer-password',
+            name: 'customer[password]',
+            label: passwordLabel,
+            placeholder: passwordPlaceholder,
+            required: true,
+            class: '',
+            invalid: form.errors contains 'form'
+          %}
+        {%- endif -%}
+
+        <div id="form-submit-messages">
+          {% render 'submit-message' %}
+        </div>
+
+        <div>
+          <a
+            class="forgot-password js-recover fs-14-lh-100pct-ls-0 fw-600 ff-general-sans no-underline text-brand "
+            href="#recover"
+          >
+            {{ 'customer.login.forgot_password' | t }}
+          </a>
+        </div>
+      {%- endform -%}
+
+      <!-- External Login Button -->
       <button
         id="login-submit-button-external"
-        class="btn btn--primary w-full"
+        class="button--solid  border-none rounded-6 cursor-pointer pt-18 pb-18 pl-10 pr-10 ff-general-sans fs-14-lh-100pct-ls-0 fw-600"
       >
         {{ 'customer.login.sign_in' | t }}
       </button>
     </div>
-    <p class="mt-8 mb-0 text-center">
-      {{ 'customer.login.new_customer' | t }}
-      <a class="link" href="{{ routes.account_register_url }}">{{ 'customer.login.create_account' | t }}</a>
-    </p>
   </div>
 
-  <div class="js-hidden" id="recover">
-    <div class="section__header reading-width text-center">
-      <h1>{{ 'customer.recover_password.title' | t }}</h1>
-      <p>{{ 'customer.recover_password.subtext' | t }}</p>
-    </div>
-
-    {%- assign recover_success = form.posted_successfully? -%}
-
-    {%- if recover_success == true -%}
-      <div class="alert reading-width mb-8 mx-auto bg-success-bg text-success-text" tabindex="-1" autofocus>
-        {{ 'customer.recover_password.success' | t }}
-      </div>
-    {%- endif -%}
-
-    <div class="form__field required">
-      <label class="label" for="recover-phone">{{ 'customer.login.phone' | t }}</label>
-      <input
-        type="number"
-        class="input w-full"
-        id="recover-phone"
-        name="phone"
-        autocomplete="phone"
-        aria-required="true"
-        required
-      >
-    </div>
-
-    <div class="form__field required js-otp-field" style="display: none;">
-      <label class="label" for="recover-otp">Enter OTP</label>
-      <input
-        type="text"
-        class="input w-full"
-        id="recover-otp"
-        name="otp"
-        maxlength="6"
-        autocomplete="one-time-code"
-        aria-required="true"
-        required
-      >
-    </div>
-
-    <div class="form__field required js-password-fields" style="display: none;">
-      <label class="label" for="new-password">New Password</label>
-      <input type="password" id="new-password" class="input w-full" name="new_password" required>
-    </div>
-
-    <div class="form__field required js-password-fields" style="display: none;">
-      <label class="label" for="confirm-password">Confirm Password</label>
-      <input type="password" id="confirm-password" class="input w-full" name="confirm_password" required>
-    </div>
-
-    <div class="mt-6">
-      <button id="recover-submit-button" type="button" class="btn btn--primary w-full">
-        {{ 'customer.recover_password.submit' | t }}
-      </button>
-    </div>
-
-    <div class="mt-4 js-verify-otp-wrapper" style="display: none;">
-      <button id="verify-otp-button" type="button" class="btn btn--primary w-full">Verify OTP</button>
-    </div>
-
-    <div class="mt-4 js-password-fields" style="display: none;">
-      <button id="reset-password-button" type="button" class="btn btn--primary w-full">Reset Password</button>
-    </div>
-
-    <p class="mt-8 text-center">
-      <a class="link js-login" href="#login">{{ 'customer.recover_password.cancel' | t }}</a>
-    </p>
+  <div id="forgot-password-section" class="hidden">
+    {% render 'forgot-password' %}
   </div>
-
-  {%- if shop.checkout.guest_login -%}
-    <h2 class="text-center mt-10">{{ 'customer.login.guest_title' | t }}</h2>
-
-    {%- form 'guest_login', class: 'form form-width mx-auto' -%}
-      <button id="forgot-submit-button" class="btn btn--secondary w-full">
-        {{ 'customer.login.guest_continue' | t }}
-      </button>
-    {%- endform -%}
-  {%- endif -%}
 </div>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    const passwordToggles = document.querySelectorAll('.toggle-password');
+
+    passwordToggles.forEach((toggle) => {
+      toggle.addEventListener('click', function () {
+        const targetId = this.getAttribute('data-target');
+        const passwordInput = document.getElementById(targetId);
+        const openEye = passwordInput.parentElement.querySelector('.password-toggle-eye-open');
+        const closeEye = passwordInput.parentElement.querySelector('.password-toggle-eye-close');
+
+        if (passwordInput.type === 'password') {
+          // Show password
+          passwordInput.type = 'text';
+          openEye.style.display = 'none';
+          closeEye.style.display = 'flex';
+        } else {
+          // Hide password
+          passwordInput.type = 'password';
+          closeEye.style.display = 'none';
+          openEye.style.display = 'flex';
+        }
+      });
+    });
+
     const loginForm = document.getElementById('login');
-    const recoverForm = document.getElementById('recover');
+    const forgotPasswordSection = document.getElementById('forgot-password-section');
     const phoneInput = document.getElementById('customer-phone');
     const emailInput = document.getElementById('customer-email');
-    const recoverPhoneInput = document.getElementById('recover-phone');
     const loginButtonExternal = document.getElementById('login-submit-button-external');
-    const loginSubmitButton = document.getElementById('login-submit-button');
-    const forgotSubmitButton = document.getElementById('forgot-submit-button');
-
-    const recoverSubmitButton = document.getElementById('recover-submit-button');
-    const otpFieldWrapper = document.querySelector('.js-otp-field');
-    const verifyOtpWrapper = document.querySelector('.js-verify-otp-wrapper');
-    const verifyOtpButton = document.getElementById('verify-otp-button');
-    const passwordFields = document.querySelectorAll('.js-password-fields');
-    const resetPasswordButton = document.getElementById('reset-password-button');
+    const loginSubmitForm = document.querySelector('.login-submit-form');
+    const messageContainer = document.getElementById('form-submit-messages');
 
     const API_BASE_URL = `/apps/${APP_SUB_PATH}/customer/account`;
 
-    let serverOtpCode = null;
+    // Phone number validation function
+    function validatePhoneNumber(phone) {
+      // Remove all spaces, dashes, and plus signs for validation
+      const cleanPhone = phone.replace(/[\s\-\+]/g, '');
 
-    // Toggle login/recover view
-    function toggleContent(recover) {
-      loginForm.classList.toggle('js-hidden', recover);
-      recoverForm.classList.toggle('js-hidden', !recover);
+      // Check if it's a valid Bangladesh number
+      // Formats accepted:
+      // +8801408099845 (with country code)
+      // 8801408099845 (with country code, no plus)
+      // 01408099845 (without country code)
+
+      const patterns = [
+        /^8801[3-9]\d{8}$/, // 8801xxxxxxxxx (11 digits starting with 8801)
+        /^01[3-9]\d{8}$/, // 01xxxxxxxxx (11 digits starting with 01)
+      ];
+
+      return patterns.some((pattern) => pattern.test(cleanPhone));
     }
 
-    document.querySelector('.js-recover').addEventListener('click', (evt) => {
-      evt.preventDefault();
-      toggleContent(true);
-      history.pushState('', document.title, `${window.location.pathname}#recover`);
+    // Function to format phone number for API call
+    function formatPhoneForAPI(phone) {
+      // Remove all non-digit characters
+      const cleanPhone = phone.replace(/\D/g, '');
+
+      // If it starts with 88, return as is
+      if (cleanPhone.startsWith('88')) {
+        return '+' + cleanPhone;
+      }
+
+      // If it starts with 01, add 88 country code
+      if (cleanPhone.startsWith('01')) {
+        return '+88' + cleanPhone;
+      }
+
+      // If it's just the mobile part (1xxxxxxxxx), add 880
+      if (cleanPhone.length === 10 && cleanPhone.startsWith('1')) {
+        return '+880' + cleanPhone;
+      }
+
+      return '+88' + cleanPhone;
+    }
+
+    // Function to show messages
+    function showMessage(message, type = 'success') {
+      if (messageContainer) {
+        const messageElement = messageContainer.querySelector('.submit-message');
+        const messageText = messageContainer.querySelector('.submit-message-text');
+
+        if (messageElement && messageText) {
+          messageText.textContent = message;
+          messageElement.className = `submit-message submit-message--${type}`;
+          messageElement.style.display = 'block';
+
+          // Auto-hide success messages after 5 seconds
+          if (type === 'success') {
+            setTimeout(() => {
+              messageElement.style.display = 'none';
+            }, 5000);
+          }
+        }
+      }
+    }
+
+    // Function to hide messages
+    function hideMessage() {
+      if (messageContainer) {
+        const messageElement = messageContainer.querySelector('.submit-message');
+        if (messageElement) {
+          messageElement.style.display = 'none';
+        }
+      }
+    }
+
+    // Toggle between login and forgot password
+    function toggleForms(showForgotPassword) {
+      if (showForgotPassword) {
+        loginForm.classList.add('hidden');
+        forgotPasswordSection.classList.remove('hidden');
+      } else {
+        loginForm.classList.remove('hidden');
+        forgotPasswordSection.classList.add('hidden');
+      }
+      hideMessage(); // Hide messages when switching forms
+    }
+
+    // Handle forgot password link click
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('js-recover')) {
+        e.preventDefault();
+        toggleForms(true);
+        history.pushState('', document.title, `${window.location.pathname}#recover`);
+      }
     });
 
-    document.querySelector('.js-login').addEventListener('click', (evt) => {
-      evt.preventDefault();
-      toggleContent(false);
-      history.pushState('', document.title, window.location.pathname);
+    // Handle back to login (this will work with the forgot password form's back link)
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('js-login')) {
+        e.preventDefault();
+        toggleForms(false);
+        history.pushState('', document.title, window.location.pathname);
+      }
     });
 
-    if (window.location.hash === '#recover') toggleContent(true);
-    {% if recover_success %}toggleContent(true);{% endif %}
+    // Handle form submission
+    if (loginSubmitForm) {
+      loginSubmitForm.addEventListener('submit', (e) => {
+        hideMessage();
+        showMessage('Signing in...', 'loading');
+
+        // Disable submit button to prevent double submission
+        const submitButton = loginSubmitForm.querySelector('button[type="submit"]');
+        if (submitButton) {
+          submitButton.disabled = true;
+        }
+      });
+    }
+
+    // Check URL hash on page load
+    if (window.location.hash === '#recover') {
+      toggleForms(true);
+    }
+
+    // Check for URL parameters indicating success or error
+    const urlParams = new URLSearchParams(window.location.search);
+    const loginSuccess = urlParams.get('login');
+    const loginError = urlParams.get('error');
+
+    if (loginSuccess === 'success') {
+      showMessage('Login successful! Redirecting...', 'success');
+      // Redirect to account page after a short delay
+      setTimeout(() => {
+        window.location.href = '/account';
+      }, 1500);
+    } else if (loginError) {
+      const errorMessages = {
+        invalid_credentials: 'Invalid phone number or password. Please try again.',
+        account_locked: 'Your account has been locked. Please contact support.',
+        too_many_attempts: 'Too many login attempts. Please try again later.',
+        invalid_phone: 'Please enter a valid phone number.',
+        server_error: 'Server error. Please try again later.',
+      };
+      showMessage(errorMessages[loginError] || 'Login failed. Please try again.', 'error');
+    }
+
+    // Add real-time phone validation
+    if (phoneInput) {
+      phoneInput.addEventListener('input', (e) => {
+        const phone = e.target.value.trim();
+        const isValid = validatePhoneNumber(phone);
+
+        // Remove existing validation classes
+        phoneInput.classList.remove('input-valid', 'input-invalid');
+
+        if (phone.length > 0) {
+          if (isValid) {
+            phoneInput.classList.add('input-valid');
+            hideMessage();
+          } else {
+            phoneInput.classList.add('input-invalid');
+          }
+        }
+      });
+
+      phoneInput.addEventListener('blur', (e) => {
+        const phone = e.target.value.trim();
+        if (phone.length > 0 && !validatePhoneNumber(phone)) {
+          showMessage('Please enter a valid phone number ', 'error');
+        }
+      });
+    }
 
     // External Login
     if (loginButtonExternal) {
       loginButtonExternal.addEventListener('click', async () => {
         const phone = phoneInput ? phoneInput.value.trim() : '';
-        try {
-          const response = await fetch(`${API_BASE_URL}/login/+88${phone}`);
 
+        if (!phone) {
+          showMessage('Please enter your phone number.', 'error');
+          phoneInput?.focus();
+          return;
+        }
+
+        if (!validatePhoneNumber(phone)) {
+          showMessage('Please enter a valid phone number.', 'error');
+          phoneInput?.focus();
+          return;
+        }
+
+        // Show loading state
+        const originalText = loginButtonExternal.textContent;
+        loginButtonExternal.textContent = 'Signing in...';
+        loginButtonExternal.disabled = true;
+        hideMessage();
+        showMessage('Verifying credentials...', 'loading');
+
+        try {
+          const formattedPhone = formatPhoneForAPI(phone);
+          const response = await fetch(`${API_BASE_URL}/login/${formattedPhone}`);
+          console.log('response:', response);
           const data = await response.json();
-          if (!response.ok) {
-            alert('Login failed: ' + (data.message || 'Unknown error'));
+
+          console.log('data:', data);
+
+          if (!response.success) {
+            showMessage(data.message || 'Login failed. Please try again.', 'error');
             throw new Error(data.message || 'Login failed');
           }
 
           if (data.email) {
+            showMessage('Phone verified! Completing login...', 'success');
             emailInput.value = data.email;
-            loginSubmitButton.click();
+
+            // Small delay to show success message before form submission
+            setTimeout(() => {
+              loginSubmitForm.submit();
+            }, 500);
+          } else {
+            showMessage('Unable to verify phone number. Please try again.', 'error');
           }
         } catch (error) {
           console.error('Error:', error);
+          showMessage(data.message || 'Login failed. Please try again.', 'error');
+        } finally {
+          // Reset button state
+          loginButtonExternal.textContent = originalText;
+          loginButtonExternal.disabled = false;
         }
       });
     }
 
-    // Send OTP
-    if (recoverSubmitButton) {
-      recoverSubmitButton.addEventListener('click', async () => {
-        const phone = recoverPhoneInput ? recoverPhoneInput.value.trim() : '';
-        const cleanedPhoneNumber = `+88${phone}`;
-
-        if (!phone) {
-          alert('Please enter your phone number');
-          return;
-        }
-
-        try {
-          const response = await fetch(`${API_BASE_URL}/send-otp`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phone: cleanedPhoneNumber, register:false }),
-          });
-
-          const data = await response.json();
-
-          if (!response.ok) {
-            alert(data.message || 'OTP request failed');
-            return;
-          }
-
-          serverOtpCode = data.code;
-
-          // Hide phone input & submit, show OTP input & button
-          recoverPhoneInput.parentElement.style.display = 'none';
-          recoverSubmitButton.style.display = 'none';
-          otpFieldWrapper.style.display = 'block';
-          verifyOtpWrapper.style.display = 'block';
-
-          alert('OTP sent. Please check your phone.');
-
-        } catch (error) {
-          console.error('OTP request failed:', error);
-          alert('Something went wrong. Please try again.');
-        }
-      });
-    }
-
-    // Verify OTP
-    if (verifyOtpButton) {
-      verifyOtpButton.addEventListener('click', () => {
-        const userOtp = document.getElementById('recover-otp').value.trim();
-
-        if (!userOtp) {
-          alert('Please enter the OTP');
-          return;
-        }
-
-        if (userOtp === serverOtpCode) {
-          // Hide OTP input & button, show password fields
-          otpFieldWrapper.style.display = 'none';
-          verifyOtpWrapper.style.display = 'none';
-          passwordFields.forEach(field => field.style.display = 'block');
-          resetPasswordButton.parentElement.style.display = 'block';
-
-          alert('OTP verified. Please reset your password.');
-        } else {
-          alert('Invalid OTP. Please try again.');
-        }
-      });
-    }
-
-    // Reset Password
-    if (resetPasswordButton) {
-      resetPasswordButton.addEventListener('click', async () => {
-        const phone = recoverPhoneInput ? recoverPhoneInput.value.trim() : '';
-        const password = document.getElementById('new-password').value;
-        const confirmPassword = document.getElementById('confirm-password').value;
-
-        if (!password || !confirmPassword) {
-          alert('Please fill in both password fields');
-          return;
-        }
-
-        if (password !== confirmPassword) {
-          alert('Passwords do not match');
-          return;
-        }
-
-        try {
-          const response = await fetch(`${API_BASE_URL}/forgot-password`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              phone: `+88${phone}`,
-              password,
-             
-            }),
-          });
-
-          const result = await response.json();
-
-          if (!response.ok) {
-            alert(result.message || 'Password reset failed');
-            return;
-          }
-
-          alert('Password reset successful. Please log in.');
-          location.href = '/account/login';
-
-        } catch (error) {
-          console.error('Password reset error:', error);
-          alert('Something went wrong. Please try again.');
-        }
-      });
-    }
+    // Handle message close button clicks
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('message-close')) {
+        hideMessage();
+      }
+    });
   });
 </script>
 

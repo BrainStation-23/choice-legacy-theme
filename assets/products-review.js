@@ -1,9 +1,16 @@
-// products-review.js
+// products-review.js - Updated with Toast Notification Integration
 (function () {
-  const reviewAppContainers = document.querySelectorAll(".review-extension-container");
+  const reviewAppContainers = document.querySelectorAll(
+    ".review-extension-container"
+  );
+
+  // Initialize Toast Manager
+  const toastManager = new ToastNotificationManager();
+
   reviewAppContainers.forEach((container) => {
     const sectionId = container.dataset.sectionId;
     const productId = container.dataset.productId;
+    const productHandle = container.dataset.productHandle;
     const shopDomain = container.dataset.shopDomain;
     const starColorFilled = container.dataset.starFilledColor || "#FFD700";
     const starColorEmpty = container.dataset.starEmptyColor || "#CCCCCC";
@@ -11,30 +18,167 @@
 
     const API_BASE_URL = `/apps/${APP_SUB_PATH}/customer/product-review`;
 
-    const reviewForm = container.querySelector(`#review-submission-form-${sectionId}`);
-    const reviewListContainer = container.querySelector(`#reviews-list-${sectionId}`);
+    // Modal elements
+    const writeReviewBtn = container.querySelector(
+      `#write-review-btn-${sectionId}`
+    );
+    const reviewModal = container.querySelector(`#review-modal-${sectionId}`);
+    const modalCloseBtn = container.querySelector(
+      `#review-modal-close-${sectionId}`
+    );
+
+    // Form elements
+    const reviewForm = container.querySelector(
+      `#review-submission-form-${sectionId}`
+    );
+    const reviewListContainer = container.querySelector(
+      `#reviews-list-${sectionId}`
+    );
     const formMessage = container.querySelector(`#form-message-${sectionId}`);
-    const submitButton = container.querySelector(`#submit-review-btn-${sectionId}`);
-    const ratingStarsContainer = container.querySelector(`#form-star-rating-${sectionId}`);
-    const ratingValueInput = container.querySelector(`#rating-value-${sectionId}`);
-    const reviewsSpinner = container.querySelector(`#reviews-spinner-${sectionId}`);
-    const reviewSummaryContainer = container.querySelector(`#review-summary-${sectionId}`);
-    const reviewImageInput = container.querySelector(`#reviewImage-${sectionId}`);
+    const submitButton = container.querySelector(
+      `#submit-review-btn-${sectionId}`
+    );
+    const ratingStarsContainer = container.querySelector(
+      `#form-star-rating-${sectionId}`
+    );
+    const ratingValueInput = container.querySelector(
+      `#rating-value-${sectionId}`
+    );
+    const ratingText = container.querySelector(`#rating-text-${sectionId}`);
+    const reviewsSpinner = container.querySelector(
+      `#reviews-spinner-${sectionId}`
+    );
+    const reviewSummaryContainer = container.querySelector(
+      `#review-summary-${sectionId}`
+    );
+    const reviewImageInput = container.querySelector(
+      `#reviewImage-${sectionId}`
+    );
     const reviewTextInput = container.querySelector(`#reviewText-${sectionId}`);
+    const imagePreview = container.querySelector(`#image-preview-${sectionId}`);
+    const previewImg = container.querySelector(`#preview-img-${sectionId}`);
+    const removeImageBtn = container.querySelector(
+      `#remove-image-${sectionId}`
+    );
+    const imageUploadArea = container.querySelector(
+      `#image-upload-area-${sectionId}`
+    );
 
     // Error display elements
-    const imageErrorDiv = container.querySelector(`#reviewImage-error-${sectionId}`);
-    const ratingErrorDiv = container.querySelector(`#rating-error-${sectionId}`);
-    const reviewTextErrorDiv = container.querySelector(`#reviewText-error-${sectionId}`);
+    const imageErrorDiv = container.querySelector(
+      `#reviewImage-error-${sectionId}`
+    );
+    const ratingErrorDiv = container.querySelector(
+      `#rating-error-${sectionId}`
+    );
+    const reviewTextErrorDiv = container.querySelector(
+      `#reviewText-error-${sectionId}`
+    );
 
     let currentRating = 0;
     let uploadedImageUrl = null;
     let isUploadingImage = false;
     let allProductReviews = [];
 
+    // Rating text mapping
+    const ratingTexts = {
+      0: "No rating",
+      1: "Poor",
+      2: "Fair",
+      3: "Good",
+      4: "Very Good",
+      5: "Excellent",
+    };
+
+    // Modal functionality
+    function openModal() {
+      if (reviewModal) {
+        reviewModal.classList.add("show");
+        document.body.style.overflow = "hidden";
+      }
+    }
+
+    function closeModal() {
+      if (reviewModal) {
+        reviewModal.classList.remove("show");
+        document.body.style.overflow = "";
+        resetForm();
+      }
+    }
+
+    function resetForm() {
+      if (reviewForm) {
+        reviewForm.reset();
+        currentRating = 0;
+        uploadedImageUrl = null;
+        hideAllFieldErrors();
+
+        // Reset rating display
+        if (ratingValueInput) ratingValueInput.value = "";
+        if (ratingText) ratingText.textContent = ratingTexts[0];
+
+        // Reset stars
+        if (ratingStarsContainer) {
+          ratingStarsContainer.querySelectorAll(".star").forEach((s) => {
+            s.style.color = starColorEmpty;
+            s.classList.remove("filled");
+          });
+        }
+
+        // Reset image preview
+        if (imagePreview) imagePreview.style.display = "none";
+        if (previewImg) previewImg.src = "";
+
+        // Hide form message
+        if (formMessage) formMessage.style.display = "none";
+      }
+    }
+
+    // Event listeners for modal
+    if (writeReviewBtn) {
+      writeReviewBtn.addEventListener("click", openModal);
+    }
+
+    if (modalCloseBtn) {
+      modalCloseBtn.addEventListener("click", closeModal);
+    }
+
+    // Close modal when clicking outside
+    if (reviewModal) {
+      reviewModal.addEventListener("click", function (e) {
+        if (e.target === reviewModal) {
+          closeModal();
+        }
+      });
+    }
+
+    // Close modal with Escape key
+    document.addEventListener("keydown", function (e) {
+      if (
+        e.key === "Escape" &&
+        reviewModal &&
+        reviewModal.classList.contains("show")
+      ) {
+        closeModal();
+      }
+    });
+
+    // Image preview functionality
+    if (removeImageBtn) {
+      removeImageBtn.addEventListener("click", function () {
+        if (reviewImageInput) reviewImageInput.value = "";
+        uploadedImageUrl = null;
+        if (imagePreview) imagePreview.style.display = "none";
+        if (previewImg) previewImg.src = "";
+        hideFieldError("reviewImage");
+      });
+    }
+
     // Validation functions
     function showFieldError(fieldName, message) {
-      const errorDiv = container.querySelector(`#${fieldName}-error-${sectionId}`);
+      const errorDiv = container.querySelector(
+        `#${fieldName}-error-${sectionId}`
+      );
       const formGroup = errorDiv?.closest(".form-group");
 
       if (errorDiv) {
@@ -45,7 +189,9 @@
     }
 
     function hideFieldError(fieldName) {
-      const errorDiv = container.querySelector(`#${fieldName}-error-${sectionId}`);
+      const errorDiv = container.querySelector(
+        `#${fieldName}-error-${sectionId}`
+      );
       const formGroup = errorDiv?.closest(".form-group");
 
       if (errorDiv) {
@@ -75,7 +221,7 @@
         showFieldError("reviewText", "Review text is required");
         isValid = false;
       }
-      console.log(reviewImageInput, uploadedImageUrl);
+
       // Validate image (if required)
       if (!reviewImageInput || !uploadedImageUrl) {
         showFieldError("reviewImage", "Please upload an image");
@@ -89,13 +235,11 @@
       if (!errorDetails || !Array.isArray(errorDetails)) return;
 
       errorDetails.forEach((error) => {
-        // Parse error format: "\"fieldName\": "Error message"
         const match = error.match(/^"([^"]+)": "?(.+)"?$/);
         if (match) {
           const fieldName = match[1];
-          const message = match[2].replace(/^"|"$/g, ""); // Remove quotes from message
+          const message = match[2].replace(/^"|"$/g, "");
 
-          // Map backend field names to frontend field names
           const fieldMap = {
             rating: "rating",
             reviewText: "reviewText",
@@ -124,54 +268,69 @@
       });
     }
 
+    // Initialize stars
     if (ratingStarsContainer) {
-      ratingStarsContainer.querySelectorAll(".star").forEach((s) => (s.style.color = starColorEmpty));
+      ratingStarsContainer
+        .querySelectorAll(".star")
+        .forEach((s) => (s.style.color = starColorEmpty));
     }
 
     // Star Rating Logic for Form
     if (ratingStarsContainer) {
       const stars = ratingStarsContainer.querySelectorAll(".star");
+
       stars.forEach((star) => {
         star.addEventListener("click", function () {
           currentRating = parseInt(this.dataset.value);
           if (ratingValueInput) ratingValueInput.value = currentRating;
-          hideFieldError("rating"); // Hide error when rating is selected
+          if (ratingText) ratingText.textContent = ratingTexts[currentRating];
+          hideFieldError("rating");
 
-          stars.forEach((s) => {
-            const sValue = parseInt(s.dataset.value);
-            s.innerHTML = sValue <= currentRating ? "&#9733;" : "&#9734;";
-            s.style.color = sValue <= currentRating ? starColorFilled : starColorEmpty;
-          });
+          updateStarDisplay(stars, currentRating);
         });
+
         star.addEventListener("mouseover", function () {
           const hoverValue = parseInt(this.dataset.value);
-          stars.forEach((s) => {
-            const sValue = parseInt(s.dataset.value);
-            s.innerHTML = sValue <= hoverValue ? "&#9733;" : "&#9734;";
-            s.style.color = sValue <= hoverValue ? starColorFilled : starColorEmpty;
-          });
+          updateStarDisplay(stars, hoverValue);
         });
       });
+
       ratingStarsContainer.addEventListener("mouseout", function () {
-        stars.forEach((s) => {
-          const sValue = parseInt(s.dataset.value);
-          s.innerHTML = sValue <= currentRating ? "&#9733;" : "&#9734;";
-          s.style.color = sValue <= currentRating ? starColorFilled : starColorEmpty;
-        });
+        updateStarDisplay(stars, currentRating);
       });
     }
 
+    function updateStarDisplay(stars, rating) {
+      stars.forEach((s) => {
+        const sValue = parseInt(s.dataset.value);
+        if (sValue <= rating) {
+          s.style.color = starColorFilled;
+          s.classList.add("filled");
+        } else {
+          s.style.color = starColorEmpty;
+          s.classList.remove("filled");
+        }
+      });
+    }
+
+    // Image upload functionality
     if (reviewImageInput) {
       reviewImageInput.addEventListener("change", async function () {
         const file = this.files[0];
         if (!file) {
           uploadedImageUrl = null;
+          if (imagePreview) imagePreview.style.display = "none";
           return;
         }
 
         // Frontend validation for image
         const maxSize = 5 * 1024 * 1024; // 5MB
-        const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
+        const allowedTypes = [
+          "image/jpeg",
+          "image/jpg",
+          "image/png",
+          "image/gif",
+        ];
 
         if (file.size > maxSize) {
           showFieldError("reviewImage", "Image size must be less than 5MB");
@@ -180,12 +339,25 @@
         }
 
         if (!allowedTypes.includes(file.type)) {
-          showFieldError("reviewImage", "Only JPEG, PNG, and GIF images are allowed");
+          showFieldError(
+            "reviewImage",
+            "Only JPEG, PNG, and GIF images are allowed"
+          );
           this.value = "";
           return;
         }
 
         hideFieldError("reviewImage");
+
+        // Show preview
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          if (previewImg) previewImg.src = e.target.result;
+          if (imagePreview) imagePreview.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+
+        // Upload image
         isUploadingImage = true;
         if (submitButton) submitButton.disabled = true;
 
@@ -202,25 +374,22 @@
             const errorData = await response.json().catch(() => ({
               message: "Image upload failed with status: " + response.status,
             }));
-            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+            throw new Error(
+              errorData.message || `HTTP error! status: ${response.status}`
+            );
           }
 
           const result = await response.json();
           uploadedImageUrl = result.reviewImage;
 
-          if (formMessage) {
-            formMessage.textContent = "Image uploaded successfully!";
-            formMessage.style.color = "green";
-            formMessage.style.display = "block";
-            setTimeout(() => {
-              if (formMessage) formMessage.style.display = "none";
-            }, 3000);
-          }
+          // Use toast notification for image upload success
+          toastManager.show("Image uploaded successfully!", "success", 3000);
         } catch (error) {
           console.error("Error uploading image:", error);
           showFieldError("reviewImage", `Upload failed: ${error.message}`);
           uploadedImageUrl = null;
           this.value = "";
+          if (imagePreview) imagePreview.style.display = "none";
         } finally {
           isUploadingImage = false;
           if (submitButton) submitButton.disabled = false;
@@ -239,25 +408,22 @@
         }
 
         if (isUploadingImage) {
-          if (formMessage) {
-            formMessage.style.display = "block";
-            formMessage.textContent = "Please wait, image is still uploading...";
-            formMessage.style.color = "orange";
-          }
+          toastManager.show(
+            "Please wait, image is still uploading...",
+            "error",
+            4000
+          );
           return;
         }
 
         if (submitButton) submitButton.disabled = true;
-        if (formMessage) {
-          formMessage.style.display = "block";
-          formMessage.textContent = "Submitting review...";
-          formMessage.style.color = "blue";
-        }
+        toastManager.show("Submitting review...", "success", 2000);
 
         const reviewData = {
           reviewText: reviewTextInput.value.trim(),
           rating: currentRating,
           productId: productId,
+          productHandle: productHandle,
           reviewImage: uploadedImageUrl,
         };
 
@@ -274,50 +440,64 @@
 
           if (!response.ok) {
             if (result.details && Array.isArray(result.details)) {
-              // Handle backend validation errors
               parseBackendErrors(result.details);
-              if (formMessage) {
-                formMessage.textContent = result.message || "Please fix the errors above";
-                formMessage.style.color = "red";
-              }
+              toastManager.show(
+                result.message || "Please fix the errors above",
+                "error",
+                4000
+              );
             } else {
-              throw new Error(result.message || `HTTP error! status: ${response.status}`);
+              throw new Error(
+                result.message || `HTTP error! status: ${response.status}`
+              );
             }
           } else {
             // Success
-            if (formMessage) {
-              formMessage.textContent = result.message || "Review submitted successfully!";
-              formMessage.style.color = "green";
-            }
+            toastManager.show(
+              result.message || "Review submitted successfully!",
+              "success",
+              3000
+            );
 
-            // Reset form
-            this.reset();
-            currentRating = 0;
-            uploadedImageUrl = null;
-            hideAllFieldErrors();
-
-            if (ratingValueInput) ratingValueInput.value = "";
-            if (ratingStarsContainer) {
-              ratingStarsContainer.querySelectorAll(".star").forEach((s) => {
-                s.innerHTML = "&#9734;";
-                s.style.color = starColorEmpty;
-              });
-            }
-            fetchReviews();
+            // Close modal and refresh reviews
+            setTimeout(() => {
+              closeModal();
+              fetchReviews();
+            }, 1500);
           }
         } catch (error) {
           console.error("Error submitting review:", error);
-          if (formMessage) {
-            formMessage.textContent = `Error: ${error.message || "Could not submit review."}`;
-            formMessage.style.color = "red";
-          }
+          toastManager.show(
+            `Error: ${error.message || "Could not submit review."}`,
+            "error",
+            4000
+          );
         } finally {
           if (submitButton) submitButton.disabled = false;
-          setTimeout(() => {
-            if (formMessage) formMessage.style.display = "none";
-          }, 5000);
         }
       });
+    }
+
+    function createStarRating(rating) {
+      let starsHtml = "";
+      for (let i = 1; i <= 5; i++) {
+        if (i <= rating) {
+          starsHtml += `<span class="text-brand" style="font-size: 20px">★</span>`;
+        } else {
+          starsHtml += `<span class="text-bg" style="font-size: 20px;">★</span>`;
+        }
+      }
+      return starsHtml;
+    }
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      const options = { year: "numeric", month: "short", day: "numeric" };
+      return date.toLocaleDateString("en-US", options);
+    }
+
+    function getProductTitle(productId) {
+      return "Product Title"; // Replace with actual product title logic
     }
 
     // Fetch and Display Reviews
@@ -333,12 +513,16 @@
             "Content-Type": "application/json",
           },
         });
+
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({
             message: "Failed to fetch reviews with status: " + response.status,
           }));
-          throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+          throw new Error(
+            errorData.message || `HTTP error! status: ${response.status}`
+          );
         }
+
         const reviewResponse = await response?.json();
         console.log("Product review data:", reviewResponse?.data);
         allProductReviews = reviewResponse?.data || [];
@@ -347,9 +531,6 @@
       } catch (error) {
         console.error("Error fetching reviews:", error);
         allProductReviews = [];
-        if (reviewListContainer) {
-          reviewListContainer.innerHTML = `<p class="reviews-message">Could not load reviews. ${error.message}</p>`;
-        }
         calculateAndRenderSummary(allProductReviews);
       } finally {
         if (reviewsSpinner) reviewsSpinner.style.display = "none";
@@ -360,12 +541,14 @@
       if (!reviewSummaryContainer) return;
 
       if (!reviewsArray || reviewsArray.length === 0) {
-        reviewSummaryContainer.innerHTML = `<p>No reviews yet.</p>`;
         return;
       }
 
       const totalReviews = reviewsArray.length;
-      const sumOfRatings = reviewsArray.reduce((sum, review) => sum + (review.rating || 0), 0);
+      const sumOfRatings = reviewsArray.reduce(
+        (sum, review) => sum + (review.rating || 0),
+        0
+      );
       const averageRating = totalReviews > 0 ? sumOfRatings / totalReviews : 0;
 
       const fullStars = Math.floor(averageRating);
@@ -387,14 +570,8 @@
       }
 
       for (let i = 0; i < emptyStars; i++) {
-        starsHTML += `<span class="star" style="color:${starColorEmpty}; font-size: 1.2em;">&#9734;</span>`;
+        starsHTML += `<span class="star" style="font-size: 24px;">&#9734;</span>`;
       }
-
-      reviewSummaryContainer.innerHTML = `
-                <div class="summary-average-rating">
-                  ${starsHTML} (${totalReviews})
-                </div>
-            `;
     }
 
     function renderReviews(reviewsArray) {
@@ -403,46 +580,118 @@
 
       if (!reviewsArray || reviewsArray.length === 0) {
         if (showEmptyReviewsSetting) {
-          reviewListContainer.innerHTML = '<p class="no-reviews">Be the first to review this product!</p>';
+          reviewListContainer.innerHTML =
+            '<p class="no-reviews">Be the first to review this product!</p>';
         } else {
           reviewListContainer.innerHTML = "";
         }
         return;
       }
 
+      // Create slideshow component wrapper for mobile
+      const slideshowComponent = document.createElement("slideshow-component");
+      slideshowComponent.setAttribute("data-autoplay", "false");
+      slideshowComponent.setAttribute("data-autoplay-delay", "5000");
+      slideshowComponent.setAttribute("data-pause-on-hover", "true");
+      slideshowComponent.setAttribute("data-enable-carousel", "true");
+      slideshowComponent.setAttribute("data-show-progress-bar", "false");
+      slideshowComponent.className =
+        "flex-col gap-16 hidden md:hidden lg:hidden sm:flex";
+
+      // Create swiper container for mobile
+      const swiperContainer = document.createElement("div");
+      swiperContainer.className =
+        "swiper-container overflow-hidden pt-10 pr-4 pb-10 pl-4";
+
+      const swiperWrapper = document.createElement("div");
+      swiperWrapper.className = "swiper-wrapper flex";
+
+      // Create grid container for desktop
+      const gridContainer = document.createElement("div");
+      gridContainer.className =
+        "product-reviews-grid grid sm:hidden grid-cols-5 lg:grid-cols-4 md:grid-cols-3 gap-24 md:gap-16";
+
       reviewsArray.forEach((review) => {
-        const reviewItem = document.createElement("div");
-        reviewItem.className = "review-item";
+        const productTitle = getProductTitle(review.productId);
+        const reviewDate = review.reviewPlacedAt
+          ? formatDate(review.reviewPlacedAt)
+          : "N/A";
+        const ratingStarsHTML = createStarRating(review.rating);
+        const imageHtml = review.reviewImage
+          ? `<img src="${review.reviewImage}" class="w-full h-full" alt="${productTitle}" loading="lazy">`
+          : `<div></div>`;
 
-        const ratingStarsHTML = Array(5)
-          .fill(0)
-          .map((_, i) => {
-            const isFilled = i < review.rating;
-            return `<span class="star" style="color:${isFilled ? starColorFilled : starColorEmpty};">${
-              isFilled ? "&#9733;" : "&#9734;"
-            }</span>`;
-          })
-          .join("");
+        // Desktop grid item
+        const desktopReviewItem = document.createElement("div");
+        desktopReviewItem.className = "p-8 box-shadow flex flex-col gap-16";
+        desktopReviewItem.innerHTML = `
+      <div class="relative flex justify-center h-220">
+        ${imageHtml}
+        <div class="absolute bottom-16 bg-brand-2 pt-8 pr-10 pb-8 pl-10 flex gap-4_8 rounded-100">
+          ${ratingStarsHTML}
+        </div>
+      </div>
+      <div class="flex flex-col gap-8">
+        <div class="fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
+          ${productTitle}
+        </div>
+        <div class="ff-general-sans fs-14-lh-20-ls-0 fw-400 text-secondary">
+          ${escapeHTML(review.reviewText || "")}
+        </div>
+      </div>
+      <div class="flex flex-col gap-4">
+        <span class="fs-12-lh-16-ls-0_6pct ff-general-sans fw-400 text-label">
+          ${reviewDate}
+        </span>
+        <span class="fs-12-lh-16-ls-0_6pct ff-general-sans fw-400 text-label">
+          By ${review.customerName || "Anonymous"}
+        </span>
+      </div>
+    `;
 
-        const reviewDate = review.reviewPlacedAt ? new Date(review.reviewPlacedAt).toLocaleDateString() : "N/A";
+        // Mobile swiper slide
+        const mobileReviewItem = document.createElement("div");
+        mobileReviewItem.className = "swiper-slide w-auto";
+        mobileReviewItem.style.boxSizing = "border-box";
+        mobileReviewItem.innerHTML = `
+      <div class="p-8 box-shadow flex flex-col gap-16 w-300">
+        <div class="relative flex justify-center h-220">
+          ${imageHtml}
+          <div class="absolute bottom-16 bg-brand-2 pt-8 pr-10 pb-8 pl-10 flex gap-4_8 rounded-100">
+            ${ratingStarsHTML}
+          </div>
+        </div>
+        <div class="flex flex-col gap-8">
+          <div class="fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
+            ${productTitle}
+          </div>
+          <div class="ff-general-sans fs-14-lh-20-ls-0 fw-400 text-secondary">
+            ${escapeHTML(review.reviewText || "")}
+          </div>
+        </div>
+        <div class="flex flex-col gap-4">
+          <span class="fs-12-lh-16-ls-0_6pct ff-general-sans fw-400 text-label">
+            ${reviewDate}
+          </span>
+          <span class="fs-12-lh-16-ls-0_6pct ff-general-sans fw-400 text-label">
+            By ${review.customerName || "Anonymous"}
+          </span>
+        </div>
+      </div>
+    `;
 
-        reviewItem.innerHTML = `
-                    <div class="review-header">
-
-                        <span class="review-date">${reviewDate}</span>
-                    </div>
-                    <div class="review-rating">${ratingStarsHTML}</div>
-                    <p class="review-text">${escapeHTML(review.reviewText || "")}</p>
-                    ${
-                      review.reviewImage
-                        ? `<a href="${review.reviewImage}" target="_blank" rel="noopener noreferrer" class="review-image-link">
-         <img src="${review.reviewImage}" alt="Review Image" class="review-uploaded-image" loading="lazy">
-       </a>`
-                        : ""
-                    }
-                `;
-        reviewListContainer.appendChild(reviewItem);
+        // Add to respective containers
+        gridContainer.appendChild(desktopReviewItem);
+        swiperWrapper.appendChild(mobileReviewItem);
       });
+
+      // Assemble mobile slideshow
+      swiperContainer.appendChild(swiperWrapper);
+      slideshowComponent.appendChild(swiperContainer);
+
+      // Add both containers to the review list
+      reviewListContainer.appendChild(slideshowComponent);
+      reviewListContainer.appendChild(gridContainer);
     }
 
     function escapeHTML(str) {
@@ -456,15 +705,13 @@
         .replace(/'/g, "&#039;");
     }
 
-    if (productId && shopDomain) {
+    // Initialize the app
+    if (productId && productHandle && shopDomain) {
       fetchReviews();
     } else {
-      console.warn(`[Product Reviews App ${sectionId}]: Missing productId or shopDomain. Cannot fetch reviews.`);
-      if (reviewListContainer)
-        reviewListContainer.innerHTML =
-          '<p class="reviews-message">Configuration error (missing product/store data).</p>';
-      if (reviewSummaryContainer)
-        reviewSummaryContainer.innerHTML = "<p>Could not load review summary due to configuration error.</p>";
+      console.warn(
+        `[Product Reviews App ${sectionId}]: Missing productId, productHandle, or shopDomain. Cannot fetch reviews.`
+      );
       if (reviewsSpinner) reviewsSpinner.style.display = "none";
     }
   });

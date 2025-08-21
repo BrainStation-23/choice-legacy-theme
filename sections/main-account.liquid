@@ -1,98 +1,269 @@
-<div class="account-nav">   
-  <div class="container flex justify-center column account-buttons">     
-    <a class="btn btn--secondary" href="{{ routes.account_addresses_url }}">       
-      {{ 'customer.addresses.title' | t }}     
-    </a>     
-    <a class="btn btn--secondary" href="{{ routes.account_logout_url }}">       
-      {{- 'customer.account.log_out' | t -}}     
-    </a>   
-  </div> 
-</div>  
-<div class="reward-container">   
-  <div>     
-    <p>Your current reward points: <span id="currentPoints">0</span></p>   
-  </div>   
-  <div class="reward-section">     
-    <label for="pointsInput">Enter points to redeem:</label>     
-    <input type="number" id="pointsInput" placeholder="Enter points" min="1" step="1">     
-    <button id="rewardButton">Submit</button>   
-  </div> 
-  <div id="discountCodeSection" style="display: none;">
-    <p>Your discount code: <span id="discountCode"></span></p>
-    <button id="applyToCartButton">Apply to Cart</button>
+<div class="customer-account pt-40 pb-0">
+  <div class="customer-account__container flex gap-64 lg:gap-32 md:gap-24 page-width">
+    {% render 'customer-account-sidebar' %}
+
+    <div class="customer-account__content" style="flex: 2;">
+      <div id="my-profile-content" class="account-content-section" style="display: none;">
+        {% render 'account-information', customer: customer %}
+      </div>
+
+      <div id="my_beauties_profile-content" class="account-content-section" style="display: none;">
+        <div id="my_beauties_profile-section">
+          {% comment %} Add your beauties profile content here {% endcomment %}
+          <h2>My Beauties Profile</h2>
+          <p>Customize your beauty preferences and profile.</p>
+        </div>
+      </div>
+
+      <div id="orders-content" class="account-content-section" style="display: none;">
+        <div id="orders-section">
+          {% render 'orders-list', orders: customer.orders %}
+        </div>
+      </div>
+
+      {% comment %}
+        <div id="addresses-content" class="account-content-section" style="display: none;">
+          <div id="addresses-section">
+            {% render 'customer-addresses', customer: customer %}
+          </div>
+        </div>
+      {% endcomment %}
+
+      <div id="rewards-content" class="account-content-section" style="display: none;">
+        <div id="rewards-section">
+          {% render 'reward-points', section: section %}
+        </div>
+      </div>
+
+      <div id="wishlist-content" class="account-content-section" style="display: none;">
+        <div id="wishlist-section">
+          {% render 'wishlist' %}
+        </div>
+      </div>
+
+      <div id="reviews-content" class="account-content-section" style="display: none;">
+        <div id="reviews-section">
+          {% render 'reviews' %}
+        </div>
+      </div>
+    </div>
   </div>
-</div>  
-
-{% render "customer-service-management" %}
-
-{% render "beauty-profile" %}
-
-<div class="section customer">   
-  <div class="container">     
-    <div class="account-width mx-auto">       
-      <h1 class="text-center">{{ 'customer.account.title' | t }}</h1>        
-      <div class="mt-8 text-center">         
-        <h2 class="h3">{{ 'customer.orders.title' | t }}</h2>          
-        {%- paginate customer.orders by 20 -%}           
-          {%- if customer.orders.size > 0 -%}             
-            <table class="orders w-full mb-8">               
-              <caption class="visually-hidden">                 
-                {{ 'customer.orders.title' | t }}               
-              </caption>               
-              <thead>                 
-                <tr>                   
-                  <th>{{ 'customer.orders.order_number' | t }}</th>                   
-                  <th>{{ 'customer.orders.date' | t }}</th>                   
-                  <th>{{ 'customer.orders.payment_status' | t }}</th>                   
-                  <th>{{ 'customer.orders.fulfillment_status' | t }}</th>                   
-                  <th class="text-end">{{ 'customer.orders.total' | t }}</th>                 
-                </tr>               
-              </thead>               
-              <tbody>                 
-                {%- for order in customer.orders -%}                   
-                  <tr>                     
-                    <td class="orders__number" data-label="{{ 'customer.orders.order_number' | t }}">                       
-                      <a class="link" href="{{ order.customer_url }}">{{ order.name }}</a>                     
-                    </td>                     
-                    <td class="orders__date" data-label="{{ 'customer.orders.date' | t }}">                       
-                      {{- order.created_at | time_tag: format: 'date' -}}                     
-                    </td>                     
-                    <td class="orders__pay" data-label="{{ 'customer.orders.payment_status' | t }}">                       
-                      {{- order.financial_status_label -}}                     
-                    </td>                     
-                    <td class="orders__fulfil" data-label="{{ 'customer.orders.fulfillment_status' | t }}">                       
-                      {{- order.fulfillment_status_label -}}                     
-                    </td>                     
-                    <td class="orders__total text-end" data-label="{{ 'customer.orders.total' | t }}">                       
-                      {{- order.total_price | money_with_currency -}}                     
-                    </td>                     
-                    <td class="orders__link">                       
-                      <a class="btn btn--secondary w-full" href="{{ order.customer_url }}">                         
-                        {{- 'customer.orders.view_order' | t -}}                       
-                      </a>                     
-                    </td>                   
-                  </tr>                 
-                {%- endfor -%}               
-              </tbody>             
-            </table>           
-          {%- else -%}             
-            <p class="mb-8">{{ 'customer.orders.none' | t }}</p>           
-          {%- endif -%}            
-          {% comment %} {%- if paginate.pages > 1 -%}             
-            {% render 'pagination', paginate: paginate %}           
-          {%- endif -%}          {% endcomment %}
-        {%- endpaginate -%}       
-      </div>        
-      <div class="mt-16 text-center">         
-        <h2 class="h3">{{ 'customer.account.details' | t }}</h2>         
-        <div class="address-box mt-6 mx-auto">           
-          {{ customer.default_address | format_address }}           
-          <a class="link" href="{{ routes.account_addresses_url }}">             
-            {{ 'customer.account.view_addresses' | t }} ({{ customer.addresses_count }})           
-          </a>         
-        </div>       
-      </div>     
-    </div>   
-  </div> 
 </div>
-<script src="{{ 'reward-point.js' | asset_url }}" defer="defer"></script>
+
+<script>
+  let loadedSections = ['my-profile'];
+  let deliveryStatusLoaded = false;
+
+  async function fetchDeliveryStatuses() {
+    if (deliveryStatusLoaded) return;
+
+    const deliveryStatusElements = document.querySelectorAll('.delivery-status');
+
+    if (deliveryStatusElements.length === 0) {
+      console.log('No delivery status elements found');
+      return;
+    }
+
+    // Show loading state for all elements
+    deliveryStatusElements.forEach((element) => {
+      element.textContent = 'Loading...';
+    });
+
+    // Collect all order IDs
+    const orderIds = Array.from(deliveryStatusElements).map((element) => element.getAttribute('data-order-id'));
+
+    try {
+      // Make single API call with all order IDs
+      const orderIdsParam = orderIds.join(',');
+      const response = await fetch(
+        `/apps/${APP_SUB_PATH}/customer/account/delivery-status?order_ids=${encodeURIComponent(orderIdsParam)}`
+      );
+
+      const result = await response.json();
+
+      if (result.success && result.data) {
+        // Update each element with its corresponding status
+        deliveryStatusElements.forEach((element) => {
+          const orderId = element.getAttribute('data-order-id');
+          const orderData = result.data[orderId];
+
+          if (orderData) {
+            element.textContent = orderData.deliveryStatus;
+          } else {
+            element.textContent = 'Order Placed';
+          }
+        });
+      } else {
+        deliveryStatusElements.forEach((element) => {
+          element.textContent = 'Order Placed';
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching delivery statuses:', error);
+      deliveryStatusElements.forEach((element) => {
+        element.textContent = 'Order Placed';
+      });
+    }
+
+    deliveryStatusLoaded = true;
+  }
+
+  // Enhanced showAccountContent function with query parameter and URL path support
+  async function showAccountContent(contentType) {
+    // Hide all content sections
+    const contentSections = document.querySelectorAll('.account-content-section');
+    contentSections.forEach((section) => {
+      section.style.display = 'none';
+    });
+
+    // Handle special cases that redirect to other pages
+    if (contentType === 'logout') {
+      window.location.href = '/account/logout';
+      return;
+    }
+
+    // Handle addresses - redirect to addresses page
+    if (contentType === 'addresses') {
+      window.location.href = '/account/addresses';
+      return;
+    }
+
+    // Handle coming soon sections
+    if (contentType === 'coming-soon') {
+      alert('This section is coming soon!');
+      // Fall back to my-profile
+      contentType = 'my_profile';
+    }
+
+    // Normalize contentType for content ID matching
+    let targetContentType = contentType;
+
+    // Map content types to their corresponding content IDs
+    const contentMapping = {
+      'my-profile': 'my-profile',
+      my_profile: 'my-profile',
+      my_beauties_profile: 'my_beauties_profile',
+      orders: 'orders',
+      addresses: 'addresses',
+      rewards: 'rewards',
+      wishlist: 'wishlist',
+      reviews: 'reviews',
+    };
+
+    targetContentType = contentMapping[contentType] || 'my-profile';
+
+    // Show the target content section
+    const targetContent = document.getElementById(targetContentType + '-content');
+    if (targetContent) {
+      targetContent.style.display = 'block';
+
+      // Handle specific section logic
+      if (targetContentType === 'orders') {
+        setTimeout(() => {
+          fetchDeliveryStatuses();
+        }, 100);
+      }
+    } else {
+      // Fallback to my-profile if content section doesn't exist
+      const profileContent = document.getElementById('my-profile-content');
+      if (profileContent) {
+        profileContent.style.display = 'block';
+      }
+    }
+  }
+
+  // Get initial content type from URL parameters and path
+  function getInitialContentType() {
+    const currentPath = window.location.pathname;
+    const urlParams = new URLSearchParams(window.location.search);
+    const navParam = urlParams.get('nav');
+
+    // Check URL path for sub-pages first (highest priority)
+    if (currentPath.includes('/account/orders')) {
+      return 'orders';
+    }
+    if (currentPath.includes('/account/addresses')) {
+      return 'addresses';
+    }
+    if (currentPath.includes('/account/rewards')) {
+      return 'rewards';
+    }
+
+    // Then check query parameter
+    if (navParam) {
+      return navParam;
+    }
+
+    // Check for legacy hash-based navigation
+    if (window.location.hash === '#orders-section') {
+      return 'orders';
+    }
+
+    // Check for pagination (legacy orders page detection)
+    if (window.location.search.includes('page=')) {
+      return 'orders';
+    }
+
+    // Return default
+    return 'my_profile';
+  }
+
+  // Initialize page content based on URL parameters
+  function initializePageContent() {
+    const initialContentType = getInitialContentType();
+    showAccountContent(initialContentType);
+  }
+
+  // Handle browser back/forward navigation
+  function handlePopState() {
+    const contentType = getInitialContentType();
+    showAccountContent(contentType);
+  }
+
+  // Make showAccountContent globally available
+  window.showAccountContent = showAccountContent;
+
+  // Initialize when DOM is ready
+  document.addEventListener('DOMContentLoaded', function () {
+    initializePageContent();
+
+    // Listen for browser navigation events
+    window.addEventListener('popstate', handlePopState);
+  });
+</script>
+
+<style>
+  @media screen and (max-width: 768px) {
+    .customer-account__container {
+      flex-direction: column;
+      gap: 16px !important;
+    }
+  }
+
+  /* Content section transitions */
+  .account-content-section {
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  /* Loading and status styles */
+</style>
+
+{% schema %}
+{
+  "name": "Main Account",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "redeem_offer",
+      "name": "Redeem Offer",
+      "settings": [
+        {
+          "type": "number",
+          "id": "points_required",
+          "label": "Points"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

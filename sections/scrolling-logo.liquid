@@ -1,54 +1,43 @@
-{{ 'scrolling-logo.css' | asset_url | stylesheet_tag }}
 {% assign image_ratio = 1 %}
 
 <style>
-  .scrolling-logo-{{ section.id }} {
-    padding-top: {{ section.settings.padding_top }}px;
-    padding-bottom: {{ section.settings.padding_bottom }}px;
-    background-color: rgb(var(--color-primary-brand));
-  }
-
-  /* .scrolling-logo-{{ section.id }} .scrolling-logo__image-img {
-    width: {{ section.settings.image_width }}px;
-    height: {{ section.settings.image_height }}px;
-  } */
-
-  .scrolling-logo-{{ section.id }} .scrolling-logo__items {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-  }
-
-  .scrolling-logo-{{ section.id }} .scrolling-logo-placeholder-image {
+  .scrolling-logo-placeholder-image {
     width: {{ section.settings.image_width }}px;
     height: {{ section.settings.image_height }}px;
   }
 </style>
 
 <section
-  class="scrolling-logo scrolling-logo-{{ section.id }}  color-{{ section.settings.color_scheme }}"
+  class="scrolling-logo overflow-hidden relative w-full pt-16 pb-16 bg-brand sm:pt-10 sm:pb-10"
   data-section-type="scrolling-logo"
   data-speed="{{ section.settings.speed }}"
   data-pausable="{{ section.settings.pausable }}"
 >
-  <div class="scrolling-logo__items-container ">
+  <div class="flex overflow-hidden w-full m-0-auto sm:w-full sm:p-0 sm:m-0-auto">
     {% assign img_width = section.settings.image_width | default: 60 %}
     {% assign repeat_times = 2 %}
     {% for i in (1..repeat_times) %}
-      <div class="scrolling-logo__items scrolling-logo__items--normal gap-40" aria-hidden="true">
+      <div
+        class="scrolling-logo__items play-normal-0-to-n100  flex shrink-0 items-center gap-40 sm:gap-0"
+        aria-hidden="true"
+      >
         {% for block in section.blocks %}
-          <div class="scrolling-logo__item" id="block-{{ block.id }}" {{ block.shopify_attributes }}>
+          <div
+            class="scrolling-logo__item shrink-0 text-center"
+            id="block-{{ block.id }}"
+            {{ block.shopify_attributes }}
+          >
             {% if block.settings.image != blank %}
               {%- capture sizes %}{% render 'sizes-attribute'%}{% endcapture -%}
 
               {% if block.settings.link != blank %}
                 <a
                   href="{{ block.settings.link }}"
-                  class="scrolling-logo__image  media w-full "
+                  class=" media w-full "
                 >
               {% else %}
                 <div
-                  class="scrolling-logo__image media  w-full "
+                  class="media w-full "
                 >
               {% endif %}
               {% render 'image',
@@ -68,7 +57,7 @@
               {% endif %}
 
             {% else %}
-              <div class="scrolling-logo__image flex-row">
+              <div class=" flex-row">
                 {{ 'collection-1' | placeholder_svg_tag: 'scrolling-logo-placeholder-image' }}
               </div>
             {% endif %}
@@ -79,13 +68,12 @@
   </div>
 </section>
 
-{% comment %} <script src="{{ 'scrolling-logo.js' | asset_url }}" defer></script> {% endcomment %}
+<script src="{{ 'scrolling-logo.js' | asset_url }}" defer></script>
 
 {% schema %}
 {
   "name": "Scrolling logo",
   "tag": "section",
-  "class": "scrolling-logo",
   "max_blocks": 10,
   "disabled_on": {
     "groups": ["header", "footer"]
@@ -135,30 +123,6 @@
       "id": "pausable",
       "label": "Pause on hover",
       "default": true
-    },
-    {
-      "type": "header",
-      "content": "Padding"
-    },
-    {
-      "type": "range",
-      "id": "padding_top",
-      "label": "Top padding",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "default": 16,
-      "unit": "px"
-    },
-    {
-      "type": "range",
-      "id": "padding_bottom",
-      "label": "Bottom padding",
-      "min": 0,
-      "max": 40,
-      "step": 2,
-      "default": 16,
-      "unit": "px"
     }
   ],
   "blocks": [
