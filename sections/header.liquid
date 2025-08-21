@@ -1,72 +1,83 @@
 <style>
-    .mega-menu__link--undergarments {
-      background-color: {{ section.settings.undergarments_bg_color }};
-    }
+          .mega-menu__link--undergarments {
+            background-color: {{ section.settings.undergarments_bg_color }};
+          }
 
-  .header--search-focused .header__search--desktop .header__search-form {
-    max-width: none !important;
-    width: 40vw !important; /* Use viewport width for more predictable sizing */
-    z-index: 1000;
-    transition: all 0.3s ease, width 0.3s ease, max-width 0.3s ease;
-  }
+        .header--search-focused .header__search--desktop .header__search-form {
+          max-width: none !important;
+          width: 40vw !important; /* Use viewport width for more predictable sizing */
+          z-index: 1000;
+          transition: all 0.3s ease, width 0.3s ease, max-width 0.3s ease;
+        }
 
-  .header--search-focused .header__search-input {
-    padding-right: 12px; /* Reset padding */
-    width: 100%;
-  }
+        .header--search-focused .header__search-input {
+          padding-right: 12px; /* Reset padding */
+          width: 100%;
+        }
 
 
 
-  .header--search-focused .search-close-btn {
-    display: flex;
-  }
+        .header--search-focused .search-close-btn {
+          display: flex;
+        }
 
-  /* Don't center the header center container - keep original layout */
-  .header--search-focused .header__center {
-    flex: 1;
-  }
+        /* Don't center the header center container - keep original layout */
+        .header--search-focused .header__center {
+          flex: 1;
+        }
 
-  /* Hide elements when search is focused */
-  .header--search-focused .header__left,
-  .header--search-focused .header__right {
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-  }
+        /* Hide elements when search is focused */
+        .header--search-focused .header__left,
+        .header--search-focused .header__right {
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
 
-  .header--search-focused .header__center {
-    flex: 1;
-  }
+        .header--search-focused .header__center {
+          flex: 1;
+        }
 
-  /* Mobile focused search - expand from current width to 50% */
-  .header--search-focused .header__search--mobile .header__search-form {
-    width: 70% !important; /* Slightly larger on mobile for better usability */
-    max-width: none !important;
-    /* Remove margin: 0 auto to keep original position */
-    position: relative;
-    transition: all 0.3s ease, width 0.3s ease;
-  }
+        /* Mobile focused search - expand from current width to 50% */
+        .header--search-focused .header__search--mobile .header__search-form {
+          width: 70% !important; /* Slightly larger on mobile for better usability */
+          max-width: none !important;
+          /* Remove margin: 0 auto to keep original position */
+          position: relative;
+          transition: all 0.3s ease, width 0.3s ease;
+        }
 
-  .header--search-focused .header__search--mobile .header__search-input {
-    padding-right: 15px; /* Reset padding */
-    width: 100%;
-  }
+        .header--search-focused .header__search--mobile .header__search-input {
+          padding-right: 15px; /* Reset padding */
+          width: 100%;
+        }
 
-  .header--search-focused .header__search--mobile .search-close-btn {
-    display: flex;
-    position: absolute;
-    right: -40px; /* Position outside search box */
-    top: 50%;
-    transform: translateY(-50%);
-  }
+        .header--search-focused .header__search--mobile .search-close-btn {
+          display: flex;
+          position: absolute;
+          right: -40px; /* Position outside search box */
+          top: 50%;
+          transform: translateY(-50%);
+        }
 
-  .header--search-focused .header__search--mobile .header__search-button {
-    display: none;
-  }
+        .header--search-focused .header__search--mobile .header__search-button {
+          display: none;
+        }
 
-  /* Remove overlay - no background color change */
+        /* Remove overlay - no background color change */
   .search-overlay {
+    position: fixed;
+    top: var(--header-height, 80px); /* use header height variable */
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7); /* dim background */
+    z-index: 1001; /* keep below the search input but above content */
     display: none;
+  }
+
+  .header--search-focused .search-overlay {
+    display: block;
   }
 </style>
 
@@ -241,23 +252,25 @@
     const header = document.querySelector('.header');
     header.classList.add('header--search-focused');
     document.body.classList.add('search-focused');
+    document.body.style.overflow = 'hidden';
   }
 
   function closeSearchFocus() {
     const header = document.querySelector('.header');
     const searchInputs = document.querySelectorAll('.header__search-input');
+    const searchResults = document.querySelector('.predictive-search-results');
 
     header.classList.remove('header--search-focused');
     document.body.classList.remove('search-focused');
+    document.body.style.overflow = '';
 
-    // Clear search inputs and blur them
     searchInputs.forEach((input) => {
-      input.value = ''; // Clear the search box content
+      input.value = '';
       input.blur();
+      searchResults.innerHTML = '';
     });
   }
 
-  // Close search focus when pressing Escape
   document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape') {
       closeSearchFocus();
