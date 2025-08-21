@@ -1,48 +1,57 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
-  "name": "Undergarments Page",
   "sections": {
     "combo_banner_1": {
       "type": "combo-banner",
       "blocks": {
         "banner_1": {
-          "type": "banner"
+          "type": "banner",
+          "settings": {}
         }
       },
-      "block_order": ["banner_1"],
-      "settings": {
-        "slide_border_radius": 0,
-        "padding_top": 0,
-        "padding_bottom": 0
-      }
+      "block_order": [
+        "banner_1"
+      ],
+      "settings": {}
     },
     "combo_banner_2": {
       "type": "combo-banner",
       "blocks": {
         "banner_1": {
-          "type": "banner"
+          "type": "banner",
+          "settings": {}
         }
       },
-      "block_order": ["banner_1"],
-      "settings": {
-        "slide_border_radius": 0,
-        "padding_top": 0,
-        "padding_bottom": 0
-      }
+      "block_order": [
+        "banner_1"
+      ],
+      "settings": {}
     },
     "combo_banner_3": {
       "type": "combo-banner",
       "blocks": {
         "banner_1": {
-          "type": "banner"
+          "type": "banner",
+          "settings": {}
         }
       },
-      "block_order": ["banner_1"],
-      "settings": {
-        "slide_border_radius": 0,
-        "padding_top": 0,
-        "padding_bottom": 0
-      }
+      "block_order": [
+        "banner_1"
+      ],
+      "settings": {}
     }
   },
-  "order": ["combo_banner_1", "combo_banner_2", "combo_banner_3"]
+  "order": [
+    "combo_banner_1",
+    "combo_banner_2",
+    "combo_banner_3"
+  ]
 }
