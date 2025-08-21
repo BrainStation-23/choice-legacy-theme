@@ -2,39 +2,7 @@
     .mega-menu__link--undergarments {
       background-color: {{ section.settings.undergarments_bg_color }};
     }
-    @media screen and  (max-width: 1280px) {
-      .header__icon-link-title {
-        display: none;
-      }
-    }
-    .header__search-form {
-    position: relative;
 
-    transition: all 0.3s ease, width 0.3s ease, max-width 0.3s ease;
-  }
-
-  .header__search-input {
-    width: 100%;
-    padding: 10px 12px;
-    padding-left: 40px; /* make space for icon */
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 14px;
-    transition: all 0.3s ease;
-  }
-
-  .search-icon {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    align-items: center;
-    pointer-events: none;
-    transition: all 0.3s ease;
-  }
-
-  /* Focused search styles - expand from current width to 50% of header */
   .header--search-focused .header__search--desktop .header__search-form {
     max-width: none !important;
     width: 40vw !important; /* Use viewport width for more predictable sizing */
@@ -47,24 +15,7 @@
     width: 100%;
   }
 
-  /* Close button positioned outside search box on the right */
-  .search-close-btn {
-    position: absolute;
-    right: -70px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: 1px solid #ddd;
-    border-radius: 50%;
-    cursor: pointer;
-    padding: 8px;
-    display: none;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    z-index: 1001;
-    margin-left: 24px;
-  }
+
 
   .header--search-focused .search-close-btn {
     display: flex;
@@ -117,12 +68,6 @@
   .search-overlay {
     display: none;
   }
-  .predictive-search-results{
-    position: absolute;
-    z-index: 2000;
-    background: white;
-    width: 100%;
-  }
 </style>
 
 <header class="header header-{{ section.id }} pt-16 pb-16 sm:pl-0 sm:pr-0">
@@ -165,9 +110,14 @@
             id="predictive-search"
             class="predictive-search"
           >
-            <form action="{{ routes.search_url }}" method="get" class="header__search-form" role="search">
+            <form
+              action="{{ routes.search_url }}"
+              method="get"
+              class="header__search-form relative transition-all-3-ease "
+              role="search"
+            >
               <!-- Search Icon -->
-              <span class="search-icon">
+              <span class="search-icon absolute left-12 top-50pct translate-y--50 pointer-events-none flex items-center transition-all-3 ">
                 {% render 'search-icon', height: 24, width: 24 %}
               </span>
 
@@ -175,7 +125,7 @@
               <input
                 type="search"
                 name="q"
-                class="header__search-input ff-general-sans fs-14-lh-20-ls-0_1 fw-500"
+                class="header__search-input ff-general-sans fs-14-lh-20-ls-0_1 fw-500 w-full pl-40 pt-10 pb-10 pr-12 border-1 border-solid border-color rounded-6 transition-all-3"
                 placeholder="{{ 'sections.header.search' | t }}"
                 aria-label="Search"
                 onfocus="openSearchFocus()"
@@ -184,7 +134,7 @@
               <!-- Close Button -->
               <button
                 type="button"
-                class="search-close-btn"
+                class="search-close-btn hidden absolute right-minus-70 top-50pct translate-y--50 bg-none border-1 border-solid border-color rounded-full cursor-pointer p-8 items-center justify-center z-1001 transition-all-3"
                 onclick="closeSearchFocus()"
                 aria-label="Close search"
               >
@@ -201,7 +151,7 @@
           class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4"
         >
           {% render 'accounts-icon' %}
-          <span class="header__icon-link-title block sm:hidden ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
+          <span class="header__icon-link-title block md:hidden sm:hidden ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
             {{- 'sections.header.account' | t -}}
           </span>
         </a>
@@ -210,7 +160,7 @@
           class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4"
         >
           {% render 'cart-icon' %}
-          <span class="header__icon-link-title block sm:hidden ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
+          <span class="header__icon-link-title block md:hidden sm:hidden ff-general-sans fs-14-lh-100pct-ls-0 fw-600 ">
             {{- 'sections.header.cart' | t -}}
           </span>
         </a>
@@ -241,11 +191,16 @@
     </div>
 
     <div class="header__search--mobile hidden sm:block sm:relative">
-      <form action="{{ routes.search_url }}" method="get" class="header__search-form" role="search">
+      <form
+        action="{{ routes.search_url }}"
+        method="get"
+        class="header__search-form relative transition-all-3-ease"
+        role="search"
+      >
         <input
           type="search"
           name="q"
-          class="header__search-input border-1 border-solid border-color w-full h-40 rounded-6 pt-10 pr-15 pb-10 pl-45"
+          class="header__search-input ff-general-sans fs-14-lh-20-ls-0_1 fw-500 w-full pl-40 pt-10 pb-10 pr-12 border-1 border-solid border-color rounded-6 transition-all-3"
           placeholder="{{ 'sections.header.search' | t }}"
           aria-label="Search"
           onfocus="openSearchFocus()"
@@ -255,13 +210,15 @@
           class="header__search-button bg-none text-secondary-light absolute left-15 top-50pct translate-y--50 border-none p-0 cursor-pointer"
           aria-label="Submit search"
         >
-          {% render 'search-icon' %}
+          <span class="search-icon absolute left-12 top-50pct translate-y--50 pointer-events-none flex items-center transition-all-3 ">
+            {% render 'search-icon', height: 24, width: 24 %}
+          </span>
         </button>
 
         <!-- Mobile Close Button - positioned outside -->
         <button
           type="button"
-          class="search-close-btn bg-none text-secondary-light border-none p-0 cursor-pointer"
+          class="search-close-btn hidden absolute right-minus-70 top-50pct translate-y--50 bg-none border-1 border-solid border-color rounded-full cursor-pointer p-8 items-center justify-center z-1001 transition-all-3"
           onclick="closeSearchFocus()"
           aria-label="Close search"
         >
@@ -274,7 +231,7 @@
     {% render 'mobile-menu', section: section %}
   </div>
 </header>
-<div class="predictive-search-results"></div>
+<div class="predictive-search-results absolute z-9999 w-full bg-bg"></div>
 
 <!-- Desktop Mega Menu Navigation -->
 {% render 'desktop-menu', section: section %}
