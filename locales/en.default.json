@@ -301,6 +301,9 @@
         "description_placeholder": "Share your thoughts about this product...",
         "submit": "Submit",
         "no_rating": "No rating"
+      },
+      "combo_products": {
+        "save": "Save"
       }
     }
   },

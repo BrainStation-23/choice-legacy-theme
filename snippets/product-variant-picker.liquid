@@ -15,7 +15,36 @@
 <variant-picker class="variant-picker-element block mt-24 mb-24 flex flex-col gap-16" data-section-id="{{ section.id }}" data-product-url="{{ product.url | within: collection }}">
   {%- for option in product.options_with_values -%}
     <fieldset class="variant-picker__option-group border-none m-0 p-0 flex flex-col gap-8" role="radiogroup">
-      <legend class="variant-picker__option-name fw-500 fs-14-lh-20-ls-0_1 text-primary block">{{ option.name }}</legend>
+      
+      {%- if product.type == 'Combo products' -%}
+        {%- liquid
+          assign name_parts = option.name | split: '('
+          assign main_title = name_parts | first | strip
+          assign option_label = name_parts | last | remove: ')' | strip
+          assign main_title_handle = main_title | handle
+        -%}
+        <div class="border-1 border-solid border-color pt-6 pr-10 pb-6 pl-10 rounded-6 flex gap-8 max-w-392">
+          <div class="w-32 h-32 media block relative">
+            {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
+            {% render 'image',
+              image: all_products[main_title_handle].featured_image,
+              widths: '32, 32, 32, 32',
+              src_width: 32,
+              sizes: sizes,
+              class: 'img-fit',
+              quality: 1
+            %}
+          </div>
+          <div class="flex flex-col gap-4">
+            <legend class="variant-picker__option-name fw-500 fs-14-lh-20-ls-0_1 text-primary block">{{ main_title }}, {{ option.name }}</legend>
+            <p class="text-brand fw-500 fs-12-lh-16-ls-0_6">৳ {{ all_products[main_title_handle].price | divided_by: 100.0 }}</p>
+          </div>
+        </div>
+        <span class="text-secondary block fw-500 fs-14-lh-20-ls-0_1">{{ option_label }}: {{ option.selected_value }}</span>
+      {%- else -%}
+        <legend class="variant-picker__option-name fw-500 fs-14-lh-20-ls-0_1 text-primary block">{{ option.name }}</legend>
+      {%- endif -%}
+
       <div class="variant-picker__values flex flex-wrap gap-8">
         {%- for value in option.values -%}
           {%- liquid
@@ -160,13 +189,13 @@
     }
 
     _updateLegends(variant) {
-      if (!variant) return;
+      {% comment %} if (!variant) return;
       this.querySelectorAll('.variant-picker__option-group').forEach((fieldset, index) => {
         const legend = fieldset.querySelector('.variant-picker__option-name');
         const optionName = legend.textContent.split(':')[0].trim();
         const selectedValue = variant.options[index];
         legend.textContent = `${optionName}: ${selectedValue}`;
-      });
+      }); {% endcomment %}
     }
 
     getSelectedVariant() {

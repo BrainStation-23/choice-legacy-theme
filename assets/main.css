@@ -1342,6 +1342,9 @@ address {
 .max-w-100pc-32 {
   max-width: calc(100% - 32px);
 }
+.max-w-392 {
+  max-width: 392px;
+}
 .max-w-120 {
   max-width: 120px;
 }
