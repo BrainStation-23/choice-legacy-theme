@@ -78,7 +78,8 @@
     "header": {
       "account": "My Account",
       "cart": "Cart",
-      "search": "Search products, categories"
+      "search": "Search products",
+      "product": "Product"
     },
     "collections_list": {
       "default_title": "Collections"
