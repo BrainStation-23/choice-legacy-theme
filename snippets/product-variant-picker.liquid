@@ -65,8 +65,12 @@
       super();
       this.variants = {{ product.variants | json }};
       this.addEventListener('change', this.onVariantChange);
-      this._selectVariantFromUrl();
-      this._updateAvailability();
+      
+      // Use requestAnimationFrame to ensure DOM is fully ready
+      requestAnimationFrame(() => {
+        this._selectVariantFromUrl();
+        this._updateAvailability();
+      });
     }
 
     onVariantChange() {
@@ -115,23 +119,44 @@
     _selectVariantFromUrl() {
       const urlParams = new URLSearchParams(window.location.search);
       const variantIdFromUrl = urlParams.get('variant');
+      
       if (!variantIdFromUrl) {
-        this._updateLegends(this.getSelectedVariant());
+        // If no variant in URL, just update legends with currently selected variant
+        const selectedVariant = this.getSelectedVariant();
+        this._updateLegends(selectedVariant);
+        
+        // Set media to first variant's featured media if available
+        if (selectedVariant) {
+          this.setActiveMedia(selectedVariant);
+        }
         return;
-      };
+      }
 
       const targetVariant = this.variants.find(variant => variant.id.toString() === variantIdFromUrl);
-      if (!targetVariant) return;
+      if (!targetVariant) {
+        console.warn('Variant not found for ID:', variantIdFromUrl);
+        return;
+      }
 
+      // Select the radio buttons for this variant
       targetVariant.options.forEach((optionValue, index) => {
         const optionPosition = index + 1;
         const selector = `input[name="option-${optionPosition}"][value="${optionValue}"]`;
         const radioButton = this.querySelector(selector);
-        if (radioButton) radioButton.checked = true;
+        if (radioButton) {
+          radioButton.checked = true;
+        } else {
+          console.warn('Radio button not found for:', selector);
+        }
       });
 
-      this.setActiveMedia(targetVariant);
+      // Update the media gallery and legends
       this._updateLegends(targetVariant);
+      
+      // Wait a bit longer for media gallery to be initialized
+      setTimeout(() => {
+        this.setActiveMedia(targetVariant);
+      }, 100);
     }
 
     _updateLegends(variant) {
@@ -182,68 +207,83 @@
         });
     }
     
-    // Replace the setActiveMedia method in your variant picker with this:
-setActiveMedia(variant) {
-  if (!variant || !variant.featured_media) return;
-  
-  const featuredMediaId = variant.featured_media.id.toString();
-  
-  // Try to find the product media gallery element
-  const mediaGalleryElement = document.querySelector('product-media-gallery');
-  
-  if (mediaGalleryElement) {
-    // Use the new gallery's method to set active media
-    const success = mediaGalleryElement.setActiveMediaById(featuredMediaId);
-    if (success) {
-      console.log('Successfully changed to variant media:', featuredMediaId);
-      return;
-    }
-  }
-  
-  // Fallback: try to find gallery by section ID
-  const mediaGallery = document.querySelector(`#product-media-${this.dataset.sectionId}`);
-  if (!mediaGallery) return;
-  
-  const galleryElement = mediaGallery.querySelector('product-media-gallery');
-  if (galleryElement) {
-    const success = galleryElement.setActiveMediaById(featuredMediaId);
-    if (success) {
-      console.log('Successfully changed to variant media via section:', featuredMediaId);
-      return;
-    }
-  }
-  
-  // Final fallback for old gallery structure
-  console.log('Using fallback method for media change');
-  mediaGallery.querySelectorAll('.main-media-item, .swiper-slide').forEach(item => {
-    if (item.dataset.mediaId === featuredMediaId) {
-      if (item.classList.contains('swiper-slide')) {
-        // If it's a swiper slide, we need to trigger slide change
-        const swiperContainer = item.closest('.swiper');
-        if (swiperContainer && swiperContainer.swiper) {
-          const slideIndex = Array.from(item.parentNode.children).indexOf(item);
-          swiperContainer.swiper.slideTo(slideIndex);
-        }
-      } else {
-        // Old structure
-        item.classList.remove('opacity-0', 'invisible');
-        item.classList.add('opacity-1', 'visible');
+    setActiveMedia(variant) {
+      if (!variant || !variant.featured_media) {
+        console.log('No variant or featured media found');
+        return;
       }
-    } else if (item.classList.contains('main-media-item')) {
-      item.classList.remove('opacity-1', 'visible');
-      item.classList.add('opacity-0', 'invisible');
+      
+      const featuredMediaId = variant.featured_media.id.toString();
+      console.log('Setting active media to:', featuredMediaId);
+      
+      // Multiple attempts to find and update the media gallery
+      const attempts = [
+        () => {
+          const mediaGalleryElement = document.querySelector('product-media-gallery');
+          if (mediaGalleryElement && mediaGalleryElement.setActiveMediaById) {
+            return mediaGalleryElement.setActiveMediaById(featuredMediaId);
+          }
+          return false;
+        },
+        () => {
+          const mediaGallery = document.querySelector(`#product-media-${this.dataset.sectionId}`);
+          if (mediaGallery) {
+            const galleryElement = mediaGallery.querySelector('product-media-gallery');
+            if (galleryElement && galleryElement.setActiveMediaById) {
+              return galleryElement.setActiveMediaById(featuredMediaId);
+            }
+          }
+          return false;
+        },
+        () => {
+          // Fallback for direct swiper manipulation
+          const swiperContainer = document.querySelector('.product-media-swiper');
+          if (swiperContainer) {
+            const slides = swiperContainer.querySelectorAll('.swiper-slide');
+            let targetIndex = -1;
+            
+            slides.forEach((slide, index) => {
+              if (slide.dataset.mediaId === featuredMediaId) {
+                targetIndex = index;
+              }
+            });
+            
+            if (targetIndex !== -1 && swiperContainer.swiper) {
+              swiperContainer.swiper.slideTo(targetIndex);
+              console.log('Used swiper fallback to slide:', targetIndex);
+              return true;
+            }
+          }
+          return false;
+        }
+      ];
+      
+      // Try each method with delays
+      const tryMethod = (methodIndex = 0) => {
+        if (methodIndex >= attempts.length) {
+          console.log('All media gallery update methods failed');
+          return;
+        }
+        
+        try {
+          const success = attempts[methodIndex]();
+          if (success) {
+            console.log(`Media gallery updated using method ${methodIndex + 1}`);
+            return;
+          }
+        } catch (error) {
+          console.error(`Method ${methodIndex + 1} failed:`, error);
+        }
+        
+        // Try next method after a short delay
+        setTimeout(() => tryMethod(methodIndex + 1), 50);
+      };
+      
+      // Start trying methods immediately and with delays
+      tryMethod(0);
+      setTimeout(() => tryMethod(0), 100);
+      setTimeout(() => tryMethod(0), 250);
     }
-  });
-
-  // Update thumbnails
-  mediaGallery.querySelectorAll('.media-thumbnail').forEach(thumb => {
-    if (thumb.dataset.mediaId === featuredMediaId) {
-      thumb.classList.add('border-2', 'border-solid', 'border-brand');
-    } else {
-      thumb.classList.remove('border-2', 'border-solid', 'border-brand');
-    }
-  });
-}
   }
 
   if (!customElements.get('variant-picker')) {
