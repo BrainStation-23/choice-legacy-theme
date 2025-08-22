@@ -767,6 +767,9 @@ address {
 .z-9999 {
   z-index: 9999;
 }
+.z-10000 {
+  z-index: 10000;
+}
 .col-span-2 {
   grid-column: span 2 / span 2;
 }
@@ -858,6 +861,10 @@ address {
 .mr-2 {
   margin-right: calc(2 * var(--space-unit));
 }
+.mr-minus-16 {
+  margin-right: calc(-20 * var(--space-unit));
+}
+
 .mr-auto {
   margin-right: auto;
 }
@@ -1030,6 +1037,9 @@ address {
   .sm\:grid-cols-1 {
     grid-template-columns: 1fr;
   }
+  .sm\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
   .sm\:mt-0 {
     margin-top: 0;
   }
@@ -1072,6 +1082,13 @@ address {
 .max-h-0 {
   max-height: 0;
 }
+.max-h-500 {
+  max-height: 500px;
+}
+.max-h-550 {
+  max-height: 550px;
+}
+
 .h-full {
   height: 100%;
 }
@@ -1945,8 +1962,41 @@ address {
 .overflow-y-auto {
   overflow-y: auto;
 }
+.overflow-x-hidden {
+  overflow-x: hidden;
+}
+
 .whitespace-nowrap {
   white-space: nowrap;
+}
+
+.scrollbar-w-8::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-track-none::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thumb-brand::-webkit-scrollbar-thumb {
+  background: rgb(var(--color-primary-brand));
+  border-radius: 4px;
+}
+
+.scrollbar-thumb-brand-hover::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--color-primary-brand));
+}
+
+/* Firefox */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-color-brand {
+  scrollbar-color: rgb(var(--color-primary-brand)) transparent;
+}
+.scrollbar-gutter-stable {
+  scrollbar-gutter: stable;
 }
 .border {
   border-width: 1px;

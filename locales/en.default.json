@@ -79,7 +79,8 @@
       "account": "My Account",
       "cart": "Cart",
       "search": "Search products",
-      "product": "Product"
+      "product": "Product",
+      "enter": "Enter"
     },
     "collections_list": {
       "default_title": "Collections"
