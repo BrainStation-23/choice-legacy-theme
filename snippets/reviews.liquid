@@ -1,10 +1,8 @@
 <div class="review-page-container flex flex-col gap-24">
   <h2 class="ff-general-sans fw-500 fs-23-lh-24-ls-0 text-left text-primary">{{ 'review.title' | t }}</h2>
-
   <div id="review-loader">
     <p class="fw-500 fs-14-lh-16-ls-0">{{ 'review.loading' | t }}</p>
   </div>
-  
   <table class="review-desktop-view table sm:hidden" style="display: none;">
     <thead>
       <tr class="h-48">
@@ -17,22 +15,61 @@
     <tbody id="customer-review-items-desktop">
     </tbody>
   </table>
-
-  <div id="customer-review-items-mobile" class="review-mobile-view  hidden sm:flex flex-col gap-24" style="display: none;">
+  <div id="customer-review-items-mobile" class="review-mobile-view hidden sm:flex flex-col gap-24" style="display: none;">
   </div>
-
   <div id="empty-review-message" style="display: none;">
     <p>{{ 'review.empty' | t }}</p>
   </div>
+  
+  <div id="pagination-controls" class="flex justify-end items-center gap-8 mt-24" style="display: none;">
+  </div>
 </div>
+
+<style>
+  .pagination-btn:hover:not(:disabled) {
+    background-color: #f5f5f5;
+    border-color: #cccccc;
+  }
+  .pagination-btn.active {
+    border-color: rgb(var(--color-primary-brand));
+    color: rgb(var(--color-primary-brand))
+  }
+  .pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  .pagination-ellipsis {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: #888888;
+  }
+</style>
+
 <script>
-  window.allProductsData = {
-    {%- for product in collections.all.products -%}
-      "{{ product.handle }}": {
-        "title": {{ product.title | json }},
-        "image": {{ product.featured_image | image_url: width: 100 | json }}
+window.allProductsData = {
+  {%- for product in collections.all.products -%}
+    "{{ product.handle }}": {
+      "title": {{ product.title | json }},
+      "image": {{ product.featured_image | image_url: width: 100 | json }}
+    }{% unless forloop.last %},{% endunless %}
+  {%- endfor -%}
+};
+
+window.customerPurchasedProducts = [
+  {% for order in customer.orders %}
+    {% for item in order.line_items %}
+      {
+        "productId": {{ item.product_id }},
+        "productHandle": "{{ item.product.handle }}",
+        "variantId": {{ item.variant_id }},
+        "orderId": {{ order.id }}
       }{% unless forloop.last %},{% endunless %}
-    {%- endfor -%}
-  };
+    {% endfor %}{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+];
 </script>
+
 <script src="{{ 'reviews.js' | asset_url }}" defer></script>
