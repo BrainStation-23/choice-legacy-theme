@@ -75,6 +75,18 @@ document.addEventListener("DOMContentLoaded", function () {
     paginationControls.innerHTML = "";
     if (totalPages <= 1) return;
 
+    const leftArrowSvg = `
+      <svg width="20" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="15,18 9,12 15,6"></polyline>
+      </svg>
+    `;
+
+    const rightArrowSvg = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="9,18 15,12 9,6"></polyline>
+      </svg>
+    `;
+
     const createButton = (
       content,
       pageNum,
@@ -96,7 +108,11 @@ document.addEventListener("DOMContentLoaded", function () {
       return button;
     };
 
-    const prevBtn = createButton("<", currentPage - 1, currentPage <= 1);
+    const prevBtn = createButton(
+      leftArrowSvg,
+      currentPage - 1,
+      currentPage <= 1
+    );
     paginationControls.appendChild(prevBtn);
 
     let lastPageAdded = 0;
@@ -119,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const nextBtn = createButton(
-      ">",
+      rightArrowSvg,
       currentPage + 1,
       currentPage >= totalPages
     );
