@@ -55,14 +55,26 @@
           {%- liquid
             assign is_color_option = false
             assign downcased_option_name = option.name | downcase
-            assign first_character = value | slice: 0, 1
+            assign color_of_swatch = ''
+
             if downcased_option_name == 'color' or downcased_option_name == 'colour'
               assign is_color_option = true
               assign color_handle = value | handle
               assign color_swatch_image_file = color_handle | append: '.png'
               assign color_swatch_asset_url = images[color_swatch_image_file] | image_url: width: 44
-            elsif product.type == "Combo products" and first_character == "#"
-              assign is_color_option = true
+              assign color_of_swatch = value.swatch.color
+            elsif product.type == "Combo products"
+              for main_option in all_products[main_title_handle].options_with_values
+                for main_value in main_option.values
+                  if main_value == value
+                    assign main_downcased_option_name = main_option.name | downcase
+                    if main_downcased_option_name == 'color' or main_downcased_option_name == 'colour'
+                      assign is_color_option = true
+                      assign color_of_swatch = main_value.swatch.color
+                    endif
+                  endif
+                endfor
+              endfor
             endif
           -%}
           <div class="variant-picker__value-wrapper">
@@ -82,12 +94,12 @@
                   {%- if images[color_swatch_image_file] != blank -%}
                     background-image: url({{ color_swatch_asset_url }});
                   {%- else -%}
-                    background-color: {% if value.swatch.color != blank %}{{ value.swatch.color }}{% else %}{{ value }}{% endif %};
+                    background-color: {{ color_of_swatch }};
                   {%- endif -%}
                 {%- endif -%}
               "
             >
-              {% if is_color_option == false %}{{ value }}{% endif %}
+              {% if is_color_option == false %}{{ value }}{% endif %} 
             </label>
           </div>
         {%- endfor -%}
