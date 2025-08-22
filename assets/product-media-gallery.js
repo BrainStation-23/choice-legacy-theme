@@ -15,63 +15,62 @@ if (!customElements.get("product-media-gallery")) {
       }
 
       initSwiper() {
-        // Wait for Swiper to be available
+        let retries = 0;
+        const maxRetries = 50; // Try for 5 seconds (50 * 100ms)
+
         const initSwiperWhenReady = () => {
           if (typeof Swiper !== "undefined") {
             this.swiper = new Swiper(
               this.querySelector(".product-media-swiper"),
               {
+                // ... your existing Swiper config ...
                 slidesPerView: 1,
                 spaceBetween: 0,
                 loop: false,
-                grabCursor: false,
-
-                // Disable touch/drag interactions
                 allowTouchMove: false,
-                simulateTouch: false,
-                touchStartPreventDefault: false,
-
-                // Navigation (keep for programmatic control)
                 navigation: {
                   nextEl: ".slideshow-nav-button-next",
                   prevEl: ".slideshow-nav-button-prev",
                 },
-
-                // Pagination (optional)
                 pagination: {
                   el: ".swiper-pagination",
                   clickable: true,
                   dynamicBullets: true,
                 },
-
-                // Lazy loading
                 lazy: {
                   loadPrevNext: true,
                   loadPrevNextAmount: 2,
                 },
-
-                // Events
                 on: {
                   slideChange: () => {
                     this.pauseAllMedia();
                     this.updateActiveThumbnail();
                     this.playCurrentSlideVideo();
                   },
-
                   transitionStart: () => {
                     this.pauseAllMedia();
                   },
                 },
-
-                // Performance
                 watchOverflow: true,
                 observer: true,
                 observeParents: true,
               }
             );
+
+            // Announce that the gallery is ready for commands
+            this.dispatchEvent(
+              new CustomEvent("gallery:ready", { bubbles: true })
+            );
           } else {
-            // Retry after a short delay if Swiper is not ready
-            setTimeout(initSwiperWhenReady, 100);
+            retries++;
+            if (retries < maxRetries) {
+              // Retry after a short delay if Swiper is not ready
+              setTimeout(initSwiperWhenReady, 100);
+            } else {
+              console.error(
+                "Product Media Gallery: Swiper library did not load in time."
+              );
+            }
           }
         };
 
