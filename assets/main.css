@@ -232,8 +232,7 @@ mark {
 :root {
   --fluid-vw: 100vw;
   --fluid-max-vw: 1536;
-  --fluid-calc: (var(--fluid-vw) - 32rem) / (var(--fluid-max-vw) / 10 - 32) +
-    0.1rem;
+  --fluid-calc: (var(--fluid-vw) - 32rem) / (var(--fluid-max-vw) / 10 - 32) + 0.1rem;
   --fluid-1-065: ((1.065 / 10 - 0.1) * var(--fluid-calc));
   --fluid-1-125: ((1.125 / 10 - 0.1) * var(--fluid-calc));
   --fluid-1-2: ((1.2 / 10 - 0.1) * var(--fluid-calc));
@@ -688,6 +687,9 @@ address {
 .left-15 {
   left: 15px;
 }
+.left-12 {
+  left: 12px;
+}
 .left-24 {
   left: 24px;
 }
@@ -708,6 +710,9 @@ address {
 }
 .right-12 {
   right: 12px;
+}
+.right-minus-70 {
+  right: -70px;
 }
 .right-16 {
   right: 16px;
@@ -768,6 +773,9 @@ address {
 }
 .z-9999 {
   z-index: 9999;
+}
+.z-10000 {
+  z-index: 10000;
 }
 .col-span-2 {
   grid-column: span 2 / span 2;
@@ -860,6 +868,10 @@ address {
 .mr-2 {
   margin-right: calc(2 * var(--space-unit));
 }
+.mr-minus-16 {
+  margin-right: calc(-20 * var(--space-unit));
+}
+
 .mr-auto {
   margin-right: auto;
 }
@@ -1032,6 +1044,9 @@ address {
   .sm\:grid-cols-1 {
     grid-template-columns: 1fr;
   }
+  .sm\:grid-cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
   .sm\:mt-0 {
     margin-top: 0;
   }
@@ -1074,6 +1089,13 @@ address {
 .max-h-0 {
   max-height: 0;
 }
+.max-h-500 {
+  max-height: 500px;
+}
+.max-h-550 {
+  max-height: 550px;
+}
+
 .h-full {
   height: 100%;
 }
@@ -1965,8 +1987,41 @@ address {
 .overflow-y-auto {
   overflow-y: auto;
 }
+.overflow-x-hidden {
+  overflow-x: hidden;
+}
+
 .whitespace-nowrap {
   white-space: nowrap;
+}
+
+.scrollbar-w-8::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-track-none::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thumb-brand::-webkit-scrollbar-thumb {
+  background: rgb(var(--color-primary-brand));
+  border-radius: 4px;
+}
+
+.scrollbar-thumb-brand-hover::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--color-primary-brand));
+}
+
+/* Firefox */
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+
+.scrollbar-color-brand {
+  scrollbar-color: rgb(var(--color-primary-brand)) transparent;
+}
+.scrollbar-gutter-stable {
+  scrollbar-gutter: stable;
 }
 .border {
   border-width: 1px;
@@ -2530,15 +2585,12 @@ address {
   transform: translate(-50%, -50%);
 }
 .transition {
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    -webkit-backdrop-filter;
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    backdrop-filter;
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    backdrop-filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -3082,7 +3134,7 @@ legend {
 input,
 select {
   width: 100%;
-  padding: 0px 16px;
+  padding: 20px 16px 1px 16px;
   border: 1px solid rgba(var(--color-primary-text), 0.2);
   border-radius: 12px;
   transition: all 0.2s ease;
@@ -3106,9 +3158,7 @@ textarea + label {
 }
 
 input[type="date"] {
-  min-height: calc(
-    (var(--input-padding-y, 11px) + var(--input-border-width)) * 2 + 1.2em
-  );
+  min-height: calc((var(--input-padding-y, 11px) + var(--input-border-width)) * 2 + 1.2em);
   -webkit-appearance: none;
 }
 
@@ -3130,7 +3180,7 @@ input:focus + label,
 input:not(:placeholder-shown) + label,
 textarea:focus + label,
 textarea:not(:placeholder-shown) + label {
-  top: 4px;
+  top: 8px;
   left: 16px;
   font-size: 12px;
   transform: translateY(0);
@@ -3491,4 +3541,10 @@ tr:last-child td {
   border-top: 4px solid rgb(var(--color-primary-brand));
   border-radius: 50%;
   animation: spinner4 1s linear infinite;
+}
+.transition-all-3-ease {
+  transition: all 0.3s ease, width 0.3s ease, max-width 0.3s ease;
+}
+.transition-all-3 {
+  transition: all 0.3s ease;
 }

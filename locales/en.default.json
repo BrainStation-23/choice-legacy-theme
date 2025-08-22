@@ -78,7 +78,9 @@
     "header": {
       "account": "My Account",
       "cart": "Cart",
-      "search": "Search products, categories"
+      "search": "Search products",
+      "product": "Product",
+      "enter": "Enter"
     },
     "collections_list": {
       "default_title": "Collections"
@@ -292,9 +294,6 @@
         "description_placeholder": "Share your thoughts about this product...",
         "submit": "Submit",
         "no_rating": "No rating"
-      },
-      "combo_products": {
-        "save": "Save"
       }
     }
   },
