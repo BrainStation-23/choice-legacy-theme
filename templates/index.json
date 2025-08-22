@@ -65,62 +65,15 @@
           }
         }
       },
-      "block_order": ["slide-1", "slide-2", "slide-3"],
+      "block_order": [
+        "slide-1",
+        "slide-2",
+        "slide-3"
+      ],
       "settings": {
-        "slide_border_radius": 6,
         "enable_autoplay": true,
         "autoplay_delay": 4,
-        "pause_on_hover": true,
-        "padding_top": 12,
-        "padding_bottom": 12
-      }
-    },
-    "collections_list_Xyrebi": {
-      "type": "collections-list",
-      "blocks": {
-        "collection_item_iFEQpC": {
-          "type": "collection_item",
-          "settings": {
-            "collection": "skin-care"
-          }
-        },
-        "collection_item_LFkJNf": {
-          "type": "collection_item",
-          "settings": {
-            "collection": "mekup"
-          }
-        },
-        "collection_item_BJ46j7": {
-          "type": "collection_item",
-          "settings": {
-            "collection": "k-beauty"
-          }
-        },
-        "collection_item_FXhj4Y": {
-          "type": "collection_item",
-          "settings": {
-            "collection": "undergarment"
-          }
-        },
-        "collection_item_b8Twrj": {
-          "type": "collection_item",
-          "settings": {
-            "collection": "hairi-care"
-          }
-        }
-      },
-      "block_order": [
-        "collection_item_iFEQpC",
-        "collection_item_LFkJNf",
-        "collection_item_BJ46j7",
-        "collection_item_FXhj4Y",
-        "collection_item_b8Twrj"
-      ],
-      "name": "Collections List",
-      "settings": {
-        "title": "Shop Beauty Product By Category",
-        "padding_top": 40,
-        "padding_bottom": 40
+        "pause_on_hover": true
       }
     },
     "scrolling_logo_bEiWUD": {
@@ -198,9 +151,53 @@
         "image_height": 56,
         "image_width": 120,
         "speed": 40,
-        "pausable": true,
-        "padding_top": 16,
-        "padding_bottom": 16
+        "pausable": true
+      }
+    },
+    "collections_list_Xyrebi": {
+      "type": "collections-list",
+      "blocks": {
+        "collection_item_iFEQpC": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "skin-care"
+          }
+        },
+        "collection_item_LFkJNf": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "mekup"
+          }
+        },
+        "collection_item_BJ46j7": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "k-beauty"
+          }
+        },
+        "collection_item_FXhj4Y": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "undergarment"
+          }
+        },
+        "collection_item_b8Twrj": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "hairi-care"
+          }
+        }
+      },
+      "block_order": [
+        "collection_item_iFEQpC",
+        "collection_item_LFkJNf",
+        "collection_item_BJ46j7",
+        "collection_item_FXhj4Y",
+        "collection_item_b8Twrj"
+      ],
+      "name": "Collections List",
+      "settings": {
+        "title": "Shop Beauty Product By Category"
       }
     },
     "recommended-products": {
@@ -291,9 +288,7 @@
         "products_to_show": 8,
         "autoplay": false,
         "autoplay_delay": 5000,
-        "pause_on_hover": true,
-        "padding_top": 36,
-        "padding_bottom": 36
+        "pause_on_hover": true
       }
     },
     "combo_banner_bHzniW": {
@@ -309,13 +304,11 @@
           }
         }
       },
-      "block_order": ["banner_YhRMrw"],
+      "block_order": [
+        "banner_YhRMrw"
+      ],
       "name": "Combo Banner",
-      "settings": {
-        "slide_border_radius": 0,
-        "padding_top": 0,
-        "padding_bottom": 0
-      }
+      "settings": {}
     },
     "promotional-banner": {
       "type": "promotional-banner",
@@ -353,20 +346,20 @@
           }
         }
       },
-      "block_order": ["banner-1", "banner-2", "banner-3", "banner-4"],
-      "settings": {
-        "padding_top": 88,
-        "padding_bottom": 88
-      }
+      "block_order": [
+        "banner-1",
+        "banner-2",
+        "banner-3",
+        "banner-4"
+      ],
+      "settings": {}
     },
     "product_review_BbnWnJ": {
       "type": "product-review",
       "name": "Product Reviews",
       "settings": {
         "title": "SEE WHAT OUR CUSTOMERS ARE SAYING",
-        "autoplay": false,
-        "padding_top": 88,
-        "padding_bottom": 88
+        "autoplay": false
       }
     },
     "offer_banner_section_2": {
@@ -382,16 +375,12 @@
           }
         }
       },
-      "block_order": ["block_multi_slide_3"],
+      "block_order": [
+        "block_multi_slide_3"
+      ],
       "settings": {
-        "desktop_nav": "nav",
-        "mobile_nav": "nav",
-        "slide_border_radius": 6,
-        "enable_autoplay": false,
-        "autoplay_delay": 4,
-        "pause_on_hover": true,
-        "padding_top": 0,
-        "padding_bottom": 0
+        "show_nav_desktop": true,
+        "show_nav_mobile": true
       }
     },
     "product-video-carousel": {
@@ -462,13 +451,10 @@
       ],
       "settings": {
         "heading": "Watch & Shop",
-        "card_border_radius": 8,
         "image": "shopify://shop_images/d942d0b5eefcf34277e90a42c67e1deafe1c9d75.png",
         "autoplay": false,
         "autoplay_delay": 5000,
-        "pause_on_hover": true,
-        "padding_top": 88,
-        "padding_bottom": 88
+        "pause_on_hover": true
       }
     },
     "offer_banner_Uy36n7": {
@@ -484,17 +470,13 @@
           }
         }
       },
-      "block_order": ["banner_Mifqyk"],
+      "block_order": [
+        "banner_Mifqyk"
+      ],
       "name": "Offer Banner",
       "settings": {
-        "desktop_nav": "none",
-        "mobile_nav": "none",
-        "slide_border_radius": 0,
-        "enable_autoplay": false,
-        "autoplay_delay": 5,
-        "pause_on_hover": true,
-        "padding_top": 0,
-        "padding_bottom": 0
+        "show_nav_desktop": true,
+        "show_nav_mobile": true
       }
     },
     "featured-collections": {
@@ -533,14 +515,16 @@
           }
         }
       },
-      "block_order": ["collection_1", "collection_2", "collection_3", "collection_4"],
+      "block_order": [
+        "collection_1",
+        "collection_2",
+        "collection_3",
+        "collection_4"
+      ],
       "settings": {
-        "item_border_radius": 0,
         "autoplay": false,
         "autoplay_delay": 5000,
-        "pause_on_hover": true,
-        "padding_top": 36,
-        "padding_bottom": 36
+        "pause_on_hover": true
       }
     },
     "feature_blog_UGAHHQ": {
@@ -549,16 +533,14 @@
       "settings": {
         "blog": "our-blog",
         "blog_title": "Our Blog",
-        "blog_post_limit": 4,
-        "padding_top": 0,
-        "padding_bottom": 88
+        "blog_post_limit": 4
       }
     }
   },
   "order": [
     "slideshow",
-    "collections_list_Xyrebi",
     "scrolling_logo_bEiWUD",
+    "collections_list_Xyrebi",
     "recommended-products",
     "combo_banner_bHzniW",
     "promotional-banner",

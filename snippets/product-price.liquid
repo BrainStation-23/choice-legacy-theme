@@ -1,15 +1,35 @@
 {%- assign current_variant = product.selected_or_first_available_variant -%}
 
 <div id="price-{{ section.id }}" class="price">
-  <div class="flex flex-wrap items-center gap-8 mb-8" {{ block.shopify_attributes }}>
-    
-    <span data-product-price class="text-primary fw-500 fs-14-lh-24-ls-0">
-      {{ current_variant.price | money_with_currency }}
-    </span>
+ <div class="flex flex-wrap items-center gap-8 mb-8" {{ block.shopify_attributes }}>
+   <span data-compare-price class="line-through fw-500 fs-14-lh-24-ls-0 {% if current_variant.compare_at_price <= current_variant.price %}hidden{% endif %}">
+     {{ current_variant.compare_at_price | money_with_currency }}
+   </span>
 
-    <span data-compare-price class="line-through fw-500 fs-23-lh-24-ls-0 text-brand {% if current_variant.compare_at_price <= current_variant.price %}hidden{% endif %}">
-      {{ current_variant.compare_at_price | money_with_currency }}
-    </span>
+   <span data-product-price class="text-primary fw-500 fs-23-lh-24-ls-0 text-brand">
+     {{ current_variant.price | money_with_currency }}
+   </span>
 
-  </div>
+   {% if product.type == "Combo products" %}
+     
+     {%- assign total_price = 0 -%}
+     {%- for option in product.options_with_values -%}
+       {%- liquid
+         assign name_parts = option.name | split: '('
+         assign main_title = name_parts | first | strip
+         assign main_title_handle = main_title | handle
+         assign main_product = all_products[main_title_handle]
+         
+         if main_product
+           assign total_price = total_price | plus: main_product.price
+         endif
+       -%}
+     {%- endfor -%}
+     
+     {%- assign percentage = current_variant.price | times: 100 | divided_by: total_price | divided_by: 100.0 -%}
+     
+     <span class="bg-brand-2 pt-4 pr-8 pb-4 pl-8 fw-400 fs-12-lh-16-ls-0_072 rounded-100 flex items-center justify-center">{{ 'products.product.combo_products.save' | t }} {{ percentage }}%</span>
+   {% endif %}
+   
+ </div>
 </div>

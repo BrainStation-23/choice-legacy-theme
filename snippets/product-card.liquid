@@ -120,12 +120,13 @@
           {% endif %}
 
         <div class="flex flex-col gap-12">
-          {% assign product_rating_cnt = product.metafields.choice_legacy_reviews.rating_count %}
+          {% assign product_rating_cnt = product.metafields.product_reviews_app.product_reviews.value.ratingCount %}
+          {% assign product_average_rating = product.metafields.product_reviews_app.product_reviews.value.averageRating %}
           
           {% if show_rating and product_rating_cnt > 0 %}
               <div class="flex items-center gap-4">
                 <div class="product-card__rating rounded-100 pt-2 pr-4 pb-2 pl-4 text-bg bg-brand flex items-center flex gap-4">
-                  <span class="fw-500 fs-11-lh-normal-ls-0_5">{{ product.metafields.choice_legacy_reviews.avg_rating }}</span>
+                  <span class="fw-500 fs-11-lh-normal-ls-0_5">{{ product_average_rating }}</span>
                   {% render "icon-star" %}
                 </div>
                 <span class="product-card__rating-cnt text-label fw-500 fs-11-lh-11-ls--0_275">({{ product_rating_cnt }})</span>
