@@ -3095,7 +3095,7 @@ legend {
 input,
 select {
   width: 100%;
-  padding: 0px 16px;
+  padding: 20px 16px 1px 16px;
   border: 1px solid rgba(var(--color-primary-text), 0.2);
   border-radius: 12px;
   transition: all 0.2s ease;
@@ -3141,7 +3141,7 @@ input:focus + label,
 input:not(:placeholder-shown) + label,
 textarea:focus + label,
 textarea:not(:placeholder-shown) + label {
-  top: 4px;
+  top: 8px;
   left: 16px;
   font-size: 12px;
   transform: translateY(0);
