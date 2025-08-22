@@ -7,7 +7,7 @@
     data-intent="{{ section.settings.intent | default: 'related' }}"
   >
     <div class="page-width">
-      <div class="pt-4 pb-4 pl-4 pr-4 flex flex-col gap-48 overflow-hidden">
+      <div class="flex flex-col gap-48">
         {% if recommendations.performed and recommendations.products_count > 0 %}
           <slideshow-component
             data-autoplay="{{ section.settings.autoplay }}"
@@ -25,7 +25,7 @@
             class="flex flex-col gap-16"
           >
             {% if section.settings.heading != blank %}
-            <div class="flex justify-between items-end relative">
+              <div class="flex justify-between items-end relative">
                 <h2 class="fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct text-center">
                   {{ section.settings.heading }}
                 </h2>
@@ -36,7 +36,7 @@
                 </div>
               </div>
             {% endif %}
-            <div class="swiper-container">
+            <div class="swiper-container overflow-hidden pt-10 pr-4 pb-10 pl-4">
               <div class="swiper-wrapper flex items-stretch">
                 {% for recommendation in recommendations.products %}
                   <div class="swiper-slide w-auto h-auto flex flex-col">
