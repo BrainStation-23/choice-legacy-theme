@@ -1,18 +1,26 @@
 {%- if predictive_search.performed -%}
-  <div id="predictive-search-results">
+  <div
+    id="predictive-search-results"
+    class="flex flex-col gap-24 page-width pt-24 pb-32 sm:pt-16 sm:pb-16 max-h-550"
+  >
     {%- if predictive_search.resources.products.size > 0 -%}
-      <h3 id="predictive-search-products">Products</h3>
-      <ul role="listbox" aria-labelledby="predictive-search-products">
-        {%- for product in predictive_search.resources.products -%}
-          <li role="option">
-            <a href="{{ product.url }}">
-              {{ product | image_url: width: 50 | image_tag }}
-              <span>{{ product.title }}</span>
-            </a>
-          </li>
+      <h1 class="m-0 ff-bebas-neue fs-36-lh-40-ls-0 fw-400 sm:fs-21-lh-24-ls-1_2pct">
+        {{ 'sections.header.product' | t }}
+      </h1>
+      <div
+        role="listbox"
+        aria-labelledby="predictive-search-products"
+        id="predictive-search-products"
+        class="grid grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-16 max-h-500 overflow-y-auto overflow-x-hidden scrollbar-thin scrollbar-color-brand scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-gutter-stable mr-minus-16"
+      >
+        {%- for product in predictive_search.resources.products limit: 10 -%}
+          {% render 'product-card', product: product %}
         {%- endfor -%}
-      </ul>
+      </div>
+    {% else %}
+      <h1 class="m-0 text-center justify-center flex ff-bebas-neue fs-36-lh-40-ls-0 fw-400">
+        No products found for "{{ predictive_search.query }}"
+      </h1>
     {%- endif -%}
-    <button>Search for “{{ predictive_search.terms }}”</button>
   </div>
 {%- endif -%}

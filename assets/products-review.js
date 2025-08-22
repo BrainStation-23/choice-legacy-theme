@@ -60,20 +60,6 @@
     const removeImageBtn = container.querySelector(
       `#remove-image-${sectionId}`
     );
-    const imageUploadArea = container.querySelector(
-      `#image-upload-area-${sectionId}`
-    );
-
-    // Error display elements
-    const imageErrorDiv = container.querySelector(
-      `#reviewImage-error-${sectionId}`
-    );
-    const ratingErrorDiv = container.querySelector(
-      `#rating-error-${sectionId}`
-    );
-    const reviewTextErrorDiv = container.querySelector(
-      `#reviewText-error-${sectionId}`
-    );
 
     let currentRating = 0;
     let uploadedImageUrl = null;
@@ -183,7 +169,7 @@
 
       if (errorDiv) {
         errorDiv.textContent = message;
-        errorDiv.style.display = "block";
+        errorDiv.style.display = "flex";
         formGroup?.classList.add("has-error");
       }
     }
@@ -417,7 +403,6 @@
         }
 
         if (submitButton) submitButton.disabled = true;
-        toastManager.show("Submitting review...", "success", 2000);
 
         const reviewData = {
           reviewText: reviewTextInput.value.trim(),

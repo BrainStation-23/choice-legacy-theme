@@ -1,11 +1,15 @@
-{% assign product_rating_cnt = product.metafields.choice_legacy_reviews.rating_count %}
+{% assign review_data = product.metafields.product_reviews_app.product_reviews %}
 
-{% if product_rating_cnt > 0 %}
-  <div class="flex items-center gap-4 mb-24" {{ block.shopify_attributes }}>
-    <div class="rounded-100 pt-2 pr-4 pb-2 pl-7 text-bg bg-brand flex items-center flex gap-4">
-      <span class="fw-500 fs-14-lh-20-ls-0_1">{{ product.metafields.choice_legacy_reviews.avg_rating }}</span>
-      {% render "icon-star" %}
+{% if review_data != blank %}
+  {% assign product_rating_cnt = review_data.value.ratingCount | default: 0 %}
+
+  {% if product_rating_cnt > 0 %}
+    <div class="flex items-center gap-4 mb-24" {{ block.shopify_attributes }}>
+      <div class="rounded-100 pt-2 pr-4 pb-2 pl-7 text-bg bg-brand flex items-center flex gap-4">
+        <span class="fw-500 fs-14-lh-20-ls-0_1">{{ review_data.value.averageRating }}</span>
+        {% render "icon-star" %}
+      </div>
+      <span class="text-label fw-500 fs-14-lh-20-ls-0">({{ product_rating_cnt }})</span>
     </div>
-    <span class="text-label fw-500 fs-14-lh-20-ls-0">({{ product_rating_cnt }})</span>
-  </div>
+  {% endif %}
 {% endif %}
