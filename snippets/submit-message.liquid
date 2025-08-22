@@ -1,0 +1,177 @@
+<!-- submit-message.liquid snippet -->
+<div class="submit-message" style="display: none;">
+  <div class="submit-message-content">
+    <div class="submit-message-icon">
+      <!-- Success Icon -->
+      <svg class="submit-message-icon-success" width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M16.7 5.3L8.5 13.5L3.3 8.3L4.7 6.9L8.5 10.7L15.3 3.9L16.7 5.3Z" fill="currentColor"/>
+      </svg>
+
+      <!-- Error Icon -->
+      <svg class="submit-message-icon-error" width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM11 15H9V13H11V15ZM11 11H9V5H11V11Z" fill="currentColor"/>
+      </svg>
+
+      <!-- Loading Icon -->
+      <svg class="submit-message-icon-loading" width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M10 0C4.48 0 0 4.48 0 10H2C2 5.58 5.58 2 10 2V0Z" fill="currentColor">
+          <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 10 10" to="360 10 10" dur="1s" repeatCount="indefinite"/>
+        </path>
+      </svg>
+    </div>
+
+    <span class="submit-message-text">Message will appear here</span>
+  </div>
+</div>
+
+<style>
+  .submit-message {
+    border-radius: 8px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    border: 1px solid;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.4;
+    animation: slideIn 0.3s ease-out;
+  }
+
+  .submit-message-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .submit-message-icon {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .submit-message-text {
+    flex: 1;
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .message-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 2px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+  }
+
+  .message-close:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  /* Success State */
+  .submit-message--success {
+    background-color: #f0f9ff;
+    border-color: #22c55e;
+    color: #059669;
+  }
+
+  .submit-message--success .submit-message-icon-success {
+    display: block;
+  }
+
+  .submit-message--success .submit-message-icon-error,
+  .submit-message--success .submit-message-icon-loading {
+    display: none;
+  }
+
+  /* Error State */
+  .submit-message--error {
+    background-color: #fef2f2;
+    border-color: #ef4444;
+    color: #dc2626;
+  }
+
+  .submit-message--error .submit-message-icon-error {
+    display: block;
+  }
+
+  .submit-message--error .submit-message-icon-success,
+  .submit-message--error .submit-message-icon-loading {
+    display: none;
+  }
+
+  /* Loading State */
+  .submit-message--loading {
+    background-color: #f8fafc;
+    border-color: #64748b;
+    color: #475569;
+  }
+
+  .submit-message--loading .submit-message-icon-loading {
+    display: block;
+  }
+
+  .submit-message--loading .submit-message-icon-success,
+  .submit-message--loading .submit-message-icon-error {
+    display: none;
+  }
+
+  .submit-message--loading .message-close {
+    display: none;
+  }
+
+  /* Animation */
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .submit-message {
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+
+    .submit-message-content {
+      gap: 10px;
+    }
+
+    .submit-message-icon {
+      width: 18px;
+      height: 18px;
+    }
+  }
+
+  /* Phone input validation styles */
+  .input-valid {
+    border-color: #22c55e !important;
+    background-color: #f0f9ff;
+  }
+
+  .input-invalid {
+    border-color: #ef4444 !important;
+    background-color: #fef2f2;
+  }
+
+  .input-valid:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+  }
+
+  .input-invalid:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+  }
+</style>

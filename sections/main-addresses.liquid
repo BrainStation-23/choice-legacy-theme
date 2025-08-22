@@ -2,9 +2,14 @@
 <div class="customer-account__container flex flex-row sm:flex-col  gap-64 page-width pt-40 pb-40 sm:pt-16 sm:pb-16 sm:gap-24">
   <div class="">{% render 'customer-account-sidebar' %}</div>
   <div class="flex flex-col gap-24 sm:w-full">
-    <h2 id="manage-address-heading" class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500">
-      {{ 'customer.addresses.manage_address' | t }}
-    </h2>
+    <div class="flex gap-24" id="manage-address-heading">
+      <h2 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500">
+        {{ 'customer.addresses.manage_address' | t }}
+      </h2>
+      <button id="add-address-btn" class="button--outline fs-14-lh-100pct-ls-0 fw-600 cursor-pointer border-1_5">
+        {{ 'customer.addresses.add_address' | t }}
+      </button>
+    </div>
 
     <div id="address-list-container" class="grid grid-cols-2  sm:grid-cols-1 gap-24">
       {%- for address in customer.addresses -%}
@@ -51,6 +56,21 @@
           </div>
         </div>
       {%- endfor -%}
+    </div>
+
+    <!-- Add Address Form Container -->
+    <div id="add-form-container" style="display: none;">
+      <div id="add-form-wrapper" class="flex flex-col gap-24 sm:w-full">
+        <div id="add-form-header" class="mb-24 flex sm:flex items-center gap-16 ">
+          <div id="add-back-arrow" class="sm:flex-1 cursor-pointer">
+            {% render 'icon-left-arrow' %}
+          </div>
+          <h2 id="add-heading" class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500 sm:flex-2 text-left">
+            {{- 'customer.addresses.add_address' | t -}}
+          </h2>
+        </div>
+        {% render 'address-add-form' %}
+      </div>
     </div>
 
     <!-- Address Edit Form Include -->
@@ -102,12 +122,51 @@
   document.addEventListener('DOMContentLoaded', function () {
     const addressListContainer = document.getElementById('address-list-container');
     const manageAddressHeading = document.getElementById('manage-address-heading');
+    const addFormContainer = document.getElementById('add-form-container');
 
     // Single event listener for all button clicks using event delegation
     document.addEventListener('click', function (e) {
       const clickedElementId = e.target.id;
 
-      // Check if the clicked element or its parent is a back arrow
+      // Handle Add Address Button Click
+      if (clickedElementId === 'add-address-btn') {
+        e.preventDefault();
+
+        // Hide the manage address heading and address list
+        manageAddressHeading.style.display = 'none';
+        addressListContainer.style.setProperty('display', 'none', 'important');
+
+        // Hide all edit forms
+        const allEditForms = document.querySelectorAll('[id^="edit-form-container-"]');
+        allEditForms.forEach((container) => {
+          container.style.display = 'none';
+        });
+
+        // Show the add form
+        addFormContainer.style.display = 'flex';
+        return;
+      }
+
+      // Handle Add Form Back Arrow Click
+      if (clickedElementId === 'add-back-arrow' || e.target.closest('#add-back-arrow')) {
+        e.preventDefault();
+
+        // Hide the add form
+        addFormContainer.style.display = 'none';
+
+        // Hide all edit forms
+        const allEditForms = document.querySelectorAll('[id^="edit-form-container-"]');
+        allEditForms.forEach((container) => {
+          container.style.display = 'none';
+        });
+
+        // Show the manage address heading and address list
+        manageAddressHeading.style.display = 'flex';
+        addressListContainer.style.display = 'grid';
+        return;
+      }
+
+      // Check if the clicked element or its parent is a back arrow for edit forms
       let backArrowElement = null;
       let addressId = null;
 
@@ -134,8 +193,11 @@
           container.style.display = 'none';
         });
 
+        // Hide add form
+        addFormContainer.style.display = 'none';
+
         // Show the manage address heading and address list
-        manageAddressHeading.style.display = 'block';
+        manageAddressHeading.style.display = 'flex';
         addressListContainer.style.display = 'grid';
         return; // Exit early to prevent other handlers
       }
@@ -149,6 +211,9 @@
           // Hide the manage address heading and address list
           manageAddressHeading.style.display = 'none';
           addressListContainer.style.setProperty('display', 'none', 'important');
+
+          // Hide add form
+          addFormContainer.style.display = 'none';
 
           // Hide all other edit forms
           const allEditForms = document.querySelectorAll('[id^="edit-form-container-"]');
@@ -191,9 +256,11 @@
     document.addEventListener('submit', function (e) {
       const form = e.target;
 
-      // Check if this is an address edit form by checking if it's inside an edit container
+      // Check if this is an address form (edit or add)
       const editContainer = form.closest('[id^="edit-form-container-"]');
-      if (editContainer) {
+      const addContainer = form.closest('#add-form-container');
+
+      if (editContainer || addContainer) {
         console.log('Address form submitted');
 
         // Find the submit button for this specific form
@@ -215,14 +282,20 @@
 
     // Handle page reload after successful submission
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('updated') === 'true' || window.location.hash === '#updated') {
-      // Hide all edit forms
+    if (
+      urlParams.get('updated') === 'true' ||
+      urlParams.get('added') === 'true' ||
+      window.location.hash === '#updated' ||
+      window.location.hash === '#added'
+    ) {
+      // Hide all forms
       const allEditForms = document.querySelectorAll('[id^="edit-form-container-"]');
       allEditForms.forEach((container) => {
         container.style.display = 'none';
       });
+      addFormContainer.style.display = 'none';
 
-      // Show both heading and address list after successful update
+      // Show both heading and address list after successful update/add
       manageAddressHeading.style.display = 'block';
       addressListContainer.style.display = 'grid';
     }

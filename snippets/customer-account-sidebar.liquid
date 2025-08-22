@@ -223,7 +223,7 @@
     navigateToTab(contentType) {
       // Handle logout separately
       if (contentType === 'logout') {
-        console.log('Logout clicked');
+        window.location.href = '{{ routes.account_logout_url }}';
         return;
       }
 
