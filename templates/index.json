@@ -535,6 +535,47 @@
         "blog_title": "Our Blog",
         "blog_post_limit": 4
       }
+    },
+    "service_iMXYKq": {
+      "type": "service",
+      "blocks": {
+        "service_item_H6xzdw": {
+          "type": "service_item",
+          "settings": {
+            "heading": "Service Title",
+            "subheading": "Service description goes here"
+          }
+        },
+        "service_item_4GrLrg": {
+          "type": "service_item",
+          "settings": {
+            "heading": "Service Title",
+            "subheading": "Service description goes here"
+          }
+        },
+        "service_item_xTrxLW": {
+          "type": "service_item",
+          "settings": {
+            "heading": "Service Title",
+            "subheading": "Service description goes here"
+          }
+        },
+        "service_item_YTeeLK": {
+          "type": "service_item",
+          "settings": {
+            "heading": "Service Title",
+            "subheading": "Service description goes here"
+          }
+        }
+      },
+      "block_order": [
+        "service_item_H6xzdw",
+        "service_item_4GrLrg",
+        "service_item_xTrxLW",
+        "service_item_YTeeLK"
+      ],
+      "name": "Service",
+      "settings": {}
     }
   },
   "order": [
@@ -549,6 +590,7 @@
     "product-video-carousel",
     "offer_banner_Uy36n7",
     "featured-collections",
-    "feature_blog_UGAHHQ"
+    "feature_blog_UGAHHQ",
+    "service_iMXYKq"
   ]
 }

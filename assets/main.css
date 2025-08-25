@@ -2029,6 +2029,9 @@ address {
 .border-secondary-text-10pct {
   border: 1px solid rgba(var(--color-secondary-text), 0.1);
 }
+.border-color-transparent {
+  border-color: transparent;
+}
 .bg-error-bg {
   background-color: rgb(var(--error-bg-color));
 }
