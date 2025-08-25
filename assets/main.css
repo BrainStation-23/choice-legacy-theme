@@ -114,6 +114,7 @@ mark {
 .text-bg {
   color: rgb(var(--color-background));
 }
+
 .text-primary {
   color: rgb(var(--color-primary-text));
 }
