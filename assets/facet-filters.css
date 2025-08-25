@@ -38,10 +38,10 @@
   padding-bottom: calc(8 * var(--space-unit));
   border-bottom: 1px solid rgba(var(--text-color) / 0.15);
 }
-
+/* 
 .filter li:not(:last-child) {
   margin-bottom: calc(4 * var(--space-unit));
-}
+} */
 
 .filter__more + .filter__header {
   margin-inline-start: calc(4 * var(--space-unit));

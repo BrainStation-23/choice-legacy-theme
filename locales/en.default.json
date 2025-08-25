@@ -333,5 +333,8 @@
     "unit_price_separator": "Unit Price Separator",
     "close": "Close",
     "loading": "Loading..."
+  },
+  "main-category": {
+    "title": "Featured Products"
   }
 }

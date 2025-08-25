@@ -1,0 +1,23 @@
+{%- comment -%}
+  Snippet: input-radio
+  Parameters:
+  - id {String} - Unique ID for the input
+  - name {String} - Name attribute for the radio group
+  - value {String} - Value for the radio input
+  - label {String} - Label text
+  - checked {Boolean} - Whether the radio is checked
+{%- endcomment -%}
+
+<input
+  type="radio"
+  class=" radio checkbox js-drawer-sort-by"
+  id="{{ id }}"
+  name="{{ name }}"
+  value="{{ value | escape }}"
+  {% if checked %}
+    checked
+  {% endif %}
+>
+<label for="{{ id }}" class="top-0 fs-14-lh-20-ls-0_1 ff-general-sans fw-500 cursor-pointer ">
+  {{- label | escape -}}
+</label>

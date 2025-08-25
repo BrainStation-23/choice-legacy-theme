@@ -114,6 +114,7 @@ mark {
 .text-bg {
   color: rgb(var(--color-background));
 }
+
 .text-primary {
   color: rgb(var(--color-primary-text));
 }
@@ -232,8 +233,7 @@ mark {
 :root {
   --fluid-vw: 100vw;
   --fluid-max-vw: 1536;
-  --fluid-calc: (var(--fluid-vw) - 32rem) / (var(--fluid-max-vw) / 10 - 32) +
-    0.1rem;
+  --fluid-calc: (var(--fluid-vw) - 32rem) / (var(--fluid-max-vw) / 10 - 32) + 0.1rem;
   --fluid-1-065: ((1.065 / 10 - 0.1) * var(--fluid-calc));
   --fluid-1-125: ((1.125 / 10 - 0.1) * var(--fluid-calc));
   --fluid-1-2: ((1.2 / 10 - 0.1) * var(--fluid-calc));
@@ -1041,17 +1041,6 @@ address {
     gap: 20px;
   }
 }
-
-.grid-cols-2 {
-  grid-template-columns: repeat(2, 1fr);
-}
-.grid-cols-3 {
-  grid-template-columns: repeat(3, 1fr);
-}
-.grid-cols-4 {
-  grid-template-columns: repeat(4, 1fr);
-}
-
 @media screen and (max-width: 768px) {
   .sm\:grid-cols-1 {
     grid-template-columns: 1fr;
@@ -1376,12 +1365,16 @@ address {
 .max-w-100pc-32 {
   max-width: calc(100% - 32px);
 }
-.max-w-392 {
-  max-width: 392px;
+.max-w-full {
+  max-width: 100%;
 }
 .max-w-120 {
   max-width: 120px;
 }
+.max-w-240 {
+  max-width: 240px;
+}
+
 .min-w-406 {
   min-width: 406px;
 }
@@ -2041,6 +2034,9 @@ address {
 .border-secondary-text-10pct {
   border: 1px solid rgba(var(--color-secondary-text), 0.1);
 }
+.border-color-transparent {
+  border-color: transparent;
+}
 .bg-error-bg {
   background-color: rgb(var(--error-bg-color));
 }
@@ -2597,15 +2593,12 @@ address {
   transform: translate(-50%, -50%);
 }
 .transition {
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    -webkit-backdrop-filter;
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    backdrop-filter;
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    backdrop-filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -2850,8 +2843,6 @@ shop-login-button {
   position: relative;
   align-items: flex-start;
   margin: 0;
-  font-size: 1em;
-  line-height: 1.5;
   vertical-align: top;
   cursor: pointer;
 }
@@ -2893,42 +2884,54 @@ shop-login-button {
 }
 
 .radio {
-  position: absolute;
-  opacity: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgb(var(--color-border));
+  border-radius: 50%;
+  margin: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.2s ease;
+  opacity: 1 !important;
+  padding: 0 !important;
+  background-color: rgb(var(--color-background));
 }
+
 .radio + label {
   display: inline-flex;
   position: relative;
-  align-items: flex-start;
-  margin: 0;
-  font-size: 1em;
-  line-height: 1.5;
-  vertical-align: top;
+  align-items: center;
+
   cursor: pointer;
+  flex: 1;
+  top: 0 !important;
 }
+
 .radio + label::before {
-  content: "";
-  display: block;
-  flex-shrink: 0;
-  margin-inline-end: 0.75em;
-  border: var(--input-border-width) solid rgb(var(--text-color));
-  border-radius: 2px;
-  background-color: rgb(var(--input-bg-color));
-  width: 22px;
-  height: 22px;
-  margin-top: calc(0.75em - 11px);
-  border-radius: 50%;
+  display: none; /* Hide the old pseudo-element since we're styling the input directly */
 }
-.radio:checked + label::after {
-  content: "";
+
+.radio:hover {
+  border-color: rgb(var(--color-primary-brand));
+}
+
+.radio:checked {
+  border-color: rgb(var(--color-primary-brand));
+  background: rgb(var(--color-primary-brand));
+}
+
+/* Alternative positioning for the checkmark - use this if the above doesn't work perfectly */
+.radio:checked::after {
+  content: "✓";
   position: absolute;
-  top: 0.75em;
-  left: 11px;
-  width: calc((22px - (var(--input-border-width) * 2)) * 0.625);
-  height: calc((22px - (var(--input-border-width) * 2)) * 0.625);
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background-color: rgb(var(--text-color));
+  color: rgb(var(--color-background));
+  pointer-events: none;
 }
 [dir="rtl"] .radio:checked + label::after {
   right: 11px;
@@ -3173,9 +3176,7 @@ textarea + label {
 }
 
 input[type="date"] {
-  min-height: calc(
-    (var(--input-padding-y, 11px) + var(--input-border-width)) * 2 + 1.2em
-  );
+  min-height: calc((var(--input-padding-y, 11px) + var(--input-border-width)) * 2 + 1.2em);
   -webkit-appearance: none;
 }
 
@@ -3199,7 +3200,6 @@ textarea:focus + label,
 textarea:not(:placeholder-shown) + label {
   top: 8px;
   left: 16px;
-  font-size: 12px;
   transform: translateY(0);
   color: rgb(var(--color-primary-text)) !important;
   font-weight: 500;
@@ -3241,7 +3241,6 @@ input:-webkit-autofill + label,
 textarea:-webkit-autofill + label {
   top: 4px;
   left: 16px;
-  font-size: 12px;
   transform: translateY(0);
   color: rgb(var(--color-primary-text)) !important;
   font-weight: 500;

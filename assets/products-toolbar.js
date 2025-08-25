@@ -7,9 +7,7 @@ if (!customElements.get("products-toolbar")) {
 
     init() {
       this.filtersComponent = document.querySelector("facet-filters");
-      this.filtersColumn = document.querySelector(
-        ".main-products-grid__filters"
-      );
+      this.filtersColumn = document.querySelector(".main-products-grid__filters");
       this.layoutSwitcher = this.querySelector(".products-toolbar__layout");
       this.compareToggle = document.getElementById("compare-switch");
       this.sortBy = this.querySelector(".products-toolbar__sort");
@@ -17,17 +15,11 @@ if (!customElements.get("products-toolbar")) {
 
       if (this.filtersColumn) {
         this.filterToggle = this.querySelector(".js-toggle-filters");
-        this.filterToggle.addEventListener(
-          "click",
-          this.toggleFilters.bind(this)
-        );
+        this.filterToggle.addEventListener("click", this.toggleFilters.bind(this));
       }
 
       if (this.layoutSwitcher) {
-        this.layoutSwitcher.addEventListener(
-          "change",
-          this.handleLayoutChange.bind(this)
-        );
+        this.layoutSwitcher.addEventListener("change", this.handleLayoutChange.bind(this));
 
         // Set the layout to the layout in localstorage
         const layout = theme.storageUtil.get("products-layout");
@@ -39,10 +31,7 @@ if (!customElements.get("products-toolbar")) {
       }
 
       if (this.compareToggle) {
-        this.compareToggle.addEventListener(
-          "change",
-          this.toggleCompare.bind(this)
-        );
+        this.compareToggle.addEventListener("change", this.toggleCompare.bind(this));
 
         const isChecked = theme.storageUtil.get("compare-toggle", true);
         if (isChecked !== null) {
@@ -60,10 +49,7 @@ if (!customElements.get("products-toolbar")) {
       }
 
       if (!this.filtersComponent && this.sortBy) {
-        this.sortBy.addEventListener(
-          "change",
-          ProductsToolbar.handleSortByChange
-        );
+        this.sortBy.addEventListener("change", ProductsToolbar.handleSortByChange);
       }
     }
 
@@ -119,9 +105,7 @@ if (!customElements.get("products-toolbar")) {
 
       if (theme.mediaMatches.lg) {
         this.filtersColumn.classList.toggle("lg:js-hidden", !this.filtersOpen);
-        const productsList = document.querySelector(
-          ".main-products-grid__results > .grid"
-        );
+        const productsList = document.querySelector(".main-products-grid__results > .grid");
 
         productsList.className = this.filtersOpen
           ? productsList.dataset.filtersOpenClasses
