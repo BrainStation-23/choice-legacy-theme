@@ -1,0 +1,9 @@
+{
+  "sections": {
+    "size_calculator": {
+      "type": "size-calculator",
+      "settings": {}
+    }
+  },
+  "order": ["size_calculator"]
+}
