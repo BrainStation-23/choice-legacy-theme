@@ -1,3 +1,5 @@
+<script src="{{ 'products-toolbar.js' | asset_url }}" defer="defer"></script>
+
 <div class="container" data-num-results="{{ collection.products_count }}">
   {%- if section.settings.enable_filtering or section.settings.enable_sorting -%}
     <script src="{{ 'products-toolbar.js' | asset_url }}" defer="defer"></script>
