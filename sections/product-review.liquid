@@ -1,4 +1,4 @@
-<section class="bg-brand-2 pt-88 pb-64 sm:pt-24 sm:pb-24">
+<section id="shopify-section-{{ section.id }}" class="bg-brand-2 pt-88 pb-64 sm:pt-24 sm:pb-24">
   <div class=" page-width gap-48 sm:gap-8 flex flex-col text-center">
     {% if section.settings.title != blank %}
       <h2 class=" ff-bebas-neue ft-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct m-0">
@@ -6,14 +6,12 @@
       </h2>
     {% endif %}
 
-    <!-- Desktop Grid Content -->
     <div id="homepage-product-review__desktop-content" class="grid sm:hidden">
       <div class="flex justify-center items-center h-200">
         <div class=" w-40 h-40 spinner-4"></div>
       </div>
     </div>
 
-    <!-- Mobile/Tablet Slideshow Content -->
     <div id="homepage-product-review__mobile-content" class="hidden sm:block">
       <slideshow-component
         data-autoplay="{{ section.settings.autoplay }}"
@@ -33,7 +31,6 @@
       </slideshow-component>
     </div>
 
-    <!-- Load More Button - Shows on desktop only -->
     <div id="load-more-container" class="flex sm:hidden justify-center w-full">
       <button
         id="load-more-btn"
@@ -47,13 +44,11 @@
 
 <script>
   document.addEventListener('DOMContentLoaded', function () {
-    // DOM Elements
     const desktopContent = document.getElementById('homepage-product-review__desktop-content');
     const mobileSlidesContainer = document.getElementById('mobile-slides-container');
     const loadMoreContainer = document.getElementById('load-more-container');
     const loadMoreBtn = document.getElementById('load-more-btn');
     
-    // State Variables
     let currentPage = 1;
     let displayedReviews = [];
     let hasMoreReviews = true;
@@ -61,7 +56,6 @@
     let imageLoadCount = 0;
     let totalImages = 0;
 
-    // Product Data
     const allProducts = {
       {% for product in collections.all.products limit: 250 %}
         "{{ product.id }}": {
@@ -71,7 +65,6 @@
       {% endfor %}
     };
 
-    // Utility Functions
     function isMobileOrTablet() {
       return window.innerWidth <= 1023;
     }
@@ -99,7 +92,6 @@
       return product ? product.title : 'Title is not available';
     }
 
-    // Height Calculation Functions
     function calculateGridHeight(reviewCount) {
       if (reviewCount === 0) return 200;
       
@@ -160,7 +152,6 @@
       }
     }
 
-    // UI Generation Functions
     function createStarRating(rating) {
       let starsHtml = '';
       for (let i = 1; i <= 5; i++) {
@@ -179,13 +170,11 @@
       return date.toLocaleDateString('en-US', options);
     }
 
-    // API Functions
     async function fetchReviews(page = 1, append = false) {
       try {
         if (isLoadingMore && append) return;
         if (append) isLoadingMore = true;
 
-        // Show loading state
         if (!append) {
           desktopContent.innerHTML = '<div class="flex justify-center items-center h-200"><div class="w-40 h-40 spinner-4"></div></div>';
           mobileSlidesContainer.innerHTML = '<div class="flex justify-center items-center h-200"><div class="w-40 h-40 spinner-4"></div></div>';
@@ -246,9 +235,7 @@
       }
     }
 
-    // Display Functions
     function displayReviews(reviews, isAppending = false) {
-      // Generate desktop grid content
       const desktopReviewsHtml = reviews.map(review => {
         const productTitle = getProductTitle(review.productId);
         const fullText = review.reviewText;
@@ -285,7 +272,6 @@
         `;
       }).join('');
 
-      // Generate mobile slideshow content
       const mobileSlidesHtml = reviews.map(review => {
         const productTitle = getProductTitle(review.productId);
         const productHandle = getProductHandle(review.productId);
@@ -339,34 +325,27 @@
       updateGridHeightAfterRender(reviews.length);
       mobileSlidesContainer.innerHTML = mobileSlidesHtml;
 
-      // Reinitialize slideshow component
-      const slideshowComponent = document.querySelector('slideshow-component');
+      const reviewsSection = document.getElementById('shopify-section-{{ section.id }}');
+      const slideshowComponent = reviewsSection.querySelector('slideshow-component');
       if (slideshowComponent) {
         if (slideshowComponent.swiper) {
           slideshowComponent.swiper.destroy(true, true);
           slideshowComponent.swiper = null;
         }
-        
+        slideshowComponent.init();
         setTimeout(() => {
-          slideshowComponent.initializeSwiper();
-          
-          if (typeof slideshowComponent.initializeCustomBullets === 'function') {
-            slideshowComponent.initializeCustomBullets();
-          }
-
           if (slideshowComponent.swiper && isMobileOrTablet()) {
             slideshowComponent.swiper.on('slideChange', function() {
               const swiper = this;
               const currentSlide = swiper.realIndex;
               const totalSlides = swiper.slides.length;
-              
               if (currentSlide >= totalSlides - 2 && hasMoreReviews && !isLoadingMore) {
                 currentPage++;
                 fetchReviews(currentPage, true);
               }
             });
           }
-        }, 100);
+        }, 150);
       }
     }
 
@@ -382,7 +361,6 @@
       mobileSlidesContainer.innerHTML = `<div class="swiper-slide">${errorHtml}</div>`;
     }
 
-    // Event Listeners
     let resizeTimeout;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimeout);
@@ -406,7 +384,6 @@
       }
     });
 
-    // Global Functions
     window.loadMoreReviewsForMobile = function() {
       if (hasMoreReviews && !isLoadingMore && isMobileOrTablet()) {
         currentPage++;
@@ -420,10 +397,8 @@
 
     window.handleImageLoad = handleImageLoad;
 
-    // Initialize
     fetchReviews();
     
-    // Shopify Section Events
     document.addEventListener("shopify:section:load", (event) => {
       if (event.target.classList.contains("homepage-product-review__section")) {
         fetchReviews();
