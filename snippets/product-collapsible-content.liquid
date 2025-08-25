@@ -1,0 +1,46 @@
+{%- assign base_key = block.settings.metafield_key -%}
+{%- assign image_key = base_key | append: '_image' -%}
+{%- assign text_metafield = product.metafields.custom[base_key] -%}
+{%- assign image_metafield = product.metafields.custom[image_key] -%}
+
+{%- capture first_image_html -%}{%- endcapture -%}
+{%- capture rest_of_images_html -%}{%- endcapture -%}
+
+{% if image_metafield != blank %}
+  {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
+  {% for file in image_metafield.value %}
+    {% if forloop.first %}
+      {%- capture first_image_html -%}
+        <div class="metafield-image-wrapper mb-8 media block relative w-165 h-160">
+          {% render 'image', image: file, widths: '529, 529, 529, 529', src_width: 529, sizes: sizes, class: 'img-fit', quality: 1 %}
+        </div>
+      {%- endcapture -%}
+    {% else %}
+      {%- capture image_html -%}
+        <div class="metafield-image-wrapper mt-16 media block relative h-290">
+          {% render 'image', image: file, widths: '529, 529, 529, 529', src_width: 529, sizes: sizes, class: 'img-fit', quality: 1 %}
+        </div>
+      {%- endcapture -%}
+      {%- assign rest_of_images_html = rest_of_images_html | append: image_html -%}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{% if text_metafield != blank %}
+  <collapsible-content class="block" {{ block.shopify_attributes }} data-border-map='{"border-b": "border-b-2", "border-b-color": "border-brand"}'>
+    <div class="collapsible-trigger flex items-center justify-between cursor-pointer user-select-none border-b border-b-solid border-b-color" data-collapsible-trigger>
+      <h3 class="fw-500 fs-16-lh-20-ls-0_1 ff-general-sans uppercase m-0 pt-12 pb-12">{{ block.settings.content_title }}</h3>
+      <div class="collapsible-icon w-20 h-20 flex items-center justify-center transition-transform" data-collapsible-icon>
+        {% render 'icon-plus', cls: 'icon-plus svg-brand w-28 h-28 block svg-primary-text' %}
+        {% render "icon-minus", cls: 'icon-minus w-28 h-28 hidden svg-brand' %}
+      </div>
+    </div>
+    <div class="collapsible-content flex flex-col gap-16 list-style-none m-0 p-0 overflow-hidden max-h-0 transition-transform" data-collapsible-content>
+      <div class="metafield-content fs-16-lh-24-ls-0 fw-400 pt-16 pb-16 text-secondary rte">
+        {{ first_image_html }}
+        {{- text_metafield | metafield_tag -}}
+        {{ rest_of_images_html }}
+      </div>
+    </div>
+  </collapsible-content>
+{% endif %}

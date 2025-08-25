@@ -2,185 +2,353 @@
   .mega-menu__link--undergarments {
     background-color: {{ section.settings.undergarments_bg_color }};
   }
-  @media screen and  (max-width: 1280px) {
-    .header__icon-link-title {
+
+  .search-overlay {
+    position: fixed;
+    top: var(--header-height, 75px);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1001;
+    display: none;
+  }
+
+  .header--search-focused .search-overlay {
+    display: block;
+  }
+
+
+    .header--search-focused .header__search--desktop .header__search-form {
+      max-width: none !important;
+      width: 40vw !important;
+      z-index: 1000;
+      transition: all 0.3s ease, width 0.3s ease, max-width 0.3s ease;
+    }
+
+    .header--search-focused .header__left,
+    .header--search-focused .header__right {
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+
+
+  /* Mobile Search Focus Styles */
+  @media (max-width: 768px) {
+    .header--search-focused .header__search--mobile .header__search-form {
+      width: 85% !important;
+      max-width: none !important;
+      position: relative;
+      transition: all 0.3s ease, width 0.3s ease;
+    }
+
+    .header--search-focused .header__search--mobile .search-close-btn {
+      display: flex;
+      position: absolute;
+      right: -50px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .header--search-focused .header__search--mobile .header__search-button {
       display: none;
     }
+
+    /* Keep left and right elements visible on mobile */
+    .header--search-focused .header__left,
+    .header--search-focused .header__right {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
+  /* Common Search Focus Styles */
+  .header--search-focused .header__search-input {
+    padding-right: 12px;
+    width: 100%;
+  }
+
+  .header--search-focused .search-close-btn,
+  .header--search-focused .enter {
+    display: flex;
+  }
+
+  .header--search-focused .header__center {
+    flex: 1;
   }
 </style>
 
 <header class="header header-{{ section.id }} pt-16 pb-16 sm:pl-0 sm:pr-0">
+  <div class="search-overlay" onclick="closeSearchFocus()"></div>
+
   <div class="header__container pt-0 pr-6_1_1 pb-0 pl-6_1_1 sm:flex-col sm:gap-0 sm:pt-0 sm:pr-3_9_8 sm:pb-0 sm:pl-3_9_8">
-    <div class="header__inner flex justify-between items-center gap-36 sm:pt-16 sm:pr-0 sm:pb-16 sm:pl-0">
+    <div class="header__inner flex justify-between items-center gap-36 sm:pt-0 sm:pr-0 sm:pb-16 sm:pl-0">
+      <!-- Left Section -->
       <div class="header__left header__item-container flex-1 justify-start sm:flex-1_0_0">
-        <button id="menuIcon" class="header__menu-toggle hidden sm:block border-none cursor-pointer hidden sm:flex items-center justify-center transition-transform sm:bg-none sm:border-none sm:p-0" aria-label="Open menu" onclick="toggleMobileMenu()">
+        <button
+          id="menuIcon"
+          class="header__menu-toggle hidden sm:block border-none cursor-pointer hidden sm:flex items-center justify-center transition-transform sm:bg-none sm:border-none sm:p-0"
+          aria-label="Open menu"
+          onclick="toggleMobileMenu()"
+        >
           <div class="menu-icon">
             {% render 'menu-icon' %}
           </div>
           <div class="close-icon hidden">
-            {% render 'icon-close', cls: "svg-brand" %}
+            {% render 'icon-close', cls: 'svg-brand' %}
           </div>
         </button>
-        {% render 'logo', padding_left: 138, padding_bottom: 40, logo_width: 138, logo_cls: "block sm:hidden" %}
+        {% render 'logo', padding_left: 138, padding_bottom: 40, logo_width: 138, logo_cls: 'block sm:hidden' %}
       </div>
 
+      <!-- Center Section -->
       <div class="header__center header__item-container flex-1 text-left sm:flex-1_0_0 sm:text-center">
+        <!-- Mobile Logo -->
         <a href="{{ routes.root_url }}" class="header__logo-link--mobile hidden sm:block relative block media">
           {%- if settings.brand_logo != blank -%}
-            {% render 'logo', cls: "w-full h-auto", logo_cls: "hidden sm:block", height: settings.logo_height, width: settings.logo_width %}
+            {% render 'logo',
+              cls: 'w-full h-auto',
+              logo_cls: 'hidden sm:block',
+              height: settings.logo_height,
+              width: settings.logo_width
+            %}
           {%- else -%}
             <span class="header__logo-name">{{ settings.logo_text }}</span>
           {%- endif -%}
         </a>
-        <div class="header__search--desktop block sm:hidden relative max-w-400 mt-0 mb-0 ml-auto mr-auto">
-          <form action="{{ routes.search_url }}" method="get" class="header__search-form" role="search">
-            <input
-              type="search"
-              name="q"
-              class="header__search-input border-1 border-solid border-color w-full h-48 rounded-6 pt-10 pr-15 pb-10 pl-45 ff-general-sans fs-14-lh-20-ls-0_1 fw-500"
-              placeholder="{{ 'sections.header.search' | t }}"
-              aria-label="Search"
+
+        <!-- Desktop Search -->
+        <div class="header__search--desktop block sm:hidden relative mt-0 mb-0 ml-auto mr-auto">
+          <predictive-search id="predictive-search" class="predictive-search">
+            <form
+              action="{{ routes.search_url }}"
+              method="get"
+              class="header__search-form relative transition-all-3-ease"
+              role="search"
             >
-            <button type="submit" class="header__search-button bg-none text-secondary-light absolute left-15 top-50pct translate-y--50 border-none p-0 cursor-pointer" aria-label="Submit search">
-              {% render 'search-icon', cls: "w-20 h-20 block" %}
-            </button>
-          </form>
+              <span class="search-icon absolute left-12 top-50pct translate-y--50 pointer-events-none flex items-center transition-all-3">
+                {% render 'search-icon', height: 24, width: 24 %}
+              </span>
+
+              <input
+                type="search"
+                name="q"
+                class="header__search-input ff-general-sans fs-14-lh-20-ls-0_1 fw-500 w-full pl-40 pt-10 pb-10 pr-12 border-1 border-solid border-color rounded-6 transition-all-3"
+                placeholder="{{ 'sections.header.search' | t }}"
+                aria-label="Search"
+                onfocus="openSearchFocus()"
+              >
+
+              <button
+                type="button"
+                class="search-close-btn hidden absolute right-minus-70 top-50pct translate-y--50 bg-none border-1 border-solid border-color rounded-full cursor-pointer p-8 items-center justify-center z-9999 transition-all-3"
+                onclick="closeSearchFocus()"
+                aria-label="Close search"
+              >
+                {% render 'icon-close', cls: 'svg-primary-optional', height: 20, width: 20 %}
+              </button>
+
+              <span class="enter hidden ff-general-sans fs-14-lh-20-ls-0_1 fw-600 absolute top-50pct right-12 translate-y--50 bg-light-gray rounded-6 pt-12 pb-12 pl-16 pr-16">
+                {{- 'sections.header.enter' | t }}
+              </span>
+            </form>
+          </predictive-search>
         </div>
       </div>
 
+      <!-- Right Section -->
       <div class="header__right header__item-container flex justify-end items-center flex-1 gap-24 sm:flex-1_0_0 sm:gap-16 sm:flex-row-reverse sm:justify-start">
-        <a href="{{ routes.account_url }}" class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4">
+        <a
+          href="{{ routes.account_url }}"
+          class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4"
+        >
           {% render 'accounts-icon' %}
-          <span class="header__icon-link-title block sm:hidden ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
+          <span class="header__icon-link-title block md:hidden sm:hidden ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
             {{- 'sections.header.account' | t -}}
           </span>
         </a>
-        <a href="{{ routes.cart_url }}" class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4">
+        <a
+          href="{{ routes.cart_url }}"
+          class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4"
+        >
           {% render 'cart-icon' %}
-          <span class="header__icon-link-title block sm:hidden ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
+          <span class="header__icon-link-title block md:hidden sm:hidden ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
             {{- 'sections.header.cart' | t -}}
           </span>
         </a>
+
         <div class="header__social-icons flex sm:hidden gap-10">
-          <a href="#" class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36" aria-label="Chat on WhatsApp">{% render 'whatsapp-icon' %}</a>
-          <a href="#" class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36" aria-label="Chat on Messenger">{% render 'message-icon' %}</a>
-          <a href="#" class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36" aria-label="Call us">{% render 'phone-icon' %}</a>
+          <a
+            href="whatsapp://send?phone={{ section.settings.whatsapp_number }}"
+            class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36"
+            aria-label="Chat on WhatsApp"
+          >
+            {%- render 'whatsapp-icon' -%}
+          </a>
+          <a
+            href="{{ section.settings.messenger_link }}"
+            class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36"
+            aria-label="Chat on Messenger"
+          >
+            {%- render 'message-icon' -%}
+          </a>
+          <a
+            href="tel:{{ section.settings.phone_number }}"
+            class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36"
+            aria-label="Call us"
+          >
+            {%- render 'phone-icon' -%}
+          </a>
         </div>
       </div>
     </div>
 
+    <!-- Mobile Search -->
     <div class="header__search--mobile hidden sm:block sm:relative">
-      <form action="{{ routes.search_url }}" method="get" class="header__search-form" role="search">
-        <input
-          type="search"
-          name="q"
-          class="header__search-input border-1 border-solid border-color w-full h-48 rounded-6 pt-10 pr-15 pb-10 pl-45"
-          placeholder="{{ 'sections.header.search' | t }}"
-          aria-label="Search"
+      <predictive-search id="predictive-search-mobile" class="predictive-search">
+        <form
+          action="{{ routes.search_url }}"
+          method="get"
+          class="header__search-form relative transition-all-3-ease"
+          role="search"
         >
-        <button type="submit" class="header__search-button bg-none text-secondary-light absolute left-15 top-50pct translate-y--50 border-none p-0 cursor-pointer" aria-label="Submit search">
-          {% render 'search-icon' %}
-        </button>
-      </form>
+          <span class="search-icon absolute left-12 top-50pct translate-y--50 pointer-events-none flex items-center transition-all-3">
+            {% render 'search-icon', height: 24, width: 24 %}
+          </span>
+
+          <input
+            type="search"
+            name="q"
+            class="header__search-input ff-general-sans fs-14-lh-20-ls-0_1 fw-500 w-full pl-40 pt-10 pb-10 pr-12 border-1 border-solid border-color rounded-6 transition-all-3"
+            placeholder="{{ 'sections.header.search' | t }}"
+            aria-label="Search"
+            onfocus="openSearchFocus()"
+          >
+
+          <button
+            type="button"
+            class="search-close-btn hidden absolute right-minus-70 top-50pct translate-y--50 bg-none border-1 border-solid border-color rounded-full cursor-pointer p-8 items-center justify-center z-9999 transition-all-3 z-10000"
+            onclick="closeSearchFocus()"
+            aria-label="Close search"
+          >
+            {% render 'icon-close', cls: 'svg-primary-optional', height: 20, width: 20 %}
+          </button>
+
+          <span class="enter hidden ff-general-sans fs-14-lh-20-ls-0_1 fw-600 absolute top-50pct right-12 translate-y--50 bg-light-gray rounded-6 pt-12 pb-12 pl-16 pr-16">
+            {{- 'sections.header.enter' | t }}
+          </span>
+        </form>
+      </predictive-search>
     </div>
 
     <!-- Mobile Mega Menu -->
-    {% render "mobile-menu", section: section %}
+    {% render 'mobile-menu', section: section %}
   </div>
 </header>
 
+<div class="predictive-search-results absolute z-9999 w-full bg-bg"></div>
+
 <!-- Desktop Mega Menu Navigation -->
-{% render "desktop-menu", section: section %}
+{% render 'desktop-menu', section: section %}
 
 <script>
-  // CollapsibleContent Web Component
-  class CollapsibleContent extends HTMLElement {
-    constructor() {
-      super();
-      this.isExpanded = false;
-    }
-
-    connectedCallback() {
-      this.setupEventListeners();
-    }
-
-    setupEventListeners() {
-      const header = this.querySelector('.mobile-mega-menu__category-header');
-      if (header) {
-        header.addEventListener('click', (e) => {
-          e.preventDefault();
-          this.toggle();
-        });
-      }
-    }
-
-    toggle() {
-      // Close all other collapsible content elements first (accordion behavior)
-      const allCollapsibles = document.querySelectorAll('collapsible-content');
-      allCollapsibles.forEach((collapsible) => {
-        if (collapsible !== this && collapsible.isExpanded) {
-          collapsible.collapse();
-        }
-      });
-
-      // Toggle this one
-      this.isExpanded = !this.isExpanded;
-
-      if (this.isExpanded) {
-        this.classList.add('expanded');
-      } else {
-        this.classList.remove('expanded');
-      }
-    }
-
-    expand() {
-      this.isExpanded = true;
-      this.classList.add('expanded');
-    }
-
-    collapse() {
-      this.isExpanded = false;
-      this.classList.remove('expanded');
-    }
+  // Search functionality
+  function openSearchFocus() {
+    const header = document.querySelector('.header');
+    header.classList.add('header--search-focused');
+    document.body.classList.add('search-focused');
+    document.body.style.overflow = 'hidden';
   }
 
-  // Register the web component
-  customElements.define('collapsible-content', CollapsibleContent);
+  function closeSearchFocus() {
+    const header = document.querySelector('.header');
+    const searchInputs = document.querySelectorAll('.header__search-input');
+    const searchResults = document.querySelector('.predictive-search-results');
 
+    header.classList.remove('header--search-focused');
+    document.body.classList.remove('search-focused');
+    document.body.style.overflow = '';
+
+    searchInputs.forEach((input) => {
+      input.value = '';
+      input.blur();
+      if (searchResults) {
+        searchResults.innerHTML = '';
+      }
+    });
+  }
+
+  // Mobile menu functionality
   function toggleMobileMenu() {
     const mobileMenu = document.getElementById('mobileMegaMenu');
     const menuButton = document.getElementById('menuIcon');
+
+    if (!mobileMenu || !menuButton) return;
+
     const menuIcon = menuButton.querySelector('.menu-icon');
     const closeIcon = menuButton.querySelector('.close-icon');
 
     mobileMenu.classList.toggle('active');
     menuButton.classList.toggle('active');
 
-    // Swap menu/close icons with Tailwind utility classes
+    // Toggle menu/close icons
     if (mobileMenu.classList.contains('active')) {
-      menuIcon.classList.add('hidden');
-      menuIcon.classList.remove('block');
-
-      closeIcon.classList.remove('hidden');
-      closeIcon.classList.add('block');
-
+      menuIcon?.classList.add('hidden');
+      menuIcon?.classList.remove('block');
+      closeIcon?.classList.remove('hidden');
+      closeIcon?.classList.add('block');
       document.body.style.overflow = 'hidden';
     } else {
-      menuIcon.classList.remove('hidden');
-      menuIcon.classList.add('block');
-
-      closeIcon.classList.add('hidden');
-      closeIcon.classList.remove('block');
-
+      menuIcon?.classList.remove('hidden');
+      menuIcon?.classList.add('block');
+      closeIcon?.classList.add('hidden');
+      closeIcon?.classList.remove('block');
       document.body.style.overflow = '';
 
       // Collapse all categories when menu closes
       const collapsibleElements = document.querySelectorAll('collapsible-content');
-      collapsibleElements.forEach((el) => el.collapse());
+      collapsibleElements.forEach((el) => el.collapse?.());
     }
   }
 
-  // Close menu when clicking outside or on links
+  // Header height management
+  function setHeaderHeight() {
+    const header = document.querySelector('.header');
+    if (header) {
+      const headerHeight = header.offsetHeight;
+      document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+
+      // Update mobile menu top position
+      const mobileMenu = document.getElementById('mobileMegaMenu');
+      if (mobileMenu) {
+        mobileMenu.style.top = `${headerHeight}px`;
+      }
+    }
+  }
+
+  // Event listeners
+  document.addEventListener('DOMContentLoaded', function () {
+    setHeaderHeight();
+
+    // Setup mobile menu link handlers
+    setTimeout(() => {
+      document.querySelectorAll('.mobile-mega-menu__subcategory-link').forEach((link) => {
+        link.addEventListener('click', toggleMobileMenu);
+      });
+    }, 100);
+  });
+
+  window.addEventListener('resize', setHeaderHeight);
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', function (event) {
+    if (event.key === 'Escape') {
+      closeSearchFocus();
+    }
+  });
+
+  // Close mobile menu when clicking outside
   document.addEventListener('click', function (event) {
     const mobileMenu = document.getElementById('mobileMegaMenu');
     const menuToggle = document.querySelector('.header__menu-toggle');
@@ -189,43 +357,14 @@
       mobileMenu &&
       mobileMenu.classList.contains('active') &&
       !mobileMenu.contains(event.target) &&
-      !menuToggle.contains(event.target)
+      !menuToggle?.contains(event.target)
     ) {
       toggleMobileMenu();
     }
   });
-
-  // Close menu when clicking on menu links
-  document.addEventListener('DOMContentLoaded', function () {
-    // Wait a bit for the custom elements to be defined
-    setTimeout(() => {
-      document.querySelectorAll('.mobile-mega-menu__subcategory-link').forEach((link) => {
-        link.addEventListener('click', function () {
-          toggleMobileMenu();
-        });
-      });
-    }, 100);
-  });
 </script>
 
-<script>
-  function setHeaderHeight() {
-    const header = document.querySelector('.header');
-    if (header) {
-      const headerHeight = header.offsetHeight;
-      document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
-
-      // Also update the mobile menu top position
-      const mobileMenu = document.getElementById('mobileMegaMenu');
-      if (mobileMenu) {
-        mobileMenu.style.top = `${headerHeight}px`;
-      }
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', setHeaderHeight);
-  window.addEventListener('resize', setHeaderHeight);
-</script>
+<script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
 
 {% schema %}
 {
@@ -266,6 +405,24 @@
       "id": "undergarments_bg_color",
       "label": "Undergarments background color",
       "default": "#030B1A"
+    },
+    {
+      "type": "text",
+      "id": "phone_number",
+      "label": "Phone Number",
+      "default": "+8801330302626"
+    },
+    {
+      "type": "text",
+      "id": "whatsapp_number",
+      "label": "WhatsApp Number",
+      "default": "+8801330302626"
+    },
+    {
+      "type": "text",
+      "id": "messenger_link",
+      "label": "Messenger Link",
+      "default": "https://m.me/choicelegacy"
     }
   ]
 }

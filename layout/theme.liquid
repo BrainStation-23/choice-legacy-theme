@@ -53,6 +53,7 @@
     {{ content_for_header }}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.7/swiper-bundle.min.js" defer></script>
+    <script src="{{ 'toast.js' | asset_url }}" defer></script>
   </head>
 
   <body class="color-scheme">
@@ -86,7 +87,6 @@
       {% endif %}
       window.shopDomain = '{{ shop.domain }}';
     </script>
-    <script src="{{ 'toast.js' | asset_url }}" defer></script>
     <script src="{{ 'slideshow.js' | asset_url }}" defer></script>
     <script src="{{ 'add-to-wishlist.js' | asset_url }}" defer></script>
   </body>

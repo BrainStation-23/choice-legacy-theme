@@ -1,0 +1,81 @@
+<link
+  id="ModelViewerStyle"
+  rel="stylesheet"
+  href="https://cdn.shopify.com/shopifycloud/model-viewer-ui/assets/v1.0/model-viewer-ui.css"
+  media="print"
+  onload="this.media='all'"
+>
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js" async></script>
+
+<product-media-gallery class="product-media-gallery w-578 lg:w-full md:w-380 sm:w-full flex flex-col gap-16">
+  <div class="main-media-container relative aspect-ratio-1-1 sm:h-275 overflow-hidden">
+    <!-- Swiper Container -->
+    <div class="swiper product-media-swiper w-full h-full">
+      <div class="swiper-wrapper">
+        {%- for media in product.media -%}
+          <div class="swiper-slide flex h-full w-full items-center justify-center"
+               data-media-id="{{ media.id }}"
+               data-media-type="{{ media.media_type }}">
+
+            {%- case media.media_type -%}
+              {%- when 'image' -%}
+                {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
+                {%- render 'image-desktop-and-mobile',
+                    class: 'w-full h-full object-cover',
+                    desktop_image: media,
+                    mobile_image: media,
+                    src_width_mobile: 980,
+                    widths_mobile: '480, 980, 1200, 1400',
+                    src_width_desktop: 1440,
+                    widths_desktop: '578, 578, 578, 578, 578, 578, 578, 578',
+                    lazy_load: true,
+                    fetchpriority: "high",
+                    sizes: sizes,
+                    block: block
+                  -%}
+
+              {%- when 'video' -%}
+                <video class="h-full w-full object-cover" playsinline controls preload="metadata" poster="{{ media.preview_image | image_url: width: 1440 }}">
+                  {%- for source in media.sources -%}
+                    <source src="{{ source.url }}" type="{{ source.mime_type }}">
+                  {%- endfor -%}
+                </video>
+
+              {%- when 'external_video' -%}
+                {%- assign video_url = media.external_id | prepend: 'https://www.youtube.com/embed/' | append: '?enablejsapi=1' -%}
+                {%- if media.host == 'vimeo' -%}
+                  {%- assign video_url = media.external_id | prepend: 'https://player.vimeo.com/video/' -%}
+                {%- endif -%}
+                <iframe class="h-full w-full" src="{{ video_url }}" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+
+              {%- when 'model' -%}
+                <model-viewer
+                  class="h-full w-full"
+                  src="{{ media | model_viewer_tag | split: 'src="' | last | split: '"' | first }}"
+                  poster="{{ media.preview_image | image_url: width: 1440 }}"
+                  alt="{{ media.alt | escape }}"
+                  camera-controls
+                  auto-rotate
+                  ar
+                  ar-modes="webxr scene-viewer quick-look"
+                  environment-image="neutral">
+                </model-viewer>
+            {%- endcase -%}
+
+            {% render "wishlist-button", cls: "w-32 h-32 absolute top-24 right-24 z-10" %}
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    {% render "nav-button", cls: "slideshow-nav-button-prev left-24 absolute top-1/2 -translate-y-1/2 z-20 w-38 h-38", icon_cls: "icon-arrow-left" %}
+    {% render "nav-button", cls: "slideshow-nav-button-next right-24 absolute top-1/2 -translate-y-1/2 z-20 w-38 h-38" %}
+  </div>
+
+  <div class="media-thumbnails flex flex-wrap justify-center gap-2">
+    {%- render 'product-media-thumbnails', product: product -%}
+  </div>
+</product-media-gallery>
+
+<script src="{{ 'product-media-gallery.js' | asset_url }}" defer></script>

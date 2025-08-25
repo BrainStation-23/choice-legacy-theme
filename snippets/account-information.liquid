@@ -1,36 +1,85 @@
 <div class="flex flex-3">
+  <h1 class="hidden" id="customerId">{{ customer.id }}</h1>
   <div class="flex flex-col gap-24 flex-2">
-    <div class="flex gap-8  items-center">
-      <h1 class=" ff-general-sans fs-23-lh-24-ls-0 fw-500 m-0 ">
+    <div class="flex gap-8 items-center">
+      <h1 class="ff-general-sans fs-23-lh-24-ls-0 fw-500 m-0">
         {{ 'customer.account.account_title' | t }}
       </h1>
-      <h3 class="text-brand ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer">
-        {{ 'customer.account.edit' | t }}
-      </h3>
+      <div id="actionButtons">
+        <h3
+          class="text-brand ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer"
+          id="editButton"
+          onclick="toggleEditMode()"
+        >
+          {{ 'customer.account.edit' | t }}
+        </h3>
+
+        <!-- Save and Cancel buttons (hidden by default) -->
+        <div id="saveCancel" class="flex gap-8" style="display: none;">
+          <h3
+            class=" ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer"
+            id="saveButton"
+            onclick="saveChanges()"
+            style="color: green"
+          >
+            <span id="saveText">{{ 'customer.account.save' | t }}</span>
+            <div id="saveSpinner" style="display: none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2V6M12 18V22M4.93 4.93L7.76 7.76M16.24 16.24L19.07 19.07M2 12H6M18 12H22M4.93 19.07L7.76 16.24M16.24 7.76L19.07 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </h3>
+          <h3
+            class="text-brand ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer"
+            id="cancelButton"
+            onclick="cancelEdit()"
+            style="color:red"
+          >
+            {{ 'customer.account.cancel' | t }}
+          </h3>
+        </div>
+      </div>
     </div>
 
-    <div class="grid gap-16 grid-cols-2 flex-wrap sm:grid-cols-1  sm:gap-8 ">
+    <div class="grid gap-16 grid-cols-2 flex-wrap sm:grid-cols-1 sm:gap-8">
+      <!-- First Name -->
       <div>
-        <div class="border-secondary-text-10pct rounded-12  pt-10 pb-10 pr-16 pl-16">
-          <h2 class="ff-general-sans fs-12-lh-16-ls-0_6 fw-400 m-0 text-secondary-light ">
-            {{ 'customer.account.first_name' | t }}
-          </h2>
-          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.first_name }}</div>
-        </div>
+        {%- assign firstNameLabel = 'customer.account.first_name' | t -%}
+        {%- assign firstNamePlaceholder = 'customer.account.first_name' | t -%}
+        {% render 'input',
+          type: 'text',
+          id: 'firstName-input',
+          name: 'customer[first_name]',
+          label: firstNameLabel,
+          placeholder: firstNamePlaceholder,
+          autocomplete: 'given-name',
+          required: false,
+          class: 'w-full',
+          value: customer.first_name
+        %}
+      </div>
+
+      <!-- Last Name -->
+
+      <div>
+        {%- assign lastNameLabel = 'customer.account.last_name' | t -%}
+        {%- assign lastNamePlaceholder = 'customer.account.last_name' | t -%}
+        {% render 'input',
+          type: 'text',
+          id: 'lastName-input',
+          name: 'customer[last_name]',
+          label: lastNameLabel,
+          placeholder: lastNamePlaceholder,
+          autocomplete: 'family-name',
+          required: false,
+          class: 'w-full',
+          value: customer.last_name
+        %}
       </div>
 
       <div>
-        <div class="border-secondary-text-10pct rounded-12  pt-10 pb-10 pr-16 pl-16">
-          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
-            {{ 'customer.account.last_name' | t }}
-          </h2>
-          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.last_name }}</div>
-        </div>
-      </div>
-
-      <div>
-        <div class="border-secondary-text-10pct rounded-12 pt-10 pb-10 pr-16 pl-16">
-          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
+        <div class="bg-light-gray border-secondary-text-10pct rounded-12 pt-10 pb-10 pr-16 pl-16" id="phone-field">
+          <h2 class="ff-general-sans fs-12-lh-16-ls-0_6 fw-400 m-0 text-secondary-light">
             {{ 'customer.account.phone' | t }}
           </h2>
           <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.phone }}</div>
@@ -38,32 +87,47 @@
       </div>
 
       <div>
-        <div class="border-secondary-text-10pct rounded-12 pt-10 pb-10 pr-16 pl-16">
-          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
+        <div class=" bg-light-gray border-secondary-text-10pct rounded-12 pt-10 pb-10 pr-16 pl-16" id="dob-field">
+          <h2 class="ff-general-sans fs-12-lh-16-ls-0_6 fw-400 m-0 text-secondary-light">
             {{ 'customer.account.date_of_birth' | t }}
           </h2>
           <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">
-            {% comment %} todo update date of birth {% endcomment %}
             {{ customer.date_of_birth | default: 'date_of_birth' }}
           </div>
         </div>
       </div>
 
       <div class="flex flex-col gap-8">
-        <div class="border-secondary-text-10pct rounded-12  pt-10 pb-10 pr-16 pl-16">
-          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
-            {{ 'customer.account.email' | t }}
-          </h2>
-          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.email }}</div>
+        <div>
+          {%- assign emailLabel = 'customer.account.email' | t -%}
+          {%- assign emailPlaceholder = 'customer.account.email' | t -%}
+          {% render 'input',
+            type: 'email',
+            id: 'email-input',
+            name: 'customer[email]',
+            label: emailLabel,
+            placeholder: emailPlaceholder,
+            autocomplete: 'email',
+            required: false,
+            class: 'w-full',
+            value: customer.email
+          %}
         </div>
-        <h1 class=" text-brand ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer">{{ 'customer.account.change_email' | t }}</h1>
+
+        <h1
+          class="text-brand ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer"
+          id="change-email-link"
+          onclick="openEmailModal()"
+        >
+          {{ 'customer.account.change_email' | t }}
+        </h1>
       </div>
+
       <div>
-        <div class="border-secondary-text-10pct rounded-12  pt-10 pb-10 pr-16 pl-16">
-          <h2 class=" ff-general-sans fs-12-lh-16-ls-0_6 fw-400  m-0 text-secondary-light">
+        <div class=" bg-light-gray border-secondary-text-10pct rounded-12 pt-10 pb-10 pr-16 pl-16" id="gender-field">
+          <h2 class="ff-general-sans fs-12-lh-16-ls-0_6 fw-400 m-0 text-secondary-light">
             {{ 'customer.account.gender' | t }}
           </h2>
-          {% comment %} todo update actual gender {% endcomment %}
           <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.gender | default: 'Female' }}</div>
         </div>
       </div>
@@ -71,3 +135,385 @@
   </div>
   <div class="flex flex-1 sm:hidden"></div>
 </div>
+
+<!-- Email Change Modal -->
+<div
+  id="emailModal"
+  class="fixed top-0 left-0 w-full h-full bg-primary-light-50pct flex justify-center items-center z-1000"
+  style="display: none;"
+>
+  <div class=" p-24 flex flex-col gap-24 relative bg-bg rounded-16 w-90pct max-w-400">
+    <div class="flex justify-between ">
+      <h2 class="ff-bebas-neue fs-36-lh-40-ls-0 fw-400 m-0">{{ 'customer.account.otp_verification' | t }}</h2>
+      <span class=" fs-14-lh-100pct-ls-0 cursor-pointer" onclick="closeEmailModal()">
+        {%- render 'icon-cross' -%}
+      </span>
+    </div>
+
+    <div class="modal-body flex flex-col gap-16">
+      <!-- Step 1: Email Input -->
+      <div id="emailStep" class=" flex flex-col gap-16">
+        <p class="ff-general-sans fs-23-lh-24-ls-0 fw-500">
+          {{ 'customer.account.enter_your_new_email' | t }}
+        </p>
+
+        <div>
+          {%- assign emailLabel = 'customer.account.email' | t -%}
+          {%- assign emailPlaceholder = 'customer.account.email' | t -%}
+          {% render 'input',
+            type: 'email',
+            id: 'newEmailInput',
+            name: 'customer[newEmailInput]',
+            label: emailLabel,
+            placeholder: emailPlaceholder,
+            autocomplete: 'email',
+            required: false,
+            class: 'w-full',
+            value: customer.email
+          %}
+        </div>
+
+        <button
+          class="button--solid bg-brand border-none rounded-6 w-full"
+          id="sendOtpBtn"
+          onclick="sendOTP()"
+        >
+          <span id="sendOtpText" class="ff-general-sans  fs-14-lh-100pct-ls-0 fw-600">
+            {{- 'customer.account.send_otp' | t -}}
+          </span>
+          <div id="sendOtpSpinner" style="display: none;">
+            {% render 'icon-spinner' %}
+          </div>
+        </button>
+      </div>
+
+      <!-- Step 2: OTP Input -->
+      <div id="otpStep" class=" flex flex-col gap-16" style="display: none;">
+        <p class="ff-general-sans fs-23-lh-24-ls-0 fw-500">
+          {{ 'customer.account.enter_your_new_email' | t }}
+        </p>
+
+        <div>
+          <input
+            type="email"
+            id="displayEmailInput"
+            class="modal-input w-full pt-12 pb-12 pl-16 pr-16"
+            readonly
+          >
+        </div>
+
+        <div class="otp-container flex justify-center ">
+          {% render 'otp-input' %}
+        </div>
+
+        <p
+          class="resend-text ff-general-sans  fs-14-lh-100pct-ls-0 fw-600 cursor-pointer text-brand text-center"
+          onclick="resendOTP()"
+        >
+          {{ 'customer.account.resend_otp' | t }}
+        </p>
+
+        <button
+          class="submit-btn button--solid bg-brand border-none rounded-6 w-full"
+          id="submitBtn"
+          onclick="verifyOTPAndSubmit()"
+        >
+          <span id="submitText" class="ff-general-sans  fs-16-lh-100pct-ls-0  fw-600">
+            {{- 'customer.account.submit' | t -}}
+          </span>
+          <div id="submitSpinner" style="display: none;">
+            {% render 'icon-spinner' %}
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  #saveSpinner svg,
+  #sendOtpSpinner svg,
+  #submitSpinner svg {
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .otp-container {
+    display: flex;
+    justify-content: center;
+  }
+</style>
+
+<script>
+  function toggleEditMode() {
+    // Hide edit button, show save/cancel buttons
+    document.getElementById('editButton').style.display = 'none';
+    document.getElementById('saveCancel').style.display = 'flex';
+  }
+
+  async function saveChanges() {
+    document.getElementById('saveText').style.display = 'none';
+    document.getElementById('saveSpinner').style.display = 'inline-block';
+
+    document.getElementById('saveButton').style.pointerEvents = 'none';
+    document.getElementById('saveButton').style.opacity = '0.6';
+
+    try {
+      const customerId = document.getElementById('customerId').textContent;
+      const firstName = document.getElementById('firstName-input').value;
+      const lastName = document.getElementById('lastName-input').value;
+      const email = document.getElementById('email-input').value;
+
+      const response = await fetch(`/apps/${APP_SUB_PATH}/customer/account/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customerId: customerId,
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Success - show edit button, hide save/cancel buttons
+        document.getElementById('editButton').style.display = 'flex';
+        document.getElementById('saveCancel').style.display = 'none';
+      } else {
+        // Handle error
+        console.error('Error updating customer:', result.message);
+        alert('Error updating customer: ' + result.message);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      alert('Network error occurred. Please try again.');
+    } finally {
+      // Hide spinner, show text
+      document.getElementById('saveText').style.display = 'inline';
+      document.getElementById('saveSpinner').style.display = 'none';
+
+      // Re-enable the save button
+      document.getElementById('saveButton').style.pointerEvents = 'auto';
+      document.getElementById('saveButton').style.opacity = '1';
+    }
+  }
+
+  function cancelEdit() {
+
+    document.getElementById('editButton').style.display = 'flex';
+    document.getElementById('saveCancel').style.display = 'none';
+  }
+
+  // Email Modal Functions
+  function openEmailModal() {
+    document.getElementById('emailModal').style.display = 'flex';
+    document.getElementById('emailStep').style.display = 'flex';
+    document.getElementById('otpStep').style.display = 'none';
+  }
+
+  function closeEmailModal() {
+    document.getElementById('emailModal').style.display = 'none';
+    document.getElementById('emailStep').style.display = 'flex';
+    document.getElementById('otpStep').style.display = 'none';
+    document.getElementById('newEmailInput').value = '';
+  }
+
+  async function sendOTP() {
+    const newEmail = document.getElementById('newEmailInput').value.trim();
+
+    if (!newEmail) {
+      alert('Please enter a valid email address');
+      return;
+    }
+
+    // Show spinner, hide text
+    document.getElementById('sendOtpText').style.display = 'none';
+    document.getElementById('sendOtpSpinner').style.display = 'inline-block';
+
+    // Disable the button
+    document.getElementById('sendOtpBtn').style.pointerEvents = 'none';
+    document.getElementById('sendOtpBtn').style.opacity = '0.6';
+
+    try {
+      const customerPhone = document
+        .querySelector('#phone-field .ff-general-sans.fs-14-lh-16-ls-0.fw-500')
+        .textContent.trim();
+
+      const response = await fetch(`/apps/${APP_SUB_PATH}/customer/account/send-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phone: customerPhone,
+          register: false,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        // Show OTP step
+        document.getElementById('emailStep').style.display = 'none';
+        document.getElementById('otpStep').style.display = 'flex';
+        document.getElementById('displayEmailInput').value = newEmail;
+
+        console.log('OTP sent successfully');
+      } else {
+        console.error('Error sending OTP:', result.message);
+        alert('Error sending OTP: ' + result.message);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      alert('Network error occurred. Please try again.');
+    } finally {
+      document.getElementById('sendOtpText').style.display = 'inline';
+      document.getElementById('sendOtpSpinner').style.display = 'none';
+
+      // Re-enable the button
+      document.getElementById('sendOtpBtn').style.pointerEvents = 'auto';
+      document.getElementById('sendOtpBtn').style.opacity = '1';
+    }
+  }
+
+  async function resendOTP() {
+    // Reuse the sendOTP function logic
+    await sendOTP();
+  }
+
+  async function verifyOTPAndSubmit() {
+    // Get OTP value (you'll need to implement this based on your otp-input component)
+    const otpValue = getOTPValue(); // This function needs to be implemented based on your OTP input component
+    const newEmail = document.getElementById('displayEmailInput').value;
+
+    if (!otpValue || otpValue.length < 6) {
+      alert('Please enter the complete 6-digit OTP');
+      return;
+    }
+
+    // Show spinner, hide text
+    document.getElementById('submitText').style.display = 'none';
+    document.getElementById('submitSpinner').style.display = 'inline-block';
+
+    // Disable the button
+    document.getElementById('submitBtn').style.pointerEvents = 'none';
+    document.getElementById('submitBtn').style.opacity = '0.6';
+
+    try {
+      // Get customer phone from the existing phone field
+      const customerPhone = document
+        .querySelector('#phone-field .ff-general-sans.fs-14-lh-16-ls-0.fw-500')
+        .textContent.trim();
+
+      // Step 1: Confirm OTP
+      const otpResponse = await fetch(`/apps/${APP_SUB_PATH}/customer/account/confirm-otp`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          phone: customerPhone,
+          otp: parseInt(otpValue),
+        }),
+      });
+
+      const otpResult = await otpResponse.json();
+
+      if (!otpResult.success) {
+        console.error('Error confirming OTP:', otpResult.message);
+        alert('Error confirming OTP: ' + otpResult.message);
+        return;
+      }
+
+      // Step 2: Update customer with new email
+      const customerId = document.getElementById('customerId').textContent;
+      const firstName = document.getElementById('firstName-input').value;
+      const lastName = document.getElementById('lastName-input').value;
+
+      const updateResponse = await fetch(`/apps/${APP_SUB_PATH}/customer/account/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          customerId: customerId,
+          firstName: firstName,
+          lastName: lastName,
+          email: newEmail,
+        }),
+      });
+
+      const updateResult = await updateResponse.json();
+
+      if (updateResult.success) {
+        // Update the email in the main form
+        document.getElementById('email-input').value = newEmail;
+
+        // Close the modal
+        closeEmailModal();
+
+        console.log('Email updated successfully');
+        alert('Email updated successfully');
+      } else {
+        console.error('Error updating customer:', updateResult.message);
+        alert('Error updating customer: ' + updateResult.message);
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      alert('Network error occurred. Please try again.');
+    } finally {
+      // Hide spinner, show text
+      document.getElementById('submitText').style.display = 'inline';
+      document.getElementById('submitSpinner').style.display = 'none';
+
+      // Re-enable the button
+      document.getElementById('submitBtn').style.pointerEvents = 'auto';
+      document.getElementById('submitBtn').style.opacity = '1';
+    }
+  }
+
+  // Helper function to get OTP value - you'll need to implement this based on your otp-input component
+  function getOTPValue() {
+    // Check for different possible OTP input structures
+
+    // Method 1: Try to find inputs with otp-related classes or data attributes
+    let otpInputs = document.querySelectorAll('.otp-input input, .otp-digit, [data-otp-input], .digit-input');
+
+    // Method 2: If not found, try to find all number inputs within the OTP container
+    if (otpInputs.length === 0) {
+      const otpContainer = document.querySelector('.otp-container');
+      if (otpContainer) {
+        otpInputs = otpContainer.querySelectorAll('input[type="text"], input[type="number"], input[maxlength="1"]');
+      }
+    }
+
+    // Method 3: If still not found, try to find all single-character inputs
+    if (otpInputs.length === 0) {
+      otpInputs = document.querySelectorAll('input[maxlength="1"]');
+    }
+
+    // Method 4: Debug - log what inputs are found
+    console.log('Found OTP inputs:', otpInputs);
+
+    let otpValue = '';
+    otpInputs.forEach((input, index) => {
+      console.log(`Input ${index}:`, input.value);
+      otpValue += input.value || '';
+    });
+
+    console.log('Collected OTP value:', otpValue);
+    return otpValue;
+  }
+</script>

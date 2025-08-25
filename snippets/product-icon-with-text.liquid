@@ -1,0 +1,20 @@
+<div class="product-icon-with-text-block flex items-center gap-8 mb-10" {{ block.shopify_attributes }}>
+  {% if block.settings.icon %}
+    <div class="w-24 h-24 media block relative">
+      {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
+        {% render 'image',
+          image: block.settings.icon,
+          widths: '24, 24, 24, 24',
+          src_width: 24,
+          sizes: sizes,
+          class: 'img-fit',
+          quality: 1
+        %}
+    </div>
+  {% else %}
+    <div class="w-24 h-24">{{ 'image' | placeholder_svg_tag: "placeholder-svg" }}</div>
+  {% endif %}
+  {% if block.settings.text != blank %}
+    <span class="fs-14-lh-20-ls-0_1 fw-500">{{ block.settings.text }}</span>
+  {% endif %}
+</div>
