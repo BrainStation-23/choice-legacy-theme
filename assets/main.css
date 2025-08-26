@@ -1331,6 +1331,9 @@ address {
 .w-74 {
   width: 74px;
 }
+.w-70 {
+  width: 70px;
+}
 .w-56 {
   width: 56px;
 }
@@ -1444,6 +1447,9 @@ address {
 }
 .min-w-100 {
   min-width: 100px;
+}
+.min-w-85 {
+  min-width: 85px;
 }
 .min-w-64 {
   min-width: 64px;

@@ -42,8 +42,8 @@ document.addEventListener("DOMContentLoaded", function () {
             <img src="${imageUrl}" alt="${item.title}" class="product-image w-32 h-32">
           </td>
           <td class="product-name fw-400 fs-16-lh-24-ls-0">${item.title}</td>
-          <td class="product-price fw-400 fs-16-lh-24-ls-0">${currencySymbol}${price}</td>
-          <td class="wishlist-actions text-right">
+          <td class="product-price fw-400 fs-16-lh-24-ls-0 min-w-85">${currencySymbol}${price}</td>
+          <td class="wishlist-actions text-right flex justify-end items-center flex-wrap gap-16">
             <button 
               class="remove-wishlist-button bg-transparent text-brand border-none fw-600 fs-14-lh-16-ls-0 cursor-pointer" 
               data-product-handle="${item.handle}"
