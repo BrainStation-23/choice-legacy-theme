@@ -11,19 +11,6 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
-
-  .history-mobile-view {
-    display: none;
-  }
-  
-  @media (max-width: 768px) {
-    .history-desktop-view {
-      display: none;
-    }
-    .history-mobile-view {
-      display: flex;
-    }
-  }
 </style>
 
 <div class="reward-points-container flex flex-col gap-40">
@@ -95,7 +82,7 @@
       </div>
       
       <div class="reward-history-content">
-        <table class="history-desktop-view" style="width: 100%;">
+        <table class="history-desktop-view w-full table sm:hidden">
           <thead>
             <tr>
               <th class="fw-500 fs-16-lh-20-ls-0_1 text-label">{{ 'reward_points.table.event' | t }}</th>
@@ -114,7 +101,7 @@
           </tbody>
         </table>
 
-        <div id="history-mobile-view" class="history-mobile-view flex flex-col gap-16">
+        <div id="history-mobile-view" class="history-mobile-view hidden sm:flex flex-col gap-16">
           <div style="text-align:center; padding: 16px;">
             <p class="fw-500 fs-14-lh-16-ls-0">{{ 'review.loading' | t }}</p>
           </div>

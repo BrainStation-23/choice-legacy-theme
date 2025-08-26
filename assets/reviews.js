@@ -41,18 +41,38 @@ document.addEventListener("DOMContentLoaded", function () {
         ? `/products/${item.productHandle}`
         : "#";
       const ratingDisplay = item.rating ? item.rating : "Review";
-      const actionButton = `<a href="${productUrl}" class="button button--solid cursor-pointer no-underline block w-65 h-32 flex items-center justify-center">View</a>`;
+      const viewButtonDesktop = `<a href="${productUrl}" class="button button--solid cursor-pointer no-underline block w-65 h-32 flex items-center justify-center">View</a>`;
+      const viewButtonMobile = viewButtonDesktop.replace(
+        "w-65 h-32",
+        item.rating ? "w-50pct h-40" : "w-full h-40"
+      );
+
+      let mobileActionHTML = "";
+      if (item.rating === null) {
+        const reviewButtonMobile = `<div class="block w-full h-40 fw-600 fs-14-lh-16-ls-0 text-center text-brand flex items-center justify-center">Review</div>`;
+        mobileActionHTML = `
+          <div class="flex justify-between items-center gap-24 pt-12 pb-12 pl-24 pr-24">
+            ${reviewButtonMobile}
+            ${viewButtonMobile}
+          </div>
+        `;
+      } else {
+        mobileActionHTML = `
+          <div class="flex justify-end items-center pt-12 pb-12 pl-24 pr-24">
+            ${viewButtonMobile}
+          </div>
+        `;
+      }
 
       const tableRow = document.createElement("tr");
       tableRow.innerHTML = `
-        <td class="fw-600 fs-14-lh-16-ls-0 text-brand">#${serial}</td>
         <td class="flex items-center gap-38">
           <img src="${imageUrl}" alt="${productTitle}" class="w-32 h-32 object-contain">
           <span class="product-name fw-400 fs-16-lh-24-ls-0 text-secondary">${productTitle}</span>
         </td>
         <td class="fw-600 fs-14-lh-16-ls-0 text-center text-brand">${ratingDisplay}</td>
         <td class="text-right relative">
-          <div class="flex justify-end">${actionButton}</div>
+          <div class="flex justify-end">${viewButtonDesktop}</div>
         </td>
       `;
       desktopTableBody.appendChild(tableRow);
@@ -64,17 +84,13 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="items-start flex justify-between items-start pt-10 pl-16 pb-10 pr-16">
           <div class="flex justify-between border-b border-b-color border-b-solid w-full pb-10">
             <div class="flex gap-6 items-center">
-              <span class="ff-general-sans fw-600 fs-14-lh-16-ls-0 text-brand">#${serial}</span>
               <span class="ff-general-sans fw-400 fs-16-lh-24-ls-0 text-secondary">Rating: ${ratingDisplay}</span>
             </div>
             <img src="${imageUrl}" alt="${productTitle}" class="w-32 h-32 object-contain">
           </div>
         </div>
         <div class="product-name ff-general-sans fw-400 fs-16-lh-24-ls-0 pb-8 pl-12 pr-12 border-b border-b-color border-b-solid text-secondary">${productTitle}</div>
-        <div class="flex justify-end items-center pt-12 pb-12 pl-24 pr-24">${actionButton.replace(
-          "w-65 h-32",
-          "w-142 h-40"
-        )}</div>
+        ${mobileActionHTML}
       `;
       mobileCardContainer.appendChild(mobileCard);
     });

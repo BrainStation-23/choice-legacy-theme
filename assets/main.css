@@ -1367,6 +1367,9 @@ address {
 .w-48 {
   width: 48px;
 }
+.w-110 {
+  width: 110px;
+}
 .w-142 {
   width: 142px;
 }
@@ -1405,6 +1408,9 @@ address {
 }
 .max-w-full {
   max-width: 100%;
+}
+.w-50pct {
+  width: 50%;
 }
 .max-w-none {
   max-width: none;
