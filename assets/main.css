@@ -2583,6 +2583,9 @@ address {
 .text-primary-90pct {
   color: rgba(var(--color-primary-text), 0.9);
 }
+.text-error-alt {
+  color: #a21616;
+}
 .text-error-text {
   color: rgb(var(--error-text-color));
 }
@@ -3057,6 +3060,9 @@ shop-login-button {
 }
 .border-4 {
   border-width: 4px;
+}
+.border-top-1 {
+  border-top-width: 1px;
 }
 .border-top-none {
   border-top-width: 0;

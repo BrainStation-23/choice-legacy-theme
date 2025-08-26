@@ -47,16 +47,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const renderHistoryTable = (historyItems, tabType) => {
     const tbody = document.getElementById("earning-history-body");
-    if (!tbody || !Array.isArray(historyItems)) {
+    const mobileView = document.getElementById("history-mobile-view");
+
+    if (!tbody || !mobileView || !Array.isArray(historyItems)) {
       return;
     }
-
-    if (historyItems.length === 0) {
-      tbody.innerHTML = `<tr><td class="fs-16-lh-24-ls-0" colspan="5" style="text-align:center; padding: 16px;">No ${tabType} history found.</td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = "";
 
     const customerData = {
       orders: {},
@@ -82,13 +77,28 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
+    const emptyMessageHTML = `<tr><td class="fs-16-lh-24-ls-0" colspan="5" style="text-align:center; padding: 16px;">No ${tabType} history found.</td></tr>`;
+    if (historyItems.length === 0) {
+      tbody.innerHTML = emptyMessageHTML;
+      mobileView.innerHTML = `<div class="fs-16-lh-24-ls-0" style="text-align:center; padding: 16px;">No ${tabType} history found.</div>`;
+      return;
+    }
+
+    tbody.innerHTML = "";
+    mobileView.innerHTML = "";
+
     historyItems.forEach((record) => {
       const tr = document.createElement("tr");
-      let rowContent = "";
+      const mobileCard = document.createElement("div");
+      mobileCard.className =
+        "mobile-history-card pt-10 pr-16 pb-10 pl-16 flex flex-col rounded-12 border border-solid border-color";
+
+      let desktopRowContent = "";
+      let mobileCardContent = "";
 
       if (tabType === "used") {
         const formattedDate = new Date(record.date).toISOString().split("T")[0];
-        const pointsDisplay = `<span class="fw-600 fs-16-lh-24-ls-0 text-error">-${
+        const pointsDisplay = `<span class="fw-600 fs-16-lh-24-ls-0 text-error text-error-alt">-${
           record.point || 0
         }</span>`;
         const transactionAmount = record.amount
@@ -105,18 +115,32 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
 
-        rowContent = `
+        desktopRowContent = `
           <td class="fw-600 fs-16-lh-100pct-ls-0">${eventName}</td>
           <td class="fw-400 fs-16-lh-24-ls-0">${formattedDate}</td>
           <td>${pointsDisplay}</td>
           <td class="fw-400 fs-16-lh-24-ls-0">${transactionAmount}</td>
           <td class="text-right">
             <a href="${actionLink}">
-              <svg width="28" height="17" viewBox="0 0 28 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M13.9785 16.8535C6.08789 16.8535 0.658203 10.418 0.658203 8.44531C0.658203 6.46289 6.09766 0.0273438 13.9785 0.0273438C21.957 0.0273438 27.2891 6.46289 27.2891 8.44531C27.2891 10.418 21.9668 16.8535 13.9785 16.8535ZM13.9785 13.709C16.8984 13.709 19.2715 11.3066 19.2715 8.44531C19.2715 5.50586 16.8984 3.18164 13.9785 3.18164C11.0391 3.18164 8.68555 5.50586 8.68555 8.44531C8.68555 11.3066 11.0391 13.709 13.9785 13.709ZM13.9785 10.4473C12.8652 10.4473 11.957 9.53906 11.957 8.44531C11.957 7.3418 12.8652 6.43359 13.9785 6.43359C15.082 6.43359 16 7.3418 16 8.44531C16 9.53906 15.082 10.4473 13.9785 10.4473Z" fill="#FB6F92"/>
-              </svg>
+              <svg width="28" height="17" viewBox="0 0 28 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.9785 16.8535C6.08789 16.8535 0.658203 10.418 0.658203 8.44531C0.658203 6.46289 6.09766 0.0273438 13.9785 0.0273438C21.957 0.0273438 27.2891 6.46289 27.2891 8.44531C27.2891 10.418 21.9668 16.8535 13.9785 16.8535ZM13.9785 13.709C16.8984 13.709 19.2715 11.3066 19.2715 8.44531C19.2715 5.50586 16.8984 3.18164 13.9785 3.18164C11.0391 3.18164 8.68555 5.50586 8.68555 8.44531C8.68555 11.3066 11.0391 13.709 13.9785 13.709ZM13.9785 10.4473C12.8652 10.4473 11.957 9.53906 11.957 8.44531C11.957 7.3418 12.8652 6.43359 13.9785 6.43359C15.082 6.43359 16 7.3418 16 8.44531C16 9.53906 15.082 10.4473 13.9785 10.4473Z" fill="#FB6F92"/></svg>
             </a>
           </td>
+        `;
+        mobileCardContent = `
+          <div class="card-top-row pb-10 flex justify-between items-center w-full">
+            <div class="event-details flex items-center gap-6">
+              <span class="fw-600 fs-16-lh-100pct-ls-0">${eventName}</span>
+              <span class="fw-400 fs-16-lh-24-ls-0 text-label">${formattedDate}</span>
+            </div>
+            <div class="point-details flex items-center gap-12">
+              <span class="text-label fs-16-lh-24-ls-0 fw-400">Point</span>
+              <span class="text-error-alt">${pointsDisplay}</span>
+            </div>
+          </div>
+          <div class="card-bottom-row pt-10 flex justify-between items-center w-full border-top-1 border-solid border-color border-bottom-none border-left-none border-right-none">
+            <span class="text-label fw-500 fs-16-lh-20-ls-0_1">Transaction</span>
+            <span class="fw-600 fs-16-lh-24-ls-0">${transactionAmount}</span>
+          </div>
         `;
       } else {
         let transactionAmount = "";
@@ -159,23 +183,40 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         }
 
-        rowContent = `
+        desktopRowContent = `
           <td class="fw-600 fs-16-lh-100pct-ls-0">${eventName}</td>
           <td class="fw-400 fs-16-lh-24-ls-0">${formattedDate}</td>
           <td>${pointsDisplay}</td>
           <td class="fw-400 fs-16-lh-24-ls-0">${transactionAmount}</td>
           <td class="text-right">
             <a href="${actionLink}">
-              <svg width="28" height="17" viewBox="0 0 28 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M13.9785 16.8535C6.08789 16.8535 0.658203 10.418 0.658203 8.44531C0.658203 6.46289 6.09766 0.0273438 13.9785 0.0273438C21.957 0.0273438 27.2891 6.46289 27.2891 8.44531C27.2891 10.418 21.9668 16.8535 13.9785 16.8535ZM13.9785 13.709C16.8984 13.709 19.2715 11.3066 19.2715 8.44531C19.2715 5.50586 16.8984 3.18164 13.9785 3.18164C11.0391 3.18164 8.68555 5.50586 8.68555 8.44531C8.68555 11.3066 11.0391 13.709 13.9785 13.709ZM13.9785 10.4473C12.8652 10.4473 11.957 9.53906 11.957 8.44531C11.957 7.3418 12.8652 6.43359 13.9785 6.43359C15.082 6.43359 16 7.3418 16 8.44531C16 9.53906 15.082 10.4473 13.9785 10.4473Z" fill="#FB6F92"/>
-              </svg>
+              <svg width="28" height="17" viewBox="0 0 28 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.9785 16.8535C6.08789 16.8535 0.658203 10.418 0.658203 8.44531C0.658203 6.46289 6.09766 0.0273438 13.9785 0.0273438C21.957 0.0273438 27.2891 6.46289 27.2891 8.44531C27.2891 10.418 21.9668 16.8535 13.9785 16.8535ZM13.9785 13.709C16.8984 13.709 19.2715 11.3066 19.2715 8.44531C19.2715 5.50586 16.8984 3.18164 13.9785 3.18164C11.0391 3.18164 8.68555 5.50586 8.68555 8.44531C8.68555 11.3066 11.0391 13.709 13.9785 13.709ZM13.9785 10.4473C12.8652 10.4473 11.957 9.53906 11.957 8.44531C11.957 7.3418 12.8652 6.43359 13.9785 6.43359C15.082 6.43359 16 7.3418 16 8.44531C16 9.53906 15.082 10.4473 13.9785 10.4473Z" fill="#FB6F92"/></svg>
             </a>
           </td>
         `;
+        mobileCardContent = `
+          <div class="card-top-row pb-10 flex justify-between items-center w-full">
+            <div class="event-details flex items-center gap-6">
+              <span class="fw-600 fs-16-lh-100pct-ls-0">${eventName}</span>
+              <span class="fw-400 fs-16-lh-24-ls-0 text-label">${formattedDate}</span>
+            </div>
+            <div class="point-details flex items-center gap-12">
+              <span class="text-label fs-16-lh-24-ls-0 fw-400">Point</span>
+              <span class="text-error-alt">${pointsDisplay}</span>
+            </div>
+          </div>
+          <div class="card-bottom-row pt-10 flex justify-between items-center w-full border-top-1 border-solid border-color border-bottom-none border-left-none border-right-none">
+            <span class="text-label fw-500 fs-16-lh-20-ls-0_1">Transaction</span>
+            <span class="fw-600 fs-16-lh-24-ls-0">${transactionAmount}</span>
+          </div>
+        `;
       }
 
-      tr.innerHTML = rowContent;
+      tr.innerHTML = desktopRowContent;
+      mobileCard.innerHTML = mobileCardContent;
+
       tbody.appendChild(tr);
+      mobileView.appendChild(mobileCard);
     });
   };
 
@@ -194,7 +235,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (tabType === "expire") {
       dateHeader.textContent = "Expire Date";
-      pointHeader.textContent = "Remaining Point";
     } else {
       dateHeader.textContent = "Date";
       pointHeader.textContent = "Point";
