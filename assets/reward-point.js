@@ -255,7 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  const handleApplyToCart = (button, discountCode) => {
+  const handleApplyToCart = (button, discountCode, applyHandler) => {
     if (!discountCode || !button) {
       toastManager.show("An error occurred.", "error");
       return;
@@ -276,6 +276,9 @@ document.addEventListener("DOMContentLoaded", () => {
     iframe.onload = () => {
       button.textContent = window.rewardPointLocalization.redeemNow;
       button.disabled = false;
+      button.removeAttribute("data-discount-code");
+      button.removeEventListener("click", applyHandler);
+      button.addEventListener("click", handleRedeemFromCard);
     };
 
     document.body.appendChild(iframe);
@@ -284,6 +287,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const handleRedeemFromCard = async (event) => {
     const button = event.target;
     const pointsToRedeem = button.dataset.pointsRequired;
+
+    const applyHandler = () =>
+      handleApplyToCart(button, button.dataset.discountCode, applyHandler);
+
     try {
       button.disabled = true;
       button.textContent = window.rewardPointLocalization.redeeming;
@@ -301,9 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
         button.dataset.discountCode = redeemResponse.discountCode;
         button.disabled = false;
         button.removeEventListener("click", handleRedeemFromCard);
-        button.addEventListener("click", () =>
-          handleApplyToCart(button, button.dataset.discountCode)
-        );
+        button.addEventListener("click", applyHandler);
       }
       const latestData = await apiCall(API_URLS.HISTORY);
       updateCustomerData(latestData);
