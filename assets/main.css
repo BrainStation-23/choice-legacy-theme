@@ -1059,6 +1059,10 @@ address {
   .md\:w-33pct {
     width: calc(33% - 16px);
   }
+
+  .md\:flex-wrap {
+    flex-wrap: wrap;
+  }
 }
 @media screen and (min-width: 1024px) and (max-width: 1439px) {
   .lg\:grid-cols-2 {
@@ -3564,7 +3568,12 @@ tr:last-child td {
   .slg\:left-100pct {
     left: 100%;
   }
+
+  .slg\:flex-wrap {
+    flex-wrap: wrap;
+  }
 }
+
 @keyframes play-normal-0-to-n100 {
   0% {
     transform: translateX(0);

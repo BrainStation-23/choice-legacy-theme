@@ -27,9 +27,24 @@ document.addEventListener("DOMContentLoaded", function () {
   const loader = document.getElementById("wishlist-loader");
   const emptyMessage = document.getElementById("empty-wishlist-message");
 
-  const renderWishlist = (items) => {
+  let wishlistPagination;
+  let allWishlistItems = [];
+
+  const initializePagination = () => {
+    wishlistPagination = new PaginationManager({
+      containerId: "wishlist-pagination-controls",
+      itemsPerPage: 10,
+      onPageChange: (items) => renderWishlist(items),
+    });
+  };
+
+  const clearContent = () => {
     desktopTableBody.innerHTML = "";
     mobileCardContainer.innerHTML = "";
+  };
+
+  const renderWishlist = (items) => {
+    clearContent();
 
     items.forEach((item) => {
       const imageUrl =
@@ -62,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </td>
         <td class="product-name fw-400 fs-16-lh-24-ls-0">${item.title}</td>
         <td class="product-price fw-400 fs-16-lh-24-ls-0 min-w-85">${currencySymbol}${price}</td>
-        <td class="wishlist-actions text-right flex justify-end items-center gap-16">
+        <td class="wishlist-actions text-right flex justify-end items-center gap-16 md:flex-wrap slg:flex-wrap">
           ${removeButtonHTML}
           ${addToCartButtonHTML}
         </td>
@@ -100,7 +115,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const data = await response.json();
 
       if (data.success && data.wishlist.length > 0) {
-        renderWishlist(data.wishlist);
+        allWishlistItems = data.wishlist;
+        wishlistPagination.init(allWishlistItems);
         desktopTable.classList.remove("hidden");
       } else {
         emptyMessage.classList.remove("hidden");
@@ -115,6 +131,9 @@ document.addEventListener("DOMContentLoaded", function () {
       loader.classList.add("hidden");
     }
   };
+
+  // Initialize pagination manager
+  initializePagination();
 
   fetchAndDisplayWishlist();
 
@@ -133,19 +152,22 @@ document.addEventListener("DOMContentLoaded", function () {
         if (result.success) {
           toastManager.show("Product removed from wishlist", "success");
 
-          const desktopItem = document.getElementById(
-            `wishlist-desktop-${itemId}`
-          );
-          const mobileItem = document.getElementById(
-            `wishlist-mobile-${itemId}`
+          // Remove item from allWishlistItems array
+          allWishlistItems = allWishlistItems.filter(
+            (item) => item.id !== itemId
           );
 
-          if (desktopItem) desktopItem.remove();
-          if (mobileItem) mobileItem.remove();
-
-          if (desktopTableBody.children.length === 0) {
+          // Update pagination with new data
+          if (allWishlistItems.length > 0) {
+            wishlistPagination.init(allWishlistItems);
+          } else {
+            // Show empty message if no items left
+            clearContent();
             emptyMessage.classList.remove("hidden");
             desktopTable.classList.add("hidden");
+            document.getElementById(
+              "wishlist-pagination-controls"
+            ).style.display = "none";
           }
         } else {
           toastManager.show("Failed to remove from wishlist", "error");
