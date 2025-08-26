@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
         </td>
         <td class="product-name fw-400 fs-16-lh-24-ls-0">${item.title}</td>
         <td class="product-price fw-400 fs-16-lh-24-ls-0 min-w-85">${currencySymbol}${price}</td>
-        <td class="wishlist-actions text-right flex justify-end items-center flex-wrap gap-16">
+        <td class="wishlist-actions text-right flex justify-end items-center gap-16">
           ${removeButtonHTML}
           ${addToCartButtonHTML}
         </td>
@@ -76,10 +76,10 @@ document.addEventListener("DOMContentLoaded", function () {
       mobileCard.innerHTML = `
         <div class="items-start flex justify-between items-start pt-10 pl-16 pb-10 pr-16">
           <div class="flex justify-between border-b border-b-color border-b-solid w-full pb-10">
+            <img src="${imageUrl}" alt="${item.title}" class="w-32 h-32 object-contain">
             <div class="flex items-center">
               <span class="product-name ff-general-sans fw-400 fs-16-lh-24-ls-0 text-secondary">${currencySymbol}${price}</span>
             </div>
-            <img src="${imageUrl}" alt="${item.title}" class="w-32 h-32 object-contain">
           </div>
         </div>
         <div class="product-name ff-general-sans fw-400 fs-16-lh-24-ls-0 pb-8 pl-12 pr-12 border-b border-b-color border-b-solid text-secondary">${item.title}</div>
