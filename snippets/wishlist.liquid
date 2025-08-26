@@ -5,7 +5,7 @@
     <p class="fw-500 fs-14-lh-16-ls-0">{{ 'wishlist.loading' | t }}</p>
   </div>
   
-  <table class="wishlist-table" style="display: none;">
+  <table class="wishlist-desktop-view table sm:hidden">
     <thead>
       <tr class="h-48">
         <th class="fw-500 fs-16-lh-20-ls-0_1 w-70">{{ 'wishlist.table.image' | t }}</th>
@@ -14,11 +14,14 @@
         <th class="wishlist-actions fw-500 fs-16-lh-20-ls-0_1 text-right">{{ 'wishlist.table.action' | t }}</th>
       </tr>
     </thead>
-    <tbody id="customer-wishlist-items">
+    <tbody id="customer-wishlist-items-desktop">
     </tbody>
   </table>
 
-  <div id="empty-wishlist-message" style="display: none;">
+  <div id="customer-wishlist-items-mobile" class="wishlist-mobile-view hidden sm:flex flex-col gap-24">
+  </div>
+
+  <div id="empty-wishlist-message" class="hidden">
     <p>{{ 'wishlist.empty' | t }}</p>
   </div>
 </div>
