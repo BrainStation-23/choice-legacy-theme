@@ -246,13 +246,10 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("orderPointsRule").textContent = finalOrderRule;
       }
 
-      // Store data for different tabs
       if (apiResponse.rewardHistory) {
         currentTabData.earning = apiResponse.rewardHistory.earning || [];
         currentTabData.used = apiResponse.rewardHistory.used || [];
         currentTabData.expire = apiResponse.rewardHistory.expire || [];
-
-        // Initialize with earning tab by default
         switchTab("earning");
       }
     }
@@ -328,9 +325,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initial API call
   apiCall(API_URLS.HISTORY)
     .then(updateCustomerData)
-    .catch((error) => {
-      currentPointsSpan.textContent = "Error";
-    });
+    .catch((error) => {});
 
   const redeemButtons = document.querySelectorAll(".redeem-now-button");
   redeemButtons.forEach((button) => {
