@@ -1,11 +1,38 @@
 document.addEventListener("DOMContentLoaded", () => {
   const toastManager = new ToastNotificationManager();
-
   const currentPointsSpan = document.getElementById("currentPoints");
 
   const API_URLS = {
     REDEEM: `/apps/${APP_SUB_PATH}/customer/reward-point-system/redeem`,
     HISTORY: `/apps/${APP_SUB_PATH}/customer/reward-point-system/get-history`,
+  };
+
+  // Initialize pagination managers for different tabs
+  let earningPagination, usedPagination, expirePagination;
+  let currentTabData = {
+    earning: [],
+    used: [],
+    expire: [],
+  };
+
+  const initializePagination = () => {
+    earningPagination = new PaginationManager({
+      containerId: "earning-pagination",
+      itemsPerPage: 5,
+      onPageChange: (items) => renderHistoryTable(items, "earning"),
+    });
+
+    usedPagination = new PaginationManager({
+      containerId: "used-pagination",
+      itemsPerPage: 5,
+      onPageChange: (items) => renderHistoryTable(items, "used"),
+    });
+
+    expirePagination = new PaginationManager({
+      containerId: "expire-pagination",
+      itemsPerPage: 5,
+      onPageChange: (items) => renderHistoryTable(items, "expire"),
+    });
   };
 
   const apiCall = async (url, options = {}) => {
@@ -18,22 +45,46 @@ document.addEventListener("DOMContentLoaded", () => {
     return data;
   };
 
-  const renderEarningHistoryTable = (earningHistory, customerData) => {
+  const renderHistoryTable = (historyItems, tabType) => {
     const tbody = document.getElementById("earning-history-body");
-    if (!tbody) {
+    if (!tbody || !Array.isArray(historyItems)) {
       return;
     }
 
-    if (!Array.isArray(earningHistory) || earningHistory.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 16px;">No earning history found.</td></tr>`;
+    if (historyItems.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 16px;">No ${tabType} history found.</td></tr>`;
       return;
     }
 
     tbody.innerHTML = "";
 
-    earningHistory.forEach((record) => {
+    const customerData = {
+      orders: {},
+      products: {},
+    };
+
+    (window.customerPurchasedProducts || []).forEach((item) => {
+      const orderIdStr = String(item.orderId);
+      const productIdStr = String(item.productId);
+
+      if (!customerData.orders[orderIdStr]) {
+        customerData.orders[orderIdStr] = {
+          total_price: item.orderTotalPrice,
+          customer_url: item.orderCustomerUrl,
+        };
+      }
+
+      if (!customerData.products[productIdStr]) {
+        customerData.products[productIdStr] = {
+          productHandle: item.productHandle,
+        };
+      }
+    });
+
+    historyItems.forEach((record) => {
       let transactionAmount = "";
       let actionLink = "#";
+      let pointsDisplay = "";
 
       const formattedDate = new Date(record.createdDate)
         .toISOString()
@@ -41,6 +92,21 @@ document.addEventListener("DOMContentLoaded", () => {
       const eventName =
         String(record.event).charAt(0).toUpperCase() +
         String(record.event).slice(1);
+
+      // Handle different point displays based on tab type
+      if (tabType === "earning") {
+        pointsDisplay = `<span class="fw-600 fs-16-lh-24-ls-0 text-success">+${
+          record.earnPoint || 0
+        }</span>`;
+      } else if (tabType === "used") {
+        pointsDisplay = `<span class="fw-600 fs-16-lh-24-ls-0 text-error">-${
+          record.usedPoint || 0
+        }</span>`;
+      } else if (tabType === "expire") {
+        pointsDisplay = `<span class="fw-600 fs-16-lh-24-ls-0 text-warning">-${
+          record.expiredPoint || 0
+        }</span>`;
+      }
 
       if (record.event === "order") {
         const order = customerData.orders[String(record.referenceId)];
@@ -61,22 +127,45 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const tr = document.createElement("tr");
       tr.innerHTML = `
-      <td class="fw-600 fs-16-lh-100pct-ls-0">${eventName}</td>
-      <td class="fw-400 fs-16-lh-24-ls-0">${formattedDate}</td>
-      <td class="fw-600 fs-16-lh-24-ls-0 text-success">+${
-        record.earnPoint || 0
-      }</td>
-      <td class="fw-400 fs-16-lh-24-ls-0">${transactionAmount}</td>
-      <td class="text-right">
-        <a href="${actionLink}">
-          <svg width="28" height="17" viewBox="0 0 28 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M13.9785 16.8535C6.08789 16.8535 0.658203 10.418 0.658203 8.44531C0.658203 6.46289 6.09766 0.0273438 13.9785 0.0273438C21.957 0.0273438 27.2891 6.46289 27.2891 8.44531C27.2891 10.418 21.9668 16.8535 13.9785 16.8535ZM13.9785 13.709C16.8984 13.709 19.2715 11.3066 19.2715 8.44531C19.2715 5.50586 16.8984 3.18164 13.9785 3.18164C11.0391 3.18164 8.68555 5.50586 8.68555 8.44531C8.68555 11.3066 11.0391 13.709 13.9785 13.709ZM13.9785 10.4473C12.8652 10.4473 11.957 9.53906 11.957 8.44531C11.957 7.3418 12.8652 6.43359 13.9785 6.43359C15.082 6.43359 16 7.3418 16 8.44531C16 9.53906 15.082 10.4473 13.9785 10.4473Z" fill="#FB6F92"/>
-          </svg>
-        </a>
-      </td>
-    `;
+        <td class="fw-600 fs-16-lh-100pct-ls-0">${eventName}</td>
+        <td class="fw-400 fs-16-lh-24-ls-0">${formattedDate}</td>
+        <td>${pointsDisplay}</td>
+        <td class="fw-400 fs-16-lh-24-ls-0">${transactionAmount}</td>
+        <td class="text-right">
+          <a href="${actionLink}">
+            <svg width="28" height="17" viewBox="0 0 28 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M13.9785 16.8535C6.08789 16.8535 0.658203 10.418 0.658203 8.44531C0.658203 6.46289 6.09766 0.0273438 13.9785 0.0273438C21.957 0.0273438 27.2891 6.46289 27.2891 8.44531C27.2891 10.418 21.9668 16.8535 13.9785 16.8535ZM13.9785 13.709C16.8984 13.709 19.2715 11.3066 19.2715 8.44531C19.2715 5.50586 16.8984 3.18164 13.9785 3.18164C11.0391 3.18164 8.68555 5.50586 8.68555 8.44531C8.68555 11.3066 11.0391 13.709 13.9785 13.709ZM13.9785 10.4473C12.8652 10.4473 11.957 9.53906 11.957 8.44531C11.957 7.3418 12.8652 6.43359 13.9785 6.43359C15.082 6.43359 16 7.3418 16 8.44531C16 9.53906 15.082 10.4473 13.9785 10.4473Z" fill="#FB6F92"/>
+            </svg>
+          </a>
+        </td>
+      `;
       tbody.appendChild(tr);
     });
+  };
+
+  const switchTab = (tabType) => {
+    // Update active tab button
+    document
+      .querySelectorAll(".tab-button")
+      .forEach((btn) => btn.classList.remove("active"));
+    document.querySelector(`[data-tab="${tabType}"]`).classList.add("active");
+
+    // Hide all pagination containers
+    document.getElementById("earning-pagination").style.display = "none";
+    document.getElementById("used-pagination").style.display = "none";
+    document.getElementById("expire-pagination").style.display = "none";
+
+    // Show current tab pagination and render data
+    if (tabType === "earning") {
+      earningPagination.init(currentTabData.earning);
+      document.getElementById("earning-pagination").style.display = "flex";
+    } else if (tabType === "used") {
+      usedPagination.init(currentTabData.used);
+      document.getElementById("used-pagination").style.display = "flex";
+    } else if (tabType === "expire") {
+      expirePagination.init(currentTabData.expire);
+      document.getElementById("expire-pagination").style.display = "flex";
+    }
   };
 
   const updateCustomerData = (apiResponse) => {
@@ -148,34 +237,14 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("orderPointsRule").textContent = finalOrderRule;
       }
 
-      const customerData = {
-        orders: {},
-        products: {},
-      };
+      // Store data for different tabs
+      if (apiResponse.rewardHistory) {
+        currentTabData.earning = apiResponse.rewardHistory.earning || [];
+        currentTabData.used = apiResponse.rewardHistory.used || [];
+        currentTabData.expire = apiResponse.rewardHistory.expire || [];
 
-      (window.customerPurchasedProducts || []).forEach((item) => {
-        const orderIdStr = String(item.orderId);
-        const productIdStr = String(item.productId);
-
-        if (!customerData.orders[orderIdStr]) {
-          customerData.orders[orderIdStr] = {
-            total_price: item.orderTotalPrice,
-            customer_url: item.orderCustomerUrl,
-          };
-        }
-
-        if (!customerData.products[productIdStr]) {
-          customerData.products[productIdStr] = {
-            productHandle: item.productHandle,
-          };
-        }
-      });
-
-      if (apiResponse.rewardHistory?.earning) {
-        renderEarningHistoryTable(
-          apiResponse.rewardHistory.earning,
-          customerData
-        );
+        // Initialize with earning tab by default
+        switchTab("earning");
       }
     }
   };
@@ -237,6 +306,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  // Initialize pagination managers
+  initializePagination();
+
+  // Add event listeners for tab buttons
+  document.querySelectorAll(".tab-button").forEach((button, index) => {
+    const tabTypes = ["earning", "used", "expire"];
+    button.setAttribute("data-tab", tabTypes[index]);
+    button.addEventListener("click", () => switchTab(tabTypes[index]));
+  });
+
+  // Initial API call
   apiCall(API_URLS.HISTORY)
     .then(updateCustomerData)
     .catch((error) => {

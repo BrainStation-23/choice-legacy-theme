@@ -3,6 +3,14 @@
     border-bottom: 2px solid rgb(var(--color-primary-brand));
     color: rgb(var(--color-primary-brand));
   }
+  .pagination-btn.active {
+    border-color: rgb(var(--color-primary-brand));
+    color: rgb(var(--color-primary-brand))
+  }
+  .pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 </style>
 
 <div class="reward-points-container flex flex-col gap-40">
@@ -70,6 +78,7 @@
         <button class="tab-button cursor-pointer border-top-none border-right-none border-left-none border-bottom-none bg-bg text-label fs-16-lh-20-ls-0_1 fw-500 pt-12 pb-12">{{ 'reward_points.tabs.used' | t }}</button>
         <button class="tab-button cursor-pointer border-top-none border-right-none border-left-none border-bottom-none bg-bg text-label fs-16-lh-20-ls-0_1 fw-500 pt-12 pb-12">{{ 'reward_points.tabs.expire' | t }}</button>
       </div>
+      
       <div class="reward-history-content">
         <table style="width: 100%; border-collapse: collapse;">
           <thead>
@@ -84,8 +93,12 @@
           <tbody id="earning-history-body">
           </tbody>
         </table>
+        
+        <!-- Pagination containers for each tab -->
+        <div id="earning-pagination" class="flex justify-end items-center gap-8 mt-24" style="display: none;"></div>
+        <div id="used-pagination" class="flex justify-end items-center gap-8 mt-24" style="display: none;"></div>
+        <div id="expire-pagination" class="flex justify-end items-center gap-8 mt-24" style="display: none;"></div>
       </div>
-
     </div>
   </div>
 </div>

@@ -3,14 +3,19 @@ document.addEventListener("DOMContentLoaded", function () {
   const desktopTableBody = document.getElementById(
     "customer-review-items-desktop"
   );
-  const paginationControls = document.getElementById("pagination-controls");
   const allProducts = window.allProductsData || {};
   const purchasedProducts = window.customerPurchasedProducts || [];
 
-  let currentPage = 1;
-  const itemsPerPage = 1;
-  let totalPages = 1;
+  let reviewPagination;
   let allCombinedItems = [];
+
+  const initializePagination = () => {
+    reviewPagination = new PaginationManager({
+      containerId: "pagination-controls",
+      itemsPerPage: 1,
+      onPageChange: (items) => renderReviews(items),
+    });
+  };
 
   const clearContent = () => {
     desktopTableBody.innerHTML = "";
@@ -20,7 +25,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const renderReviews = (items) => {
     clearContent();
     items.forEach((item, index) => {
-      const serial = (currentPage - 1) * itemsPerPage + index + 1;
+      const serial =
+        (reviewPagination.getCurrentPage() - 1) *
+          reviewPagination.itemsPerPage +
+        index +
+        1;
       const productInfo = allProducts[item.productHandle];
       const productTitle = productInfo
         ? productInfo.title
@@ -71,85 +80,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   };
 
-  const renderPagination = () => {
-    paginationControls.innerHTML = "";
-    if (totalPages <= 1) return;
-
-    const leftArrowSvg = `
-      <svg width="20" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <polyline points="15,18 9,12 15,6"></polyline>
-      </svg>
-    `;
-
-    const rightArrowSvg = `
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <polyline points="9,18 15,12 9,6"></polyline>
-      </svg>
-    `;
-
-    const createButton = (
-      content,
-      pageNum,
-      isDisabled = false,
-      isActive = false
-    ) => {
-      const button = document.createElement("button");
-      button.innerHTML = content;
-      button.className =
-        "pagination-btn w-40 h-40 rounded-6 flex items-center justify-center border-1 border-solid border-color cursor-pointer transition-transform bg-bg fw-500 fs-14-lh-20-ls-0_1";
-      if (isActive) button.classList.add("active");
-      button.disabled = isDisabled;
-      button.addEventListener("click", () => {
-        if (pageNum) {
-          currentPage = pageNum;
-          displayCurrentPage();
-        }
-      });
-      return button;
-    };
-
-    const prevBtn = createButton(
-      leftArrowSvg,
-      currentPage - 1,
-      currentPage <= 1
-    );
-    paginationControls.appendChild(prevBtn);
-
-    let lastPageAdded = 0;
-    for (let i = 1; i <= totalPages; i++) {
-      const showPage =
-        i === 1 ||
-        i === totalPages ||
-        (i >= currentPage - 1 && i <= currentPage + 1);
-      if (showPage) {
-        if (i > lastPageAdded + 1) {
-          const ellipsis = document.createElement("span");
-          ellipsis.className = "pagination-ellipsis";
-          ellipsis.textContent = "...";
-          paginationControls.appendChild(ellipsis);
-        }
-        const pageBtn = createButton(i, i, false, i === currentPage);
-        paginationControls.appendChild(pageBtn);
-        lastPageAdded = i;
-      }
-    }
-
-    const nextBtn = createButton(
-      rightArrowSvg,
-      currentPage + 1,
-      currentPage >= totalPages
-    );
-    paginationControls.appendChild(nextBtn);
-  };
-
-  const displayCurrentPage = () => {
-    const startIndex = (currentPage - 1) * itemsPerPage;
-    const endIndex = startIndex + itemsPerPage;
-    const currentItems = allCombinedItems.slice(startIndex, endIndex);
-    renderReviews(currentItems);
-    renderPagination();
-  };
-
   const fetchAndDisplayReviews = async () => {
     try {
       const response = await fetch(
@@ -191,15 +121,11 @@ document.addEventListener("DOMContentLoaded", function () {
       );
 
       allCombinedItems = [...reviewedProducts, ...uniqueUnreviewed];
-      totalPages = Math.ceil(allCombinedItems.length / itemsPerPage);
 
       if (allCombinedItems.length > 0) {
-        displayCurrentPage();
+        reviewPagination.init(allCombinedItems);
         document.querySelector(".review-desktop-view").removeAttribute("style");
         document.querySelector(".review-mobile-view").removeAttribute("style");
-        if (totalPages > 1) {
-          paginationControls.style.display = "flex";
-        }
       } else {
         document.getElementById("empty-review-message").style.display = "block";
       }
@@ -214,5 +140,9 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
+  // Initialize pagination manager
+  initializePagination();
+
+  // Fetch and display reviews
   fetchAndDisplayReviews();
 });
