@@ -147,6 +147,9 @@ mark {
 .text-yellow {
   color: #ffff01;
 }
+.text-success {
+  color: #3fb135;
+}
 .svg-brand path {
   stroke: rgb(var(--color-primary-brand));
   fill: rgb(var(--color-primary-brand));
@@ -2987,9 +2990,6 @@ shop-login-button {
   min-width: max(100%, 165px);
   border-radius: var(--modal-border-radius);
 }
-.border-none {
-  border: none;
-}
 
 .rounded-full {
   border-radius: 50%;
@@ -3031,6 +3031,9 @@ shop-login-button {
   border-bottom-left-radius: 32px;
 }
 
+.border-none {
+  border: none;
+}
 .border-0_727 {
   border-width: 0.727px;
 }
@@ -3048,6 +3051,18 @@ shop-login-button {
 }
 .border-4 {
   border-width: 4px;
+}
+.border-top-none {
+  border-top-width: 0;
+}
+.border-bottom-none {
+  border-bottom-width: 0;
+}
+.border-left-none {
+  border-left-width: 0;
+}
+.border-right-none {
+  border-right-width: 0;
 }
 .border-solid {
   border-style: solid;

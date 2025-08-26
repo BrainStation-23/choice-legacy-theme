@@ -35,7 +35,19 @@
       "label": "Apply to cart"
     },
     "redeem_message": "Points redeemed successfully!",
-    "apply_to_cart_message": "Discount code applied successfully!"
+    "apply_to_cart_message": "Discount code applied successfully!",
+    "tabs": {
+      "earning": "Earning",
+      "used": "Used",
+      "expire": "Expire"
+    },
+    "table": {
+      "event": "Event",
+      "date": "Date",
+      "point": "Point",
+      "transaction": "Transaction",
+      "action": "Action"
+    }
   },
   "wishlist": {
     "title": "My Wishlist",

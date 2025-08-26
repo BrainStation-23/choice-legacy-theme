@@ -18,30 +18,32 @@ document.addEventListener("DOMContentLoaded", () => {
     return data;
   };
 
-  const renderEarningHistoryTable = (earningHistory, orders) => {
+  const renderEarningHistoryTable = (earningHistory, customerData) => {
     const tbody = document.getElementById("earning-history-body");
-    if (!tbody) return;
+    if (!tbody) {
+      return;
+    }
 
-    tbody.innerHTML = "";
-
-    const orderMap = new Map(
-      orders.map((order) => [order.id.toString(), order])
-    );
-
-    if (earningHistory.length === 0) {
+    if (!Array.isArray(earningHistory) || earningHistory.length === 0) {
       tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 16px;">No earning history found.</td></tr>`;
       return;
     }
 
-    earningHistory.forEach((record) => {
-      const tr = document.createElement("tr");
+    tbody.innerHTML = "";
 
+    earningHistory.forEach((record) => {
       let transactionAmount = "";
       let actionLink = "#";
-      let actionText = "View";
+
+      const formattedDate = new Date(record.createdDate)
+        .toISOString()
+        .split("T")[0];
+      const eventName =
+        String(record.event).charAt(0).toUpperCase() +
+        String(record.event).slice(1);
 
       if (record.event === "order") {
-        const order = orderMap.get(record.referenceId.toString());
+        const order = customerData.orders[String(record.referenceId)];
         if (order) {
           transactionAmount = `৳${(order.total_price / 100).toFixed(2)}`;
           actionLink = order.customer_url;
@@ -49,16 +51,30 @@ document.addEventListener("DOMContentLoaded", () => {
           transactionAmount = "N/A";
         }
       } else if (record.event === "review") {
-        actionLink = "/collections/all";
+        const product = customerData.products[String(record.referenceId)];
+        if (product && product.productHandle) {
+          actionLink = `/products/${product.productHandle}`;
+        } else {
+          actionLink = "/collections/all";
+        }
       }
 
+      const tr = document.createElement("tr");
       tr.innerHTML = `
-        <td style="padding: 8px; border-bottom: 1px solid #ddd; text-transform: capitalize;">${record.event}</td>
-        <td style="padding: 8px; border-bottom: 1px solid #ddd;">#${record.referenceId}</td>
-        <td style="padding: 8px; border-bottom: 1px solid #ddd; color: green;">+${record.earnPoint}</td>
-        <td style="padding: 8px; border-bottom: 1px solid #ddd;">${transactionAmount}</td>
-        <td style="padding: 8px; border-bottom: 1px solid #ddd;"><a href="${actionLink}">${actionText}</a></td>
-      `;
+      <td class="fw-600 fs-16-lh-100pct-ls-0">${eventName}</td>
+      <td class="fw-400 fs-16-lh-24-ls-0">${formattedDate}</td>
+      <td class="fw-600 fs-16-lh-24-ls-0 text-success">+${
+        record.earnPoint || 0
+      }</td>
+      <td class="fw-400 fs-16-lh-24-ls-0">${transactionAmount}</td>
+      <td class="text-right">
+        <a href="${actionLink}">
+          <svg width="28" height="17" viewBox="0 0 28 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M13.9785 16.8535C6.08789 16.8535 0.658203 10.418 0.658203 8.44531C0.658203 6.46289 6.09766 0.0273438 13.9785 0.0273438C21.957 0.0273438 27.2891 6.46289 27.2891 8.44531C27.2891 10.418 21.9668 16.8535 13.9785 16.8535ZM13.9785 13.709C16.8984 13.709 19.2715 11.3066 19.2715 8.44531C19.2715 5.50586 16.8984 3.18164 13.9785 3.18164C11.0391 3.18164 8.68555 5.50586 8.68555 8.44531C8.68555 11.3066 11.0391 13.709 13.9785 13.709ZM13.9785 10.4473C12.8652 10.4473 11.957 9.53906 11.957 8.44531C11.957 7.3418 12.8652 6.43359 13.9785 6.43359C15.082 6.43359 16 7.3418 16 8.44531C16 9.53906 15.082 10.4473 13.9785 10.4473Z" fill="#FB6F92"/>
+          </svg>
+        </a>
+      </td>
+    `;
       tbody.appendChild(tr);
     });
   };
@@ -132,10 +148,33 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("orderPointsRule").textContent = finalOrderRule;
       }
 
+      const customerData = {
+        orders: {},
+        products: {},
+      };
+
+      (window.customerPurchasedProducts || []).forEach((item) => {
+        const orderIdStr = String(item.orderId);
+        const productIdStr = String(item.productId);
+
+        if (!customerData.orders[orderIdStr]) {
+          customerData.orders[orderIdStr] = {
+            total_price: item.orderTotalPrice,
+            customer_url: item.orderCustomerUrl,
+          };
+        }
+
+        if (!customerData.products[productIdStr]) {
+          customerData.products[productIdStr] = {
+            productHandle: item.productHandle,
+          };
+        }
+      });
+
       if (apiResponse.rewardHistory?.earning) {
         renderEarningHistoryTable(
           apiResponse.rewardHistory.earning,
-          window.customerOrders || []
+          customerData
         );
       }
     }
