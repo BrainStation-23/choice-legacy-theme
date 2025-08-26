@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const initializePagination = () => {
     reviewPagination = new PaginationManager({
       containerId: "pagination-controls",
-      itemsPerPage: 1,
+      itemsPerPage: 10,
       onPageChange: (items) => renderReviews(items),
     });
   };

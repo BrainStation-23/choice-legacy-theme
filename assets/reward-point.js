@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (historyItems.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 16px;">No ${tabType} history found.</td></tr>`;
+      tbody.innerHTML = `<tr><td class="fs-16-lh-24-ls-0" colspan="5" style="text-align:center; padding: 16px;">No ${tabType} history found.</td></tr>`;
       return;
     }
 
@@ -86,14 +86,15 @@ document.addEventListener("DOMContentLoaded", () => {
       let actionLink = "#";
       let pointsDisplay = "";
 
-      const formattedDate = new Date(record.createdDate)
-        .toISOString()
-        .split("T")[0];
+      const dateValue =
+        tabType === "expire" && record.expDate
+          ? record.expDate
+          : record.createdDate;
+      const formattedDate = new Date(dateValue).toISOString().split("T")[0];
       const eventName =
         String(record.event).charAt(0).toUpperCase() +
         String(record.event).slice(1);
 
-      // Handle different point displays based on tab type
       if (tabType === "earning") {
         pointsDisplay = `<span class="fw-600 fs-16-lh-24-ls-0 text-success">+${
           record.earnPoint || 0
@@ -103,8 +104,8 @@ document.addEventListener("DOMContentLoaded", () => {
           record.usedPoint || 0
         }</span>`;
       } else if (tabType === "expire") {
-        pointsDisplay = `<span class="fw-600 fs-16-lh-24-ls-0 text-warning">-${
-          record.expiredPoint || 0
+        pointsDisplay = `<span class="fw-600 fs-16-lh-24-ls-0 text-warning">${
+          record.remainingPoint || 0
         }</span>`;
       }
 
@@ -144,18 +145,26 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const switchTab = (tabType) => {
-    // Update active tab button
     document
       .querySelectorAll(".tab-button")
       .forEach((btn) => btn.classList.remove("active"));
     document.querySelector(`[data-tab="${tabType}"]`).classList.add("active");
 
-    // Hide all pagination containers
     document.getElementById("earning-pagination").style.display = "none";
     document.getElementById("used-pagination").style.display = "none";
     document.getElementById("expire-pagination").style.display = "none";
 
-    // Show current tab pagination and render data
+    const dateHeader = document.getElementById("date-column-header");
+    const pointHeader = document.getElementById("point-column-header");
+
+    if (tabType === "expire") {
+      dateHeader.textContent = "Expire Date";
+      pointHeader.textContent = "Remaining Point";
+    } else {
+      dateHeader.textContent = "Date";
+      pointHeader.textContent = "Point";
+    }
+
     if (tabType === "earning") {
       earningPagination.init(currentTabData.earning);
       document.getElementById("earning-pagination").style.display = "flex";
