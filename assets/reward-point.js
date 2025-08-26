@@ -370,7 +370,20 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initial API call
   apiCall(API_URLS.HISTORY)
     .then(updateCustomerData)
-    .catch((error) => {});
+    .catch((error) => {
+      const redemptionRulesText = document.getElementById(
+        "redemptionRulesText"
+      );
+      if (redemptionRulesText) {
+        redemptionRulesText.textContent = "Could not load redemption rules.";
+      }
+
+      currentPointsSpan.textContent = "Error";
+      const tbody = document.getElementById("earning-history-body");
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 16px;">Failed to load reward history.</td></tr>`;
+      }
+    });
 
   const redeemButtons = document.querySelectorAll(".redeem-now-button");
   redeemButtons.forEach((button) => {

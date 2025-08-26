@@ -20,7 +20,8 @@
     "redeem_points": {
       "label": "Redeem Points",
       "off": "OFF",
-      "button": "Redeem Now"
+      "button": "Redeem Now",
+      "loading": "Loading..."
     },
     "reward_points": {
       "label": "Reward Points"
