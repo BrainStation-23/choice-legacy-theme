@@ -1,3 +1,10 @@
+<style>
+  .tab-button.active {
+    border-bottom: 2px solid rgb(var(--color-primary-brand));
+    color: rgb(var(--color-primary-brand));
+  }
+</style>
+
 <div class="reward-points-container flex flex-col gap-40">
   <div class="flex flex-col gap-24">
     <div class="reward-points-header flex flex-col gap-8">
@@ -59,7 +66,7 @@
       <h3 class="ff-general-sans fs-23-lh-24-ls-0 fw-500 text-primary">{{ 'reward_points.reward_history.label' | t }}</h3>
       
       <div class="reward-history-tabs">
-        <button class="tab-button active cursor-pointer border-top-none border-right-none border-left-none border-bottom-none bg-bg text-label fs-16-lh-20-ls-0_1 fw-500 pt-12 pb-12 border-b-2 border-brand">{{ 'reward_points.tabs.earning' | t }}</button>
+        <button class="tab-button active cursor-pointer border-top-none border-right-none border-left-none border-bottom-none bg-bg text-label fs-16-lh-20-ls-0_1 fw-500 pt-12 pb-12">{{ 'reward_points.tabs.earning' | t }}</button>
         <button class="tab-button cursor-pointer border-top-none border-right-none border-left-none border-bottom-none bg-bg text-label fs-16-lh-20-ls-0_1 fw-500 pt-12 pb-12">{{ 'reward_points.tabs.used' | t }}</button>
         <button class="tab-button cursor-pointer border-top-none border-right-none border-left-none border-bottom-none bg-bg text-label fs-16-lh-20-ls-0_1 fw-500 pt-12 pb-12">{{ 'reward_points.tabs.expire' | t }}</button>
       </div>
