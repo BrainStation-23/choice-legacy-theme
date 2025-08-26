@@ -255,24 +255,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  const handleApplyToCart = (discountCode) => {
-    if (!discountCode) {
-      toastManager.show("No discount code provided.", "error");
+  const handleApplyToCart = (button, discountCode) => {
+    if (!discountCode || !button) {
+      toastManager.show("An error occurred.", "error");
       return;
     }
-    const button = event.target;
+
     button.disabled = true;
     button.textContent = "Applying...";
     toastManager.show("Discount code applied successfully!", "success");
+
     const oldIframe = document.getElementById("discount-iframe");
     if (oldIframe) oldIframe.remove();
+
     const iframe = document.createElement("iframe");
     iframe.style.display = "none";
     iframe.id = "discount-iframe";
     iframe.src = `/discount/${discountCode}?redirect=/cart`;
+
     iframe.onload = () => {
       button.textContent = window.rewardPointLocalization.redeemNow;
+      button.disabled = false;
     };
+
     document.body.appendChild(iframe);
   };
 
@@ -297,7 +302,7 @@ document.addEventListener("DOMContentLoaded", () => {
         button.disabled = false;
         button.removeEventListener("click", handleRedeemFromCard);
         button.addEventListener("click", () =>
-          handleApplyToCart(button.dataset.discountCode)
+          handleApplyToCart(button, button.dataset.discountCode)
         );
       }
       const latestData = await apiCall(API_URLS.HISTORY);
