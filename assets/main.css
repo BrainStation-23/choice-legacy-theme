@@ -1421,11 +1421,17 @@ address {
 .min-w-406 {
   min-width: 406px;
 }
+.min-w-285 {
+  min-width: 285px;
+}
 .min-w-200 {
   min-width: 200px;
 }
 .min-w-430 {
   min-width: 430px;
+}
+.min-w-120 {
+  min-width: 120px;
 }
 .min-w-144 {
   min-width: 144px;
