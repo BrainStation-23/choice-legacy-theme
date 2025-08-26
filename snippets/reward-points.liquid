@@ -51,9 +51,9 @@
     <div class="redeem-points-section">
       <div class="flex flex-col gap-24">
         <h3 class="ff-general-sans fs-23-lh-24-ls-0 fw-500 text-primary">{{ 'reward_points.redeem_points.label' | t }}</h3>
-        <div class="redeem-points-cards-container grid grid-cols-3 gap-24">
+        <div class="redeem-points-cards-container grid grid-cols-3 lg:grid-cols-2 md:grid-cols-2 gap-24 md:gap-16">
           {% for block in section.blocks %}
-            <div class="redeem-card p-16 rounded-8 bg-brand-2 min-w-285" {{ block.shopify_attributes }}>
+            <div class="redeem-card p-16 rounded-8 bg-brand-2 min-w-285 lg:w-full md:w-full md:min-w-auto" {{ block.shopify_attributes }}>
               <div class="flex flex-col gap-20">
                 <div class="flex flex-col gap-8">
                   <span class="fs-16-lh-24-ls-0 fw-400 text-label">{{ block.settings.points_required }} {{ 'reward_points.reward_points.label' | t }}</span>
