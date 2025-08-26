@@ -243,6 +243,7 @@ window.customerPurchasedProducts = [
         "productHandle": "{{ item.product.handle | escape }}",
         "variantId": {{ item.variant_id }},
         "orderId": {{ order.id }},
+        "orderName": {{ order.name | json }},
         "orderTotalPrice": {{ order.total_price }},
         "orderCustomerUrl": "{{ order.customer_url | escape }}"
       }

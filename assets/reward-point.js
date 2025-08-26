@@ -69,6 +69,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!customerData.orders[orderIdStr]) {
         customerData.orders[orderIdStr] = {
+          name: item.orderName,
           total_price: item.orderTotalPrice,
           customer_url: item.orderCustomerUrl,
         };
@@ -82,64 +83,98 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     historyItems.forEach((record) => {
-      let transactionAmount = "";
-      let actionLink = "#";
-      let pointsDisplay = "";
-
-      const dateValue =
-        tabType === "expire" && record.expDate
-          ? record.expDate
-          : record.createdDate;
-      const formattedDate = new Date(dateValue).toISOString().split("T")[0];
-      const eventName =
-        String(record.event).charAt(0).toUpperCase() +
-        String(record.event).slice(1);
-
-      if (tabType === "earning") {
-        pointsDisplay = `<span class="fw-600 fs-16-lh-24-ls-0 text-success">+${
-          record.earnPoint || 0
-        }</span>`;
-      } else if (tabType === "used") {
-        pointsDisplay = `<span class="fw-600 fs-16-lh-24-ls-0 text-error">-${
-          record.usedPoint || 0
-        }</span>`;
-      } else if (tabType === "expire") {
-        pointsDisplay = `<span class="fw-600 fs-16-lh-24-ls-0 text-warning">${
-          record.remainingPoint || 0
-        }</span>`;
-      }
-
-      if (record.event === "order") {
-        const order = customerData.orders[String(record.referenceId)];
-        if (order) {
-          transactionAmount = `৳${(order.total_price / 100).toFixed(2)}`;
-          actionLink = order.customer_url;
-        } else {
-          transactionAmount = "N/A";
-        }
-      } else if (record.event === "review") {
-        const product = customerData.products[String(record.referenceId)];
-        if (product && product.productHandle) {
-          actionLink = `/products/${product.productHandle}`;
-        } else {
-          actionLink = "/collections/all";
-        }
-      }
-
       const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td class="fw-600 fs-16-lh-100pct-ls-0">${eventName}</td>
-        <td class="fw-400 fs-16-lh-24-ls-0">${formattedDate}</td>
-        <td>${pointsDisplay}</td>
-        <td class="fw-400 fs-16-lh-24-ls-0">${transactionAmount}</td>
-        <td class="text-right">
-          <a href="${actionLink}">
-            <svg width="28" height="17" viewBox="0 0 28 17" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M13.9785 16.8535C6.08789 16.8535 0.658203 10.418 0.658203 8.44531C0.658203 6.46289 6.09766 0.0273438 13.9785 0.0273438C21.957 0.0273438 27.2891 6.46289 27.2891 8.44531C27.2891 10.418 21.9668 16.8535 13.9785 16.8535ZM13.9785 13.709C16.8984 13.709 19.2715 11.3066 19.2715 8.44531C19.2715 5.50586 16.8984 3.18164 13.9785 3.18164C11.0391 3.18164 8.68555 5.50586 8.68555 8.44531C8.68555 11.3066 11.0391 13.709 13.9785 13.709ZM13.9785 10.4473C12.8652 10.4473 11.957 9.53906 11.957 8.44531C11.957 7.3418 12.8652 6.43359 13.9785 6.43359C15.082 6.43359 16 7.3418 16 8.44531C16 9.53906 15.082 10.4473 13.9785 10.4473Z" fill="#FB6F92"/>
-            </svg>
-          </a>
-        </td>
-      `;
+      let rowContent = "";
+
+      if (tabType === "used") {
+        const formattedDate = new Date(record.date).toISOString().split("T")[0];
+        const pointsDisplay = `<span class="fw-600 fs-16-lh-24-ls-0 text-error">-${
+          record.point || 0
+        }</span>`;
+        const transactionAmount = record.amount
+          ? `৳${record.amount.toFixed(2)}`
+          : "N/A";
+        let eventName = "Discount Used";
+        let actionLink = "#";
+
+        if (record.referenceId) {
+          const order = customerData.orders[String(record.referenceId)];
+          if (order) {
+            eventName = order.name;
+            actionLink = order.customer_url;
+          }
+        }
+
+        rowContent = `
+          <td class="fw-600 fs-16-lh-100pct-ls-0">${eventName}</td>
+          <td class="fw-400 fs-16-lh-24-ls-0">${formattedDate}</td>
+          <td>${pointsDisplay}</td>
+          <td class="fw-400 fs-16-lh-24-ls-0">${transactionAmount}</td>
+          <td class="text-right">
+            <a href="${actionLink}">
+              <svg width="28" height="17" viewBox="0 0 28 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13.9785 16.8535C6.08789 16.8535 0.658203 10.418 0.658203 8.44531C0.658203 6.46289 6.09766 0.0273438 13.9785 0.0273438C21.957 0.0273438 27.2891 6.46289 27.2891 8.44531C27.2891 10.418 21.9668 16.8535 13.9785 16.8535ZM13.9785 13.709C16.8984 13.709 19.2715 11.3066 19.2715 8.44531C19.2715 5.50586 16.8984 3.18164 13.9785 3.18164C11.0391 3.18164 8.68555 5.50586 8.68555 8.44531C8.68555 11.3066 11.0391 13.709 13.9785 13.709ZM13.9785 10.4473C12.8652 10.4473 11.957 9.53906 11.957 8.44531C11.957 7.3418 12.8652 6.43359 13.9785 6.43359C15.082 6.43359 16 7.3418 16 8.44531C16 9.53906 15.082 10.4473 13.9785 10.4473Z" fill="#FB6F92"/>
+              </svg>
+            </a>
+          </td>
+        `;
+      } else {
+        let transactionAmount = "";
+        let actionLink = "#";
+        let pointsDisplay = "";
+
+        const dateValue =
+          tabType === "expire" && record.expDate
+            ? record.expDate
+            : record.createdDate;
+        const formattedDate = new Date(dateValue).toISOString().split("T")[0];
+        const eventName =
+          String(record.event).charAt(0).toUpperCase() +
+          String(record.event).slice(1);
+
+        if (tabType === "earning") {
+          pointsDisplay = `<span class="fw-600 fs-16-lh-24-ls-0 text-success">+${
+            record.earnPoint || 0
+          }</span>`;
+        } else if (tabType === "expire") {
+          pointsDisplay = `<span class="fw-600 fs-16-lh-24-ls-0 text-warning">${
+            record.remainingPoint || 0
+          }</span>`;
+        }
+
+        if (record.event === "order") {
+          const order = customerData.orders[String(record.referenceId)];
+          if (order) {
+            transactionAmount = `৳${(order.total_price / 100).toFixed(2)}`;
+            actionLink = order.customer_url;
+          } else {
+            transactionAmount = "N/A";
+          }
+        } else if (record.event === "review") {
+          const product = customerData.products[String(record.referenceId)];
+          if (product && product.productHandle) {
+            actionLink = `/products/${product.productHandle}`;
+          } else {
+            actionLink = "/collections/all";
+          }
+        }
+
+        rowContent = `
+          <td class="fw-600 fs-16-lh-100pct-ls-0">${eventName}</td>
+          <td class="fw-400 fs-16-lh-24-ls-0">${formattedDate}</td>
+          <td>${pointsDisplay}</td>
+          <td class="fw-400 fs-16-lh-24-ls-0">${transactionAmount}</td>
+          <td class="text-right">
+            <a href="${actionLink}">
+              <svg width="28" height="17" viewBox="0 0 28 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M13.9785 16.8535C6.08789 16.8535 0.658203 10.418 0.658203 8.44531C0.658203 6.46289 6.09766 0.0273438 13.9785 0.0273438C21.957 0.0273438 27.2891 6.46289 27.2891 8.44531C27.2891 10.418 21.9668 16.8535 13.9785 16.8535ZM13.9785 13.709C16.8984 13.709 19.2715 11.3066 19.2715 8.44531C19.2715 5.50586 16.8984 3.18164 13.9785 3.18164C11.0391 3.18164 8.68555 5.50586 8.68555 8.44531C8.68555 11.3066 11.0391 13.709 13.9785 13.709ZM13.9785 10.4473C12.8652 10.4473 11.957 9.53906 11.957 8.44531C11.957 7.3418 12.8652 6.43359 13.9785 6.43359C15.082 6.43359 16 7.3418 16 8.44531C16 9.53906 15.082 10.4473 13.9785 10.4473Z" fill="#FB6F92"/>
+              </svg>
+            </a>
+          </td>
+        `;
+      }
+
+      tr.innerHTML = rowContent;
       tbody.appendChild(tr);
     });
   };
