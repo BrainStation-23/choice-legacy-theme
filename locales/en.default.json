@@ -322,7 +322,8 @@
       "show_more": "Show more",
       "show_result_count": {
         "one": "Show {{ count }} result",
-        "other": "Show {{ count }} results"
+        "other": "Show {{ count }} results",
+        "showing": "Showing {{ count }} Products"
       }
     },
     "sorting": {

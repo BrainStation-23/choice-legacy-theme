@@ -1,16 +1,13 @@
 <script src="{{ 'products-toolbar.js' | asset_url }}" defer="defer"></script>
 
 <div class="" data-num-results="{{ collection.products_count }}">
-  <div class="flex flex-col  ">
-    <div class="w-full ">
+  <div class="flex flex-col">
+    <div class="w-full">
       {%- assign desktop_image = section.settings.desktop_image -%}
       {%- assign mobile_image = section.settings.mobile_image -%}
 
       {%- if desktop_image != blank or mobile_image != blank -%}
-        <div
-          class="media relative w-full h-254"
-          style=""
-        >
+        <div class="media relative w-full h-254" style="">
           {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
           {%- render 'image-desktop-and-mobile',
             class: 'img-fit',
@@ -29,16 +26,18 @@
         {{ 'collection-1' | placeholder_svg_tag: 'w-full h-254 object-cover placeholder-svg' }}
       {%- endif -%}
     </div>
+
     {%- paginate collection.products by section.settings.products_per_page -%}
       <div class="main-products-grid flex pt-48 pb-88 page-width">
         {%- if collection.filters != empty and section.settings.enable_filtering -%}
           <div class="main-products-grid__filters">
-            {% render 'facet-filters', results: collection %}
+            {% render 'facet-filters', results: collection, section: section %}
           </div>
         {%- endif -%}
+
         <div class="flex flex-col gap-32">
           <div class="flex flex-col gap-24">
-            <h1 class="m-0 p-0 ff-bebas-neue fs-36-lh-40-ls-0  fw-400 ">{{ 'main-category.title' | t }}</h1>
+            <h1 class="m-0 p-0 ff-bebas-neue fs-36-lh-40-ls-0 fw-400">{{ 'main-category.title' | t }}</h1>
             <div class="grid grid-cols-4 gap-16">
               {% for item in collection.metafields.custom.featured_collections.value %}
                 {% render 'product-card',
@@ -63,6 +62,7 @@
             >
               {% render 'spinner', size: 'medium' %}
             </div>
+
             {%- if collection.products.size == 0 -%}
               <p>{{ 'sections.collection.empty' | t }}</p>
             {%- else -%}
@@ -211,6 +211,21 @@
       "label": "Enable filtering",
       "info": "[Customize filters](/admin/menus)",
       "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "expand_filters",
+      "label": "Expand filters by default",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "max_filter_options",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "label": "Maximum filter options to show",
+      "default": 10
     }
   ]
 }

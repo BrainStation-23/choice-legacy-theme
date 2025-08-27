@@ -3,7 +3,7 @@
   - results {Object} - Results object (collection or search).
 
   Usage:
-  {% render 'facet-filters', results: collection %}
+  {% render 'facet-filters', results: collection, section: section %}
 {%- endcomment -%}
 
 {%- liquid
@@ -62,7 +62,7 @@
 {%- endif -%}
 
 <facet-filters
-  class="facets drawer fixed top-0 left-0 flex flex-col w-full has-motion"
+  class="facets  flex gap-32 flex-col w-full has-motion"
   data-name="facet-filters"
   id="facet-filters"
   data-filtering="{{ section.settings.enable_filtering }}"
@@ -73,8 +73,14 @@
   aria-hidden="true"
   tabindex="-1"
 >
+  <div>
+    <h1 class="p-0 m-0 ff-bebas-neue fs-36-lh-40-ls-0 fw-400">{{ results.title }}</h1>
+    <h3 class="p-0 m-0 fw-400 ff-general-sans fs-14-lh-20-ls-0_1 ">
+      {{ 'products.filtering.show_result_count.showing' | t: count: results.products_count }}
+    </h3>
+  </div>
   <div class="drawer__content">
-    <form id="facets" data-filter-section-id="{{ section.id }}" novalidate>
+    <form id="facets" data-filter-section-id="{{ section.id }}" class="flex flex-col gap-16" novalidate>
       {%- if results.current_vendor or results.current_type -%}
         <input type="hidden" name="q" value="{{ results.current_vendor }}{{ results.current_type }}">
       {%- elsif results.terms -%}
@@ -82,6 +88,9 @@
         <input type="hidden" name="type" value="{{ types }}">
         <input name="options[prefix]" type="hidden" value="last">
       {%- endif -%}
+
+      <!-- Add sort_by hidden input to maintain sorting when filtering -->
+      <input type="hidden" name="sort_by" value="{{ results.sort_by | default: results.default_sort_by }}">
 
       <details-disclosure
         class="facets__active-filters"
@@ -112,7 +121,7 @@
           -%}
           <summary>
             <div class="flex justify-between items-center">
-              <span class="flex-auto font-bold active-filters-header">
+              <span class="flex-auto fw-500 ff-general-sans fs-14-lh-20-ls-0_1">
                 {%- if filter_count > 0 -%}
                   {{ 'products.filtering.applied_filter_count' | t: count: filter_count }}
                 {%- else -%}
@@ -128,19 +137,19 @@
               </span>
             </div>
           </summary>
-          <div class="disclosure__panel has-motion">
-            <div class="disclosure__content">
-              <div class="active-filters flex flex-wrap">
+          <div class="disclosure__panel has-motion  pt-8">
+            <div class="disclosure__content flex flex-col gap-8">
+              <div class="active-filters flex gap-8 flex-wrap  fw-400 ff-general-sans fs-14-lh-20-ls-0_1">
                 {%- for filter in results.filters -%}
                   {%- for value in filter.active_values -%}
                     <a
                       href="{{ value.url_to_remove }}"
-                      class="active-filter flex items-center text-current"
+                      class="active-filter flex items-center text-current fw-500 ff-general-sans fs-14-lh-20-ls-0_1 text-brand"
                       {% if settings.preload_links %}
                         data-instant
                       {% endif %}
                     >
-                      {%- render 'icon-close' %}
+                      {%- render 'icon-close', height: 20, width: 20 %}
                       {%- if filter.type == 'boolean' %}{{ filter.label | escape }}:{% endif %}
                       {{ value.label | escape -}}
                     </a>
@@ -169,7 +178,7 @@
 
               <a
                 href="{{ clear_filters_url }}"
-                class="link text-current text-sm js-clear-all"
+                class="clear-filter-selected fw-500 ff-general-sans fs-12-lh-16-ls-0_6 text-primary"
                 {% if settings.preload_links %}
                   data-instant
                 {% endif %}
@@ -181,7 +190,7 @@
         </details>
       </details-disclosure>
 
-      <div class="facets__filters">
+      <div class="facets__filters flex flex-col gap-16">
         {%- for filter in results.filters -%}
           {%- liquid
             assign swatches = false
@@ -218,33 +227,33 @@
           {%- capture filter_markup -%}
             {%- case filter.type -%}
               {%- when 'boolean' or 'list' -%}
-                <ul role="list"{% if swatches %} class="filter__swatches"{% endif %}>
+                <ul class="p-0 flex gap-8 flex-col list-style-none">
                   {%- for value in filter.values -%}
                     {%- assign selectable_filter_count = selectable_filter_count | plus: 1 -%}
-                    <li{% if selectable_filter_count > section.settings.max_filter_options %} class="js-hidden"{% endif %}>
+                    <li class="flex m-0 cursor-pointer pt-2 pb-2 px-2 rounded-6 list-style-none">
                       <input type="checkbox"
-                              class="{% unless swatches %}checkbox {% endunless %}visually-hidden focus-label-before"
+                              class="checkbox facet-checkbox"
                               id="filter-{{ filter.param_name | escape }}-{{ forloop.index }}"
                               name="{{ value.param_name }}"
                               value="{{ value.value | escape }}"
                               {% if value.active %}checked{% endif %}
-                        {% if value.count == 0 and value.active == false %}disabled{% endif %}>
+                              {% if value.count == 0 and value.active == false %}disabled{% endif %}
+                              data-filter-type="{{ filter.type }}"
+                              data-filter-param="{{ filter.param_name }}">
                       <label for="filter-{{ filter.param_name | escape }}-{{ forloop.index }}"
-                              class="filter__label flex items-start w-full m-0"
-                      {%- if swatches and settings.filter_color_style == 'swatches' %}
-                          data-swatch="{{ value.label | replace: '"', '' | downcase }}"
-                        {%- elsif swatches and settings.filter_color_style == 'native' -%}
-                          data-swatch
-                          {%- if value.swatch and value.swatch.image %}
-                            style="--swatch-image: url({{ value.swatch.image | image_url: width: 40, height: 40, crop: 'center' }})"
-                          {%- elsif value.swatch and value.swatch.color %}
-                            style="--swatch-color: rgb({{ value.swatch.color.rgb }});--swatch-image: none;"
-                          {%- endif %}
-                        {% endif %}>
+                              class="fs-14-lh-20-ls-0_1 ff-general-sans fw-500 cursor-pointer"
+                        {%- if swatches and settings.filter_color_style == 'swatches' %}
+                            data-swatch="{{ value.label | replace: '"', '' | downcase }}"
+                          {%- elsif swatches and settings.filter_color_style == 'native' -%}
+                            data-swatch
+                            {%- if value.swatch and value.swatch.image %}
+                              style="--swatch-image: url({{ value.swatch.image | image_url: width: 40, height: 40, crop: 'center' }})"
+                            {%- elsif value.swatch and value.swatch.color %}
+                              style="--swatch-color: rgb({{ value.swatch.color.rgb }});--swatch-image: none;"
+                            {%- endif %}
+                          {% endif %}>
                         <span class="flex-auto">{{ value.label | escape }}</span>
-                        {% if section.settings.show_filter_counts -%}
-                          <span class="filter__count">({{ value.count }})</span>
-                        {%- endif -%}
+                       
                       </label>
                     </li>
                   {%- endfor -%}
@@ -268,8 +277,10 @@
                 {% endif %}
               >
                 <summary class="filter__toggle">
-                  <div class="flex justify-between items-center">
-                    <span class="flex-auto font-bold">{{ filter.label | escape }}</span>
+                  <div class="flex justify-between items-center border-b border-b-color border-b-solid">
+                    <span class="flex-auto  fw-500 ff-general-sans fs-14-lh-20-ls-0_1  pb-8">
+                      {{- filter.label | escape -}}
+                    </span>
                     <span class="disclosure__toggle">
                       {%- if settings.disclosure_toggle == 'plus' -%}
                         {% render 'icon-plus' %}
@@ -279,8 +290,8 @@
                     </span>
                   </div>
                 </summary>
-                <div class="disclosure__panel has-motion">
-                  <div class="disclosure__content">
+                <div class="disclosure__panel has-motion pt-8">
+                  <div class="disclosure__content flex flex-col gap-8">
                     <div class="filter__content">
                       {{ filter_markup }}
                     </div>
@@ -295,7 +306,7 @@
                       <div class="filter__header">
                         <a
                           href="{{ filter.url_to_remove }}"
-                          class="link text-current text-sm js-clear-filter"
+                          class="clear-filter-selected fw-500 ff-general-sans fs-12-lh-16-ls-0_6 text-primary"
                           {% if has_active_filters == false %}
                             hidden
                           {% endif %}
@@ -312,17 +323,17 @@
         {%- endfor -%}
       </div>
 
+      <!-- Fallback submit button for no-JS -->
       <noscript class="no-js-apply-filters facets__footer">
         <button type="submit" class="btn btn--primary">{{- 'products.filtering.apply' | t }}</button>
       </noscript>
     </form>
   </div>
-
-  <footer class="drawer__footer lg:hidden no-js-hidden">
-    <div class="facets__footer">
-      <button type="button" class="btn btn--primary w-full js-close-drawer js-close-drawer-mob">
-        {{- 'products.filtering.show_result_count' | t: count: results_count -}}
-      </button>
-    </div>
-  </footer>
 </facet-filters>
+
+<!-- Debug info - remove after testing -->
+<script>
+  console.log('Facet filters loaded');
+  console.log('Filter form element:', document.getElementById('facets'));
+  console.log('FacetFilters custom element registered:', customElements.get('facet-filters'));
+</script>
