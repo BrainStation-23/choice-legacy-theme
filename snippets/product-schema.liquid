@@ -1,0 +1,44 @@
+{%- comment -%}
+  This snippet generates the JSON-LD structured data for products.
+  It helps Google understand your product details for Rich Snippets.
+{%- endcomment -%}
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": {{ product.title | json }},
+  "url": {{ shop.url | append: product.url | json }},
+  {%- if product.featured_image -%}
+    "image": [
+      {{ product.featured_image | image_url: width: 1200 | prepend: 'https:' | json }}
+    ],
+  {%- endif -%}
+  {%- if product.description != blank -%}
+    "description": {{ product.description | strip_html | strip_newlines | truncatewords: 150 | json }},
+  {%- endif -%}
+  "sku": {{ product.selected_or_first_available_variant.sku | json }},
+  {%- if product.vendor != blank -%}
+  "brand": {
+    "@type": "Brand",
+    "name": {{ product.vendor | json }}
+  },
+  {%- endif -%}
+  "offers": {
+    "@type": "Offer",
+    "url": {{ shop.url | append: product.url | json }},
+    "priceCurrency": {{ cart.currency.iso_code | json }},
+    "price": {{ product.selected_or_first_available_variant.price | divided_by: 100.00 }},
+    "itemCondition": "https://schema.org/NewCondition",
+    "availability": "{% if product.selected_or_first_available_variant.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}"
+  }
+  {%- assign review_metafield = product.metafields.product_reviews_app.product_reviews.value -%}
+  {%- if review_metafield.averageRating and review_metafield.ratingCount -%}
+  ,"aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": {{ review_metafield.averageRating | json }},
+    "reviewCount": {{ review_metafield.ratingCount | json }}
+  }
+  {%- endif -%}
+}
+</script>
