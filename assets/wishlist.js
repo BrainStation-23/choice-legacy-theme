@@ -1,22 +1,4 @@
-async function removeFromWishlist(productHandle, variantId = null) {
-  const response = await fetch(
-    `/apps/${APP_SUB_PATH}/customer/wishlist/remove`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        productHandle: productHandle,
-        variantId: variantId,
-      }),
-    }
-  );
-  return await response.json();
-}
-
 document.addEventListener("DOMContentLoaded", function () {
-  const toastManager = new ToastNotificationManager();
   const desktopTable = document.querySelector(".wishlist-desktop-view");
   const desktopTableBody = document.getElementById(
     "customer-wishlist-items-desktop"
@@ -26,6 +8,9 @@ document.addEventListener("DOMContentLoaded", function () {
   );
   const loader = document.getElementById("wishlist-loader");
   const emptyMessage = document.getElementById("empty-wishlist-message");
+  const paginationControls = document.getElementById(
+    "wishlist-pagination-controls"
+  );
 
   let wishlistPagination;
   let allWishlistItems = [];
@@ -48,19 +33,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     items.forEach((item) => {
       const imageUrl =
-        item.images.edges.length > 0
-          ? item.images.edges[0].node.src
-          : "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png";
-      const price =
-        item.variants.edges.length > 0
-          ? parseFloat(item.variants.edges[0].node.price.amount).toFixed(2)
-          : "N/A";
+        item.imageUrl ||
+        "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png";
+      const price = item.price || "N/A";
       const currencySymbol = "৳";
       const uniqueId = item.id;
 
       const removeButtonHTML = `
-        <button 
-          class="remove-wishlist-button bg-transparent w-full text-brand border-none fw-600 fs-14-lh-16-ls-0 cursor-pointer" 
+        <button
+          class="remove-wishlist-button bg-transparent w-full text-brand border-none fw-600 fs-14-lh-16-ls-0 cursor-pointer"
           data-product-handle="${item.handle}"
           data-item-id="${uniqueId}"
         >
@@ -70,13 +51,11 @@ document.addEventListener("DOMContentLoaded", function () {
       const addToCartButtonHTML = `<button class="button button--solid cursor-pointer w-full p-11">Add to cart</button>`;
 
       const row = document.createElement("tr");
-      row.id = `wishlist-desktop-${uniqueId}`;
+      row.id = `wishlist-item-${uniqueId}`;
       row.innerHTML = `
-        <td>
-          <img src="${imageUrl}" alt="${item.title}" class="product-image w-32 h-32">
-        </td>
+        <td><img src="${imageUrl}" alt="${item.title}" class="product-image w-32 h-32"></td>
         <td class="product-name fw-400 fs-16-lh-24-ls-0">${item.title}</td>
-        <td class="product-price fw-400 fs-16-lh-24-ls-0 min-w-85">${currencySymbol}${price}</td>
+        <td class="product-price fw-400 fs-16-lh-24-ls-0 min-w-85">${price}</td>
         <td class="wishlist-actions text-right flex justify-end items-center gap-16 md:flex-wrap slg:flex-wrap">
           ${removeButtonHTML}
           ${addToCartButtonHTML}
@@ -85,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
       desktopTableBody.appendChild(row);
 
       const mobileCard = document.createElement("div");
-      mobileCard.id = `wishlist-mobile-${uniqueId}`;
+      mobileCard.id = `wishlist-item-mobile-${uniqueId}`;
       mobileCard.className =
         "border border-solid border-color rounded-12 flex flex-col";
       mobileCard.innerHTML = `
@@ -93,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
           <div class="flex justify-between border-b border-b-color border-b-solid w-full pb-10">
             <img src="${imageUrl}" alt="${item.title}" class="w-32 h-32 object-contain">
             <div class="flex items-center">
-              <span class="product-name ff-general-sans fw-400 fs-16-lh-24-ls-0 text-secondary">${currencySymbol}${price}</span>
+              <span class="product-name ff-general-sans fw-400 fs-16-lh-24-ls-0 text-secondary">${price}</span>
             </div>
           </div>
         </div>
@@ -107,23 +86,39 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   };
 
-  const fetchAndDisplayWishlist = async () => {
+  const initializeWishlistPage = async () => {
     try {
-      const response = await fetch(
-        `/apps/${APP_SUB_PATH}/customer/wishlist/fetch`
-      );
-      const data = await response.json();
+      await window.theme.profilePromise;
 
-      if (data.success && data.wishlist.length > 0) {
-        allWishlistItems = data.wishlist;
+      const wishlistHandles = Array.from(window.theme.wishlistHandles || []);
+
+      if (wishlistHandles.length > 0) {
+        allWishlistItems = wishlistHandles
+          .map((handle) => {
+            const details = window.allShopifyProducts[handle];
+            return { handle, ...details };
+          })
+          .filter((item) => item.title);
+
         wishlistPagination.init(allWishlistItems);
-        desktopTable.classList.remove("hidden");
+
+        if (window.matchMedia("(min-width: 768px)").matches) {
+          desktopTable.classList.remove("hidden");
+          mobileCardContainer.classList.add("hidden");
+        } else {
+          desktopTable.classList.add("hidden");
+          mobileCardContainer.classList.remove("hidden");
+        }
+
+        paginationControls.style.display = "flex";
       } else {
         emptyMessage.classList.remove("hidden");
         desktopTable.classList.add("hidden");
+        mobileCardContainer.classList.add("hidden");
+        paginationControls.style.display = "none";
       }
     } catch (error) {
-      console.error("Failed to fetch wishlist:", error);
+      console.error("Failed to initialize wishlist:", error);
       emptyMessage.innerText =
         "Could not load wishlist. Please try again later.";
       emptyMessage.classList.remove("hidden");
@@ -132,10 +127,8 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
-  // Initialize pagination manager
   initializePagination();
-
-  fetchAndDisplayWishlist();
+  initializeWishlistPage();
 
   document.addEventListener("click", async (e) => {
     if (e.target.matches(".remove-wishlist-button")) {
@@ -143,34 +136,35 @@ document.addEventListener("DOMContentLoaded", function () {
       const productHandle = button.dataset.productHandle;
       const itemId = button.dataset.itemId;
 
+      const toastManager = new ToastNotificationManager();
+      const variantId = null;
+
       button.disabled = true;
       button.textContent = "Removing...";
 
       try {
-        const result = await removeFromWishlist(productHandle);
+        const result = await removeFromWishlist(productHandle, variantId);
 
         if (result.success) {
           toastManager.show("Product removed from wishlist", "success");
 
-          // Remove item from allWishlistItems array
+          window.theme.wishlistHandles.delete(productHandle);
+          updateAllWishlistButtons();
+
           allWishlistItems = allWishlistItems.filter(
-            (item) => item.id !== itemId
+            (item) => item.id.toString() !== itemId.toString()
           );
 
-          // Update pagination with new data
           if (allWishlistItems.length > 0) {
             wishlistPagination.init(allWishlistItems);
           } else {
-            // Show empty message if no items left
             clearContent();
             emptyMessage.classList.remove("hidden");
             desktopTable.classList.add("hidden");
-            document.getElementById(
-              "wishlist-pagination-controls"
-            ).style.display = "none";
+            mobileCardContainer.classList.add("hidden");
+            paginationControls.style.display = "none";
           }
         } else {
-          toastManager.show("Failed to remove from wishlist", "error");
           button.disabled = false;
           button.textContent = "Remove";
         }
