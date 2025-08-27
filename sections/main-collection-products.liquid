@@ -2,10 +2,9 @@
 
 <div class="" data-num-results="{{ collection.products_count }}">
   <div class="flex flex-col">
+    {%- assign desktop_image = section.settings.desktop_image -%}
+    {%- assign mobile_image = section.settings.mobile_image -%}
     <div class="w-full">
-      {%- assign desktop_image = section.settings.desktop_image -%}
-      {%- assign mobile_image = section.settings.mobile_image -%}
-
       {%- if desktop_image != blank or mobile_image != blank -%}
         <div class="media relative w-full h-254" style="">
           {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
@@ -28,7 +27,7 @@
     </div>
 
     {%- paginate collection.products by section.settings.products_per_page -%}
-      <div class="main-products-grid flex pt-48 pb-88 page-width">
+      <div class="main-products-grid flex pt-48 pb-88 page-width gap-32">
         {%- if collection.filters != empty and section.settings.enable_filtering -%}
           <div class="main-products-grid__filters">
             {% render 'facet-filters', results: collection, section: section %}

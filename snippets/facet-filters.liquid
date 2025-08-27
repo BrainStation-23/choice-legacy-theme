@@ -79,7 +79,7 @@
       {{ 'products.filtering.show_result_count.showing' | t: count: results.products_count }}
     </h3>
   </div>
-  <div class="drawer__content">
+  <div>
     <form id="facets" data-filter-section-id="{{ section.id }}" class="flex flex-col gap-16" novalidate>
       {%- if results.current_vendor or results.current_type -%}
         <input type="hidden" name="q" value="{{ results.current_vendor }}{{ results.current_type }}">
@@ -138,7 +138,7 @@
             </div>
           </summary>
           <div class="disclosure__panel has-motion  pt-8">
-            <div class="disclosure__content flex flex-col gap-8">
+            <div class=" flex flex-col gap-8">
               <div class="active-filters flex gap-8 flex-wrap  fw-400 ff-general-sans fs-14-lh-20-ls-0_1">
                 {%- for filter in results.filters -%}
                   {%- for value in filter.active_values -%}
@@ -277,7 +277,7 @@
                 {% endif %}
               >
                 <summary class="filter__toggle">
-                  <div class="flex justify-between items-center border-b border-b-color border-b-solid">
+                  <div class="filter__toggle-item flex justify-between items-center border-b border-b-color border-b-solid">
                     <span class="flex-auto  fw-500 ff-general-sans fs-14-lh-20-ls-0_1  pb-8">
                       {{- filter.label | escape -}}
                     </span>
@@ -291,18 +291,12 @@
                   </div>
                 </summary>
                 <div class="disclosure__panel has-motion pt-8">
-                  <div class="disclosure__content flex flex-col gap-8">
+                  <div class="flex flex-col gap-8">
                     <div class="filter__content">
                       {{ filter_markup }}
                     </div>
 
-                    <div class="disclosure__show-more flex relative items-center">
-                      {%- if selectable_filter_count > section.settings.max_filter_options -%}
-                        <button type="button" class="filter__more link text-current text-sm js-show-more">
-                          {{- 'products.filtering.show_more' | t -}}
-                        </button>
-                      {%- endif -%}
-
+                    <div class="flex relative items-center">
                       <div class="filter__header">
                         <a
                           href="{{ filter.url_to_remove }}"
@@ -322,18 +316,6 @@
           {%- endif -%}
         {%- endfor -%}
       </div>
-
-      <!-- Fallback submit button for no-JS -->
-      <noscript class="no-js-apply-filters facets__footer">
-        <button type="submit" class="btn btn--primary">{{- 'products.filtering.apply' | t }}</button>
-      </noscript>
     </form>
   </div>
 </facet-filters>
-
-<!-- Debug info - remove after testing -->
-<script>
-  console.log('Facet filters loaded');
-  console.log('Filter form element:', document.getElementById('facets'));
-  console.log('FacetFilters custom element registered:', customElements.get('facet-filters'));
-</script>
