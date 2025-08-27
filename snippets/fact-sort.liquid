@@ -37,7 +37,7 @@
   }
 
   .sort__content li:hover {
-    background: #f8f9fa;
+    background: rgb(var(--color-secondary-brand));
     border-radius: 6px;
   }
 
@@ -49,12 +49,6 @@
     transform: rotate(180deg);
   }
 
-  .current-sort-display {
-    font-size: 14px;
-    color: #333;
-    font-weight: 500;
-  }
-
   .close-icon:hover {
     opacity: 0.7;
   }
@@ -64,6 +58,12 @@
     width: 100%;
     display: flex;
     align-items: center;
+  }
+
+  /* Sorting spinner overlay styles */
+  .sorting-spinner {
+    backdrop-filter: blur(3px);
+    transition: all 0.3s ease-in-out;
   }
 </style>
 
@@ -77,7 +77,7 @@
     {% endif %}
   >
     <summary class="filter__toggle list-style-none w-full max-w-200 h-40 border-1 border-solid border-color flex items-center justify-between rounded-6 p-8 cursor-pointer relative ">
-      <span class="current-sort-display" id="current-sort-text">
+      <span class="current-sort-display fw-400 fs-14-lh-16-ls-0 " id="current-sort-text">
         {{ current_sort_name }}
       </span>
       <span class="disclosure__toggle">
@@ -89,7 +89,9 @@
       <div class="disclosure__content">
         <div class="sort__content flex flex-col gap-8 p-16">
           <div class="flex items-center justify-between">
-            <h1 class="p-0 m-0">{{- 'products.sorting.sort_by_label' | t -}}</h1>
+            <h1 class="p-0 m-0 ff-bebas-neue fw-400  fs-21-lh-24-ls-1_2pct">
+              {{- 'products.sorting.sort_by_label' | t -}}
+            </h1>
             <span class="cursor-pointer p-0 m-0 close-icon" id="sort-close-btn">
               {% render 'icon-close' %}
             </span>
@@ -115,6 +117,7 @@
                     value: option.value,
                     label: option.name,
                     checked: is_checked,
+                    type: 'radio',
                     input-class: "radio"
                   %}
                 </li>
@@ -168,6 +171,12 @@
         e.preventDefault();
         e.stopPropagation();
 
+        // Show spinner immediately
+        const spinner = document.getElementById('sorting-spinner');
+        if (spinner) {
+          spinner.classList.remove('hidden');
+        }
+
         // Close dropdown
         sortDetails.removeAttribute('open');
 
@@ -186,6 +195,12 @@
     });
 
     function handleSortChange(value, name) {
+      // Show spinner immediately
+      const spinner = document.getElementById('sorting-spinner');
+      if (spinner) {
+        spinner.classList.remove('hidden');
+      }
+
       // Update display text immediately
       if (currentSortText && name) {
         currentSortText.textContent = name;
