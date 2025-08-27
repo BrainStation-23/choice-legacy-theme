@@ -62,3 +62,11 @@
 .clear-filter-selected:hover {
   text-decoration: underline;
 }
+
+.filter-disabled {
+  cursor: no-drop !important;
+  opacity: 0.5 !important;
+}
+.filter-disabled:hover {
+  border-color: rgb(var(--color-border));
+}

@@ -232,7 +232,7 @@
                     {%- assign selectable_filter_count = selectable_filter_count | plus: 1 -%}
                     <li class="flex m-0 cursor-pointer pt-2 pb-2 px-2 rounded-6 list-style-none">
                       <input type="checkbox"
-                              class="checkbox facet-checkbox"
+                              class="checkbox facet-checkbox   {% if value.count == 0 and value.active == false %}filter-disabled{% endif %}"
                               id="filter-{{ filter.param_name | escape }}-{{ forloop.index }}"
                               name="{{ value.param_name }}"
                               value="{{ value.value | escape }}"
@@ -241,7 +241,7 @@
                               data-filter-type="{{ filter.type }}"
                               data-filter-param="{{ filter.param_name }}">
                       <label for="filter-{{ filter.param_name | escape }}-{{ forloop.index }}"
-                              class="fs-14-lh-20-ls-0_1 ff-general-sans fw-500 cursor-pointer"
+                              class="fs-14-lh-20-ls-0_1 ff-general-sans fw-500 cursor-pointer {% if value.count == 0 and value.active == false %}filter-disabled{% endif %}"
                         {%- if swatches and settings.filter_color_style == 'swatches' %}
                             data-swatch="{{ value.label | replace: '"', '' | downcase }}"
                           {%- elsif swatches and settings.filter_color_style == 'native' -%}

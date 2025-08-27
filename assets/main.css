@@ -1600,6 +1600,9 @@ address {
 .cursor-pointer {
   cursor: pointer;
 }
+.cursor-no-drop {
+  cursor: no-drop;
+}
 .resize {
   resize: both;
 }
