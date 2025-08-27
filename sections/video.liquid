@@ -1,0 +1,116 @@
+<div class="video video-{{ section.id }} relative pt-0 pb-0">
+  {% if section.settings.video_url != blank or section.settings.youtube_url != blank %}
+    <div class="swiper-slide relative transition-transform h-508 sm:h-180" 
+          data-section-id="{{ section.id }}"
+          data-section-type="{{ section.type }}">
+      
+      {% if section.settings.youtube_url != blank %}
+        {%- liquid
+          assign youtube_id = section.settings.youtube_url | split: 'watch?v=' | last | split: '&' | first
+          if youtube_id == section.settings.youtube_url
+            assign youtube_id = section.settings.youtube_url | split: 'youtu.be/' | last | split: '?' | first
+          endif
+          if youtube_id == section.settings.youtube_url
+            assign youtube_id = section.settings.youtube_url | split: 'embed/' | last | split: '?' | first
+          endif
+        -%}
+        
+        <iframe 
+          class="img-fit"
+          src="https://www.youtube.com/embed/{{ youtube_id }}?autoplay=0&mute=1&loop=1&playlist={{ youtube_id }}&controls=1&showinfo=0&rel=0"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          loading="lazy">
+        </iframe>
+        
+      {% elsif section.settings.video_url != blank %}
+        <video 
+          class="img-fit"
+          {% if section.settings.autoplay %}autoplay{% endif %}
+          {% if section.settings.muted %}muted{% endif %}
+          {% if section.settings.loop %}loop{% endif %}
+          {% if section.settings.controls %}controls{% endif %}
+          preload="metadata"
+        >
+          <source src="{{ section.settings.video_url }}" type="video/mp4">
+          <source src="{{ section.settings.video_url }}" type="video/webm">
+          <source src="{{ section.settings.video_url }}" type="video/ogg">
+          Your browser does not support the video tag.
+        </video>
+      {% endif %}
+      
+    </div>
+  {% else %}
+    <div class="swiper-slide relative transition-transform h-508 sm:h-180" 
+          data-section-id="{{ section.id }}"
+          data-section-type="{{ section.type }}">
+      {{ "lifestyle-1" | placeholder_svg_tag: "placeholder-svg" }}
+    </div>
+  {% endif %}
+</div>
+
+{% schema %}
+{
+  "name": "Video",
+  "tag": "section",
+  "class": "section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "header",
+      "content": "Video Settings"
+    },
+    {
+      "type": "text",
+      "id": "video_url",
+      "label": "Direct Video URL",
+      "info": "Enter a direct link to your video file (.mp4, .webm, .ogg). Example: https://yoursite.com/video.mp4"
+    },
+    {
+      "type": "text",
+      "id": "youtube_url",
+      "label": "YouTube Video URL",
+      "info": "Enter a YouTube video URL. Example: https://www.youtube.com/watch?v=VIDEO_ID"
+    },
+    {
+      "type": "header",
+      "content": "Video Playback Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay video (Direct videos only)",
+      "default": false,
+      "info": "Note: Most browsers require muted autoplay"
+    },
+    {
+      "type": "checkbox",
+      "id": "muted",
+      "label": "Mute video (Direct videos only)",
+      "default": true,
+      "info": "Required for autoplay in most browsers"
+    },
+    {
+      "type": "checkbox",
+      "id": "loop",
+      "label": "Loop video (Direct videos only)",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "controls",
+      "label": "Show video controls (Direct videos only)",
+      "default": true
+    }
+  ],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "Video"
+    }
+  ]
+}
+{% endschema %}

@@ -1,8 +1,23 @@
-<div class="reward-points-container flex flex-col gap-40">
-  <div class="flex flex-col gap-24">
+<style>
+  .tab-button.active {
+    border-bottom: 2px solid rgb(var(--color-primary-brand));
+    color: rgb(var(--color-primary-brand));
+  }
+  .pagination-btn.active {
+    border-color: rgb(var(--color-primary-brand));
+    color: rgb(var(--color-primary-brand))
+  }
+  .pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>
+
+<div class="reward-points-container flex flex-col gap-40 sm:gap-24">
+  <div class="flex flex-col gap-24 sm:gap-16">
     <div class="reward-points-header flex flex-col gap-8">
       <h2 class="ff-general-sans fs-23-lh-24-ls-0 fw-500">{{ 'reward_points.title' | t }}</h2>
-      <p id="redemptionRulesText" class="fs-16-lh-24-ls-0 fw-400 text-label"></p>
+      <p id="redemptionRulesText" class="fs-16-lh-24-ls-0 fw-400 text-label">{{ 'reward_points.redeem_points.loading' | t }}</p>
     </div>
     <div class="flex flex-col gap-8">
       <div class="reward-points-balance rounded-8 p-16 bg-light-gray">
@@ -10,13 +25,13 @@
           <div class="points-icon w-32 h-32 rounded-full bg-brand flex justify-center items-center gap-10">{% render "icon-star" %}</div>
           <div class="flex flex-col gap-8">
             <span class="fw-400 fs-12-lh-16-ls-0_072 text-label">{{ 'reward_points.balance.label' | t }}</span>
-            <span class="fw-500 fs-23-lh-24-ls-0 text-primary"><span id="currentPoints"></span> {{ 'reward_points.points.label' | t }}</span>
+            <span class="fw-500 sm:fw-400 fs-23-lh-24-ls-0 sm:fs-16-lh-24-ls-0 text-primary"><span id="currentPoints"></span> {{ 'reward_points.points.label' | t }}</span>
           </div>
         </div>
       </div>
       <div class="earn-points-section--product rounded-8 p-16 bg-light-blue">
         <div class="flex flex-col gap-8">
-          <h3 class="ff-general-sans fw-500 fs-23-lh-24-ls-0 text-primary">{{ 'reward_points.product_review_points.label' | t }}</h3>
+          <h3 class="ff-general-sans fw-500 sm:fw-400 fs-23-lh-24-ls-0 sm:fs-16-lh-24-ls-0 text-primary">{{ 'reward_points.product_review_points.label' | t }}</h3>
           <div class="flex flex-col gap-6">
             <p class="fw-400 fs-12-lh-16-ls-0_072 text-label" id="threeStarReview" data-translation="{{ 'reward_points.product_review_points.three_star' | t }}"></p>
             <p class="fw-400 fs-12-lh-16-ls-0_072 text-label" id="fourStarReview" data-translation="{{ 'reward_points.product_review_points.four_star' | t }}"></p>
@@ -26,7 +41,7 @@
       </div>
       <div class="earn-points-section--order rounded-8 p-16 bg-light-blue">
         <div class="flex flex-col gap-8">
-          <h3 class="ff-general-sans fw-500 fs-23-lh-24-ls-0 text-primary">{{ 'reward_points.order_points.label' | t }}</h3>
+          <h3 class="ff-general-sans fw-500 sm:fw-400 fs-23-lh-24-ls-0 sm:fs-16-lh-24-ls-0 text-primary">{{ 'reward_points.order_points.label' | t }}</h3>
           <p class="fw-400 fs-12-lh-16-ls-0_072 text-label" id="orderPointsRule" data-translation="{{ 'reward_points.order_points.rule' | t }}"></p>
         </div>
       </div>
@@ -34,51 +49,100 @@
   </div>
   {% if section.blocks.size > 0 %}
     <div class="redeem-points-section">
-      <div class="flex flex-col gap-24">
+      <div class="flex flex-col gap-24 sm:gap-16">
         <h3 class="ff-general-sans fs-23-lh-24-ls-0 fw-500 text-primary">{{ 'reward_points.redeem_points.label' | t }}</h3>
-        <div class="redeem-points-cards-container grid grid-cols-3 gap-24">
+        
+        <!-- Desktop view -->
+        <div class="redeem-points-cards-container grid sm:hidden grid-cols-3 lg:grid-cols-2 md:grid-cols-2 gap-24 md:gap-16">
           {% for block in section.blocks %}
-            <div class="redeem-card p-16 rounded-8 bg-brand-2" {{ block.shopify_attributes }}>
+            <div class="redeem-card p-16 rounded-8 bg-brand-2 min-w-285 lg:w-full md:w-full md:min-w-auto" {{ block.shopify_attributes }}>
               <div class="flex flex-col gap-20">
                 <div class="flex flex-col gap-8">
                   <span class="fs-16-lh-24-ls-0 fw-400 text-label">{{ block.settings.points_required }} {{ 'reward_points.reward_points.label' | t }}</span>
                   <span class="fs-23-lh-24-ls-0 fw-500 text-primary"><span class="discount-amount"></span> {{ 'reward_points.redeem_points.off' | t }}</span>
                 </div>
-                <button class="redeem-now-button button button--solid rounded-6 max-w-120 fs-16-lh-24-ls-0 fw-500 py-16 px-16" data-points-required="{{ block.settings.points_required }}">
+                <div>
+                  <button class="redeem-now-button button button--solid rounded-6 fs-16-lh-24-ls-0 fw-600 pr-16 pl-16 pt-10 pb-10" data-points-required="{{ block.settings.points_required }}">
                   {{ 'reward_points.redeem_points.button' | t }}
                 </button>
+                </div>
               </div>
             </div>
           {% endfor %}
         </div>
+
+        <!-- Mobile slideshow -->
+        <slideshow-component
+          data-autoplay="false"
+          data-enable-carousel="true"
+          data-show-progress-bar="false"
+          class="hidden sm:block"
+        >
+          <div class="swiper-container overflow-hidden">
+            <div class="swiper-wrapper flex">
+              {% for block in section.blocks %}
+                <div class="swiper-slide w-auto" style="box-sizing: border-box;">
+                  <div class="redeem-card p-16 rounded-8 bg-brand-2 min-w-285" {{ block.shopify_attributes }}>
+                    <div class="flex flex-col gap-20">
+                      <div class="flex flex-col gap-8">
+                        <span class="fs-16-lh-24-ls-0 fw-400 text-label">{{ block.settings.points_required }} {{ 'reward_points.reward_points.label' | t }}</span>
+                        <span class="fs-23-lh-24-ls-0 fw-500 text-primary"><span class="discount-amount"></span> {{ 'reward_points.redeem_points.off' | t }}</span>
+                      </div>
+                      <div>
+                        <button class="redeem-now-button button button--solid rounded-6 fs-16-lh-24-ls-0 fw-600 pr-16 pl-16 pt-10 pb-10" data-points-required="{{ block.settings.points_required }}">
+                        {{ 'reward_points.redeem_points.button' | t }}
+                      </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        </slideshow-component>
       </div>
     </div>
   {% endif %}
   <div class="reward-history-section">
-    <div class="flex flex-col gap-24">
+    <div class="flex flex-col gap-24 sm:gap-16">
       <h3 class="ff-general-sans fs-23-lh-24-ls-0 fw-500 text-primary">{{ 'reward_points.reward_history.label' | t }}</h3>
       
-      <div class="reward-history-tabs">
-        <button class="tab-button active">Earning</button>
-        <button class="tab-button">Used</button>
-        <button class="tab-button">Expire</button>
+      <div class="reward-history-tabs flex gap-24">
+        <button class="tab-button active cursor-pointer border-top-none border-right-none border-left-none border-bottom-none bg-bg text-label fs-16-lh-20-ls-0_1 fw-500 pt-12 pb-12">{{ 'reward_points.tabs.earning' | t }}</button>
+        <button class="tab-button cursor-pointer border-top-none border-right-none border-left-none border-bottom-none bg-bg text-label fs-16-lh-20-ls-0_1 fw-500 pt-12 pb-12">{{ 'reward_points.tabs.used' | t }}</button>
+        <button class="tab-button cursor-pointer border-top-none border-right-none border-left-none border-bottom-none bg-bg text-label fs-16-lh-20-ls-0_1 fw-500 pt-12 pb-12">{{ 'reward_points.tabs.expire' | t }}</button>
       </div>
+      
       <div class="reward-history-content">
-        <table style="width: 100%; border-collapse: collapse;">
+        <table class="history-desktop-view w-full table sm:hidden">
           <thead>
             <tr>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Event</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">ID</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Point</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Transaction</th>
-              <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Action</th>
+              <th class="fw-500 fs-16-lh-20-ls-0_1 text-label">{{ 'reward_points.table.event' | t }}</th>
+              <th id="date-column-header" class="fw-500 fs-16-lh-20-ls-0_1 text-label">{{ 'reward_points.table.date' | t }}</th>
+              <th id="point-column-header" class="fw-500 fs-16-lh-20-ls-0_1 text-label">{{ 'reward_points.table.point' | t }}</th>
+              <th class="fw-500 fs-16-lh-20-ls-0_1 text-label">{{ 'reward_points.table.transaction' | t }}</th>
+              <th class="fw-500 fs-16-lh-20-ls-0_1 text-label text-right">{{ 'reward_points.table.action' | t }}</th>
             </tr>
           </thead>
           <tbody id="earning-history-body">
+            <tr>
+              <td colspan="5" style="text-align:center; padding: 16px;">
+                <p class="fw-500 fs-14-lh-16-ls-0">{{ 'review.loading' | t }}</p>
+              </td>
+            </tr>
           </tbody>
         </table>
-      </div>
 
+        <div id="history-mobile-view" class="history-mobile-view hidden sm:flex flex-col gap-16">
+          <div style="text-align:center; padding: 16px;">
+            <p class="fw-500 fs-14-lh-16-ls-0">{{ 'review.loading' | t }}</p>
+          </div>
+        </div>
+        
+        <div id="earning-pagination" class="flex justify-end items-center gap-8 mt-24" style="display: none;"></div>
+        <div id="used-pagination" class="flex justify-end items-center gap-8 mt-24" style="display: none;"></div>
+        <div id="expire-pagination" class="flex justify-end items-center gap-8 mt-24" style="display: none;"></div>
+      </div>
     </div>
   </div>
 </div>

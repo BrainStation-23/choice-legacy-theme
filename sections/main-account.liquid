@@ -50,6 +50,8 @@
   </div>
 </div>
 
+<script src="{{ 'pagination.js' | asset_url }}" defer></script>
+
 <script>
   let loadedSections = ['my-profile'];
   let deliveryStatusLoaded = false;
@@ -230,6 +232,25 @@
     // Listen for browser navigation events
     window.addEventListener('popstate', handlePopState);
   });
+</script>
+
+<script>
+window.customerPurchasedProducts = [
+  {%- for order in customer.orders -%}
+    {%- for item in order.line_items -%}
+      {
+        "productId": {{ item.product_id }},
+        "productHandle": "{{ item.product.handle | escape }}",
+        "variantId": {{ item.variant_id }},
+        "orderId": {{ order.id }},
+        "orderName": {{ order.name | json }},
+        "orderTotalPrice": {{ order.total_price }},
+        "orderCustomerUrl": "{{ order.customer_url | escape }}"
+      }
+      {%- unless forloop.parentloop.last and forloop.last -%},{%- endunless -%}
+    {%- endfor -%}
+  {%- endfor -%}
+];
 </script>
 
 <style>
