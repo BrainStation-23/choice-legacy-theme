@@ -97,106 +97,114 @@
     {% endif %}
   </div>
 
-  <div class="product-card__content pt-8 pr-12 pb-8 pl-12 flex flex-col justify-end flex-1 gap-4">
-    {% if product and product != empty %}
-      {% if show_type and product.type != blank %}
-        {% assign collection_handle = product.type | handleize %}
-        {% assign collection_url = routes.collections_url | append: '/' | append: collection_handle %}
-        <a
-          href="{{ collection_url }}"
-          class="product-card__type-link relative z-3 no-underline text-inherit flex items-center"
-          onclick="event.stopPropagation();"
-        >
-          <p class="product-card__type rounded-100 pt-2 pr-8 pb-2 pl-8 cursor-pointer relative z-2 min-h-24 bg-brand-2 fw-500 fs-11-lh-11-ls--0_275 flex items-center">
-            {{ product.type }}
-          </p>
-        </a>
-      {% endif %}
+  <div class="product-card__content pt-8 pr-12 pb-8 pl-12 flex flex-col justify-between flex-1 gap-12">
+    {% if product != empty %}
+      <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-4">
+          {% if show_type and product.type != blank %}
+            {% assign collection_handle = product.type | handleize %}
+            {% assign collection_url = routes.collections_url | append: '/' | append: collection_handle %}
+            <a
+              href="{{ collection_url }}"
+              class="product-card__type-link relative z-3 no-underline text-inherit flex items-center"
+              onclick="event.stopPropagation();"
+            >
+              <p class="product-card__type rounded-100 pt-2 pr-8 pb-2 pl-8 cursor-pointer relative z-2 min-h-24 bg-brand-2 fw-500 fs-11-lh-11-ls--0_275 flex items-center">
+                {{ product.type }}
+              </p>
+            </a>
+          {% endif %}
 
-      <h3 class="product-card__title ff-general-sans fw-400 fs-14-lh-20-ls-0">{{ product.title }}</h3>
+          <h3 class="product-card__title ff-general-sans fw-400 fs-14-lh-20-ls-0">{{ product.title }}</h3>
+        </div>
 
-      <div class="flex flex-col gap-8">
-        {% if product.price %}
-          <div class="product-card__pricing flex flex-wrap items-center gap-8">
-            <span class="product-card__price text-brand fw-600 fs-14-lh-20-ls-0_1">
-              {{ product.price | money_without_trailing_zeros }}
-            </span>
-            {% if product.compare_at_price > product.price %}
-              <span class="product-card__compare-price line-through fw-500 fs-14-lh-20-ls-0_1">
-                {{ product.compare_at_price | money_without_trailing_zeros }}
+        <div class="flex flex-col gap-8">
+          {% if product.price %}
+            <div class="product-card__pricing flex flex-wrap items-center gap-8">
+              <span class="product-card__price text-brand fw-600 fs-14-lh-20-ls-0_1">
+                {{ product.price | money_without_trailing_zeros }}
               </span>
-              {% assign discount_amount = product.compare_at_price | minus: product.price %}
-              {% assign discount_percentage = discount_amount
-                | times: 100.0
-                | divided_by: product.compare_at_price
-                | round
-              %}
-              <span class="product-card__discount text-brand fw-400 fs-14-lh-20-ls-0_1">
-                {{ discount_percentage }}% {{ 'sections.product.placeholder.off' | t }}
-              </span>
+              {% if product.compare_at_price > product.price %}
+                <span class="product-card__compare-price line-through fw-500 fs-14-lh-20-ls-0_1">
+                  {{ product.compare_at_price | money_without_trailing_zeros }}
+                </span>
+                {% assign discount_amount = product.compare_at_price | minus: product.price %}
+                {% assign discount_percentage = discount_amount
+                  | times: 100.0
+                  | divided_by: product.compare_at_price
+                  | round
+                %}
+                <span class="product-card__discount text-brand fw-400 fs-14-lh-20-ls-0_1">
+                  {{ discount_percentage }}% {{ 'sections.product.placeholder.off' | t }}
+                </span>
+              {% endif %}
+            </div>
+          {% endif %}
+
+          <div class="flex flex-col gap-12">
+            {% assign product_rating_cnt = product.metafields.choice_legacy_reviews.rating_count %}
+
+            {% if show_rating and product_rating_cnt > 0 %}
+              <div class="flex items-center gap-4">
+                <div class="product-card__rating rounded-100 pt-2 pr-4 pb-2 pl-7 text-bg bg-brand flex items-center flex gap-4">
+                  <span class="fw-500 fs-11-lh-normal-ls-0_5">
+                    {{- product.metafields.choice_legacy_reviews.avg_rating -}}
+                  </span>
+                  {% render 'icon-star', cls: "w-14 h-14" %}
+                </div>
+                <span class="product-card__rating-cnt text-label fw-500 fs-11-lh-11-ls--0_275"
+                  >({{ product_rating_cnt }})</span
+                >
+              </div>
             {% endif %}
           </div>
-        {% endif %}
-
-        <div class="flex flex-col gap-12">
-          {% assign product_rating_cnt = product.metafields.choice_legacy_reviews.rating_count %}
-
-          {% if show_rating and product_rating_cnt > 0 %}
-            <div class="flex items-center gap-4">
-              <div class="product-card__rating rounded-100 pt-2 pr-4 pb-2 pl-7 text-bg bg-brand flex items-center flex gap-4">
-                <span class="fw-500 fs-11-lh-normal-ls-0_5">
-                  {{- product.metafields.choice_legacy_reviews.avg_rating -}}
-                </span>
-                {% render 'icon-star', cls: "w-14 h-14" %}
-              </div>
-              <span class="product-card__rating-cnt text-label fw-500 fs-11-lh-11-ls--0_275"
-                >({{ product_rating_cnt }})</span
-              >
-            </div>
-          {% endif %}
-          {% render 'product-form' %}
         </div>
       </div>
+
+      {% render 'product-form' %}
     {% else %}
       <!-- Placeholder content -->
-      {% if show_type %}
-        <a
-          href="#"
-          class="product-card__type-link relative z-3 no-underline text-inherit flex items-center"
-          onclick="event.stopPropagation();"
-        >
-          <p class="product-card__type rounded-100 pt-2 pr-8 pb-2 pl-8 cursor-pointer relative z-2 min-h-24 bg-brand-2 fw-500 fs-11-lh-11-ls--0_275 flex items-center">
-            {{ 'sections.product.placeholder.product_type' | t }}
-          </p>
-        </a>
-      {% endif %}
-
-      <h3 class="product-card__title ff-general-sans fw-400 fs-14-lh-20-ls-0">
-        {{ 'sections.product.placeholder.product_title' | t }}
-      </h3>
-
-      <div class="flex flex-col gap-8">
-        <div class="product-card__pricing flex flex-wrap items-center gap-8">
-          <span class="product-card__price text-brand fw-600 fs-14-lh-20-ls-0_1">
-            {{ 'sections.product.placeholder.price' | t }}
-          </span>
-        </div>
-
-        <div class="flex flex-col gap-12">
-          {% if show_rating %}
-            <div class="flex items-center gap-4">
-              <div class="product-card__rating rounded-100 pt-2 pr-4 pb-2 pl-4 text-bg bg-brand flex items-center flex gap-4">
-                <span class="fw-500 fs-11-lh-normal-ls-0_5">{{ 'sections.product.placeholder.avg_rating' | t }}</span>
-                {% render 'icon-star', cls: "w-14 h-14" %}
-              </div>
-
-              <span class="product-card__rating-cnt text-label fw-500 fs-11-lh-11-ls--0_275"
-                >({{ 'sections.product.placeholder.rating_cnt' | t }})</span
-              >
-            </div>
+      <div class="flex flex-col gap-6">
+        <div class="flex flex-col gap-4">
+          {% if show_type %}
+            <a
+              href="#"
+              class="product-card__type-link relative z-3 no-underline text-inherit flex items-center"
+              onclick="event.stopPropagation();"
+            >
+              <p class="product-card__type rounded-100 pt-2 pr-8 pb-2 pl-8 cursor-pointer relative z-2 min-h-24 bg-brand-2 fw-500 fs-11-lh-11-ls--0_275 flex items-center">
+                {{ 'sections.product.placeholder.product_type' | t }}
+              </p>
+            </a>
           {% endif %}
 
-          {% render 'product-form' %}
+          <h3 class="product-card__title ff-general-sans fw-400 fs-14-lh-20-ls-0">
+            {{ 'sections.product.placeholder.product_title' | t }}
+          </h3>
+        </div>
+        <div class="flex flex-col gap-8">
+          <div class="product-card__pricing flex flex-wrap items-center gap-8">
+            <span class="product-card__price text-brand fw-600 fs-14-lh-20-ls-0_1">
+              {{ 'sections.product.placeholder.price' | t }}
+            </span>
+          </div>
+
+          <div class="flex flex-col gap-12">
+            {% if show_rating %}
+              <div class="flex items-center gap-4">
+                <div class="product-card__rating rounded-100 pt-2 pr-4 pb-2 pl-4 text-bg bg-brand flex items-center flex gap-4">
+                  <span class="fw-500 fs-11-lh-normal-ls-0_5">{{ 'sections.product.placeholder.avg_rating' | t }}</span>
+                  {% render 'icon-star', cls: "w-14 h-14" %}
+                </div>
+
+                <span class="product-card__rating-cnt text-label fw-500 fs-11-lh-11-ls--0_275"
+                  >({{ 'sections.product.placeholder.rating_cnt' | t }})</span
+                >
+              </div>
+            {% endif %}
+
+            {% render 'product-form' %}
+          </div>
         </div>
       </div>
     {% endif %}
