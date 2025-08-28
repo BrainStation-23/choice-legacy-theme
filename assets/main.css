@@ -389,14 +389,14 @@ h6,
 }
 
 .fs-11-lh-normal-ls-0_5 {
-  font-size: 11px;
+  font-size: calc(11 * var(--font-unit));
   line-height: normal;
   letter-spacing: 0.5px;
 }
 
 .fs-11-lh-11-ls--0_275 {
-  font-size: 11px;
-  line-height: 11px;
+  font-size: calc(11 * var(--font-unit));
+  line-height: calc(11 * var(--font-unit));
   letter-spacing: -0.275px;
 }
 

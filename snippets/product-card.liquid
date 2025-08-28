@@ -143,11 +143,11 @@
 
           {% if show_rating and product_rating_cnt > 0 %}
             <div class="flex items-center gap-4">
-              <div class="product-card__rating rounded-100 pt-2 pr-4 pb-2 pl-4 text-bg bg-brand flex items-center flex gap-4">
+              <div class="product-card__rating rounded-100 pt-2 pr-4 pb-2 pl-7 text-bg bg-brand flex items-center flex gap-4">
                 <span class="fw-500 fs-11-lh-normal-ls-0_5">
                   {{- product.metafields.choice_legacy_reviews.avg_rating -}}
                 </span>
-                {% render 'icon-star' %}
+                {% render 'icon-star', cls: "w-14 h-14" %}
               </div>
               <span class="product-card__rating-cnt text-label fw-500 fs-11-lh-11-ls--0_275"
                 >({{ product_rating_cnt }})</span
@@ -187,7 +187,7 @@
             <div class="flex items-center gap-4">
               <div class="product-card__rating rounded-100 pt-2 pr-4 pb-2 pl-4 text-bg bg-brand flex items-center flex gap-4">
                 <span class="fw-500 fs-11-lh-normal-ls-0_5">{{ 'sections.product.placeholder.avg_rating' | t }}</span>
-                {% render 'icon-star' %}
+                {% render 'icon-star', cls: "w-14 h-14" %}
               </div>
 
               <span class="product-card__rating-cnt text-label fw-500 fs-11-lh-11-ls--0_275"
