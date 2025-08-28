@@ -1,3 +1,4 @@
+
 <style>
   .toast-wrapper.show {
     opacity: 1;
@@ -6,19 +7,23 @@
   }
 </style>
 
-<div id="toast-area" class="fixed top-20 right-20 z-9999 pointer-events-none">
-  <div
-    id="success-toast-wrapper"
-    class="toast-wrapper rounded-12 opacity-0 transition-transform translate-y--20 pointer-events-auto success flex items-center gap-8 p-16 bg-success-light"
-  >
-    <span class="w-20 h-20">{% render 'icon-success' %}</span>
+<div
+  id="toast-area"
+  class="fixed top-20 right-20 z-9999 pointer-events-none"
+  {% if liquid_toast_message %}
+    data-show-toast="true"
+    data-message="{{ liquid_toast_message | escape }}"
+    data-type="{{ liquid_toast_type | default: 'success' | escape }}"
+    data-duration="{{ liquid_toast_duration | default: 3000 }}"
+  {% endif %}
+>
+  <div id="success-toast-wrapper" class="toast-wrapper rounded-12 opacity-0 transition-transform translate-y--20 pointer-events-auto success flex items-center gap-8 p-16 bg-success-light">
+    <span class="w-20 h-20">{% render "icon-success" %}</span>
     <span class="toast-text fw-400 fs-14-lh-20-ls-0 text-primary"></span>
   </div>
-  <div
-    id="error-toast-wrapper"
-    class="toast-wrapper rounded-12 opacity-0 transition-transform translate-y--20 pointer-events-auto error flex items-center gap-8 p-16 bg-brand-2"
-  >
-    <span class="w-20 h-20">{% render 'icon-error' %}</span>
+
+  <div id="error-toast-wrapper" class="toast-wrapper rounded-12 opacity-0 transition-transform translate-y--20 pointer-events-auto error flex items-center gap-8 p-16 bg-brand-2">
+    <span class="w-20 h-20">{% render "icon-error" %}</span>
     <span class="toast-text fw-400 fs-14-lh-20-ls-0 text-primary"></span>
   </div>
 </div>

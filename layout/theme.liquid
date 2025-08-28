@@ -87,7 +87,57 @@
       {% endif %}
       window.shopDomain = '{{ shop.domain }}';
     </script>
+
     <script src="{{ 'slideshow.js' | asset_url }}" defer></script>
+    <script>
+      window.allShopifyProducts = {
+        {% for product in collections.all.products %}
+          "{{ product.handle }}": {
+            "title": "{{ product.title | escape }}",
+            "price": "{{ product.price | money }}",
+            "imageUrl": "{{ product.featured_image | image_url: width: 200 }}",
+            "id": "{{ product.id }}"
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      };
+    </script>
+    <script>
+      console.log('Wishlist script loaded');
+      document.addEventListener('DOMContentLoaded', () => {
+        window.theme = window.theme || {};
+        {% if customer %}
+          window.theme.profilePromise = fetch(`/apps/${APP_SUB_PATH}/customer/account/profile`)
+            .then(response => response.json())
+            .then(data => {
+              if (data.success && data.wishlist && data.wishlist.products) {
+                const wishlistHandles = data.wishlist.products.map(product => product.productHandle);
+                window.theme.wishlistHandles = new Set(wishlistHandles);
+              } else {
+                window.theme.wishlistHandles = new Set();
+              }
+              if (typeof updateAllWishlistButtons === 'function') {
+                updateAllWishlistButtons();
+              }
+              return data;
+            })
+            .catch(error => {
+              console.error('Failed to fetch profile/wishlist:', error);
+              window.theme.wishlistHandles = new Set();
+              if (typeof updateAllWishlistButtons === 'function') {
+                updateAllWishlistButtons();
+              }
+              return Promise.reject(error);
+            });
+        {% else %}
+            window.theme.wishlistHandles = new Set();
+            if (typeof updateAllWishlistButtons === 'function') {
+                updateAllWishlistButtons();
+            }
+            window.theme.profilePromise = Promise.resolve({ success: true, wishlist: { products: [] } });
+        {% endif %}
+      });
+    </script>
     <script src="{{ 'add-to-wishlist.js' | asset_url }}" defer></script>
+
   </body>
 </html>

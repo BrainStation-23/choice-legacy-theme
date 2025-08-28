@@ -28,7 +28,7 @@
     },
     "reward_history": {
       "label": "Reward History",
-      "loading": "Loading reward history..."
+      "loading": "Loading your reward history..."
     },
     "redeeming": {
       "label": "Redeeming..."

@@ -60,3 +60,19 @@ class ToastNotificationManager {
     }
   }
 }
+
+window.toast = new ToastNotificationManager();
+
+document.addEventListener("DOMContentLoaded", () => {
+  const toastArea = document.getElementById("toast-area");
+
+  if (toastArea && toastArea.dataset.showToast === "true") {
+    const message = toastArea.dataset.message;
+    const type = toastArea.dataset.type || "success";
+    const duration = parseInt(toastArea.dataset.duration, 10) || 3000;
+
+    if (message) {
+      window.toast.show(message, type, duration);
+    }
+  }
+});
