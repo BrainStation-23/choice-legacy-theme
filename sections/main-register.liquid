@@ -22,7 +22,7 @@
 </style>
 
 <div class="w-full flex justify-center pt-48 pb-88 sm:pt-16 sm:pb-16 page-width">
-  <div id="register" class=" flex flex-col gap-32 max-w-406">
+  <div id="register" class=" flex flex-col gap-32 max-w-374">
     <div class="flex flex-col gap-8 text-center">
       <h1 class=" ff-bebas-neue fs-36-lh-40-ls-0 fw-400 uppercase">
         {{ 'customer.register.title' | t }}
@@ -270,6 +270,7 @@
 
         if (res.ok) {
           otpContainer.classList.add('active');
+          
           toastManager.show('OTP sent to your phone.', 'success');
 
           sendOtpButton.textContent = 'Resend OTP';

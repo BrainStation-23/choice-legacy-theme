@@ -1433,6 +1433,10 @@ address {
 .max-w-406 {
   max-width: 406px;
 }
+
+.max-w-374 {
+  max-width: 374px;
+}
 .min-w-285 {
   min-width: 285px;
 }
