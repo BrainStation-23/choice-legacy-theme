@@ -9,25 +9,192 @@
  */
 {
   "sections": {
+    "banner_with_text_kkWcrP": {
+      "type": "banner-with-text",
+      "blocks": {
+        "banner_DUyARw": {
+          "type": "banner",
+          "settings": {
+            "image": "shopify://shop_images/image_23_90259b5f-e042-4c31-8819-4ccedc8e2a94.png",
+            "mobile_image": "shopify://shop_images/image_23_7da89dda-75f7-40b2-bc09-dc9beda20346.png",
+            "overlay_text_line_1": "",
+            "overlay_text_line_2": "",
+            "text_position_left": 16,
+            "text_position_top": 65,
+            "link": "",
+            "link_target": false
+          }
+        }
+      },
+      "block_order": [
+        "banner_DUyARw"
+      ],
+      "name": "Banner with Text",
+      "settings": {
+        "show_arrows_desktop": false,
+        "show_arrows_mobile": false,
+        "enable_autoplay": false,
+        "autoplay_delay": 5,
+        "pause_on_hover": true
+      }
+    },
+    "scrolling_logo_TXdfdG": {
+      "type": "scrolling-logo",
+      "blocks": {
+        "image_text_block_JPUPiP": {
+          "type": "image_text_block",
+          "settings": {
+            "image": "shopify://shop_images/brand-image_1.png",
+            "link": ""
+          }
+        },
+        "image_text_block_PyAVjN": {
+          "type": "image_text_block",
+          "settings": {
+            "image": "shopify://shop_images/brand-image_2_a0fa0ee9-bef1-47d1-9f42-c58ad3ca28af.png",
+            "link": ""
+          }
+        },
+        "image_text_block_dqRKNT": {
+          "type": "image_text_block",
+          "settings": {
+            "image": "shopify://shop_images/brand-image_3_c98c2679-0001-447f-892c-e2da36d72fc2.png",
+            "link": ""
+          }
+        },
+        "image_text_block_yzA9ip": {
+          "type": "image_text_block",
+          "settings": {
+            "image": "shopify://shop_images/brand-image_4_b6646732-5c57-4765-9ce0-36d986bfd2e9.png",
+            "link": ""
+          }
+        },
+        "image_text_block_8mdaRw": {
+          "type": "image_text_block",
+          "settings": {
+            "image": "shopify://shop_images/brand-image_2_a0fa0ee9-bef1-47d1-9f42-c58ad3ca28af.png",
+            "link": ""
+          }
+        },
+        "image_text_block_fnVqzn": {
+          "type": "image_text_block",
+          "settings": {
+            "image": "shopify://shop_images/brand-image_1_f97451f8-c023-49e7-b594-e43bd700bf65.png",
+            "link": ""
+          }
+        },
+        "image_text_block_QimkLR": {
+          "type": "image_text_block",
+          "settings": {
+            "image": "shopify://shop_images/brand-image_5.png",
+            "link": ""
+          }
+        },
+        "image_text_block_tDN8M3": {
+          "type": "image_text_block",
+          "settings": {
+            "image": "shopify://shop_images/brand-image_2_a0fa0ee9-bef1-47d1-9f42-c58ad3ca28af.png",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "image_text_block_JPUPiP",
+        "image_text_block_PyAVjN",
+        "image_text_block_dqRKNT",
+        "image_text_block_yzA9ip",
+        "image_text_block_8mdaRw",
+        "image_text_block_fnVqzn",
+        "image_text_block_QimkLR",
+        "image_text_block_tDN8M3"
+      ],
+      "name": "Scrolling logo",
+      "settings": {
+        "image_height": 56,
+        "image_width": 120,
+        "speed": 40,
+        "pausable": true
+      }
+    },
+    "collections_showcase_H39cRx": {
+      "type": "collections-showcase",
+      "blocks": {
+        "collection_item_dYeMF8": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "sets",
+            "button_text": "Shop Now"
+          }
+        },
+        "collection_item_6W4nWF": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "body-suits",
+            "button_text": "Shop Now"
+          }
+        },
+        "collection_item_fe6W8e": {
+          "type": "collection_item",
+          "settings": {
+            "collection": "bras",
+            "button_text": "Shop Now"
+          }
+        }
+      },
+      "block_order": [
+        "collection_item_dYeMF8",
+        "collection_item_6W4nWF",
+        "collection_item_fe6W8e"
+      ],
+      "name": "Collections Showcase",
+      "settings": {
+        "section_title": "Categories",
+        "autoplay": false,
+        "autoplay_delay": 5000,
+        "pause_on_hover": true
+      }
+    },
     "combo_banner_1": {
       "type": "combo-banner",
       "blocks": {
         "banner_1": {
           "type": "banner",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/Offer_banner_0bc9c683-785b-408c-9eff-654269b79d92.png",
+            "mobile_image": "shopify://shop_images/Offer_banner_3.png",
+            "link": "",
+            "link_target": false
+          }
         }
       },
       "block_order": [
         "banner_1"
       ],
       "settings": {}
+    },
+    "featured_collection_K3Ypf3": {
+      "type": "featured-collection",
+      "name": "Featured Collection",
+      "settings": {
+        "heading": "RECOMMENDED FOR YOU",
+        "collection": "undergarment",
+        "products_to_show": 8,
+        "autoplay": false,
+        "autoplay_delay": 5000,
+        "pause_on_hover": true
+      }
     },
     "combo_banner_2": {
       "type": "combo-banner",
       "blocks": {
         "banner_1": {
           "type": "banner",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/Offer_banner_1_522d6d18-395e-40d5-ade9-486ee9867202.png",
+            "mobile_image": "shopify://shop_images/Offer_banner_4.png",
+            "link": "",
+            "link_target": false
+          }
         }
       },
       "block_order": [
@@ -35,23 +202,129 @@
       ],
       "settings": {}
     },
+    "video_DcJGAC": {
+      "type": "video",
+      "name": "Video",
+      "settings": {
+        "video_url": "",
+        "youtube_url": "https://www.youtube.com/watch?v=rgZU5pDf6mw",
+        "autoplay": false,
+        "muted": true,
+        "loop": false,
+        "controls": true
+      }
+    },
     "combo_banner_3": {
       "type": "combo-banner",
       "blocks": {
         "banner_1": {
           "type": "banner",
-          "settings": {}
+          "settings": {
+            "image": "shopify://shop_images/Offer_banner_5.png",
+            "link": "",
+            "link_target": false
+          }
         }
       },
       "block_order": [
         "banner_1"
       ],
       "settings": {}
+    },
+    "product_video_carousel_fjHgVj": {
+      "type": "product-video-carousel",
+      "blocks": {
+        "product_video_JW7kqM": {
+          "type": "product_video",
+          "settings": {
+            "product": "facewash-1",
+            "video_type": "youtube",
+            "youtube_url": "https://www.youtube.com/watch?v=rgZU5pDf6mw",
+            "video_url": "",
+            "main_text": "Default title",
+            "sub_text": "Skincare heroes this summer!"
+          }
+        },
+        "product_video_KTxDKU": {
+          "type": "product_video",
+          "settings": {
+            "product": "facewash-2",
+            "video_type": "youtube",
+            "youtube_url": "https://www.youtube.com/watch?v=rgZU5pDf6mw",
+            "video_url": "",
+            "main_text": "Default title",
+            "sub_text": "Skincare heroes this summer!"
+          }
+        },
+        "product_video_B4X43V": {
+          "type": "product_video",
+          "settings": {
+            "product": "facewash-3",
+            "video_type": "youtube",
+            "youtube_url": "https://www.youtube.com/watch?v=rgZU5pDf6mw",
+            "video_url": "",
+            "main_text": "Default title",
+            "sub_text": "Skincare heroes this summer!"
+          }
+        },
+        "product_video_QWbRxh": {
+          "type": "product_video",
+          "settings": {
+            "product": "facewash-4",
+            "video_type": "youtube",
+            "youtube_url": "https://www.youtube.com/watch?v=rgZU5pDf6mw",
+            "video_url": "",
+            "main_text": "Default title",
+            "sub_text": "Skincare heroes this summer!"
+          }
+        },
+        "product_video_8Qhdnx": {
+          "type": "product_video",
+          "settings": {
+            "product": "lip-makeup",
+            "video_type": "youtube",
+            "youtube_url": "https://www.youtube.com/watch?v=rgZU5pDf6mw",
+            "video_url": "",
+            "main_text": "Default title",
+            "sub_text": "Skincare heroes this summer!"
+          }
+        }
+      },
+      "block_order": [
+        "product_video_JW7kqM",
+        "product_video_KTxDKU",
+        "product_video_B4X43V",
+        "product_video_QWbRxh",
+        "product_video_8Qhdnx"
+      ],
+      "name": "Product Video Carousel",
+      "settings": {
+        "heading": "Watch & Shop",
+        "autoplay": false,
+        "autoplay_delay": 5000,
+        "pause_on_hover": true
+      }
+    },
+    "feature_blog_h3cgHF": {
+      "type": "feature-blog",
+      "name": "Blog",
+      "settings": {
+        "blog": "our-blog",
+        "blog_title": "Our Blog",
+        "blog_post_limit": 4
+      }
     }
   },
   "order": [
+    "banner_with_text_kkWcrP",
+    "scrolling_logo_TXdfdG",
+    "collections_showcase_H39cRx",
     "combo_banner_1",
+    "featured_collection_K3Ypf3",
     "combo_banner_2",
-    "combo_banner_3"
+    "video_DcJGAC",
+    "combo_banner_3",
+    "product_video_carousel_fjHgVj",
+    "feature_blog_h3cgHF"
   ]
 }
