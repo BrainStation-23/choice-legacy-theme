@@ -15,6 +15,12 @@
   .mobile-mega-menu__subcategory-item:hover {
     color: rgb(var(--color-primary-brand));
   }
+
+  @media screen and (max-width: 768px) {
+    collapsible-content.expanded .mobile-mega-menu__subcategory-list {
+      min-height: auto;
+    }
+  }
 </style>
 
 <div class="mobile-mega-menu box-shadow fixed top-0 left-0 w-325 z-9999 translate-x--100 transition-transform overflow-y-auto bg-bg" style="height: calc(100vh - var(--header-height, 80px));" id="mobileMegaMenu" data-accordion>
