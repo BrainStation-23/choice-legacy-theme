@@ -3656,3 +3656,7 @@ tr:last-child td {
 .transition-all-3 {
   transition: all 0.3s ease;
 }
+
+.swiper-notification {
+  display: none;
+}
