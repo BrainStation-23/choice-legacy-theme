@@ -1493,6 +1493,15 @@ address {
   .lg\:w-full {
     width: 100%;
   }
+  .lg\:max-w-200 {
+    max-width: 200px;
+  }
+  .lg\:max-w-250 {
+    max-width: 250px;
+  }
+  .lg\:flex-auto {
+    flex: auto !important;
+  }
 
   .lg\:w-800 {
     width: 800px;
