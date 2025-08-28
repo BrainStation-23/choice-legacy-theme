@@ -1,7 +1,6 @@
-.footer__menu-toggle,
-.footer__social-toggle {
+/* .footer__menu-toggle {
   display: none;
-}
+} */
 
 @media screen and (max-width: 768px) {
   footer .icon--minus {

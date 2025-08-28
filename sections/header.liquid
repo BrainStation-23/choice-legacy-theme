@@ -150,7 +150,7 @@
               </button>
 
               <a
-                class="enter no-underline hidden text-secondary-light  ff-general-sans fs-14-lh-20-ls-0_1 fw-600 absolute top-50pct right-12 translate-y--50 bg-light-gray rounded-6 pt-12 pb-12 pl-16 pr-16"
+                class="enter no-underline hidden text-secondary-light  ff-general-sans fs-14-lh-20-ls-0_1 fw-600 absolute top-50pct right-12 translate-y--50 bg-light-gray rounded-6 pt-12 pb-12 pl-16 pr-16 cursor-pointer"
                 href="{{ routes.search_url }}?q={{ ' ' | url_encode }}"
               >
                 {{- 'sections.header.enter' | t }}
@@ -164,7 +164,7 @@
       <div class="header__right header__item-container flex justify-end items-center flex-1 lg:flex-auto gap-24 sm:flex-1_0_0 sm:gap-16 sm:flex-row-reverse sm:justify-start">
         <a
           href="{{ routes.account_url }}"
-          class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4"
+          class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4 sm:z-10000"
         >
           {% render 'accounts-icon' %}
           <span class="header__icon-link-title block md:hidden sm:hidden ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
@@ -173,7 +173,7 @@
         </a>
         <a
           href="{{ routes.cart_url }}"
-          class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4"
+          class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4 sm:z-10000"
         >
           {% render 'cart-icon' %}
           <span class="header__icon-link-title block md:hidden sm:hidden ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
@@ -238,9 +238,12 @@
             {% render 'icon-close', cls: 'svg-primary-optional', height: 20, width: 20 %}
           </button>
 
-          <span class="enter hidden ff-general-sans fs-14-lh-20-ls-0_1 fw-600 absolute top-50pct right-12 translate-y--50 bg-light-gray rounded-6 pt-12 pb-12 pl-16 pr-16">
+          <a
+            class="enter no-underline hidden text-secondary-light  ff-general-sans fs-14-lh-20-ls-0_1 fw-600 absolute top-50pct right-12 translate-y--50 bg-light-gray rounded-6 pt-12 pb-12 pl-16 pr-16 cursor-pointer"
+            href="{{ routes.search_url }}?q={{ ' ' | url_encode }}"
+          >
             {{- 'sections.header.enter' | t }}
-          </span>
+          </a>
         </form>
       </predictive-search>
     </div>
@@ -348,6 +351,16 @@
   document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape') {
       closeSearchFocus();
+    }
+
+    // Prevent Enter key from submitting search forms
+    if (event.key === 'Enter') {
+      const target = event.target;
+      if (target && target.classList.contains('header__search-input')) {
+        event.preventDefault();
+        // Optional: You can add custom search behavior here
+        console.log('Enter pressed in search, but form submission prevented');
+      }
     }
   });
 

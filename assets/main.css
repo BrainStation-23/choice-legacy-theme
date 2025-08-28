@@ -987,6 +987,9 @@ address {
   .sm\:z-100 {
     z-index: 100;
   }
+  .sm\:z-10000 {
+    z-index: 10000;
+  }
 }
 .block {
   display: block;
