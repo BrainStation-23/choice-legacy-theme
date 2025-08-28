@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const productUrl = item.productHandle
         ? `/products/${item.productHandle}`
         : "#";
-      const ratingDisplay = item.rating ? item.rating : "Review";
+      const ratingDisplay = item.rating;
       const viewButtonDesktop = `<a href="${productUrl}" class="button button--solid cursor-pointer no-underline block w-65 h-32 flex items-center justify-center">View</a>`;
       const viewButtonMobile = viewButtonDesktop.replace(
         "w-65 h-32",
@@ -78,7 +78,12 @@ document.addEventListener("DOMContentLoaded", function () {
         <div class="items-start flex justify-between items-start pt-10 pl-16 pb-10 pr-16">
           <div class="flex justify-between border-b border-b-color border-b-solid w-full pb-10">
             <div class="flex gap-6 items-center">
-              <span class="ff-general-sans fw-400 fs-16-lh-24-ls-0 text-secondary">Rating: ${ratingDisplay}</span>
+              ${
+                ratingDisplay
+                  ? `<span class="ff-general-sans fw-400 fs-16-lh-24-ls-0 text-secondary">Rating: ${ratingDisplay}</span>`
+                  : ""
+              }
+
             </div>
             <img src="${imageUrl}" alt="${productTitle}" class="w-32 h-32 object-contain">
           </div>
@@ -128,10 +133,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     } catch (error) {
       console.error("Failed to fetch reviews:", error);
-      const emptyMessage = document.getElementById("empty-review-message");
-      emptyMessage.innerText =
-        "Could not load reviews. Please try again later.";
-      emptyMessage.style.display = "block";
     } finally {
       if (document.getElementById("review-loader")) {
         document.getElementById("review-loader").style.display = "none";
