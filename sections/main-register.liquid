@@ -76,10 +76,8 @@
         </div>
         <div id="phone-message" class="field-message ff-general-sans"></div>
 
-        <div class="otp-wrapper">
-          {% render 'otp-input' %}
-          <div id="otp-message" class="field-message ff-general-sans"></div>
-        </div>
+        {% render 'otp-input' %}
+        <div id="otp-message" class="field-message ff-general-sans"></div>
 
         <!-- Email -->
         <div>
@@ -145,6 +143,7 @@
     </div>
   </div>
 </div>
+<script src="{{ 'password-toggle.js' | asset_url }}" defer></script>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
