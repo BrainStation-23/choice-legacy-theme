@@ -13,7 +13,10 @@
     transition: border-color 0.3s ease;
     flex: 1;
   }
-
+  .otp-message.success-text {
+    display: flex;
+    align-items: center;
+  }
   .otp-digit:focus {
     outline: none;
     border-color: rgb(var(--color-primary-brand));
@@ -28,21 +31,9 @@
   }
 
   .otp-container.active {
-    display: block;
-  }
-
-  .otp-message {
-    font-size: 14px;
-    margin-top: 8px;
-    text-align: center;
-  }
-
-  .otp-message.success {
-    color: #363;
-  }
-
-  .otp-message.error {
-    color: #c33;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
 
   @media screen and (max-width: 768px) {
@@ -104,7 +95,7 @@
       placeholder="-"
     >
   </div>
-  <div id="otp-message" class="otp-message"></div>
+  <div id="otp-message" class="otp-message flex gap-8 items-center "></div>
 
   <input type="hidden" id="customer-otp-hidden" name="customer[note][otp_code]" value="">
 </div>

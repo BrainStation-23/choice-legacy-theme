@@ -235,8 +235,7 @@ mark {
 :root {
   --fluid-vw: 100vw;
   --fluid-max-vw: 1536;
-  --fluid-calc: (var(--fluid-vw) - 32rem) / (var(--fluid-max-vw) / 10 - 32) +
-    0.1rem;
+  --fluid-calc: (var(--fluid-vw) - 32rem) / (var(--fluid-max-vw) / 10 - 32) + 0.1rem;
   --fluid-1-065: ((1.065 / 10 - 0.1) * var(--fluid-calc));
   --fluid-1-125: ((1.125 / 10 - 0.1) * var(--fluid-calc));
   --fluid-1-2: ((1.2 / 10 - 0.1) * var(--fluid-calc));
@@ -1431,8 +1430,8 @@ address {
 .max-w-120 {
   max-width: 120px;
 }
-.min-w-406 {
-  min-width: 406px;
+.max-w-406 {
+  max-width: 406px;
 }
 .min-w-285 {
   min-width: 285px;
@@ -2611,11 +2610,7 @@ address {
 .text-inherit {
   color: inherit;
 }
-.success-text {
-  font-size: calc(14 * var(--font-unit));
-  line-height: 1.5;
-  color: #0a7700;
-}
+
 .error-text {
   font-size: calc(14 * var(--font-unit));
   line-height: 1.5;
@@ -2632,6 +2627,25 @@ address {
   width: 20px;
   height: 20px;
   background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' fill='none'><path d='M10.957 21.1348C5.3418 21.1348 0.771484 16.5645 0.771484 10.9492C0.771484 5.32422 5.3418 0.763672 10.957 0.763672C16.582 0.763672 21.1426 5.32422 21.1426 10.9492C21.1426 16.5645 16.582 21.1348 10.957 21.1348ZM10.957 12.541C11.5625 12.541 11.9238 12.1992 11.9434 11.5645L12.0996 6.95508C12.1191 6.30078 11.6406 5.83203 10.9473 5.83203C10.2539 5.83203 9.78516 6.29102 9.81445 6.94531L9.96094 11.5645C9.98047 12.1992 10.3418 12.541 10.957 12.541ZM10.957 15.9785C11.6699 15.9785 12.2363 15.5 12.2363 14.8066C12.2363 14.123 11.6699 13.6348 10.957 13.6348C10.2441 13.6348 9.6875 14.123 9.6875 14.8066C9.6875 15.4902 10.2539 15.9785 10.957 15.9785Z' fill='%23E25656'/></svg>")
+    no-repeat center / contain;
+}
+
+.success-text {
+  font-size: calc(14 * var(--font-unit));
+  line-height: 1.5;
+  padding: 7px 8px;
+  color: rgb(var(--color-primary-text));
+  background: #dbffd8;
+  align-items: center;
+  gap: calc(8 * var(--space-unit));
+  border-radius: 4px;
+}
+.success-text::before {
+  content: "";
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22' fill='none'><path d='M10.957 21.1348C5.3418 21.1348 0.771484 16.5645 0.771484 10.9492C0.771484 5.32422 5.3418 0.763672 10.957 0.763672C16.582 0.763672 21.1426 5.32422 21.1426 10.9492C21.1426 16.5645 16.582 21.1348 10.957 21.1348ZM9.14648 11.7637L7.3418 9.94922C7.04883 9.66602 6.57617 9.66602 6.2832 9.94922C5.99023 10.2324 5.99023 10.6953 6.2832 10.9883L8.67578 13.3711C8.97852 13.6738 9.4707 13.6738 9.76367 13.3711L15.6328 7.49219C15.9258 7.19922 15.9258 6.72656 15.6328 6.43359C15.3398 6.15039 14.8672 6.15039 14.5742 6.43359L9.14648 11.7637Z' fill='%2328A745'/></svg>")
     no-repeat center / contain;
 }
 
@@ -2668,15 +2682,12 @@ address {
   transform: translate(-50%, -50%);
 }
 .transition {
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    -webkit-backdrop-filter;
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    backdrop-filter;
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    backdrop-filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -3259,9 +3270,7 @@ textarea + label {
 }
 
 input[type="date"] {
-  min-height: calc(
-    (var(--input-padding-y, 11px) + var(--input-border-width)) * 2 + 1.2em
-  );
+  min-height: calc((var(--input-padding-y, 11px) + var(--input-border-width)) * 2 + 1.2em);
   -webkit-appearance: none;
 }
 

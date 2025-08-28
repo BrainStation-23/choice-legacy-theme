@@ -7,31 +7,18 @@
     display: none;
   }
 
-  .response-message.success {
-    color: #363;
-  }
-
-  .response-message.error {
-    color: #c33;
-  }
-
   .response-message.show {
-    display: block;
-    text-align: center;
+    display: flex;
+    align-items: center;
   }
 </style>
 
-<div class="w-full flex justify-center pt-14 pb-12">
-  <div id="register" class=" flex flex-col  gap-32  min-w-406">
+<div class="w-full flex justify-center pt-48 pb-88 sm:pt-16 sm:pb-16 page-width">
+  <div id="register" class=" flex flex-col  gap-32  max-w-406">
     <div class="flex flex-col gap-8 text-center">
       <h1 class=" ff-bebas-neue fs-36-lh-40-ls-0 fw-400 uppercase">
         {{ 'customer.register.title' | t }}
       </h1>
-      <div class="flex items-center flex-row justify-center gap-12">
-        <h2 class="ff-general-sans fs-16-lh-24-ls-0 fw-400">
-          {{ 'customer.register.subtitle' | t }}
-        </h2>
-      </div>
     </div>
 
     <div class=" flex flex-col gap-16">
@@ -53,40 +40,41 @@
             </ul>
           </div>
         {%- endif -%}
+        <div class="flex gap-16 sm:flex-col">
+          {%- assign firstNameLabel = 'customer.register.first_name' | t -%}
+          {%- assign firstNamePlaceholder = 'customer.register.first_name' | t -%}
+          {%
+            render 'input',
+            type: 'text',
+            id: 'customer-first-name',
+            name: 'customer[first_name]',
+            label: firstNameLabel,
+            placeholder: firstNamePlaceholder,
+            autocomplete: 'given-name',
+            required: true,
+            class: '',
+            invalid: form.errors contains 'first_name',
+            value: form.first_name
+          %}
 
+          <!-- Last Name -->
+          {%- assign lastNameLabel = 'customer.register.last_name' | t -%}
+          {%- assign lastNamePlaceholder = 'customer.register.last_name' | t -%}
+          {%
+            render 'input',
+            type: 'text',
+            id: 'customer-last-name',
+            name: 'customer[last_name]',
+            label: lastNameLabel,
+            placeholder: lastNamePlaceholder,
+            autocomplete: 'family-name',
+            required: true,
+            class: '',
+            invalid: form.errors contains 'last_name',
+            value: form.last_name
+          %}
+        </div>
         <!-- First Name -->
-        {%- assign firstNameLabel = 'customer.register.first_name' | t -%}
-        {%- assign firstNamePlaceholder = 'customer.register.first_name' | t -%}
-        {%
-          render 'input',
-          type: 'text',
-          id: 'customer-first-name',
-          name: 'customer[first_name]',
-          label: firstNameLabel,
-          placeholder: firstNamePlaceholder,
-          autocomplete: 'given-name',
-          required: true,
-          class: '',
-          invalid: form.errors contains 'first_name',
-          value: form.first_name
-        %}
-
-        <!-- Last Name -->
-        {%- assign lastNameLabel = 'customer.register.last_name' | t -%}
-        {%- assign lastNamePlaceholder = 'customer.register.last_name' | t -%}
-        {%
-          render 'input',
-          type: 'text',
-          id: 'customer-last-name',
-          name: 'customer[last_name]',
-          label: lastNameLabel,
-          placeholder: lastNamePlaceholder,
-          autocomplete: 'family-name',
-          required: true,
-          class: '',
-          invalid: form.errors contains 'last_name',
-          value: form.last_name
-        %}
 
         <!-- Phone Number -->
         <div class=" flex gap-16">
@@ -240,7 +228,6 @@
       if (!phone || phone.trim() === '') return false;
       let cleanedPhone = phone.replace(/[\s-]/g, '');
 
-      // Check if it's a valid BD number with or without +88
       if (cleanedPhone.startsWith('+88')) {
         cleanedPhone = cleanedPhone.substring(3);
       }
@@ -248,39 +235,29 @@
       return /^01\d{9}$/.test(cleanedPhone);
     }
 
-    // Clean phone number - smart +88 handling
     function cleanPhoneNumber(phone) {
       if (!phone || phone.trim() === '') return '';
       let cleanedPhone = phone.replace(/[\s-]/g, '');
-
-      // If already has +88, keep it
       if (cleanedPhone.startsWith('+88')) {
         return cleanedPhone;
       }
-
-      // If doesn't have +88, add it
       return '+88' + cleanedPhone;
     }
 
-    // Show response message
     function showResponseMessage(message, type) {
       responseMessage.textContent = message;
       responseMessage.className = `response-message ${type} show`;
-
-      // Auto hide after 5 seconds for success messages
-      if (type === 'success') {
+      if (type === 'success-text') {
         setTimeout(() => {
           responseMessage.classList.remove('show');
         }, 5000);
       }
     }
 
-    // Hide response message
     function hideResponseMessage() {
       responseMessage.classList.remove('show');
     }
 
-    // Show message
     function showMessage(element, message, type) {
       element.textContent = message;
       element.className = `otp-message ${type}`;
@@ -289,39 +266,29 @@
     // OTP Input Handling
     function setupOtpInputs() {
       otpDigits.forEach((input, index) => {
-        // Handle input
         input.addEventListener('input', function (e) {
           const value = e.target.value;
-
-          // Only allow numbers
           if (!/^\d*$/.test(value)) {
             e.target.value = '';
             return;
           }
-
-          // Add filled class
           if (value) {
             e.target.classList.add('filled');
-            // Move to next input
             if (index < otpDigits.length - 1) {
               otpDigits[index + 1].focus();
             }
           } else {
             e.target.classList.remove('filled');
           }
-
-          // Update hidden input
           updateOtpValue();
         });
 
-        // Handle backspace
         input.addEventListener('keydown', function (e) {
           if (e.key === 'Backspace' && !e.target.value && index > 0) {
             otpDigits[index - 1].focus();
           }
         });
 
-        // Handle paste
         input.addEventListener('paste', function (e) {
           e.preventDefault();
           const pastedData = e.clipboardData.getData('text');
@@ -334,7 +301,6 @@
             }
           });
 
-          // Focus the next empty input or last input
           const nextEmptyIndex = digits.length < 6 ? digits.length : 5;
           if (otpDigits[nextEmptyIndex]) {
             otpDigits[nextEmptyIndex].focus();
@@ -344,7 +310,6 @@
       });
     }
 
-    // Update hidden OTP input value
     function updateOtpValue() {
       const otpValue = Array.from(otpDigits)
         .map((input) => input.value)
@@ -352,7 +317,6 @@
       otpHiddenInput.value = otpValue;
     }
 
-    // Clear OTP inputs
     function clearOtpInputs() {
       otpDigits.forEach((input) => {
         input.value = '';
@@ -362,14 +326,12 @@
       if (otpDigits[0]) otpDigits[0].focus();
     }
 
-    // Get OTP value
     function getOtpValue() {
       return Array.from(otpDigits)
         .map((input) => input.value)
         .join('');
     }
 
-    // Check form validity
     function checkFormValidity() {
       const firstName = firstNameInput.value.trim();
       const lastName = lastNameInput.value.trim();
@@ -390,19 +352,18 @@
       registerButton.disabled = !isValid;
     }
 
-    // Send OTP
     if (sendOtpButton) {
       sendOtpButton.addEventListener('click', async () => {
         const phoneNumber = phoneInput.value.trim();
         hideResponseMessage();
 
         if (!phoneNumber) {
-          showResponseMessage('Please enter a phone number first.', 'error');
+          showResponseMessage('Please enter a phone number first.', 'error-text');
           return;
         }
 
         if (!validatePhoneNumber(phoneNumber)) {
-          showResponseMessage('Please enter a valid Bangladesh phone number.', 'error');
+          showResponseMessage('Please enter a valid Bangladesh phone number.', 'error-text');
           return;
         }
 
@@ -428,73 +389,53 @@
             otpContainer.classList.add('active');
             if (otpDigits[0]) otpDigits[0].focus();
             sendOtpButton.textContent = 'Resend OTP';
-            showMessage(otpMessage, 'OTP sent to your phone.', 'success');
+            showMessage(otpMessage, 'OTP sent to your phone.', 'success-text');
             isOtpSent = true;
             checkFormValidity();
           } else {
             sendOtpButton.textContent = 'Send OTP';
-            showResponseMessage(data.message || 'Failed to send OTP. Please try again.', 'error');
+            showResponseMessage(data.message || 'Failed to send OTP. Please try again.', 'error-text');
           }
 
           phoneInput.disabled = false;
           sendOtpButton.disabled = false;
         } catch (error) {
-          showResponseMessage('An error occurred while trying to send OTP.', 'error');
+          showResponseMessage('An error occurred while trying to send OTP.', 'error-text');
           phoneInput.disabled = false;
           sendOtpButton.disabled = false;
           sendOtpButton.textContent = 'Send OTP';
         }
       });
-
-      otpInput.addEventListener('input', () => {
-        if (correctOtpCode) {
-          if (Number(otpInput.value) === correctOtpCode) {
-            otpMessage.textContent = 'OTP matched!';
-            otpMessage.classList.remove('text-error-text');
-            otpMessage.classList.add('text-success-text');
-            isOtpMatched = true;
-            submitButton.disabled = false;
-          } else {
-            otpMessage.textContent = "OTP doesn't match.";
-            otpMessage.classList.remove('text-success-text');
-            otpMessage.classList.add('text-error-text');
-            isOtpMatched = false;
-            submitButton.disabled = true;
-          }
-        }
-      });
     }
 
-    // Form validation listeners
     [firstNameInput, lastNameInput, phoneInput, passwordInput, confirmPasswordInput].forEach((input) => {
       if (input) {
         input.addEventListener('input', checkFormValidity);
       }
     });
 
-    // Register button
     if (registerButton) {
       registerButton.addEventListener('click', async () => {
         hideResponseMessage();
 
         if (!isOtpSent) {
-          showResponseMessage('Please send and verify OTP first.', 'error');
+          showResponseMessage('Please send and verify OTP first.', 'error-text');
           return;
         }
 
         if (!validatePhoneNumber(phoneInput.value.trim())) {
-          showResponseMessage('Please enter a valid Bangladesh phone number.', 'error');
+          showResponseMessage('Please enter a valid Bangladesh phone number.', 'error-text');
           return;
         }
 
         if (passwordInput.value !== confirmPasswordInput.value) {
-          showResponseMessage('Passwords do not match.', 'error');
+          showResponseMessage('Passwords do not match.', 'error-text');
           return;
         }
 
         const otpValue = getOtpValue();
         if (otpValue.length !== 6) {
-          showResponseMessage('Please enter the complete 6-digit OTP.', 'error');
+          showResponseMessage('Please enter the complete 6-digit OTP.', 'error-text');
           return;
         }
 
@@ -520,15 +461,15 @@
           const data = await response.json();
 
           if (response.ok) {
-            showResponseMessage('Registration successful! Redirecting to login...', 'success');
+            showResponseMessage('Registration successful! Redirecting to login...', 'success-text');
             setTimeout(() => {
               window.location.href = '/account/login';
             }, 2000);
           } else {
-            showResponseMessage(data.message || 'Registration failed. Please try again.', 'error');
+            showResponseMessage(data.message || 'Registration failed. Please try again.', 'error-text');
           }
         } catch (error) {
-          showResponseMessage('An error occurred during registration. Please try again.', 'error');
+          showResponseMessage('An error occurred during registration. Please try again.', 'error-text');
         } finally {
           registerButton.disabled = false;
           registerButton.textContent = '{{ "customer.register.submit" | t | default: "Submit" }}';
@@ -537,10 +478,7 @@
       });
     }
 
-    // Initialize OTP inputs
     setupOtpInputs();
-
-    // Initial form check
     checkFormValidity();
   });
 </script>
@@ -548,7 +486,6 @@
 {% schema %}
 {
   "name": "Register",
-
   "settings": []
 }
 {% endschema %}
