@@ -7,33 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     HISTORY: `/apps/${APP_SUB_PATH}/customer/reward-point-system/get-history`,
   };
 
-  // Initialize pagination managers for different tabs
   let earningPagination, usedPagination, expirePagination;
-  let currentTabData = {
-    earning: [],
-    used: [],
-    expire: [],
-  };
-
-  const initializePagination = () => {
-    earningPagination = new PaginationManager({
-      containerId: "earning-pagination",
-      itemsPerPage: 5,
-      onPageChange: (items) => renderHistoryTable(items, "earning"),
-    });
-
-    usedPagination = new PaginationManager({
-      containerId: "used-pagination",
-      itemsPerPage: 5,
-      onPageChange: (items) => renderHistoryTable(items, "used"),
-    });
-
-    expirePagination = new PaginationManager({
-      containerId: "expire-pagination",
-      itemsPerPage: 5,
-      onPageChange: (items) => renderHistoryTable(items, "expire"),
-    });
-  };
 
   const apiCall = async (url, options = {}) => {
     const response = await fetch(url, options);
@@ -43,6 +17,61 @@ document.addEventListener("DOMContentLoaded", () => {
       throw new Error(data.message || `API Error: ${response.status}`);
     }
     return data;
+  };
+
+  const fetchHistoryForTab = async (tabType, page = 1) => {
+    const tbody = document.getElementById("earning-history-body");
+    const mobileView = document.getElementById("history-mobile-view");
+
+    if (tbody && mobileView) {
+      const loadingHTML = `<tr><td class="fs-16-lh-24-ls-0" colspan="5" style="text-align:center; padding: 16px;">Loading...</td></tr>`;
+      tbody.innerHTML = loadingHTML;
+      mobileView.innerHTML = `<div class="fs-16-lh-24-ls-0" style="text-align:center; padding: 16px;">Loading...</div>`;
+    }
+
+    try {
+      const customerId = window.customerId;
+      if (!customerId) return;
+
+      const data = await apiCall(
+        `${API_URLS.HISTORY}?historyType=${tabType}&page=${page}`
+      );
+      renderHistoryTable(data.history, tabType);
+
+      const paginationData = data.pagination;
+      if (tabType === "earning") {
+        earningPagination.update(paginationData);
+      } else if (tabType === "used") {
+        usedPagination.update(paginationData);
+      } else if (tabType === "expire") {
+        expirePagination.update(paginationData);
+      }
+    } catch (error) {
+      toastManager.show(`Failed to load history: ${error.message}`, "error");
+    }
+  };
+
+  const initializePagination = () => {
+    earningPagination = new PaginationManager({
+      containerId: "earning-pagination",
+      mode: "backend",
+      itemsPerPage: 5,
+      onPageChange: (newPage) => fetchHistoryForTab("earning", newPage),
+    });
+
+    usedPagination = new PaginationManager({
+      containerId: "used-pagination",
+      mode: "backend",
+      itemsPerPage: 5,
+      onPageChange: (newPage) => fetchHistoryForTab("used", newPage),
+    });
+
+    expirePagination = new PaginationManager({
+      containerId: "expire-pagination",
+      mode: "backend",
+      itemsPerPage: 5,
+      onPageChange: (newPage) => fetchHistoryForTab("expire", newPage),
+    });
   };
 
   const renderHistoryTable = (historyItems, tabType) => {
@@ -240,93 +269,82 @@ document.addEventListener("DOMContentLoaded", () => {
       pointHeader.textContent = "Point";
     }
 
-    if (tabType === "earning") {
-      earningPagination.init(currentTabData.earning);
-      document.getElementById("earning-pagination").style.display = "flex";
-    } else if (tabType === "used") {
-      usedPagination.init(currentTabData.used);
-      document.getElementById("used-pagination").style.display = "flex";
-    } else if (tabType === "expire") {
-      expirePagination.init(currentTabData.expire);
-      document.getElementById("expire-pagination").style.display = "flex";
-    }
+    document.getElementById(`${tabType}-pagination`).style.display = "flex";
+    fetchHistoryForTab(tabType, 1);
   };
 
   const updateCustomerData = (apiResponse) => {
     if (!apiResponse?.success) {
       document.querySelector(".reward-container").style.display = "none";
-    } else {
-      const currentPoints = apiResponse.remainingPoints || 0;
-      currentPointsSpan.textContent = currentPoints;
+      return;
+    }
 
-      const redemptionRulesText = document.getElementById(
-        "redemptionRulesText"
+    const currentPoints = apiResponse.remainingPoints || 0;
+    currentPointsSpan.textContent = currentPoints;
+
+    const redemptionRulesText = document.getElementById("redemptionRulesText");
+    const redemptionRules = apiResponse.configuration?.pointRedemptionRules;
+    if (redemptionRulesText && redemptionRules) {
+      const { pointsRequired, discountAmount } = redemptionRules;
+      redemptionRulesText.textContent = `Redeem ${pointsRequired} Points for ${discountAmount} OFF`;
+
+      const redeemCards = document.querySelectorAll(".redeem-card");
+      redeemCards.forEach((card) => {
+        const pointsRequiredForCard =
+          card.querySelector(".redeem-now-button").dataset.pointsRequired;
+        const discountSpan = card.querySelector(".discount-amount");
+
+        if (redemptionRules.pointsRequired > 0) {
+          const ratio =
+            redemptionRules.discountAmount / redemptionRules.pointsRequired;
+          const calculatedDiscount = Math.round(pointsRequiredForCard * ratio);
+          discountSpan.textContent = calculatedDiscount;
+        } else {
+          discountSpan.textContent = "0";
+        }
+      });
+    }
+
+    const reviewRules = apiResponse.configuration?.pointsPerProductReview;
+    if (reviewRules) {
+      const threeStarText = document
+        .getElementById("threeStarReview")
+        .getAttribute("data-translation");
+      document.getElementById("threeStarReview").textContent =
+        threeStarText.replace("{points}", reviewRules.threeStarPoints);
+      const fourStarText = document
+        .getElementById("fourStarReview")
+        .getAttribute("data-translation");
+      document.getElementById("fourStarReview").textContent =
+        fourStarText.replace("{points}", reviewRules.fourStarPoints);
+      const fiveStarText = document
+        .getElementById("fiveStarReview")
+        .getAttribute("data-translation");
+      document.getElementById("fiveStarReview").textContent =
+        fiveStarText.replace("{points}", reviewRules.fiveStarPoints);
+    }
+
+    const orderRules = apiResponse.configuration?.purchasePointsConfiguration;
+    if (orderRules) {
+      const orderRuleText = document
+        .getElementById("orderPointsRule")
+        .getAttribute("data-translation");
+      let finalOrderRule = orderRuleText.replace(
+        "{points}",
+        orderRules.pointsAwarded
       );
-      const redemptionRules = apiResponse.configuration?.pointRedemptionRules;
-      if (redemptionRulesText && redemptionRules) {
-        const { pointsRequired, discountAmount } = redemptionRules;
-        redemptionRulesText.textContent = `Redeem ${pointsRequired} Points for ${discountAmount} OFF`;
+      finalOrderRule = finalOrderRule.replace(
+        "{amount}",
+        orderRules.amountThreshold
+      );
+      document.getElementById("orderPointsRule").textContent = finalOrderRule;
+    }
 
-        const redeemCards = document.querySelectorAll(".redeem-card");
-        redeemCards.forEach((card) => {
-          const pointsRequiredForCard =
-            card.querySelector(".redeem-now-button").dataset.pointsRequired;
-          const discountSpan = card.querySelector(".discount-amount");
-
-          if (redemptionRules.pointsRequired > 0) {
-            const ratio =
-              redemptionRules.discountAmount / redemptionRules.pointsRequired;
-            const calculatedDiscount = Math.round(
-              pointsRequiredForCard * ratio
-            );
-            discountSpan.textContent = calculatedDiscount;
-          } else {
-            discountSpan.textContent = "0";
-          }
-        });
-      }
-
-      const reviewRules = apiResponse.configuration?.pointsPerProductReview;
-      if (reviewRules) {
-        const threeStarText = document
-          .getElementById("threeStarReview")
-          .getAttribute("data-translation");
-        document.getElementById("threeStarReview").textContent =
-          threeStarText.replace("{points}", reviewRules.threeStarPoints);
-        const fourStarText = document
-          .getElementById("fourStarReview")
-          .getAttribute("data-translation");
-        document.getElementById("fourStarReview").textContent =
-          fourStarText.replace("{points}", reviewRules.fourStarPoints);
-        const fiveStarText = document
-          .getElementById("fiveStarReview")
-          .getAttribute("data-translation");
-        document.getElementById("fiveStarReview").textContent =
-          fiveStarText.replace("{points}", reviewRules.fiveStarPoints);
-      }
-
-      const orderRules = apiResponse.configuration?.purchasePointsConfiguration;
-      if (orderRules) {
-        const orderRuleText = document
-          .getElementById("orderPointsRule")
-          .getAttribute("data-translation");
-        let finalOrderRule = orderRuleText.replace(
-          "{points}",
-          orderRules.pointsAwarded
-        );
-        finalOrderRule = finalOrderRule.replace(
-          "{amount}",
-          orderRules.amountThreshold
-        );
-        document.getElementById("orderPointsRule").textContent = finalOrderRule;
-      }
-
-      if (apiResponse.rewardHistory) {
-        currentTabData.earning = apiResponse.rewardHistory.earning || [];
-        currentTabData.used = apiResponse.rewardHistory.used || [];
-        currentTabData.expire = apiResponse.rewardHistory.expire || [];
-        switchTab("earning");
-      }
+    if (apiResponse.history && apiResponse.pagination) {
+      renderHistoryTable(apiResponse.history, "earning");
+      earningPagination.update(apiResponse.pagination);
+      document.querySelector(`[data-tab="earning"]`).classList.add("active");
+      document.getElementById("earning-pagination").style.display = "flex";
     }
   };
 
@@ -362,6 +380,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const handleRedeemFromCard = async (event) => {
     const button = event.target;
     const pointsToRedeem = button.dataset.pointsRequired;
+    const customerId = window.customerId;
+    if (!customerId) return;
 
     const applyHandler = () =>
       handleApplyToCart(button, button.dataset.discountCode, applyHandler);
@@ -372,7 +392,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const redeemResponse = await apiCall(API_URLS.REDEEM, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ points: Number(pointsToRedeem) }),
+        body: JSON.stringify({ points: Number(pointsToRedeem), customerId }),
       });
       if (redeemResponse.discountCode) {
         toastManager.show(
@@ -385,7 +405,9 @@ document.addEventListener("DOMContentLoaded", () => {
         button.removeEventListener("click", handleRedeemFromCard);
         button.addEventListener("click", applyHandler);
       }
-      const latestData = await apiCall(API_URLS.HISTORY);
+      const latestData = await apiCall(
+        `${API_URLS.HISTORY}?historyType=used&page=1`
+      );
       updateCustomerData(latestData);
     } catch (error) {
       toastManager.show(`Redemption failed: ${error.message}`, "error");
@@ -397,33 +419,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // Initialize pagination managers
   initializePagination();
 
-  // Add event listeners for tab buttons
   document.querySelectorAll(".tab-button").forEach((button, index) => {
     const tabTypes = ["earning", "used", "expire"];
     button.setAttribute("data-tab", tabTypes[index]);
     button.addEventListener("click", () => switchTab(tabTypes[index]));
   });
 
-  // Initial API call
-  apiCall(API_URLS.HISTORY)
-    .then(updateCustomerData)
-    .catch((error) => {
-      const redemptionRulesText = document.getElementById(
-        "redemptionRulesText"
-      );
-      if (redemptionRulesText) {
-        redemptionRulesText.textContent = "Could not load redemption rules.";
-      }
+  const customerId = window.customerId;
+  if (customerId) {
+    apiCall(`${API_URLS.HISTORY}?historyType=earning&page=1`)
+      .then(updateCustomerData)
+      .catch((error) => {
+        const redemptionRulesText = document.getElementById(
+          "redemptionRulesText"
+        );
+        if (redemptionRulesText) {
+          redemptionRulesText.textContent = "Could not load redemption rules.";
+        }
 
-      currentPointsSpan.textContent = "Error";
-      const tbody = document.getElementById("earning-history-body");
-      if (tbody) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 16px;">Failed to load reward history.</td></tr>`;
-      }
-    });
+        currentPointsSpan.textContent = "Error";
+        const tbody = document.getElementById("earning-history-body");
+        if (tbody) {
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 16px;">Failed to load reward history.</td></tr>`;
+        }
+      });
+  }
 
   const redeemButtons = document.querySelectorAll(".redeem-now-button");
   redeemButtons.forEach((button) => {
