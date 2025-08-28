@@ -149,9 +149,12 @@
                 {% render 'icon-close', cls: 'svg-primary-optional', height: 20, width: 20 %}
               </button>
 
-              <span class="enter hidden ff-general-sans fs-14-lh-20-ls-0_1 fw-600 absolute top-50pct right-12 translate-y--50 bg-light-gray rounded-6 pt-12 pb-12 pl-16 pr-16">
+              <a
+                class="enter no-underline hidden text-secondary-light  ff-general-sans fs-14-lh-20-ls-0_1 fw-600 absolute top-50pct right-12 translate-y--50 bg-light-gray rounded-6 pt-12 pb-12 pl-16 pr-16"
+                href="{{ routes.search_url }}?q={{ ' ' | url_encode }}"
+              >
                 {{- 'sections.header.enter' | t }}
-              </span>
+              </a>
             </form>
           </predictive-search>
         </div>
