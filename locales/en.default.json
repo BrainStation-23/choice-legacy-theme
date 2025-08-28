@@ -20,13 +20,15 @@
     "redeem_points": {
       "label": "Redeem Points",
       "off": "OFF",
-      "button": "Redeem Now"
+      "button": "Redeem Now",
+      "loading": "Loading..."
     },
     "reward_points": {
       "label": "Reward Points"
     },
     "reward_history": {
-      "label": "Reward History"
+      "label": "Reward History",
+      "loading": "Loading reward history..."
     },
     "redeeming": {
       "label": "Redeeming..."
@@ -35,7 +37,19 @@
       "label": "Apply to cart"
     },
     "redeem_message": "Points redeemed successfully!",
-    "apply_to_cart_message": "Discount code applied successfully!"
+    "apply_to_cart_message": "Discount code applied successfully!",
+    "tabs": {
+      "earning": "Earning",
+      "used": "Used",
+      "expire": "Expire"
+    },
+    "table": {
+      "event": "Event",
+      "date": "Date",
+      "point": "Point",
+      "transaction": "Transaction",
+      "action": "Action"
+    }
   },
   "wishlist": {
     "title": "My Wishlist",
@@ -271,7 +285,9 @@
       "title": "Page not found"
     },
     "cart": {
-      "add_to_cart": "Add to cart"
+      "add_to_cart": {
+        "label": "Add to cart"
+      }
     }
   },
   "products": {

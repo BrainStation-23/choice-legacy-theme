@@ -1,4 +1,4 @@
-// products-review.js - Updated with Toast Notification Integration
+// products-review.js - Fixed version without premature validation
 (function () {
   const reviewAppContainers = document.querySelectorAll(
     ".review-extension-container"
@@ -239,19 +239,17 @@
       });
     }
 
-    // Real-time validation
+    // Real-time validation - FIXED: Only clear errors when user types, don't show new ones
     if (reviewTextInput) {
       reviewTextInput.addEventListener("input", function () {
+        // Only hide error if user has typed something
         if (this.value.trim() !== "") {
           hideFieldError("reviewText");
         }
       });
 
-      reviewTextInput.addEventListener("blur", function () {
-        if (this.value.trim() === "") {
-          showFieldError("reviewText", "Review text is required");
-        }
-      });
+      // REMOVED: The blur event listener that was showing premature validation
+      // The validation will now only happen when the form is submitted
     }
 
     // Initialize stars
@@ -388,7 +386,7 @@
       reviewForm.addEventListener("submit", async function (event) {
         event.preventDefault();
 
-        // Frontend validation
+        // Frontend validation - This is where validation should happen
         if (!validateForm()) {
           return;
         }

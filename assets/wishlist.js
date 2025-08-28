@@ -17,12 +17,35 @@ async function removeFromWishlist(productHandle, variantId = null) {
 
 document.addEventListener("DOMContentLoaded", function () {
   const toastManager = new ToastNotificationManager();
-  const table = document.querySelector(".wishlist-table");
-  const tableBody = document.getElementById("customer-wishlist-items");
+  const desktopTable = document.querySelector(".wishlist-desktop-view");
+  const desktopTableBody = document.getElementById(
+    "customer-wishlist-items-desktop"
+  );
+  const mobileCardContainer = document.getElementById(
+    "customer-wishlist-items-mobile"
+  );
   const loader = document.getElementById("wishlist-loader");
   const emptyMessage = document.getElementById("empty-wishlist-message");
 
+  let wishlistPagination;
+  let allWishlistItems = [];
+
+  const initializePagination = () => {
+    wishlistPagination = new PaginationManager({
+      containerId: "wishlist-pagination-controls",
+      itemsPerPage: 10,
+      onPageChange: (items) => renderWishlist(items),
+    });
+  };
+
+  const clearContent = () => {
+    desktopTableBody.innerHTML = "";
+    mobileCardContainer.innerHTML = "";
+  };
+
   const renderWishlist = (items) => {
+    clearContent();
+
     items.forEach((item) => {
       const imageUrl =
         item.images.edges.length > 0
@@ -33,28 +56,54 @@ document.addEventListener("DOMContentLoaded", function () {
           ? parseFloat(item.variants.edges[0].node.price.amount).toFixed(2)
           : "N/A";
       const currencySymbol = "৳";
+      const uniqueId = item.id;
+
+      const removeButtonHTML = `
+        <button 
+          class="remove-wishlist-button bg-transparent w-full text-brand border-none fw-600 fs-14-lh-16-ls-0 cursor-pointer" 
+          data-product-handle="${item.handle}"
+          data-item-id="${uniqueId}"
+        >
+          Remove
+        </button>
+      `;
+      const addToCartButtonHTML = `<button class="button button--solid cursor-pointer w-full p-11">Add to cart</button>`;
 
       const row = document.createElement("tr");
-      row.id = item.id;
-
+      row.id = `wishlist-desktop-${uniqueId}`;
       row.innerHTML = `
-          <td>
-            <img src="${imageUrl}" alt="${item.title}" class="product-image w-32 h-32">
-          </td>
-          <td class="product-name fw-400 fs-16-lh-24-ls-0">${item.title}</td>
-          <td class="product-price fw-400 fs-16-lh-24-ls-0">${currencySymbol}${price}</td>
-          <td class="wishlist-actions text-right">
-            <button 
-              class="remove-wishlist-button bg-transparent text-brand border-none fw-600 fs-14-lh-16-ls-0 cursor-pointer" 
-              data-product-handle="${item.handle}"
-              data-item-id="${item.id}"
-            >
-              Remove
-            </button>
-            <button class="button button--solid cursor-pointer p-11">Add to cart</button>
-          </td>
-        `;
-      tableBody.appendChild(row);
+        <td>
+          <img src="${imageUrl}" alt="${item.title}" class="product-image w-32 h-32">
+        </td>
+        <td class="product-name fw-400 fs-16-lh-24-ls-0">${item.title}</td>
+        <td class="product-price fw-400 fs-16-lh-24-ls-0 min-w-85">${currencySymbol}${price}</td>
+        <td class="wishlist-actions text-right flex justify-end items-center gap-16 md:flex-wrap slg:flex-wrap">
+          ${removeButtonHTML}
+          ${addToCartButtonHTML}
+        </td>
+      `;
+      desktopTableBody.appendChild(row);
+
+      const mobileCard = document.createElement("div");
+      mobileCard.id = `wishlist-mobile-${uniqueId}`;
+      mobileCard.className =
+        "border border-solid border-color rounded-12 flex flex-col";
+      mobileCard.innerHTML = `
+        <div class="items-start flex justify-between items-start pt-10 pl-16 pb-10 pr-16">
+          <div class="flex justify-between border-b border-b-color border-b-solid w-full pb-10">
+            <img src="${imageUrl}" alt="${item.title}" class="w-32 h-32 object-contain">
+            <div class="flex items-center">
+              <span class="product-name ff-general-sans fw-400 fs-16-lh-24-ls-0 text-secondary">${currencySymbol}${price}</span>
+            </div>
+          </div>
+        </div>
+        <div class="product-name ff-general-sans fw-400 fs-16-lh-24-ls-0 pb-8 pl-12 pr-12 border-b border-b-color border-b-solid text-secondary">${item.title}</div>
+        <div class="flex justify-end items-center gap-24 pt-12 pb-12 pl-24 pr-24">
+          ${removeButtonHTML}
+          ${addToCartButtonHTML}
+        </div>
+      `;
+      mobileCardContainer.appendChild(mobileCard);
     });
   };
 
@@ -66,20 +115,25 @@ document.addEventListener("DOMContentLoaded", function () {
       const data = await response.json();
 
       if (data.success && data.wishlist.length > 0) {
-        renderWishlist(data.wishlist);
-        table.style.display = "table";
+        allWishlistItems = data.wishlist;
+        wishlistPagination.init(allWishlistItems);
+        desktopTable.classList.remove("hidden");
       } else {
-        emptyMessage.style.display = "block";
+        emptyMessage.classList.remove("hidden");
+        desktopTable.classList.add("hidden");
       }
     } catch (error) {
       console.error("Failed to fetch wishlist:", error);
       emptyMessage.innerText =
         "Could not load wishlist. Please try again later.";
-      emptyMessage.style.display = "block";
+      emptyMessage.classList.remove("hidden");
     } finally {
-      loader.style.display = "none";
+      loader.classList.add("hidden");
     }
   };
+
+  // Initialize pagination manager
+  initializePagination();
 
   fetchAndDisplayWishlist();
 
@@ -97,14 +151,23 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (result.success) {
           toastManager.show("Product removed from wishlist", "success");
-          const listItem = document.getElementById(itemId);
-          if (listItem) {
-            listItem.remove();
-          }
 
-          if (tableBody.children.length === 0) {
-            emptyMessage.style.display = "block";
-            table.style.display = "none";
+          // Remove item from allWishlistItems array
+          allWishlistItems = allWishlistItems.filter(
+            (item) => item.id !== itemId
+          );
+
+          // Update pagination with new data
+          if (allWishlistItems.length > 0) {
+            wishlistPagination.init(allWishlistItems);
+          } else {
+            // Show empty message if no items left
+            clearContent();
+            emptyMessage.classList.remove("hidden");
+            desktopTable.classList.add("hidden");
+            document.getElementById(
+              "wishlist-pagination-controls"
+            ).style.display = "none";
           }
         } else {
           toastManager.show("Failed to remove from wishlist", "error");

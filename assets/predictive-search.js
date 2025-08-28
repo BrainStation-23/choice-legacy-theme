@@ -5,7 +5,6 @@ class PredictiveSearch extends HTMLElement {
     this.input = this.querySelector('input[type="search"]');
     // this.predictiveSearchResults = this.querySelector("#predictive-search");
     this.resultDiv = document.querySelector(".predictive-search-results");
-    console.log(this.resultDiv);
 
     this.input.addEventListener("input", this.onChange.bind(this));
   }
