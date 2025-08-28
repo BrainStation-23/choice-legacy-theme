@@ -107,6 +107,9 @@ class SlideshowComponent extends HTMLElement {
       return;
     }
 
+    // Count the number of slides
+    const slideCount = this.querySelectorAll(".swiper-slide").length;
+
     const autoplay = this.dataset.autoplay === "true";
     const autoplayDelay = parseInt(this.dataset.autoplayDelay) || 5000;
     const pauseOnHover = this.dataset.pauseOnHover === "true";
@@ -117,9 +120,9 @@ class SlideshowComponent extends HTMLElement {
     const gap = this.dataset.gap ? parseInt(this.dataset.gap) : 16;
 
     const swiperOptions = {
-      loop: true,
+      loop: slideCount > 1, // Only enable loop if more than 1 slide
       spaceBetween: gap,
-      allowTouchMove: enableCarousel,
+      allowTouchMove: slideCount > 1 ? enableCarousel : false, // Disable touch if only 1 slide
       navigation: {
         nextEl: this.nextButton,
         prevEl: this.prevButton,
@@ -136,7 +139,7 @@ class SlideshowComponent extends HTMLElement {
       swiperOptions.breakpoints = responsiveBreakpoints;
     }
 
-    if (enableCarousel) {
+    if (enableCarousel && slideCount > 1) {
       Object.assign(swiperOptions, {
         grabCursor: true,
         freeMode: {
@@ -164,7 +167,8 @@ class SlideshowComponent extends HTMLElement {
     } else if (numberOfItems > 0) {
       swiperOptions.slidesPerView = numberOfItems;
     } else if (showPartialSlides) {
-      swiperOptions.allowTouchMove = true;
+      // For partial slides, allow touch move even with 1 slide for visual effect
+      swiperOptions.allowTouchMove = slideCount > 1;
       swiperOptions.slidesPerView = 1;
       swiperOptions.centeredSlides = false;
       swiperOptions.centerInsufficientSlides = true;
@@ -193,7 +197,7 @@ class SlideshowComponent extends HTMLElement {
       swiperOptions.slidesPerView = 1;
     }
 
-    if (showProgressBar && this.progressBar) {
+    if (showProgressBar && this.progressBar && slideCount > 1) {
       swiperOptions.pagination = {
         el: this.progressBar,
         type: "progressbar",
@@ -201,7 +205,8 @@ class SlideshowComponent extends HTMLElement {
       };
     }
 
-    if (autoplay) {
+    // Only enable autoplay if there's more than 1 slide
+    if (autoplay && slideCount > 1) {
       swiperOptions.autoplay = {
         delay: autoplayDelay,
         disableOnInteraction: false,
@@ -243,14 +248,18 @@ class SlideshowComponent extends HTMLElement {
   updateNavigationState() {
     if (!this.swiper) return;
 
+    const slideCount = this.querySelectorAll(".swiper-slide").length;
+
     if (this.prevButton) {
       this.prevButton.disabled =
-        this.swiper.isBeginning && !this.swiper.params.loop;
+        slideCount <= 1 ||
+        (this.swiper.isBeginning && !this.swiper.params.loop);
       this.prevButton.setAttribute("aria-disabled", this.prevButton.disabled);
     }
 
     if (this.nextButton) {
-      this.nextButton.disabled = this.swiper.isEnd && !this.swiper.params.loop;
+      this.nextButton.disabled =
+        slideCount <= 1 || (this.swiper.isEnd && !this.swiper.params.loop);
       this.nextButton.setAttribute("aria-disabled", this.nextButton.disabled);
     }
   }
@@ -258,11 +267,13 @@ class SlideshowComponent extends HTMLElement {
   setupAutoplayInteractions() {
     if (!this.swiper || !this.swiper.autoplay) return;
 
+    const slideCount = this.querySelectorAll(".swiper-slide").length;
     const autoplay = this.dataset.autoplay === "true";
     const pauseOnHover = this.dataset.pauseOnHover === "true";
     const enableCarousel = this.dataset.enableCarousel === "true";
 
-    if (!autoplay) return;
+    // Don't setup autoplay interactions if only 1 slide
+    if (!autoplay || slideCount <= 1) return;
 
     if (pauseOnHover) {
       this.addEventListener("mouseenter", () => {
@@ -300,25 +311,29 @@ class SlideshowComponent extends HTMLElement {
   }
 
   slideNext() {
-    if (this.swiper) {
+    const slideCount = this.querySelectorAll(".swiper-slide").length;
+    if (this.swiper && slideCount > 1) {
       this.swiper.slideNext();
     }
   }
 
   slidePrev() {
-    if (this.swiper) {
+    const slideCount = this.querySelectorAll(".swiper-slide").length;
+    if (this.swiper && slideCount > 1) {
       this.swiper.slidePrev();
     }
   }
 
   slideTo(index) {
-    if (this.swiper) {
+    const slideCount = this.querySelectorAll(".swiper-slide").length;
+    if (this.swiper && slideCount > 1) {
       this.swiper.slideTo(index);
     }
   }
 
   startAutoplay() {
-    if (this.swiper && this.swiper.autoplay) {
+    const slideCount = this.querySelectorAll(".swiper-slide").length;
+    if (this.swiper && this.swiper.autoplay && slideCount > 1) {
       this.swiper.autoplay.start();
     }
   }
@@ -343,7 +358,12 @@ class SlideshowComponent extends HTMLElement {
   }
 
   enableTouch() {
-    if (this.swiper && this.swiper.allowTouchMove !== undefined) {
+    const slideCount = this.querySelectorAll(".swiper-slide").length;
+    if (
+      this.swiper &&
+      this.swiper.allowTouchMove !== undefined &&
+      slideCount > 1
+    ) {
       this.swiper.allowTouchMove = true;
     }
   }

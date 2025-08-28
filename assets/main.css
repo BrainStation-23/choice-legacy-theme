@@ -846,6 +846,9 @@ address {
 .m-0-auto {
   margin: 0 auto;
 }
+.m-0-auto-priority {
+  margin: 0 auto !important;
+}
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -1293,6 +1296,9 @@ address {
 .w-90pct {
   width: 90%;
 }
+.w-80pct {
+  width: 80% !important;
+}
 .w-25pct {
   width: calc(25% - 16px);
 }
@@ -1570,6 +1576,9 @@ address {
   }
   .sm\:w-full {
     width: 100%;
+  }
+  .sm\:w-full-priority {
+    width: 100% !important;
   }
   .sm\:w-36 {
     width: 36px;
@@ -2651,6 +2660,9 @@ address {
   .sm\:text-left {
     text-align: left;
   }
+}
+.translate-none {
+  transform: translate(0) !important;
 }
 .translate-y--20 {
   transform: translateY(-20px);
