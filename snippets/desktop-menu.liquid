@@ -53,15 +53,15 @@
                   {%- assign show_image = true -%}
                 {%- endif -%}
 
-                {%- assign dropdown_class = 'mega-menu__dropdown absolute top-100pct left-50pct translate-x--50 bg-bg rounded-6 opacity-0 invisible pointer-events-none transition-transform z-1001 pt-24 pr-40 pb-24 pl-40 whitespace-nowrap w-mx-content max-w-1134 min-w-200 ml-50pct xlg:max-w-900 slg:pt-20 slg:pb-20 slg:pr-20 slg:pl-20 slg:left-100pct md:max-w-720 md:p-16 md:visible mt-0' -%}
+                {%- assign dropdown_class = 'mega-menu__dropdown absolute top-100pct translate-x--50 bg-bg rounded-6 opacity-0 invisible pointer-events-none transition-transform z-1001 pt-24 pr-40 pb-24 pl-40 whitespace-nowrap w-mx-content max-w-1134 min-w-200 ml-50pct xlg:max-w-900 md:max-w-720 md:visible mt-0' -%}
                 {%- if column_count == 1 -%}
-                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--1-column w-auto min-w-100 max-w-400 pt-16 pr-20 pb-16 pl-20 slg:w-auto slg:min-w-150 slg:max-w-400 slg:pt-10 slg:pr-16 slg:pb-10 slg:pl-16 md:max-w-300' -%}
+                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--1-column w-auto min-w-100 max-w-400 pt-16 pr-20-priority pb-16 pl-20-priority slg:w-auto slg:min-w-150 slg:max-w-400 slg:pt-10 slg:pb-10 md:max-w-300 left-0' -%}
                 {%- elsif column_count == 2 -%}
-                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--2-columns w-auto min-w-430 max-w-600 pt-16 pr-20 pb-16 pl-20 md:max-w-450' -%}
+                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--2-columns left-50pct w-auto min-w-430 max-w-600 pt-16 pr-20-priority pb-16 pl-20-priority md:max-w-450' -%}
                 {%- elsif column_count == 3 -%}
-                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--3-columns w-auto min-w-1134 slg:min-w-900 md:max-w-720 md:min-w-720' -%}
+                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--3-columns left-50pct w-auto min-w-1134 lg:min-w-1100 slg:min-w-900 md:max-w-720 md:min-w-720' -%}
                 {%- else -%}
-                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--4-plus-columns w-1134 slg:w-400 md:w-720' -%}
+                  {%- assign dropdown_class = dropdown_class | append: ' mega-menu__dropdown--4-plus-columns left-50pct w-1134 slg:w-400 md:w-720' -%}
                 {%- endif -%}
 
                 <div class="{{ dropdown_class }} box-shadow">

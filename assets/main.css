@@ -2269,6 +2269,9 @@ address {
 .pl-20 {
   padding-left: calc(20 * var(--space-unit));
 }
+.pl-20-priority {
+  padding-left: calc(20 * var(--space-unit)) !important;
+}
 .pl-24 {
   padding-left: calc(24 * var(--space-unit));
 }
@@ -2319,6 +2322,9 @@ address {
 }
 .pr-20 {
   padding-right: calc(20 * var(--space-unit));
+}
+.pr-20-priority {
+  padding-right: calc(20 * var(--space-unit)) !important;
 }
 .pr-24 {
   padding-right: calc(24 * var(--space-unit));
