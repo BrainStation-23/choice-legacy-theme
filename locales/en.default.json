@@ -94,7 +94,8 @@
       "cart": "Cart",
       "search": "Search products",
       "product": "Product",
-      "enter": "Enter"
+      "enter": "Enter",
+      "no_result": "No product found for "
     },
     "collections_list": {
       "default_title": "Collections"

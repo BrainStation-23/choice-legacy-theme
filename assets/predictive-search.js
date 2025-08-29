@@ -14,6 +14,7 @@ class PredictiveSearch extends HTMLElement {
 
     if (!searchTerm.length) {
       this.close();
+      this.resultDiv.innerHTML = '';
       return;
     }
 

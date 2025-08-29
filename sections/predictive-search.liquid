@@ -19,7 +19,7 @@
       </div>
     {% else %}
       <h1 class="m-0 text-center justify-center flex ff-bebas-neue fs-36-lh-40-ls-0 fw-400">
-        No products found for "{{ predictive_search.query }}"
+        {{ 'sections.header.no_result' | t }} "{{ predictive_search.terms }}"
       </h1>
     {%- endif -%}
   </div>
