@@ -199,12 +199,24 @@ class CartDrawer extends HTMLElement {
     console.log("Opening cart drawer");
     this.classList.add("animate", "active");
     document.body.classList.add("overflow-hidden");
+
+    // Show the overlay
+    this.style.visibility = "visible";
+    this.style.opacity = "1";
   }
 
   close() {
     console.log("Closing cart drawer");
     this.classList.remove("active");
     document.body.classList.remove("overflow-hidden");
+
+    // Hide the overlay after animation completes
+    setTimeout(() => {
+      if (!this.classList.contains("active")) {
+        this.style.visibility = "hidden";
+        this.style.opacity = "0";
+      }
+    }, 300); // Match the CSS transition duration
   }
 
   refresh() {

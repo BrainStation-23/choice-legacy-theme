@@ -51,7 +51,7 @@
                   <div class="cart-drawer__item-discounts">
                     {% for discount in item.discounts %}
                       <span class="cart-drawer__discount">
-                        {% render 'icon-discount' %}
+                        {% comment %} {% render 'icon-discount' %} {% endcomment %}
                         {{ discount.title }}
                       </span>
                     {% endfor %}
@@ -148,7 +148,7 @@
               <ul class="cart-drawer__discounts" role="list" aria-label="{{ 'customer.order.discount' | t }}">
                 {% for discount in cart.cart_level_discount_applications %}
                   <li class="cart-drawer__discount">
-                    {% render 'icon-discount' %}
+                    {% comment %} {% render 'icon-discount' %} {% endcomment %}
                     {{ discount.title }}
                     (-{{ discount.total_allocated_amount | money }})
                   </li>
