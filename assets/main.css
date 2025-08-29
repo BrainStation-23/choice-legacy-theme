@@ -1431,8 +1431,8 @@ address {
 .max-w-100pc-32 {
   max-width: calc(100% - 32px);
 }
-.max-w-392 {
-  max-width: 392px;
+.max-w-full {
+  max-width: 100%;
 }
 .max-w-120 {
   max-width: 120px;
@@ -1683,6 +1683,9 @@ address {
 }
 .cursor-pointer {
   cursor: pointer;
+}
+.cursor-no-drop {
+  cursor: no-drop;
 }
 .resize {
   resize: both;
@@ -2931,96 +2934,64 @@ shop-login-button {
   pointer-events: none;
 }
 
+.radio,
 .checkbox {
-  position: absolute;
-  opacity: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  position: relative;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgb(var(--color-border));
+  border-radius: 50%;
+  margin: 0;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.2s ease;
+  opacity: 1 !important;
+  padding: 0 !important;
+  background-color: rgb(var(--color-background));
 }
+
+.radio + label,
 .checkbox + label {
   display: inline-flex;
   position: relative;
-  align-items: flex-start;
-  margin: 0;
-  font-size: 1em;
-  line-height: 1.5;
-  vertical-align: top;
+  align-items: center;
+
   cursor: pointer;
-}
-.checkbox + label::before {
-  content: "";
-  display: block;
-  flex-shrink: 0;
-  width: 22px;
-  height: 22px;
-  margin-top: calc(0.75em - 11px);
-  margin-inline-end: 0.75em;
-  border: var(--input-border-width) solid rgb(var(--text-color));
-  border-radius: 2px;
-  background-color: rgb(var(--input-bg-color));
-}
-.checkbox:checked + label::before {
-  border-color: rgb(var(--text-color));
-  background-color: rgb(var(--text-color));
-}
-.checkbox:checked + label::after {
-  content: "";
-  position: absolute;
-  top: calc(0.75em - 1.5px);
-  left: 11px;
-  width: calc((22px - (var(--input-border-width) * 2)) * 0.375);
-  height: calc((22px - (var(--input-border-width) * 2)) * 0.75);
-  transform: translate(-50%, -50%) rotate(45deg);
-  border: solid rgba(var(--bg-color));
-  border-width: 0 2px 2px 0;
-}
-[dir="rtl"] .checkbox:checked + label::after {
-  right: 11px;
-  left: auto;
-  transform: translate(50%, -50%) rotate(45deg);
-}
-.checkbox[disabled] + label {
-  opacity: 0.5;
-  cursor: default;
+  flex: 1;
+  top: 0 !important;
 }
 
-.radio {
+.radio + label::before,
+.checkbox + label::before {
+  display: none; /* Hide the old pseudo-element since we're styling the input directly */
+}
+
+.radio:hover,
+.checkbox:hover {
+  border-color: rgb(var(--color-primary-brand));
+}
+
+.radio:checked,
+.checkbox:checked {
+  border-color: rgb(var(--color-primary-brand));
+  background: rgb(var(--color-primary-brand));
+}
+
+/* Alternative positioning for the checkmark - use this if the above doesn't work perfectly */
+.radio:checked::after,
+.checkbox:checked::after {
+  content: "✓";
   position: absolute;
-  opacity: 0;
-}
-.radio + label {
-  display: inline-flex;
-  position: relative;
-  align-items: flex-start;
-  margin: 0;
-  font-size: 1em;
-  line-height: 1.5;
-  vertical-align: top;
-  cursor: pointer;
-}
-.radio + label::before {
-  content: "";
-  display: block;
-  flex-shrink: 0;
-  margin-inline-end: 0.75em;
-  border: var(--input-border-width) solid rgb(var(--text-color));
-  border-radius: 2px;
-  background-color: rgb(var(--input-bg-color));
-  width: 22px;
-  height: 22px;
-  margin-top: calc(0.75em - 11px);
-  border-radius: 50%;
-}
-.radio:checked + label::after {
-  content: "";
-  position: absolute;
-  top: 0.75em;
-  left: 11px;
-  width: calc((22px - (var(--input-border-width) * 2)) * 0.625);
-  height: calc((22px - (var(--input-border-width) * 2)) * 0.625);
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background-color: rgb(var(--text-color));
+  color: rgb(var(--color-background));
+  pointer-events: none;
 }
-[dir="rtl"] .radio:checked + label::after {
+[dir="rtl"] .radio:checked + label::after,
+[dir="rtl"] .checkbox:checked + label::after {
   right: 11px;
   left: auto;
   transform: translate(50%, -50%);
@@ -3302,7 +3273,6 @@ textarea:focus + label,
 textarea:not(:placeholder-shown) + label {
   top: 8px;
   left: 16px;
-  font-size: 12px;
   transform: translateY(0);
   color: rgb(var(--color-primary-text)) !important;
   font-weight: 500;
@@ -3344,7 +3314,6 @@ input:-webkit-autofill + label,
 textarea:-webkit-autofill + label {
   top: 4px;
   left: 16px;
-  font-size: 12px;
   transform: translateY(0);
   color: rgb(var(--color-primary-text)) !important;
   font-weight: 500;

@@ -127,6 +127,9 @@
         "lb": "lb"
       }
     },
+    "collection": {
+      "empty": "No products found in this collection."
+    },
     "cart": {
       "title": "Cart"
     }
@@ -273,6 +276,9 @@
       "next": "Next",
       "page": "Page"
     },
+    "labels": {
+      "please_select": "Please select"
+    },
     "breadcrumbs": {
       "home": "Home",
       "products": "Products",
@@ -314,9 +320,38 @@
       "combo_products": {
         "save": "Save"
       }
+    },
+    "filtering": {
+      "title": "Filters",
+      "applied_filters": "Applied Filters",
+      "applied_filter_count": {
+        "one": "{{ count }} Applied Filter",
+        "other": "{{ count }} Applied Filters"
+      },
+      "apply": "Apply",
+      "clear": "Clear",
+      "clear_all": "Clear all",
+      "filter": "Filter",
+      "filter_sort": "Filter & Sort",
+      "min_price_label": "From",
+      "max_price_label": "To",
+      "show_more": "Show more",
+      "show_result_count": {
+        "one": "Show {{ count }} result",
+        "other": "Show {{ count }} results",
+        "showing": "Showing {{ count }} Products"
+      }
+    },
+    "sorting": {
+      "sort_by_label": "Sort by"
     }
   },
   "accessibility": {
-    "unit_price_separator": "Unit Price Separator"
+    "unit_price_separator": "Unit Price Separator",
+    "close": "Close",
+    "loading": "Loading..."
+  },
+  "main-category": {
+    "title": "Featured Products"
   }
 }

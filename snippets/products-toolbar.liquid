@@ -1,0 +1,45 @@
+{%- comment -%}
+  Parameters:
+  - results {Object} - Results object (collection or search).
+
+  Usage:
+  {% render 'products-toolbar', results: collection %}
+{%- endcomment -%}
+
+<products-toolbar class="products-toolbar flex items-center mb-8 no-js-hidden" id="products-toolbar">
+  {%- if section.settings.enable_sorting -%}
+    <div class="products-toolbar__sort{% if filters_enabled %} hidden md:block{% endif %}">
+      {%- liquid
+        assign sort_by = results.sort_by | default: results.default_sort_by
+        assign option_names = ''
+        assign option_values = ''
+        for option in results.sort_options
+          unless option.value == 'manual' and section.settings.show_feat_sort_opt == false
+            assign option_names = option_names | append: option.name
+            assign option_values = option_values | append: option.value
+            unless forloop.last
+              assign option_names = option_names | append: '|'
+              assign option_values = option_values | append: '|'
+            endunless
+          endunless
+        endfor
+        assign option_names = option_names | split: '|'
+        assign option_values = option_values | split: '|'
+        assign label = 'products.sorting.sort_by_label' | t
+      -%}
+      {% render 'custom-select',
+        id: 'products-sort-by',
+        label: label,
+        native_name: 'sort_by',
+        native_form_id: 'facets',
+        selected_value: sort_by,
+        option_names: option_names,
+        option_values: option_values
+      %}
+    </div>
+    <script src="{{ 'custom-select.js' | asset_url }}" defer="defer"></script>
+  {%- endif -%}
+
+</products-toolbar>
+
+<hr class="js-hidden">

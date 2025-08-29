@@ -1,0 +1,112 @@
+{%- comment -%}
+  Reusable Spinner Component
+
+  Parameters:
+  - size {String} - Size of the spinner: 'small', 'medium', 'large' (default: 'medium')
+  - color {String} - Color variant: 'primary', 'white', 'dark' (default: 'primary')
+  - class {String} - Additional CSS classes (optional)
+
+  Usage:
+  {% render 'spinner', size: 'medium' %}
+  {% render 'spinner', size: 'large', color: 'white' %}
+  {% render 'spinner', size: 'small', color: 'primary', class: 'my-custom-class' %}
+{%- endcomment -%}
+
+{%- liquid
+  assign spinner_size = size | default: 'medium'
+  assign spinner_color = color | default: 'primary'
+  assign spinner_class = class | default: ''
+-%}
+
+<style>
+  .spinner {
+    display: inline-block;
+    position: relative;
+  }
+
+  .spinner--small {
+    width: 32px;
+    height: 32px;
+  }
+
+  .spinner--medium {
+    width: 48px;
+    height: 48px;
+  }
+
+  .spinner--large {
+    width: 64px;
+    height: 64px;
+  }
+
+  .spinner-ring {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    animation: spinner-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  }
+
+  .spinner--small .spinner-ring {
+    width: 26px;
+    height: 26px;
+    margin: 3px;
+    border-width: 3px;
+  }
+
+  .spinner--medium .spinner-ring {
+    width: 38px;
+    height: 38px;
+    margin: 5px;
+    border-width: 4px;
+  }
+
+  .spinner--large .spinner-ring {
+    width: 51px;
+    height: 51px;
+    margin: 6px;
+    border-width: 6px;
+  }
+
+  /* Color variants */
+  .spinner--primary .spinner-ring {
+    border-color: rgba(var(--color-primary-brand)) transparent transparent transparent;
+  }
+
+  .spinner--white .spinner-ring {
+    border-color: #ffffff transparent transparent transparent;
+  }
+
+  .spinner--dark .spinner-ring {
+    border-color: #333333 transparent transparent transparent;
+  }
+
+  .spinner-ring:nth-child(1) {
+    animation-delay: -0.45s;
+  }
+
+  .spinner-ring:nth-child(2) {
+    animation-delay: -0.3s;
+  }
+
+  .spinner-ring:nth-child(3) {
+    animation-delay: -0.15s;
+  }
+
+  @keyframes spinner-ring {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+</style>
+
+<div class="spinner spinner--{{ spinner_size }} spinner--{{ spinner_color }} {{ spinner_class }}">
+  <div class="spinner-ring"></div>
+  <div class="spinner-ring"></div>
+  <div class="spinner-ring"></div>
+  <div class="spinner-ring"></div>
+</div>
