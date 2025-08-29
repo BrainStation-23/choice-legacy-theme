@@ -161,7 +161,9 @@
         </div>
       </div>
 
-      {% render 'product-form' %}
+      <div style="position: relative; z-index: 2;">
+        {% render 'product-form', product: product %}
+      </div>
     {% else %}
       <!-- Placeholder content -->
       <div class="flex flex-col gap-6">
@@ -203,7 +205,9 @@
               </div>
             {% endif %}
 
-            {% render 'product-form' %}
+            <div style="position: relative; z-index: 2;">
+              {% render 'product-form', product: product %}
+            </div>
           </div>
         </div>
       </div>

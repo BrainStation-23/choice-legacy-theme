@@ -168,15 +168,16 @@
             {{- 'sections.header.account' | t -}}
           </span>
         </a>
-        <a
-          href="{{ routes.cart_url }}"
-          class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4"
+        <button
+          type="button"
+          class="header__icon-link flex items-center no-underline bg-transparent border-none w-auto h-auto text-brand cursor-pointer sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4"
+          onclick="window.CartUtilities.openDrawer()"
         >
           {% render 'cart-icon' %}
           <span class="header__icon-link-title block md:hidden sm:hidden ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
             {{- 'sections.header.cart' | t -}}
           </span>
-        </a>
+        </button>
 
         <div class="header__social-icons flex sm:hidden gap-10">
           <a
