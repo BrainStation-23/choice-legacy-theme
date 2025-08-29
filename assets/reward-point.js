@@ -274,11 +274,6 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const updateCustomerData = (apiResponse) => {
-    if (!apiResponse?.success) {
-      document.querySelector(".reward-container").style.display = "none";
-      return;
-    }
-
     const currentPoints = apiResponse.remainingPoints || 0;
     currentPointsSpan.textContent = currentPoints;
 
@@ -340,7 +335,12 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("orderPointsRule").textContent = finalOrderRule;
     }
 
-    if (apiResponse.history && apiResponse.pagination) {
+    // Only render history if it's for earning tab - avoid calling renderHistoryTable with used tab data
+    if (
+      apiResponse.history &&
+      apiResponse.pagination &&
+      !apiResponse.history.some((item) => item.isUsed)
+    ) {
       renderHistoryTable(apiResponse.history, "earning");
       earningPagination.update(apiResponse.pagination);
       document.querySelector(`[data-tab="earning"]`).classList.add("active");
@@ -405,10 +405,22 @@ document.addEventListener("DOMContentLoaded", () => {
         button.removeEventListener("click", handleRedeemFromCard);
         button.addEventListener("click", applyHandler);
       }
+
+      // Only update current points, don't call updateCustomerData with used tab data
       const latestData = await apiCall(
         `${API_URLS.HISTORY}?historyType=used&page=1`
       );
-      updateCustomerData(latestData);
+
+      // Just update the current points display
+      const currentPoints = latestData.remainingPoints || 0;
+      currentPointsSpan.textContent = currentPoints;
+
+      // If we're currently on the used tab, refresh it
+      const activeTab = document.querySelector(".tab-button.active");
+      if (activeTab && activeTab.getAttribute("data-tab") === "used") {
+        renderHistoryTable(latestData.history, "used");
+        usedPagination.update(latestData.pagination);
+      }
     } catch (error) {
       toastManager.show(`Redemption failed: ${error.message}`, "error");
     } finally {
