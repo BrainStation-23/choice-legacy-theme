@@ -1,7 +1,7 @@
 <!-- Main Address Management Template -->
 <div class="customer-account__container flex flex-row sm:flex-col  gap-64 page-width pt-40 pb-40 sm:pt-16 sm:pb-16 sm:gap-24">
   <div class="">{% render 'customer-account-sidebar' %}</div>
-  <div class="flex flex-col gap-24 sm:w-full">
+  <div class="flex flex-col gap-24 sm:w-full w-full max-w-637">
     <div class="flex gap-24" id="manage-address-heading">
       <h2 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500">
         {{ 'customer.addresses.manage_address' | t }}
@@ -60,7 +60,7 @@
 
     <!-- Add Address Form Container -->
     <div id="add-form-container" style="display: none;">
-      <div id="add-form-wrapper" class="flex flex-col gap-24 sm:w-full">
+      <div id="add-form-wrapper" class="flex flex-col gap-24 w-full max-w-637 sm:w-full">
         <div id="add-form-header" class=" flex sm:flex items-center gap-24 ">
           <div id="add-back-arrow" class="sm:flex-1 cursor-pointer">
             {% render 'icon-left-arrow' %}
@@ -81,9 +81,9 @@
         style="display: none;"
       >
         <!-- Updated Address Edit Form -->
-        <div id="edit-form-wrapper-{{ address.id }}" class="flex flex-col gap-24 sm:w-full">
+        <div id="edit-form-wrapper-{{ address.id }}" class="flex flex-col gap-24 sm:w-full w-full max-w-637">
           <!-- Fixed: Updated edit heading to match manage heading style -->
-          <div id="edit-form-header-{{ address.id }}" class="mb-24 flex sm:flex items-center gap-16">
+          <div id="edit-form-header-{{ address.id }}" class="flex sm:flex items-center gap-16">
             <div id="back-arrow-{{ address.id }}" class="sm:flex-1 cursor-pointer" data-address-id="{{ address.id }}">
               {% render 'icon-left-arrow' %}
             </div>

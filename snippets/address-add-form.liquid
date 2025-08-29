@@ -1,10 +1,10 @@
 {%- form 'customer_address', customer.new_address, aria-labelledBy: 'AddressNewHeading' -%}
   <div class="flex flex-col gap-24">
     <div class="flex gap-8  items-center ">
-      <div id="set-default-address-checkbox-{{ address.id }}">
+      <div id="set-default-address-checkbox-{{ address.id }}" class="flex">
         {{ form.set_as_default_checkbox }}
       </div>
-      <h1 class="ff-general-sans fw-500 fs-16-lh-100pct-ls-0 m-0">
+      <h1 class="ff-general-sans fw-500 fs-16-lh-20-ls-0_1 m-0">
         {{ 'customer.addresses.set_default' | t }}
       </h1>
     </div>
@@ -145,7 +145,7 @@
         value: form.phone,
       %}
     </div>
-    <div class="grid grid-cols-1 gap-16">
+    <div class="grid grid-cols-1 gap-16 max-w-216">
       <button
         type="submit"
         id="save-address-btn-{{ address.id }}"
