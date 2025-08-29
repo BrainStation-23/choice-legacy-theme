@@ -11,7 +11,7 @@
       </button>
     </div>
 
-    <div id="address-list-container" class="grid grid-cols-2  sm:grid-cols-1 gap-24">
+    <div id="address-list-container" class="grid grid-cols-2 md:grid-cols-1 sm:grid-cols-1 gap-24">
       {%- for address in customer.addresses -%}
         <div
           id="address-card-{{ address.id }}"
@@ -61,7 +61,7 @@
     <!-- Add Address Form Container -->
     <div id="add-form-container" style="display: none;">
       <div id="add-form-wrapper" class="flex flex-col gap-24 sm:w-full">
-        <div id="add-form-header" class="mb-24 flex sm:flex items-center gap-16 ">
+        <div id="add-form-header" class=" flex sm:flex items-center gap-24 ">
           <div id="add-back-arrow" class="sm:flex-1 cursor-pointer">
             {% render 'icon-left-arrow' %}
           </div>
