@@ -1205,6 +1205,9 @@ address {
 .h-154 {
   height: 154px;
 }
+.h-116 {
+  height: 116px;
+}
 .h-96 {
   height: 96px;
 }
@@ -1311,6 +1314,9 @@ address {
 .w-578 {
   width: 578px;
 }
+.w-430 {
+  width: 430px;
+}
 .w-375 {
   width: 375px;
 }
@@ -1379,6 +1385,9 @@ address {
 }
 .w-48 {
   width: 48px;
+}
+.w-100 {
+  width: 100px;
 }
 .w-110 {
   width: 110px;
@@ -2159,6 +2168,9 @@ address {
 }
 .p-11 {
   padding: calc(11 * var(--space-unit));
+}
+.p-12 {
+  padding: calc(12 * var(--space-unit));
 }
 .p-14 {
   padding: calc(14 * var(--space-unit));
@@ -3244,6 +3256,11 @@ legend {
 .transition-transform {
   transition: transform 0.3s ease;
 }
+
+.translate-x-full {
+  transform: translateX(100%);
+}
+
 @media screen and (max-width: 768px) {
   .sm\:transition-transform-2s {
     transition: transform 0.2s ease;

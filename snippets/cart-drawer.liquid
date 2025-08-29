@@ -10,9 +10,9 @@
 
 <cart-drawer id="cart-drawer" class="cart-drawer">
   <div class="cart-drawer__overlay"></div>
-  <div class="cart-drawer__inner">
-    <div class="cart-drawer__header">
-      <h2 class="cart-drawer__title">{{ 'sections.cart.title' | t }}</h2>
+  <div class="cart-drawer__inner pt-20 pr-16 pb-20 pl-16 flex flex-col gap-16 absolute top-0 right-0 w-full h-full transition-transform translate-x-full w-430 bg-bg">
+    <div class="cart-drawer__header pb-12 border-top-none border-right-none border-left-none border-b border-solid border-color flex items-center justify-between flex-shrink">
+      <h2 class="cart-drawer__title ff-general-sans fw-400 fs-17-lh-24-ls-0">{{ 'sections.cart.title' | t }} ({{ cart.item_count }})</h2>
       <button class="cart-drawer__close" type="button" aria-label="{{ 'accessibility.close' | t }}">
         {% render 'icon-close' %}
       </button>
@@ -29,25 +29,27 @@
       {% else %}
         <div class="cart-drawer__items">
           {% for item in cart.items %}
-            <div class="cart-drawer__item" id="CartDrawer-Item-{{ item.index | plus: 1 }}">
-              <div class="cart-drawer__item-media">
+            <div class="cart-drawer__item flex gap-16 p-12" id="CartDrawer-Item-{{ item.index | plus: 1 }}">
+              <div class="cart-drawer__item-media media block relative w-100 h-116">
                 {% if item.image %}
-                  <img class="cart-drawer__item-image"
-                    src="{{ item.image | image_url: width: 120 }}"
-                    alt="{{ item.image.alt | escape }}"
-                    loading="lazy"
-                    width="120"
-                    height="{{ 120 | divided_by: item.image.aspect_ratio | ceil }}"
-                  >
+                  {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
+                  {% render 'image',
+                    image: item.image,
+                    widths: '100, 100, 100, 100',
+                    src_width: 100,
+                    sizes: sizes,
+                    class: 'img-fit w-full',
+                    quality: 1
+                  %}
                 {% endif %}
               </div>
 
-              <div class="cart-drawer__item-details">
-                <a href="{{ item.url }}" class="cart-drawer__item-title">
+              <div class="cart-drawer__item-details flex flex-col gap-8">
+                <a href="{{ item.url }}" class="cart-drawer__item-title fw-400 fs-12-lh-16-ls-0_072 text-primary">
                   {{ item.product.title | escape }}
                 </a>
 
-                {% unless item.original_price == item.final_price %}
+                {% comment %} {% unless item.original_price == item.final_price %}
                   <div class="cart-drawer__item-discounts">
                     {% for discount in item.discounts %}
                       <span class="cart-drawer__discount">
@@ -56,9 +58,9 @@
                       </span>
                     {% endfor %}
                   </div>
-                {% endunless %}
+                {% endunless %} {% endcomment %}
 
-                {% if item.product.has_only_default_variant == false or item.properties.size != 0 or item.selling_plan_allocation != null %}
+                {% comment %} {% if item.product.has_only_default_variant == false or item.properties.size != 0 or item.selling_plan_allocation != null %}
                   <dl class="cart-drawer__item-options">
                     {% if item.product.has_only_default_variant == false %}
                       {% for option in item.options_with_values %}
@@ -86,7 +88,7 @@
                       </div>
                     {% endif %}
                   </dl>
-                {% endif %}
+                {% endif %} {% endcomment %}
 
                 <div class="cart-drawer__item-pricing">
                   <div class="cart-drawer__item-price-wrapper">
@@ -103,13 +105,14 @@
                   </div>
                 </div>
 
-                <div class="cart-drawer__item-quantity">
-                  <div class="quantity">
-                    <button class="quantity__button" name="minus" type="button">
+                <div class="cart-drawer__item-quantity flex gap-12 items-center">
+                  <span class="fw-400 fs-12-lh-16-ls-0_072">{{ 'sections.cart.qty' | t }}:</span>
+                  <div class="quantity h-24 flex gap-6 border-top-none border-right-none border-left-none border-bottom border-solid border-color">
+                    <button class="quantity__button bg-transparent border-none" name="minus" type="button">
                       <span class="visually-hidden">{{ 'products.product.quantity.decrease' | t: product: item.product.title | escape }}</span>
                       {% render 'icon-minus' %}
                     </button>
-                    <input class="quantity__input"
+                    <input class="quantity__input bg-transparent border-none p-0 w-auto h-auto"
                       type="number"
                       data-quantity-variant-id="{{ item.variant.id }}"
                       data-index="{{ item.index | plus: 1 }}"
@@ -120,18 +123,18 @@
                       id="Drawer-quantity-{{ item.index | plus: 1 }}"
                       data-index="{{ item.index | plus: 1 }}"
                     >
-                    <button class="quantity__button" name="plus" type="button">
+                    <button class="quantity__button bg-transparent border-none" name="plus" type="button">
                       <span class="visually-hidden">{{ 'products.product.quantity.increase' | t: product: item.product.title | escape }}</span>
                       {% render 'icon-plus' %}
                     </button>
                   </div>
-
-                  <cart-remove-button class="cart-drawer__remove" data-index="{{ item.index | plus: 1 }}">
-                    <button type="button" class="button button--tertiary">
-                      {{ 'sections.cart.remove' | t }}
-                    </button>
-                  </cart-remove-button>
                 </div>
+
+                <cart-remove-button class="cart-drawer__remove" data-index="{{ item.index | plus: 1 }}">
+                  <button type="button" class="button button--tertiary">
+                    {{ 'sections.cart.remove' | t }}
+                  </button>
+                </cart-remove-button>
               </div>
             </div>
           {% endfor %}

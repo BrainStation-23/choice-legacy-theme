@@ -1,8 +1,10 @@
 <product-form class="product-form">
   {%- form 'product', product -%}
     <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-    <button type="submit" name="add" class="button button--outline flex items-center justify-center gap-4">
-      {% render "cart-icon" %}
+    <button type="submit" name="add" class="button button--outline flex items-center justify-center gap-4 w-full">
+      {% if show_icon %}
+        {% render "cart-icon" %}
+      {% endif %}
       {{ 'general.cart.add_to_cart.label' | t }}
     </button>
   {%- endform -%}
