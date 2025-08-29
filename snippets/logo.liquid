@@ -1,20 +1,24 @@
-<a href="{{ routes.root_url }}" class="{{ logo_cls }} inline-block media border relative" style="padding-left: {{ padding_left }}px; padding-bottom: {{ padding_bottom }}px; height: {{ height }}px; width: {{ width }}px;">
+<a
+  href="{{ routes.root_url }}"
+  class="{{ logo_cls }} inline-block media border relative"
+  style=" height: {{ height }}px; width: {{ width }}px;"
+>
   {%- if settings.brand_logo != blank -%}
     {%- capture sizes %}{% render 'sizes-attribute' %}{% endcapture -%}
-        
+
     {% assign logo_width = settings.logo_width | default: 138 %}
 
     {%- capture widths_param -%}
       {{ logo_width }}, {{ logo_width }}, {{ logo_width }}, {{ logo_width }}
     {%- endcapture -%}
 
-    {% render 'image', 
-      image: settings.brand_logo, 
+    {% render 'image',
+      image: settings.brand_logo,
       widths: widths_param,
       src_width: logo_width,
       sizes: sizes,
-      class: 'img-fit {{ cls }}',
-      quality: 1 
+      class: 'img-fit--contain {{ cls }}',
+      quality: 1
     %}
   {%- else -%}
     <span class="header__logo-name fs-21-lh-24-ls-1_2 fw-600 text-brand no-underline">{{ settings.logo_text }}</span>

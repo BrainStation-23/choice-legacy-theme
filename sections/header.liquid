@@ -37,7 +37,7 @@
   /* Mobile Search Focus Styles */
   @media (max-width: 768px) {
     .header--search-focused .header__search--mobile .header__search-form {
-      width: 85% !important;
+      width: 86% !important;
       max-width: none !important;
       position: relative;
       transition: all 0.3s ease, width 0.3s ease;
@@ -99,7 +99,7 @@
             {% render 'icon-close', cls: 'svg-brand', height: 28, width: 28 %}
           </div>
         </button>
-        {% render 'logo', padding_left: 138, padding_bottom: 40, logo_width: 138, logo_cls: 'block sm:hidden' %}
+        {% render 'logo', logo_width: 138, logo_cls: 'flex justify-center items-center sm:hidden' %}
       </div>
 
       <!-- Center Section -->
@@ -109,7 +109,7 @@
           {%- if settings.brand_logo != blank -%}
             {% render 'logo',
               cls: 'w-full h-auto',
-              logo_cls: 'hidden sm:block',
+              logo_cls: 'hidden sm:flex justify-center items-center',
               height: settings.logo_height,
               width: settings.logo_width
             %}
@@ -120,7 +120,7 @@
 
         <!-- Desktop Search -->
         <div class="w-full lg:max-w-250 header__search--desktop block sm:hidden relative mt-0 mb-0 ml-auto mr-auto">
-          <predictive-search id="predictive-search" class="predictive-search">
+          <predictive-search id="predictive-search" class="predictive-search ">
             <form
               action="{{ routes.search_url }}"
               method="get"
