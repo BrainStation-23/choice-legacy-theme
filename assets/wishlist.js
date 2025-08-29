@@ -134,16 +134,16 @@ document.addEventListener("DOMContentLoaded", function () {
     if (e.target.matches(".remove-wishlist-button")) {
       const button = e.target;
       const productHandle = button.dataset.productHandle;
+      const productId = getProductIdFromHandle(productHandle);
       const itemId = button.dataset.itemId;
 
       const toastManager = new ToastNotificationManager();
-      const variantId = null;
 
       button.disabled = true;
       button.textContent = "Removing...";
 
       try {
-        const result = await removeFromWishlist(productHandle, variantId);
+        const result = await removeFromWishlist(productHandle, productId);
 
         if (result.success) {
           toastManager.show("Product removed from wishlist", "success");

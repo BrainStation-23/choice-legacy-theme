@@ -29,7 +29,13 @@ function updateAllWishlistButtons() {
   });
 }
 
-async function addToWishlist(productHandle, variantId = null) {
+// Helper function to get productId from productHandle
+function getProductIdFromHandle(productHandle) {
+  const productDetails = window.allShopifyProducts?.[productHandle];
+  return productDetails?.id || null;
+}
+
+async function addToWishlist(productHandle, productId) {
   const response = await fetch(`/apps/${APP_SUB_PATH}/customer/wishlist/add`, {
     method: "POST",
     headers: {
@@ -37,7 +43,7 @@ async function addToWishlist(productHandle, variantId = null) {
     },
     body: JSON.stringify({
       productHandle: productHandle,
-      variantId: variantId,
+      productId: productId,
     }),
   });
 
@@ -54,14 +60,17 @@ async function addToWishlist(productHandle, variantId = null) {
   return result;
 }
 
-async function removeFromWishlist(productHandle, variantId = null) {
+async function removeFromWishlist(productHandle, productId) {
   try {
     const response = await fetch(
       `/apps/${APP_SUB_PATH}/customer/wishlist/remove`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productHandle, variantId }),
+        body: JSON.stringify({
+          productHandle: productHandle,
+          productId: productId,
+        }),
       }
     );
     const result = await response.json();
@@ -88,10 +97,15 @@ document.addEventListener("DOMContentLoaded", function () {
       e.preventDefault();
       const button = e.target.closest(".wishlist-btn");
       const productHandle = button.dataset.productHandle;
-      const variantId = button.dataset.variantId || null;
+      const productId = getProductIdFromHandle(productHandle);
 
       if (!productHandle) {
         console.error("Product handle not found on the button.");
+        return;
+      }
+
+      if (!productId) {
+        console.error("Product ID not found for handle:", productHandle);
         return;
       }
 
@@ -106,12 +120,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
       try {
         if (window.theme.wishlistHandles.has(productHandle)) {
-          const result = await removeFromWishlist(productHandle, variantId);
+          const result = await removeFromWishlist(productHandle, productId);
           if (result && result.success) {
             window.theme.wishlistHandles.delete(productHandle);
           }
         } else {
-          const result = await addToWishlist(productHandle, variantId);
+          const result = await addToWishlist(productHandle, productId);
           if (result && (result.success || result.alreadyExists)) {
             window.theme.wishlistHandles.add(productHandle);
           }
