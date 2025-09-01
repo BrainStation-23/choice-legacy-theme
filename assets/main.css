@@ -3706,3 +3706,8 @@ tr:last-child td {
 .swiper-notification {
   display: none;
 }
+
+.swiper-button-disabled svg {
+  stroke: #90989c;
+  cursor: not-allowed;
+}

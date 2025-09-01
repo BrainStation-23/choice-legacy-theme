@@ -119,8 +119,11 @@ class SlideshowComponent extends HTMLElement {
     const numberOfItems = parseInt(this.dataset.numberOfItems) || 0;
     const gap = this.dataset.gap ? parseInt(this.dataset.gap) : 16;
 
+    // New data attribute for navigation loop control (default: true)
+    const navLoop = this.dataset.navLoop !== "false";
+
     const swiperOptions = {
-      loop: slideCount > 1, // Only enable loop if more than 1 slide
+      loop: slideCount > 1 && navLoop, // Use navLoop for loop control
       spaceBetween: gap,
       allowTouchMove: slideCount > 1 ? enableCarousel : false, // Disable touch if only 1 slide
       navigation: {
@@ -147,7 +150,7 @@ class SlideshowComponent extends HTMLElement {
           momentum: true,
           sticky: false,
         },
-        loop: false,
+        loop: navLoop, // Use navLoop for carousel loop as well
         watchSlidesProgress: true,
         watchSlidesVisibility: true,
       });
@@ -249,17 +252,30 @@ class SlideshowComponent extends HTMLElement {
     if (!this.swiper) return;
 
     const slideCount = this.querySelectorAll(".swiper-slide").length;
+    const navLoop = this.dataset.navLoop !== "false"; // Get the navLoop setting
 
     if (this.prevButton) {
-      this.prevButton.disabled =
-        slideCount <= 1 ||
-        (this.swiper.isBeginning && !this.swiper.params.loop);
+      if (navLoop) {
+        // Original behavior: disable if 1 slide or at beginning without loop
+        this.prevButton.disabled =
+          slideCount <= 1 ||
+          (this.swiper.isBeginning && !this.swiper.params.loop);
+      } else {
+        // New behavior: disable if 1 slide or at the very beginning (no loop)
+        this.prevButton.disabled = slideCount <= 1 || this.swiper.isBeginning;
+      }
       this.prevButton.setAttribute("aria-disabled", this.prevButton.disabled);
     }
 
     if (this.nextButton) {
-      this.nextButton.disabled =
-        slideCount <= 1 || (this.swiper.isEnd && !this.swiper.params.loop);
+      if (navLoop) {
+        // Original behavior: disable if 1 slide or at end without loop
+        this.nextButton.disabled =
+          slideCount <= 1 || (this.swiper.isEnd && !this.swiper.params.loop);
+      } else {
+        // New behavior: disable if 1 slide or at the very end (no loop)
+        this.nextButton.disabled = slideCount <= 1 || this.swiper.isEnd;
+      }
       this.nextButton.setAttribute("aria-disabled", this.nextButton.disabled);
     }
   }
