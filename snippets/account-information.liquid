@@ -99,8 +99,21 @@
 
       <div class="flex flex-col gap-8">
         <div>
+          {%- assign unwanted_domain = '@choicelegacy.com.bd' -%}
+          {%- assign domain_length = unwanted_domain | size -%}
+          {%- assign customer_email = customer.email | downcase -%}
+          {%- assign email_length = customer_email | size -%}
+          {%- assign start_index = email_length | minus: domain_length -%}
+          {%- assign email_domain = customer_email | slice: start_index, domain_length -%}
+
+          {%- assign email_value = '' -%}
+          {%- if email_domain != unwanted_domain -%}
+            {%- assign email_value = customer.email -%}
+          {%- endif -%}
+
           {%- assign emailLabel = 'customer.account.email' | t -%}
           {%- assign emailPlaceholder = 'customer.account.email' | t -%}
+
           {% render 'input',
             type: 'email',
             id: 'email-input',
@@ -110,7 +123,7 @@
             autocomplete: 'email',
             required: false,
             class: 'w-full',
-            value: customer.email
+            value: email_value
           %}
         </div>
 
@@ -158,18 +171,31 @@
         </p>
 
         <div>
+          {%- assign unwanted_domain = '@choicelegacy.com.bd' -%}
+          {%- assign domain_length = unwanted_domain | size -%}
+          {%- assign email_to_hide = customer.email | downcase -%}
+          {%- assign email_length = email_to_hide | size -%}
+          {%- assign start_index = email_length | minus: domain_length -%}
+          {%- assign email_domain = email_to_hide | slice: start_index, domain_length -%}
+
+          {%- assign email_value = '' -%}
+          {%- if email_domain != unwanted_domain -%}
+            {%- assign email_value = customer.email -%}
+          {%- endif -%}
+
           {%- assign emailLabel = 'customer.account.email' | t -%}
           {%- assign emailPlaceholder = 'customer.account.email' | t -%}
+
           {% render 'input',
             type: 'email',
-            id: 'newEmailInput',
-            name: 'customer[newEmailInput]',
+            id: 'email-input',
+            name: 'customer[email]',
             label: emailLabel,
             placeholder: emailPlaceholder,
             autocomplete: 'email',
             required: false,
             class: 'w-full',
-            value: customer.email
+            value: email_value
           %}
         </div>
 

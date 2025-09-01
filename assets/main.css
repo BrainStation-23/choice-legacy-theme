@@ -2125,6 +2125,16 @@ address {
 .scrollbar-gutter-stable {
   scrollbar-gutter: stable;
 }
+/* Hide scrollbar but keep scrolling */
+.scrollbar-hidden {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.scrollbar-hidden::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
 .border {
   border-width: 1px;
 }
