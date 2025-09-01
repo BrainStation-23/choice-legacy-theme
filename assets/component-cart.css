@@ -456,13 +456,12 @@
 
 /* Focus styles */
 .cart-drawer *:focus {
-  outline: 2px solid rgba(var(--color-foreground), 0.5);
-  outline-offset: 2px;
+  border: none;
 }
 
-.cart-drawer button:focus {
+/* .cart-drawer button:focus {
   outline-offset: 3px;
-}
+} */
 
 /* ====================================== */
 /* Animation Enhancements */

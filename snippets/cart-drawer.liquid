@@ -107,12 +107,12 @@
 
                 <div class="cart-drawer__item-quantity flex gap-12 items-center">
                   <span class="fw-400 fs-12-lh-16-ls-0_072">{{ 'sections.cart.qty' | t }}:</span>
-                  <div class="quantity h-24 flex gap-6 border-top-none border-right-none border-left-none border-bottom border-solid border-color">
-                    <button class="quantity__button bg-transparent border-none" name="minus" type="button">
+                  <div class="quantity w-66 h-24 flex gap-6 border-top-none border-right-none border-left-none border-bottom border-solid border-color">
+                    <button class="quantity__button bg-transparent border-none w-24 h-24" name="minus" type="button">
                       <span class="visually-hidden">{{ 'products.product.quantity.decrease' | t: product: item.product.title | escape }}</span>
-                      {% render 'icon-minus' %}
+                      {% render 'icon-quantity-minus' %}
                     </button>
-                    <input class="quantity__input bg-transparent border-none p-0 w-auto h-auto"
+                    <input class="quantity__input bg-transparent border-none p-0 h-auto"
                       type="number"
                       data-quantity-variant-id="{{ item.variant.id }}"
                       data-index="{{ item.index | plus: 1 }}"
@@ -123,9 +123,9 @@
                       id="Drawer-quantity-{{ item.index | plus: 1 }}"
                       data-index="{{ item.index | plus: 1 }}"
                     >
-                    <button class="quantity__button bg-transparent border-none" name="plus" type="button">
+                    <button class="quantity__button bg-transparent border-none w-24 h-24" name="plus" type="button">
                       <span class="visually-hidden">{{ 'products.product.quantity.increase' | t: product: item.product.title | escape }}</span>
-                      {% render 'icon-plus' %}
+                      {% render 'icon-quantity-plus' %}
                     </button>
                   </div>
                 </div>
