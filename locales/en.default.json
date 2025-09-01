@@ -365,5 +365,10 @@
   },
   "main-category": {
     "title": "Featured Products"
+  },
+  "cart": {
+    "product": {
+      "quantity": {}
+    }
   }
 }
