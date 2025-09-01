@@ -19,6 +19,23 @@ document.addEventListener("DOMContentLoaded", () => {
     return data;
   };
 
+  // New function to update redeem button states based on current points
+  const updateRedeemButtonStates = (currentPoints) => {
+    const redeemButtons = document.querySelectorAll(".redeem-now-button");
+
+    redeemButtons.forEach((button) => {
+      const pointsRequired = parseInt(button.dataset.pointsRequired) || 0;
+
+      if (currentPoints === 0 || currentPoints < pointsRequired) {
+        button.disabled = true;
+        button.classList.add("disabled"); // Add disabled class for styling
+      } else {
+        button.disabled = false;
+        button.classList.remove("disabled");
+      }
+    });
+  };
+
   const fetchHistoryForTab = async (tabType, page = 1) => {
     const tbody = document.getElementById("earning-history-body");
     const mobileView = document.getElementById("history-mobile-view");
@@ -277,6 +294,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentPoints = apiResponse.remainingPoints || 0;
     currentPointsSpan.textContent = currentPoints;
 
+    // Update redeem button states based on current points
+    updateRedeemButtonStates(currentPoints);
+
     const redemptionRulesText = document.getElementById("redemptionRulesText");
     const redemptionRules = apiResponse.configuration?.pointRedemptionRules;
     if (redemptionRulesText && redemptionRules) {
@@ -372,6 +392,10 @@ document.addEventListener("DOMContentLoaded", () => {
       button.removeAttribute("data-discount-code");
       button.removeEventListener("click", applyHandler);
       button.addEventListener("click", handleRedeemFromCard);
+
+      // Re-check button state after iframe loads
+      const currentPoints = parseInt(currentPointsSpan.textContent) || 0;
+      updateRedeemButtonStates(currentPoints);
     };
 
     document.body.appendChild(iframe);
@@ -382,6 +406,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const pointsToRedeem = button.dataset.pointsRequired;
     const customerId = window.customerId;
     if (!customerId) return;
+
+    // Check if user has enough points before proceeding
+    const currentPoints = parseInt(currentPointsSpan.textContent) || 0;
+    if (currentPoints === 0 || currentPoints < parseInt(pointsToRedeem)) {
+      toastManager.show("Insufficient points to redeem this reward.", "error");
+      return;
+    }
 
     const applyHandler = () =>
       handleApplyToCart(button, button.dataset.discountCode, applyHandler);
@@ -411,9 +442,10 @@ document.addEventListener("DOMContentLoaded", () => {
         `${API_URLS.HISTORY}?historyType=used&page=1`
       );
 
-      // Just update the current points display
-      const currentPoints = latestData.remainingPoints || 0;
-      currentPointsSpan.textContent = currentPoints;
+      // Update the current points display and button states
+      const newCurrentPoints = latestData.remainingPoints || 0;
+      currentPointsSpan.textContent = newCurrentPoints;
+      updateRedeemButtonStates(newCurrentPoints);
 
       // If we're currently on the used tab, refresh it
       const activeTab = document.querySelector(".tab-button.active");
@@ -427,6 +459,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!button.dataset.discountCode) {
         button.disabled = false;
         button.textContent = window.rewardPointLocalization.redeemNow;
+
+        // Re-check button state in case of error
+        const currentPoints = parseInt(currentPointsSpan.textContent) || 0;
+        updateRedeemButtonStates(currentPoints);
       }
     }
   };
@@ -456,6 +492,9 @@ document.addEventListener("DOMContentLoaded", () => {
         if (tbody) {
           tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 16px;">Failed to load reward history.</td></tr>`;
         }
+
+        // Disable all redeem buttons on error
+        updateRedeemButtonStates(0);
       });
   }
 
