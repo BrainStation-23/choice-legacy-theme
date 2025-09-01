@@ -1,1 +1,45 @@
-{"sections":{"main":{"type":"main-account","settings":{}}},"order":["main"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-account",
+      "blocks": {
+        "redeem_offer_nAeK4a": {
+          "type": "redeem_offer",
+          "settings": {
+            "points_required": 20
+          }
+        },
+        "redeem_offer_PeMpDx": {
+          "type": "redeem_offer",
+          "settings": {
+            "points_required": 30
+          }
+        },
+        "redeem_offer_naHT48": {
+          "type": "redeem_offer",
+          "settings": {
+            "points_required": 40
+          }
+        }
+      },
+      "block_order": [
+        "redeem_offer_nAeK4a",
+        "redeem_offer_PeMpDx",
+        "redeem_offer_naHT48"
+      ],
+      "settings": {}
+    }
+  },
+  "order": [
+    "main"
+  ]
+}
