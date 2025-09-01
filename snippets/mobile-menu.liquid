@@ -30,11 +30,14 @@
       {%- if section.settings.main_menu != blank -%}
         {%- for link in linklists[section.settings.main_menu].links -%}
           <collapsible-content class="mobile-mega-menu__category block">
-            <div class="mobile-mega-menu__category-header collapsible-trigger flex items-center justify-between cursor-pointer user-select-none" data-collapsible-trigger>
+            <div class="mobile-mega-menu__category-header flex items-center justify-between">
               <a href="{{ link.url }}" class="mobile-mega-menu__category-title ff-bebas-neue fw-400 fs-21-lh-24-ls-1_2pct text-primary uppercase m-0">{{ link.title }}</a>
-              <div class="mobile-mega-menu__category-toggle collapsible-icon w-20 h-20 flex items-center justify-center transition-transform" data-collapsible-icon>
-                {% render 'icon-arrow', cls: 'icon-arrow svg-brand w-12 h-12' %}
-              </div>
+              {% assign undergarments_title = link.title | downcase %}
+              {% unless undergarments_title contains "undergarments" %}
+                <div class="mobile-mega-menu__category-toggle collapsible-trigger collapsible-icon w-20 h-20 flex items-center justify-center cursor-pointer user-select-none transition-transform" data-collapsible-trigger data-collapsible-icon>
+                  {% render 'icon-arrow', cls: 'icon-arrow svg-brand w-12 h-12' %}
+                </div>
+              {% endunless %}
             </div>
             {%- if link.links != blank -%}
               <ul class="mobile-mega-menu__subcategory-list collapsible-content flex flex-col gap-16 list-style-none m-0 p-0 overflow-hidden max-h-0 transition-transform" data-collapsible-content>
