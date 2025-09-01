@@ -1,10 +1,22 @@
 <div class="video video-{{ section.id }} relative pt-0 pb-0">
-  {% if section.settings.video_url != blank or section.settings.youtube_url != blank %}
+  {% if section.settings.video != blank or section.settings.video_url != blank or section.settings.youtube_url != blank %}
     <div class="swiper-slide relative transition-transform h-508 sm:h-180" 
           data-section-id="{{ section.id }}"
           data-section-type="{{ section.type }}">
       
-      {% if section.settings.youtube_url != blank %}
+      {% if section.settings.video != blank %}
+        {{
+          section.settings.video
+          | video_tag:
+            image_size: '1100x',
+            autoplay: section.settings.autoplay,
+            loop: section.settings.loop,
+            controls: section.settings.controls,
+            muted: section.settings.muted,
+            class: 'img-fit'
+        }}
+        
+      {% elsif section.settings.youtube_url != blank %}
         {%- liquid
           assign youtube_id = section.settings.youtube_url | split: 'watch?v=' | last | split: '&' | first
           if youtube_id == section.settings.youtube_url
@@ -64,6 +76,12 @@
       "content": "Video Settings"
     },
     {
+      "type": "video",
+      "id": "video",
+      "label": "Upload Video File",
+      "info": "Upload a video file directly to Shopify"
+    },
+    {
       "type": "text",
       "id": "video_url",
       "label": "Direct Video URL",
@@ -76,33 +94,39 @@
       "info": "Enter a YouTube video URL. Example: https://www.youtube.com/watch?v=VIDEO_ID"
     },
     {
+      "type": "text",
+      "id": "description",
+      "label": "Video description",
+      "info": "Describe the video for screen readers and other assistive technologies"
+    },
+    {
       "type": "header",
       "content": "Video Playback Settings"
     },
     {
       "type": "checkbox",
       "id": "autoplay",
-      "label": "Autoplay video (Direct videos only)",
+      "label": "Autoplay video (Uploaded and Direct videos only)",
       "default": false,
       "info": "Note: Most browsers require muted autoplay"
     },
     {
       "type": "checkbox",
       "id": "muted",
-      "label": "Mute video (Direct videos only)",
+      "label": "Mute video (Uploaded and Direct videos only)",
       "default": true,
       "info": "Required for autoplay in most browsers"
     },
     {
       "type": "checkbox",
       "id": "loop",
-      "label": "Loop video (Direct videos only)",
+      "label": "Loop video (Uploaded and Direct videos only)",
       "default": false
     },
     {
       "type": "checkbox",
       "id": "controls",
-      "label": "Show video controls (Direct videos only)",
+      "label": "Show video controls (Uploaded and Direct videos only)",
       "default": true
     }
   ],
