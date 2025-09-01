@@ -1,142 +1,235 @@
 <style>
-  /* .h-captcha {
+  .h-captcha {
     display: none;
-  } */
+  }
+  .field-message {
+    display: none;
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .field-message.show {
+    display: flex;
+    align-items: center;
+  }
+  .response-message {
+    display: none;
+  }
+  .response-message.show {
+    display: flex;
+    align-items: center;
+  }
 </style>
 
-<div class=" w-full flex justify-center pt-48 pb-88">
-  <!-- LOGIN FORM -->
-  <div id="login" class=" flex gap-32  flex-col min-w-406  ">
-    <div class=" gap-8 flex flex-col items-center">
-      <h1 class=" ff-bebas-neue fs-36-lh-40-ls-0 fw-400 uppercase">{{ 'customer.login.title' | t }}</h1>
-      <div class="  flex gap-12 items-center flex-row justify-center">
-        <h2 class="ff-general-sans fs-16-lh-22-ls-0 fw-600">
-          {{ 'customer.login.new_customer' | t }}
-        </h2>
-        <a
-          href="{{ routes.account_register_url }}"
-          class="ff-general-sans fs-14-lh-100pct-ls-0 fw-600 no-underline text-brand "
-        >
-          {{ 'customer.login.create_account' | t -}}
-        </a>
-      </div>
-    </div>
-    <div class=" flex  gap-16 flex-col">
-      {%- form 'customer_login', novalidate: 'novalidate', class: 'login-submit-form flex flex-col gap-16' -%}
-        {%- if form.errors -%}
-          <div class="alert alert-error" tabindex="-1" autofocus>
-            {{ form.errors | default_errors }}
-          </div>
-        {%- endif -%}
-
-        <!-- Hidden Email Field -->
-        <div class=" hidden">
-          <input
-            type="email"
-            class="form-input"
-            id="customer-email"
-            name="customer[email]"
-            autocomplete="email"
-            {%- if form.errors contains 'form' %}
-              aria-invalid="true"
-            {%- endif %}
-            aria-required="true"
-            required
-          >
-        </div>
-        {%- assign phoneLabel = 'customer.login.phone' | t -%}
-        {%- assign placeholder = 'customer.login.phone' | t -%}
-
-        {%
-          render 'input',
-          type: 'number',
-          id: 'customer-phone',
-          name: 'customer[phone]',
-          label: phoneLabel,
-          placeholder: placeholder,
-          autocomplete: 'tel',
-          required: true,
-          class: 'login-input-phone-field',
-          invalid: form.errors contains 'form'
-        %}
-
-        <!-- Password Field -->
-        {%- if form.password_needed -%}
-          {%- assign passwordLabel = 'customer.login.password' | t -%}
-          {%- assign passwordPlaceholder = 'customer.login.password' | t -%}
-
-          {%
-            render 'input',
-            type: 'password',
-            id: 'customer-password',
-            name: 'customer[password]',
-            label: passwordLabel,
-            placeholder: passwordPlaceholder,
-            required: true,
-            class: '',
-            invalid: form.errors contains 'form'
-          %}
-        {%- endif -%}
-        <div>
+<div class="w-full pt-48 pb-88 sm:pt-16 sm:pb-16 page-width">
+  <div class="flex justify-center">
+    <!-- LOGIN FORM -->
+    <div id="login" class="flex flex-col gap-32 w-full max-w-374">
+      <div class="gap-8 flex flex-col items-center">
+        <h1 class="ff-bebas-neue fs-36-lh-40-ls-0 fw-400 uppercase">
+          {{ 'customer.login.title' | t }}
+        </h1>
+        <div class="flex gap-12 items-center flex-row justify-center">
+          <h2 class="ff-general-sans fs-16-lh-22-ls-0 fw-600">
+            {{ 'customer.login.new_customer' | t }}
+          </h2>
           <a
-            class="forgot-password js-recover fs-14-lh-100pct-ls-0 fw-600 ff-general-sans no-underline text-brand "
-            href="#recover"
+            href="{{ routes.account_register_url }}"
+            class="ff-general-sans fs-14-lh-100pct-ls-0 fw-600 no-underline text-brand"
           >
-            {{ 'customer.login.forgot_password' | t }}
+            {{ 'customer.login.create_account' | t }}
           </a>
         </div>
-      {%- endform -%}
+      </div>
 
-      <!-- External Login Button -->
-      <button
-        id="login-submit-button-external"
-        class=" button--solid  border-none rounded-6  cursor-pointer pt-18 pb-18 pl-10 pr-10 ff-general-sans fs-14-lh-100pct-ls-0 fw-600"
-      >
-        {{ 'customer.login.sign_in' | t }}
-      </button>
+      <div class="flex gap-16 flex-col">
+        {%- form 'customer_login', novalidate: 'novalidate', class: 'login-submit-form flex flex-col gap-16' -%}
+          {%- comment -%} Hide default form errors - will be handled by toast notifications {%- endcomment -%}
+          {% comment %}
+            {%- if form.errors -%}
+              <div class="alert alert-error" tabindex="-1" autofocus>
+                {{ form.errors | default_errors }}
+              </div>
+            {%- endif -%}
+          {% endcomment %}
+          {% comment %} {% render 'toast' %} {% endcomment %}
+          <!-- Hidden Email Field -->
+          <div class="hidden">
+            <input
+              type="email"
+              class="form-input"
+              id="customer-email"
+              name="customer[email]"
+              autocomplete="email"
+              {%- if form.errors contains 'form' %}
+                aria-invalid="true"
+              {%- endif %}
+              aria-required="true"
+              required
+            >
+          </div>
+
+          <!-- Phone Field -->
+          {%- assign phoneLabel = 'customer.login.phone' | t -%}
+          {%- assign phonePlaceholder = 'customer.login.phone' | t -%}
+          <div>
+            {%
+              render 'input',
+              type: 'tel',
+              id: 'customer-phone',
+              name: 'customer[phone]',
+              label: phoneLabel,
+              placeholder: phonePlaceholder,
+              autocomplete: 'tel',
+              required: true,
+              class: 'login-input-phone-field',
+              invalid: form.errors contains 'form'
+            %}
+            <div id="phone-message" class="field-message ff-general-sans"></div>
+          </div>
+
+          <!-- Password Field -->
+          {%- if form.password_needed -%}
+            {%- assign passwordLabel = 'customer.login.password' | t -%}
+            {%- assign passwordPlaceholder = 'customer.login.password' | t -%}
+            <div>
+              {%
+                render 'input',
+                type: 'password',
+                id: 'customer-password',
+                name: 'customer[password]',
+                label: passwordLabel,
+                placeholder: passwordPlaceholder,
+                required: true,
+                class: '',
+                invalid: form.errors contains 'form'
+              %}
+              <div id="password-message" class="field-message ff-general-sans"></div>
+            </div>
+          {%- endif -%}
+
+          <!-- Forgot Password Link -->
+          <div>
+            <a
+              class="forgot-password js-recover fs-14-lh-100pct-ls-0 fw-600 ff-general-sans no-underline text-brand"
+              href="#recover"
+            >
+              {{ 'customer.login.forgot_password' | t }}
+            </a>
+          </div>
+        {%- endform -%}
+
+        <!-- External Login Button -->
+        <button
+          id="login-submit-button-external"
+          class="button--solid border-none rounded-6 cursor-pointer pt-18 pb-18 pl-10 pr-10 ff-general-sans fs-14-lh-100pct-ls-0 fw-600"
+        >
+          {{ 'customer.login.sign_in' | t }}
+        </button>
+
+        <!-- Response Message -->
+        <div id="response-message" class="response-message fs-14 ff-general-sans fw-600 text-center"></div>
+      </div>
     </div>
-  </div>
 
-  <div id="forgot-password-section" class="hidden">
-    {% render 'forgot-password' %}
+    <!-- Forgot Password Section -->
+    <div id="forgot-password-section" class="hidden w-full max-w-374">
+      {% render 'forgot-password' %}
+    </div>
   </div>
 </div>
 
+<script src="{{ 'password-toggle.js' | asset_url }}" defer></script>
+
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const passwordToggles = document.querySelectorAll('.toggle-password');
+    const toastManager = new ToastNotificationManager();
+    // Make toast manager globally available for forgot password
+    window.globalToastManager = toastManager;
 
-    passwordToggles.forEach((toggle) => {
-      toggle.addEventListener('click', function () {
-        const targetId = this.getAttribute('data-target');
-        const passwordInput = document.getElementById(targetId);
-        const openEye = passwordInput.parentElement.querySelector('.password-toggle-eye-open');
-        const closeEye = passwordInput.parentElement.querySelector('.password-toggle-eye-close');
-
-        if (passwordInput.type === 'password') {
-          // Show password
-          passwordInput.type = 'text';
-          openEye.style.display = 'none';
-          closeEye.style.display = 'flex';
-        } else {
-          // Hide password
-          passwordInput.type = 'password';
-          closeEye.style.display = 'none';
-          openEye.style.display = 'flex';
-        }
-      });
-    });
-
+    // DOM Elements
     const loginForm = document.getElementById('login');
     const forgotPasswordSection = document.getElementById('forgot-password-section');
     const phoneInput = document.getElementById('customer-phone');
     const emailInput = document.getElementById('customer-email');
+    const passwordInput = document.getElementById('customer-password');
     const loginButtonExternal = document.getElementById('login-submit-button-external');
     const loginSubmitForm = document.querySelector('.login-submit-form');
+    const responseMessage = document.getElementById('response-message');
+    const phoneMessage = document.getElementById('phone-message');
+    const passwordMessage = document.getElementById('password-message');
 
     const API_BASE_URL = `/apps/${APP_SUB_PATH}/customer/account`;
 
-    // Toggle between login and forgot password
+    // Validation Functions
+    function validatePhoneNumber(phone) {
+      let cleaned = phone.replace(/[\s-]/g, '');
+
+      if (cleaned.startsWith('+88')) {
+        cleaned = cleaned.substring(3);
+      } else if (cleaned.startsWith('88')) {
+        cleaned = cleaned.substring(2);
+      }
+
+      return /^01\d{9}$/.test(cleaned);
+    }
+
+    function cleanPhoneNumber(phone) {
+      let cleaned = phone.replace(/[\s-]/g, '');
+      return cleaned.startsWith('+88') ? cleaned : '+88' + cleaned;
+    }
+
+    // Message Display Functions
+    function showFieldMessage(messageElement, message, type) {
+      messageElement.textContent = message;
+      messageElement.className = `field-message ${type} show ff-general-sans`;
+    }
+
+    function hideFieldMessage(messageElement) {
+      messageElement.className = 'field-message ff-general-sans';
+    }
+
+    function showResponseMessage(message, type) {
+      responseMessage.textContent = message;
+      responseMessage.className = `response-message ${type} show`;
+    }
+
+    function hideAllMessages() {
+      hideFieldMessage(phoneMessage);
+      if (passwordMessage) hideFieldMessage(passwordMessage);
+      responseMessage.className = 'response-message fs-14 ff-general-sans fw-600 text-center';
+    }
+
+    function displayServerErrors(errors) {
+      hideAllMessages();
+
+      if (errors.phone) {
+        showFieldMessage(phoneMessage, errors.phone, 'error-text');
+      }
+      if (errors.password && passwordMessage) {
+        showFieldMessage(passwordMessage, errors.password, 'error-text');
+      }
+      if (errors.general) {
+        showResponseMessage(errors.general, 'error-text');
+      }
+    }
+
+    // Event Listeners for Input Field Clearing
+    phoneInput.addEventListener('input', () => {
+      if (phoneMessage.classList.contains('error-text')) {
+        hideFieldMessage(phoneMessage);
+      }
+    });
+
+    if (passwordInput) {
+      passwordInput.addEventListener('input', () => {
+        if (passwordMessage && passwordMessage.classList.contains('error-text')) {
+          hideFieldMessage(passwordMessage);
+        }
+      });
+    }
+
+    // Form Toggle Functions
     function toggleForms(showForgotPassword) {
       if (showForgotPassword) {
         loginForm.classList.add('hidden');
@@ -147,7 +240,7 @@
       }
     }
 
-    // Handle forgot password link click
+    // Navigation Event Handlers
     document.addEventListener('click', (e) => {
       if (e.target.classList.contains('js-recover')) {
         e.preventDefault();
@@ -156,7 +249,6 @@
       }
     });
 
-    // Handle back to login (this will work with the forgot password form's back link)
     document.addEventListener('click', (e) => {
       if (e.target.classList.contains('js-login')) {
         e.preventDefault();
@@ -165,30 +257,65 @@
       }
     });
 
-    // Check URL hash on page load
-    if (window.location.hash === '#recover') {
-      toggleForms(true);
-    }
-
-    // External Login
+    // External Login Handler
     if (loginButtonExternal) {
       loginButtonExternal.addEventListener('click', async () => {
-        const phone = phoneInput ? phoneInput.value.trim() : '';
-        try {
-          const response = await fetch(`${API_BASE_URL}/login/+88${phone}`);
-          const data = await response.json();
+        hideAllMessages();
+        let hasError = false;
 
-          if (!response.ok) {
-            alert('Login failed: ' + (data.message || 'Unknown error'));
-            throw new Error(data.message || 'Login failed');
+        const phoneNumber = phoneInput ? phoneInput.value.trim() : '';
+
+        // Client-side validation
+        if (!phoneNumber) {
+          showFieldMessage(phoneMessage, 'Phone number is required.', 'error-text');
+          hasError = true;
+        } else if (!validatePhoneNumber(phoneNumber)) {
+          showFieldMessage(phoneMessage, 'Enter valid Bangladesh phone number.', 'error-text');
+          hasError = true;
+        }
+
+        if (passwordInput && !passwordInput.value) {
+          if (passwordMessage) {
+            showFieldMessage(passwordMessage, 'Password is required.', 'error-text');
           }
+          hasError = true;
+        }
 
-          if (data.email) {
+        if (hasError) return;
+
+        const cleanedPhone = cleanPhoneNumber(phoneNumber);
+
+        // Disable button and show loading state
+        loginButtonExternal.disabled = true;
+        const originalText = loginButtonExternal.textContent;
+        loginButtonExternal.textContent = 'Signing In...';
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/login/${cleanedPhone}`);
+          const data = await response.json();
+          console.log('data', data);
+          if (data.success && data.email) {
             emailInput.value = data.email;
             loginSubmitForm.submit();
+            // if error not ocure after submit the form then open toast loginSubmitForm.submit() is oke
+          } else {
+            toastManager.show(data.message, 'error');
           }
         } catch (error) {
-          console.error('Error:', error);
+          console.log('Login error:', error);
+
+          // Only show generic error if no specific error was already shown
+          if (
+            !phoneMessage.classList.contains('show') &&
+            (!passwordMessage || !passwordMessage.classList.contains('show')) &&
+            !responseMessage.classList.contains('show')
+          ) {
+            toastManager.show('Login failed. Please try again.', 'error');
+          }
+        } finally {
+          // Re-enable button and restore original text
+          loginButtonExternal.disabled = false;
+          loginButtonExternal.textContent = originalText;
         }
       });
     }

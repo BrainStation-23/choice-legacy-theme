@@ -1,6 +1,6 @@
 <style>
   .customer-account__sidebar-item:hover {
-    border-bottom: 1px solid rgb(var(--color-primary-brand));
+    border-bottom-color: rgb(var(--color-primary-brand));
     cursor: pointer;
     color: rgb(var(--color-primary-brand));
   }
@@ -64,7 +64,7 @@
   >
     <ul class="customer-account__sidebar-items m-0 p-0 list-style-none">
       <div
-        class="customer-account__sidebar-item  my-profile gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct sm:hidden sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
+        class="customer-account__sidebar-item  my-profile gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:hidden sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
         data-tab="my-profile"
         onclick="selectItem(this, 'accounts-icon', '{{ 'customer.account.myaccount' | t }}', 'my-profile')"
       >
@@ -74,7 +74,7 @@
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8  flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        class="customer-account__sidebar-item gap-8  flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
         data-tab="my-beauties-profile"
         onclick="selectItem(this, 'brash-icon', '{{ 'customer.account.my_beauties_profile' | t }}', 'my_beauties_profile')"
       >
@@ -85,7 +85,7 @@
       </div>
 
       <div
-        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0  sm:p-16 text-primary-90pct sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 border-b-2 border-b-solid border-color-transparent  sm:p-16 text-primary-90pct sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
         data-tab="orders"
         onclick="selectItem(this, 'order-menu-icon', '{{ 'customer.account.orders' | t }}', 'orders')"
       >
@@ -95,7 +95,7 @@
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
         data-tab="addresses"
         onclick="selectItem(this, 'address-icon', '{{ 'customer.account.addresses' | t }}', 'addresses')"
       >
@@ -105,7 +105,7 @@
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
         data-tab="rewards"
         onclick="selectItem(this, 'reward-icon', '{{ 'customer.account.rewards' | t }}', 'rewards')"
       >
@@ -115,7 +115,7 @@
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
         data-tab="wishlist"
         onclick="selectItem(this, 'love-icon', '{{ 'customer.account.wishlist' | t }}', 'wishlist')"
       >
@@ -125,7 +125,7 @@
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
         data-tab="reviews"
         onclick="selectItem(this, 'star-icon', '{{ 'customer.account.reviews' | t }}', 'reviews')"
       >
@@ -135,7 +135,7 @@
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
         data-tab="logout"
         onclick="selectItem(this, 'logout-icon', '{{ 'customer.account.logout' | t }}', 'logout')"
       >

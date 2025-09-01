@@ -114,6 +114,7 @@ mark {
 .text-bg {
   color: rgb(var(--color-background));
 }
+
 .text-primary {
   color: rgb(var(--color-primary-text));
 }
@@ -990,6 +991,9 @@ address {
   .sm\:z-100 {
     z-index: 100;
   }
+  .sm\:z-10000 {
+    z-index: 10000;
+  }
 }
 .block {
   display: block;
@@ -1449,8 +1453,12 @@ address {
 .max-w-120 {
   max-width: 120px;
 }
-.min-w-406 {
-  min-width: 406px;
+.max-w-406 {
+  max-width: 406px;
+}
+
+.max-w-374 {
+  max-width: 374px;
 }
 .min-w-285 {
   min-width: 285px;
@@ -1507,6 +1515,15 @@ address {
 @media screen and (min-width: 1024px) and (max-width: 1439px) {
   .lg\:w-full {
     width: 100%;
+  }
+  .lg\:max-w-200 {
+    max-width: 200px;
+  }
+  .lg\:max-w-250 {
+    max-width: 250px;
+  }
+  .lg\:flex-auto {
+    flex: auto !important;
   }
 
   .lg\:w-800 {
@@ -3256,14 +3273,12 @@ legend {
   content: " *";
 }
 
-.transition-transform {
-  transition: transform 0.3s ease;
-}
-
 .translate-x-full {
   transform: translateX(100%);
 }
-
+.transition-transform {
+  transition: transform 0.3s ease;
+}
 @media screen and (max-width: 768px) {
   .sm\:transition-transform-2s {
     transition: transform 0.2s ease;
@@ -3320,6 +3335,11 @@ select {
   line-height: 1.2em;
 }
 
+textarea:focus + label,
+textarea:not(:placeholder-shown) + label {
+  top: 16px;
+}
+
 input:focus + label,
 input:not(:placeholder-shown) + label,
 textarea:focus + label,
@@ -3330,11 +3350,6 @@ textarea:not(:placeholder-shown) + label {
   transform: translateY(0);
   color: rgb(var(--color-primary-text)) !important;
   font-weight: 500;
-}
-
-textarea:focus + label,
-textarea:not(:placeholder-shown) + label {
-  top: 16px;
 }
 
 input:focus,

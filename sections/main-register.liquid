@@ -2,220 +2,153 @@
   .h-captcha {
     display: none;
   }
-
+  .field-message {
+    display: none;
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .field-message.show {
+    display: flex;
+    align-items: center;
+  }
   .response-message {
     display: none;
   }
-
-  .response-message.success {
-    color: #363;
-  }
-
-  .response-message.error {
-    color: #c33;
-  }
-
   .response-message.show {
-    display: block;
-    text-align: center;
+    display: flex;
+    align-items: center;
   }
 </style>
 
-<div class="w-full flex justify-center pt-14 pb-12">
-  <div id="register" class=" flex flex-col  gap-32  min-w-406">
+<div class="w-full flex justify-center pt-48 pb-88 sm:pt-16 sm:pb-16 page-width">
+  <div id="register" class=" flex flex-col gap-32 max-w-374">
     <div class="flex flex-col gap-8 text-center">
       <h1 class=" ff-bebas-neue fs-36-lh-40-ls-0 fw-400 uppercase">
         {{ 'customer.register.title' | t }}
       </h1>
-      <div class="flex items-center flex-row justify-center gap-12">
-        <h2 class="ff-general-sans fs-16-lh-24-ls-0 fw-400">
-          {{ 'customer.register.subtitle' | t }}
-        </h2>
-      </div>
     </div>
 
     <div class=" flex flex-col gap-16">
       {%- form 'create_customer', class: 'register-submit-form flex flex-col gap-16', novalidate: 'novalidate' -%}
-        {%- if form.errors -%}
-          <div class="alert alert-error" tabindex="-1" autofocus>
-            <h2>{{ 'customer.register.error_heading' | t }}</h2>
-            <ul>
-              {%- for field in form.errors -%}
-                <li>
-                  {%- if field == 'form' -%}
-                    {{ form.errors.messages[field] }}
-                  {%- else -%}
-                    {{ form.errors.translated_fields[field] | capitalize }}
-                    {{ form.errors.messages[field] }}
-                  {%- endif -%}
-                </li>
-              {%- endfor -%}
-            </ul>
+        <!-- First & Last Name -->
+        <div class="flex gap-16 sm:flex-col">
+          <div class="flex-1">
+            {% render 'input',
+              type: 'text',
+              id: 'customer-first-name',
+              name: 'customer[first_name]',
+              label: 'First Name',
+              placeholder: 'First Name',
+              autocomplete: 'given-name',
+              required: true
+            %}
+            <div id="first-name-message" class="field-message ff-general-sans"></div>
           </div>
-        {%- endif -%}
+          <div class="flex-1">
+            {% render 'input',
+              type: 'text',
+              id: 'customer-last-name',
+              name: 'customer[last_name]',
+              label: 'Last Name',
+              placeholder: 'Last Name',
+              autocomplete: 'family-name',
+              required: true
+            %}
+            <div id="last-name-message" class="field-message ff-general-sans"></div>
+          </div>
+        </div>
 
-        <!-- First Name -->
-        {%- assign firstNameLabel = 'customer.register.first_name' | t -%}
-        {%- assign firstNamePlaceholder = 'customer.register.first_name' | t -%}
-        {%
-          render 'input',
-          type: 'text',
-          id: 'customer-first-name',
-          name: 'customer[first_name]',
-          label: firstNameLabel,
-          placeholder: firstNamePlaceholder,
-          autocomplete: 'given-name',
-          required: true,
-          class: '',
-          invalid: form.errors contains 'first_name',
-          value: form.first_name
-        %}
-
-        <!-- Last Name -->
-        {%- assign lastNameLabel = 'customer.register.last_name' | t -%}
-        {%- assign lastNamePlaceholder = 'customer.register.last_name' | t -%}
-        {%
-          render 'input',
-          type: 'text',
-          id: 'customer-last-name',
-          name: 'customer[last_name]',
-          label: lastNameLabel,
-          placeholder: lastNamePlaceholder,
-          autocomplete: 'family-name',
-          required: true,
-          class: '',
-          invalid: form.errors contains 'last_name',
-          value: form.last_name
-        %}
-
-        <!-- Phone Number -->
+        <!-- Phone + OTP -->
         <div class=" flex gap-16">
           {% assign phoneLabel = 'customer.register.phone' | t -%}
           {% assign phonePlaceholder = 'customer.register.phone_placeholder' | t -%}
           <div class="phone-input-wrapper gap-16 flex-1 ">
-            {%
-              render 'input',
-              type: 'tel',
-              id: 'customer-phone',
-              name: 'customer[phone]',
-              label: phoneLabel,
-              placeholder: phonePlaceholder,
-              autocomplete: 'tel',
-              required: true,
-              class: '',
-              invalid: form.errors contains 'phone',
-              value: form.phone
-            %}
+            {% render 'input', type: 'tel', id: 'customer-phone', name: 'customer[phone]', label: phoneLabel, placeholder: phonePlaceholder, autocomplete: 'tel', required: true, class: '', invalid: form.errors contains 'phone', value: form.phone %}
           </div>
           <button
             type="button"
             id="send-otp-button"
-            class="button--solid  border-none rounded-6 cursor-pointer  ff-general-sans fs-14-lh-100pct-ls-0 fw-600"
+            class="button--solid border-none rounded-6 cursor-pointer ff-general-sans fs-14-lh-100pct-ls-0 fw-600"
           >
             {{ 'customer.register.send_otp' | t }}
           </button>
         </div>
+        <div id="phone-message" class="field-message ff-general-sans"></div>
 
         {% render 'otp-input' %}
+        <div id="otp-message" class="field-message ff-general-sans"></div>
 
         <!-- Email -->
-        {%- assign emailLabel = 'customer.register.email' | t -%}
-        {%- assign emailPlaceholder = 'example@gmail.com' -%}
-        {%
-          render 'input',
-          type: 'email',
-          id: 'customer-email',
-          name: 'customer[email]',
-          label: emailLabel,
-          placeholder: emailPlaceholder,
-          autocomplete: 'email',
-          required: false,
-          class: '',
-          invalid: form.errors contains 'email',
-          value: form.email
-        %}
+        <div>
+          {% render 'input',
+            type: 'email',
+            id: 'customer-email',
+            name: 'customer[email]',
+            label: 'Email',
+            placeholder: 'example@gmail.com',
+            autocomplete: 'email'
+          %}
+          <div id="email-message" class="field-message ff-general-sans"></div>
+        </div>
 
         <!-- Password -->
-        {%- assign passwordLabel = 'customer.register.password' | t -%}
-        {%- assign passwordPlaceholder = 'customer.register.password' | t -%}
-        {%
-          render 'input',
-          type: 'password',
-          id: 'customer-password',
-          name: 'customer[password]',
-          label: passwordLabel,
-          placeholder: passwordPlaceholder,
-          autocomplete: 'new-password',
-          required: true,
-          class: '',
-          invalid: form.errors contains 'password'
-        %}
+        <div>
+          {% render 'input',
+            type: 'password',
+            id: 'customer-password',
+            name: 'customer[password]',
+            label: 'Password',
+            placeholder: 'Password',
+            autocomplete: 'new-password',
+            required: true
+          %}
+          <div id="password-message" class="field-message ff-general-sans"></div>
+        </div>
 
         <!-- Confirm Password -->
-        {% render 'input',
-          type: 'password',
-          id: 'customer-confirm-password',
-          name: 'customer[password_confirmation]',
-          label: 'Confirm Password',
-          placeholder: 'Confirm Password',
-          autocomplete: 'new-password',
-          required: true,
-          class: ''
-        %}
+        <div>
+          {% render 'input',
+            type: 'password',
+            id: 'customer-confirm-password',
+            name: 'customer[password_confirmation]',
+            label: 'Confirm Password',
+            placeholder: 'Confirm Password',
+            autocomplete: 'new-password',
+            required: true
+          %}
+          <div id="confirm-password-message" class="field-message ff-general-sans"></div>
+        </div>
       {%- endform -%}
 
       <!-- External Register Button -->
       <button
         id="register-submit-button-external"
-        class=" button--solid  border-none rounded-6 cursor-pointer  ff-general-sans fs-14-lh-100pct-ls-0 fw-600 pt-18 pb-18 pl-10 pr-10"
+        class="button--solid border-none rounded-6 ff-general-sans fs-14 fw-600"
       >
         {{ 'customer.register.submit' | t }}
       </button>
-
-      <!-- Response Message -->
-      <div
-        id="response-message"
-        class="response-message pt-12 pb-16 rounded-8 mt-16 fs-14-lh-20-ls-0_1 ff-general-sans fw-600 text-center"
-      ></div>
-
       <div class="text-brand text-center">
         <a
           href="{{ routes.account_login_url }} "
           class="ff-general-sans fs-14-lh-100pct-ls-0 fw-600 text-brand no-underline"
-          aria-label="{{ 'customer.register.log_in' | t  }}"
+          aria-label="{{ 'customer.register.log_in' | t }}"
         >
           {{ 'customer.register.log_in' | t }}
         </a>
       </div>
+
+      <!-- Response -->
+      <div id="response-message" class="response-message fs-14 ff-general-sans fw-600 text-center"></div>
     </div>
   </div>
 </div>
+<script src="{{ 'password-toggle.js' | asset_url }}" defer></script>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    // Password toggles
-    const passwordToggles = document.querySelectorAll('.toggle-password');
+    const toastManager = new ToastNotificationManager();
 
-    passwordToggles.forEach((toggle) => {
-      toggle.addEventListener('click', function () {
-        const targetId = this.getAttribute('data-target');
-        const passwordInput = document.getElementById(targetId);
-        const openEye = passwordInput.parentElement.querySelector('.password-toggle-eye-open');
-        const closeEye = passwordInput.parentElement.querySelector('.password-toggle-eye-close');
-
-        if (passwordInput.type === 'password') {
-          passwordInput.type = 'text';
-          if (openEye) openEye.style.display = 'none';
-          if (closeEye) closeEye.style.display = 'flex';
-        } else {
-          passwordInput.type = 'password';
-          if (closeEye) closeEye.style.display = 'none';
-          if (openEye) openEye.style.display = 'flex';
-        }
-      });
-    });
-
-    // Form elements
     const firstNameInput = document.getElementById('customer-first-name');
     const lastNameInput = document.getElementById('customer-last-name');
     const phoneInput = document.getElementById('customer-phone');
@@ -223,332 +156,246 @@
     const passwordInput = document.getElementById('customer-password');
     const confirmPasswordInput = document.getElementById('customer-confirm-password');
     const sendOtpButton = document.getElementById('send-otp-button');
-    const otpContainer = document.getElementById('otp-container');
-    const otpMessage = document.getElementById('otp-message');
     const registerButton = document.getElementById('register-submit-button-external');
-    const registerForm = document.querySelector('.register-submit-form');
-    const otpDigits = document.querySelectorAll('.otp-digit');
-    const otpHiddenInput = document.getElementById('customer-otp-hidden');
     const responseMessage = document.getElementById('response-message');
 
-    const API_BASE_URL = `/apps/${APP_SUB_PATH}/customer/account`;
+    // Message elements
+    const firstNameMessage = document.getElementById('first-name-message');
+    const lastNameMessage = document.getElementById('last-name-message');
+    const phoneMessage = document.getElementById('phone-message');
+    const otpMessage = document.getElementById('otp-message');
+    const emailMessage = document.getElementById('email-message');
+    const passwordMessage = document.getElementById('password-message');
+    const confirmPasswordMessage = document.getElementById('confirm-password-message');
 
+    const { otpContainer, showMessage, clearOtpInputs, getOtpValue } = window.otpUtils;
+    const API_BASE_URL = `/apps/${APP_SUB_PATH}/customer/account`;
     let isOtpSent = false;
 
-    // Phone validation - now accepts both formats
     function validatePhoneNumber(phone) {
-      if (!phone || phone.trim() === '') return false;
-      let cleanedPhone = phone.replace(/[\s-]/g, '');
-
-      // Check if it's a valid BD number with or without +88
-      if (cleanedPhone.startsWith('+88')) {
-        cleanedPhone = cleanedPhone.substring(3);
-      }
-
-      return /^01\d{9}$/.test(cleanedPhone);
+      let cleaned = phone.replace(/[\s-]/g, '');
+      if (cleaned.startsWith('+88')) cleaned = cleaned.substring(3);
+      return /^01\d{9}$/.test(cleaned);
     }
 
-    // Clean phone number - smart +88 handling
     function cleanPhoneNumber(phone) {
-      if (!phone || phone.trim() === '') return '';
-      let cleanedPhone = phone.replace(/[\s-]/g, '');
-
-      // If already has +88, keep it
-      if (cleanedPhone.startsWith('+88')) {
-        return cleanedPhone;
-      }
-
-      // If doesn't have +88, add it
-      return '+88' + cleanedPhone;
+      let cleaned = phone.replace(/[\s-]/g, '');
+      return cleaned.startsWith('+88') ? cleaned : '+88' + cleaned;
     }
 
-    // Show response message
+    function showFieldMessage(messageElement, message, type) {
+      messageElement.textContent = message;
+      messageElement.className = `field-message ${type} show ff-general-sans`;
+    }
+
+    function hideFieldMessage(messageElement) {
+      messageElement.className = 'field-message ff-general-sans';
+    }
+
     function showResponseMessage(message, type) {
       responseMessage.textContent = message;
       responseMessage.className = `response-message ${type} show`;
+    }
 
-      // Auto hide after 5 seconds for success messages
-      if (type === 'success') {
-        setTimeout(() => {
-          responseMessage.classList.remove('show');
-        }, 5000);
+    function hideAllMessages() {
+      hideFieldMessage(firstNameMessage);
+      hideFieldMessage(lastNameMessage);
+      hideFieldMessage(phoneMessage);
+      hideFieldMessage(otpMessage);
+      hideFieldMessage(emailMessage);
+      hideFieldMessage(passwordMessage);
+      hideFieldMessage(confirmPasswordMessage);
+      responseMessage.className = 'response-message fs-14 ff-general-sans fw-600 text-center';
+    }
+
+    function displayServerErrors(errors) {
+      // Clear all existing messages first
+      hideAllMessages();
+
+      // Map server errors to corresponding field messages
+      if (errors.first_name) {
+        showFieldMessage(firstNameMessage, errors.first_name, 'error-text');
+      }
+      if (errors.last_name) {
+        showFieldMessage(lastNameMessage, errors.last_name, 'error-text');
+      }
+      if (errors.phone) {
+        showFieldMessage(phoneMessage, errors.phone, 'error-text');
+      }
+      if (errors.otp) {
+        showFieldMessage(otpMessage, errors.otp, 'error-text');
+      }
+      if (errors.email) {
+        showFieldMessage(emailMessage, errors.email, 'error-text');
+      }
+      if (errors.password) {
+        showFieldMessage(passwordMessage, errors.password, 'error-text');
       }
     }
 
-    // Hide response message
-    function hideResponseMessage() {
-      responseMessage.classList.remove('show');
-    }
-
-    // Show message
-    function showMessage(element, message, type) {
-      element.textContent = message;
-      element.className = `otp-message ${type}`;
-    }
-
-    // OTP Input Handling
-    function setupOtpInputs() {
-      otpDigits.forEach((input, index) => {
-        // Handle input
-        input.addEventListener('input', function (e) {
-          const value = e.target.value;
-
-          // Only allow numbers
-          if (!/^\d*$/.test(value)) {
-            e.target.value = '';
-            return;
-          }
-
-          // Add filled class
-          if (value) {
-            e.target.classList.add('filled');
-            // Move to next input
-            if (index < otpDigits.length - 1) {
-              otpDigits[index + 1].focus();
-            }
-          } else {
-            e.target.classList.remove('filled');
-          }
-
-          // Update hidden input
-          updateOtpValue();
-        });
-
-        // Handle backspace
-        input.addEventListener('keydown', function (e) {
-          if (e.key === 'Backspace' && !e.target.value && index > 0) {
-            otpDigits[index - 1].focus();
-          }
-        });
-
-        // Handle paste
-        input.addEventListener('paste', function (e) {
-          e.preventDefault();
-          const pastedData = e.clipboardData.getData('text');
-          const digits = pastedData.replace(/\D/g, '').split('').slice(0, 6);
-
-          digits.forEach((digit, i) => {
-            if (otpDigits[i]) {
-              otpDigits[i].value = digit;
-              otpDigits[i].classList.add('filled');
-            }
-          });
-
-          // Focus the next empty input or last input
-          const nextEmptyIndex = digits.length < 6 ? digits.length : 5;
-          if (otpDigits[nextEmptyIndex]) {
-            otpDigits[nextEmptyIndex].focus();
-          }
-          updateOtpValue();
-        });
+    // Clear error messages when user starts typing (optional)
+    [firstNameInput, lastNameInput, phoneInput, emailInput, passwordInput, confirmPasswordInput].forEach((input) => {
+      input.addEventListener('input', () => {
+        // Clear any existing error message for this field when user starts typing
+        const messageElement = document.getElementById(input.id.replace('customer-', '') + '-message');
+        if (messageElement && messageElement.classList.contains('error-text')) {
+          hideFieldMessage(messageElement);
+        }
       });
-    }
-
-    // Update hidden OTP input value
-    function updateOtpValue() {
-      const otpValue = Array.from(otpDigits)
-        .map((input) => input.value)
-        .join('');
-      otpHiddenInput.value = otpValue;
-    }
-
-    // Clear OTP inputs
-    function clearOtpInputs() {
-      otpDigits.forEach((input) => {
-        input.value = '';
-        input.classList.remove('filled');
-      });
-      otpHiddenInput.value = '';
-      if (otpDigits[0]) otpDigits[0].focus();
-    }
-
-    // Get OTP value
-    function getOtpValue() {
-      return Array.from(otpDigits)
-        .map((input) => input.value)
-        .join('');
-    }
-
-    // Check form validity
-    function checkFormValidity() {
-      const firstName = firstNameInput.value.trim();
-      const lastName = lastNameInput.value.trim();
-      const phone = phoneInput.value.trim();
-      const password = passwordInput.value;
-      const confirmPassword = confirmPasswordInput.value;
-
-      const isValid =
-        firstName &&
-        lastName &&
-        phone &&
-        validatePhoneNumber(phone) &&
-        password &&
-        confirmPassword &&
-        password === confirmPassword &&
-        isOtpSent;
-
-      registerButton.disabled = !isValid;
-    }
+    });
 
     // Send OTP
-    if (sendOtpButton) {
-      sendOtpButton.addEventListener('click', async () => {
-        const phoneNumber = phoneInput.value.trim();
-        hideResponseMessage();
+    sendOtpButton.addEventListener('click', async () => {
+      const phoneNumber = phoneInput.value.trim();
+      hideFieldMessage(otpMessage);
 
-        if (!phoneNumber) {
-          showResponseMessage('Please enter a phone number first.', 'error');
-          return;
-        }
+      if (!validatePhoneNumber(phoneNumber)) {
+        showFieldMessage(phoneMessage, 'Enter valid Bangladesh phone number.', 'error-text');
+        return;
+      }
 
-        if (!validatePhoneNumber(phoneNumber)) {
-          showResponseMessage('Please enter a valid Bangladesh phone number.', 'error');
-          return;
-        }
+      hideFieldMessage(phoneMessage);
+      const cleaned = cleanPhoneNumber(phoneNumber);
+      sendOtpButton.disabled = true;
+      sendOtpButton.textContent = 'Sending...';
+      clearOtpInputs();
 
-        const cleanedPhoneNumber = cleanPhoneNumber(phoneNumber);
+      try {
+        const res = await fetch(`${API_BASE_URL}/send-otp`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ phone: cleaned, register: true }),
+        });
+        const data = await res.json();
 
-        phoneInput.disabled = true;
-        sendOtpButton.disabled = true;
-        sendOtpButton.textContent = 'Sending...';
-        showMessage(otpMessage, '', '');
-        isOtpSent = false;
-        registerButton.disabled = true;
-        clearOtpInputs();
+        if (res.ok) {
+          otpContainer.classList.add('active');
+          
+          toastManager.show('OTP sent to your phone.', 'success');
 
-        try {
-          const response = await fetch(`${API_BASE_URL}/send-otp`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ phone: cleanedPhoneNumber, register: true }),
-          });
-          const data = await response.json();
-
-          if (response.ok) {
-            otpContainer.classList.add('active');
-            if (otpDigits[0]) otpDigits[0].focus();
-            sendOtpButton.textContent = 'Resend OTP';
-            showMessage(otpMessage, 'OTP sent to your phone.', 'success');
-            isOtpSent = true;
-            checkFormValidity();
-          } else {
-            sendOtpButton.textContent = 'Send OTP';
-            showResponseMessage(data.message || 'Failed to send OTP. Please try again.', 'error');
-          }
-
-          phoneInput.disabled = false;
-          sendOtpButton.disabled = false;
-        } catch (error) {
-          showResponseMessage('An error occurred while trying to send OTP.', 'error');
-          phoneInput.disabled = false;
-          sendOtpButton.disabled = false;
+          sendOtpButton.textContent = 'Resend OTP';
+          isOtpSent = true;
+        } else {
           sendOtpButton.textContent = 'Send OTP';
-        }
-      });
+          // Handle validation errors from server
 
-      otpInput.addEventListener('input', () => {
-        if (correctOtpCode) {
-          if (Number(otpInput.value) === correctOtpCode) {
-            otpMessage.textContent = 'OTP matched!';
-            otpMessage.classList.remove('text-error-text');
-            otpMessage.classList.add('text-success-text');
-            isOtpMatched = true;
-            submitButton.disabled = false;
+          if (data.errors) {
+            displayServerErrors(data.errors);
           } else {
-            otpMessage.textContent = "OTP doesn't match.";
-            otpMessage.classList.remove('text-success-text');
-            otpMessage.classList.add('text-error-text');
-            isOtpMatched = false;
-            submitButton.disabled = true;
+            toastManager.show(data.message || 'Failed to send OTP', 'error');
           }
         }
-      });
-    }
-
-    // Form validation listeners
-    [firstNameInput, lastNameInput, phoneInput, passwordInput, confirmPasswordInput].forEach((input) => {
-      if (input) {
-        input.addEventListener('input', checkFormValidity);
+      } catch {
+        toastManager.show('Error while sending OTP.', 'error');
+        sendOtpButton.textContent = 'Send OTP';
+      } finally {
+        sendOtpButton.disabled = false;
       }
     });
 
-    // Register button
-    if (registerButton) {
-      registerButton.addEventListener('click', async () => {
-        hideResponseMessage();
+    // Register
+    registerButton.addEventListener('click', async () => {
+      hideAllMessages();
+      let hasError = false;
 
-        if (!isOtpSent) {
-          showResponseMessage('Please send and verify OTP first.', 'error');
-          return;
+      // Validate all fields
+      if (!firstNameInput.value.trim()) {
+        showFieldMessage(firstNameMessage, 'First name is required.', 'error-text');
+        hasError = true;
+      }
+
+      if (!lastNameInput.value.trim()) {
+        showFieldMessage(lastNameMessage, 'Last name is required.', 'error-text');
+        hasError = true;
+      }
+
+      const phoneNumber = phoneInput.value.trim();
+      if (!phoneNumber) {
+        showFieldMessage(phoneMessage, 'Phone number is required.', 'error-text');
+        hasError = true;
+      } else if (!validatePhoneNumber(phoneNumber)) {
+        showFieldMessage(phoneMessage, 'Enter valid Bangladesh phone number.', 'error-text');
+        hasError = true;
+      }
+
+      if (!isOtpSent) {
+        showFieldMessage(otpMessage, 'Send and verify OTP first.', 'error-text');
+        hasError = true;
+      }
+
+      const otpValue = getOtpValue();
+      if (isOtpSent && otpValue.length !== 6) {
+        showFieldMessage(otpMessage, 'Enter full 6-digit OTP.', 'error-text');
+        hasError = true;
+      }
+
+      const email = emailInput.value.trim();
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        showFieldMessage(emailMessage, 'Enter a valid email address.', 'error-text');
+        hasError = true;
+      }
+
+      const password = passwordInput.value;
+      if (!password) {
+        showFieldMessage(passwordMessage, 'Password is required.', 'error-text');
+        hasError = true;
+      } else if (password.length < 6) {
+        showFieldMessage(passwordMessage, 'Password must be at least 6 characters.', 'error-text');
+        hasError = true;
+      }
+
+      const confirmPassword = confirmPasswordInput.value;
+      if (!confirmPassword) {
+        showFieldMessage(confirmPasswordMessage, 'Please confirm your password.', 'error-text');
+        hasError = true;
+      } else if (password !== confirmPassword) {
+        showFieldMessage(confirmPasswordMessage, 'Passwords do not match.', 'error-text');
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      registerButton.disabled = true;
+      registerButton.textContent = 'Registering...';
+
+      const formData = {
+        first_name: firstNameInput.value.trim(),
+        last_name: lastNameInput.value.trim(),
+        phone: cleanPhoneNumber(phoneNumber),
+        email: email || undefined,
+        password: password,
+        otp: otpValue,
+      };
+
+      try {
+        const res = await fetch(`${API_BASE_URL}/register`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData),
+        });
+        const data = await res.json();
+
+        if (res.ok) {
+          toastManager.show('Registration successful! Redirecting...', 'success');
+          setTimeout(() => {
+            window.location.href = '/account/login';
+          }, 2000);
+        } else {
+          toastManager.show(data.message || 'Registration failed.', 'error');
         }
-
-        if (!validatePhoneNumber(phoneInput.value.trim())) {
-          showResponseMessage('Please enter a valid Bangladesh phone number.', 'error');
-          return;
-        }
-
-        if (passwordInput.value !== confirmPasswordInput.value) {
-          showResponseMessage('Passwords do not match.', 'error');
-          return;
-        }
-
-        const otpValue = getOtpValue();
-        if (otpValue.length !== 6) {
-          showResponseMessage('Please enter the complete 6-digit OTP.', 'error');
-          return;
-        }
-
-        registerButton.disabled = true;
-        registerButton.textContent = 'Registering...';
-
-        const formData = {
-          first_name: firstNameInput.value.trim(),
-          last_name: lastNameInput.value.trim(),
-          phone: cleanPhoneNumber(phoneInput.value.trim()),
-          email: emailInput.value.trim() || undefined,
-          password: passwordInput.value,
-          otp: otpValue,
-        };
-
-        try {
-          const response = await fetch(`${API_BASE_URL}/register`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData),
-          });
-
-          const data = await response.json();
-
-          if (response.ok) {
-            showResponseMessage('Registration successful! Redirecting to login...', 'success');
-            setTimeout(() => {
-              window.location.href = '/account/login';
-            }, 2000);
-          } else {
-            showResponseMessage(data.message || 'Registration failed. Please try again.', 'error');
-          }
-        } catch (error) {
-          showResponseMessage('An error occurred during registration. Please try again.', 'error');
-        } finally {
-          registerButton.disabled = false;
-          registerButton.textContent = '{{ "customer.register.submit" | t | default: "Submit" }}';
-          checkFormValidity();
-        }
-      });
-    }
-
-    // Initialize OTP inputs
-    setupOtpInputs();
-
-    // Initial form check
-    checkFormValidity();
+      } catch {
+        toastManager.show('Error during registration.', 'error');
+      } finally {
+        registerButton.disabled = false;
+        registerButton.textContent = '{{ "customer.register.submit" | t | default: "Submit" }}';
+      }
+    });
   });
 </script>
 
 {% schema %}
 {
   "name": "Register",
-
   "settings": []
 }
 {% endschema %}

@@ -13,38 +13,25 @@
     transition: border-color 0.3s ease;
     flex: 1;
   }
-
+  .otp-message.success-text {
+    display: flex;
+    align-items: center;
+  }
   .otp-digit:focus {
     outline: none;
     border-color: rgb(var(--color-primary-brand));
   }
-
   .otp-digit.filled {
     border-color: rgb(var(--color-primary-brand));
   }
-
   .otp-container {
     display: none;
   }
-
   .otp-container.active {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
   }
-
-  .otp-message {
-    font-size: 14px;
-    margin-top: 8px;
-    text-align: center;
-  }
-
-  .otp-message.success {
-    color: #363;
-  }
-
-  .otp-message.error {
-    color: #c33;
-  }
-
   @media screen and (max-width: 768px) {
     .otp-digit {
       width: 40px;
@@ -55,56 +42,111 @@
 
 <div class="otp-container" id="otp-container">
   <div class="otp-inputs">
-    <input
-      type="text"
-      class="otp-digit fs-14-lh-20-ls-0_1  ff-general-sans fw-500"
-      maxlength="1"
-      data-index="0"
-      inputmode="numeric"
-      placeholder="-"
-    >
-    <input
-      type="text"
-      class="otp-digit fs-14-lh-20-ls-0_1  ff-general-sans fw-500"
-      maxlength="1"
-      data-index="1"
-      inputmode="numeric"
-      placeholder="-"
-    >
-    <input
-      type="text"
-      class="otp-digit fs-14-lh-20-ls-0_1  ff-general-sans fw-500"
-      maxlength="1"
-      data-index="2"
-      inputmode="numeric"
-      placeholder="-"
-    >
-    <input
-      type="text"
-      class="otp-digit fs-14-lh-20-ls-0_1  ff-general-sans fw-500"
-      maxlength="1"
-      data-index="3"
-      inputmode="numeric"
-      placeholder="-"
-    >
-    <input
-      type="text"
-      class="otp-digit fs-14-lh-20-ls-0_1  ff-general-sans fw-500"
-      maxlength="1"
-      data-index="4"
-      inputmode="numeric"
-      placeholder="-"
-    >
-    <input
-      type="text"
-      class="otp-digit fs-14-lh-20-ls-0_1  ff-general-sans fw-500"
-      maxlength="1"
-      data-index="5"
-      inputmode="numeric"
-      placeholder="-"
-    >
+    {% for i in (0..5) %}
+      <input
+        type="text"
+        class="otp-digit fs-14-lh-20-ls-0_1 ff-general-sans fw-500"
+        maxlength="1"
+        data-index="{{ i }}"
+        inputmode="numeric"
+        placeholder="-"
+      >
+    {% endfor %}
   </div>
-  <div id="otp-message" class="otp-message"></div>
-
+  <div id="otp-message" class="otp-message flex gap-8 items-center"></div>
   <input type="hidden" id="customer-otp-hidden" name="customer[note][otp_code]" value="">
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const otpContainer = document.getElementById('otp-container');
+    const otpMessage = document.getElementById('otp-message');
+    const otpDigits = document.querySelectorAll('.otp-digit');
+    const otpHiddenInput = document.getElementById('customer-otp-hidden');
+
+    function showMessage(element, message, type) {
+      element.textContent = message;
+      element.className = `otp-message ${type}`;
+    }
+
+    function setupOtpInputs() {
+      otpDigits.forEach((input, index) => {
+        input.addEventListener('input', function (e) {
+          const value = e.target.value;
+          if (!/^\d*$/.test(value)) {
+            e.target.value = '';
+            return;
+          }
+          if (value) {
+            e.target.classList.add('filled');
+            if (index < otpDigits.length - 1) {
+              otpDigits[index + 1].focus();
+            }
+          } else {
+            e.target.classList.remove('filled');
+          }
+          updateOtpValue();
+        });
+
+        input.addEventListener('keydown', function (e) {
+          if (e.key === 'Backspace' && !e.target.value && index > 0) {
+            otpDigits[index - 1].focus();
+          }
+        });
+
+        input.addEventListener('paste', function (e) {
+          e.preventDefault();
+          const pastedData = e.clipboardData.getData('text');
+          const digits = pastedData.replace(/\D/g, '').split('').slice(0, 6);
+
+          digits.forEach((digit, i) => {
+            if (otpDigits[i]) {
+              otpDigits[i].value = digit;
+              otpDigits[i].classList.add('filled');
+            }
+          });
+
+          const nextEmptyIndex = digits.length < 6 ? digits.length : 5;
+          if (otpDigits[nextEmptyIndex]) {
+            otpDigits[nextEmptyIndex].focus();
+          }
+          updateOtpValue();
+        });
+      });
+    }
+
+    function updateOtpValue() {
+      const otpValue = Array.from(otpDigits)
+        .map((input) => input.value)
+        .join('');
+      otpHiddenInput.value = otpValue;
+    }
+
+    function clearOtpInputs() {
+      otpDigits.forEach((input) => {
+        input.value = '';
+        input.classList.remove('filled');
+      });
+      otpHiddenInput.value = '';
+      if (otpDigits[0]) otpDigits[0].focus();
+    }
+
+    function getOtpValue() {
+      return Array.from(otpDigits)
+        .map((input) => input.value)
+        .join('');
+    }
+
+    // expose functions to global for main-register to use
+    window.otpUtils = {
+      otpContainer,
+      otpMessage,
+      showMessage,
+      setupOtpInputs,
+      clearOtpInputs,
+      getOtpValue,
+    };
+
+    setupOtpInputs();
+  });
+</script>

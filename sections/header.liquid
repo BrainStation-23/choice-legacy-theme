@@ -85,7 +85,7 @@
   <div class="header__container pt-0 pr-6_1_1 pb-0 pl-6_1_1 sm:flex-col sm:gap-0 sm:pt-0 sm:pr-3_9_8 sm:pb-0 sm:pl-3_9_8">
     <div class="header__inner flex justify-between items-center gap-36 sm:pt-0 sm:pr-0 sm:pb-16 sm:pl-0">
       <!-- Left Section -->
-      <div class="header__left header__item-container flex-1 justify-start sm:flex-1_0_0">
+      <div class=" w-full header__left header__item-container flex-1 lg:flex-auto justify-start lg:max-w-200  sm:flex-1_0_0">
         <button
           id="menuIcon"
           class="header__menu-toggle hidden sm:block border-none cursor-pointer hidden sm:flex items-center justify-center transition-transform sm:bg-none sm:border-none sm:p-0"
@@ -103,7 +103,7 @@
       </div>
 
       <!-- Center Section -->
-      <div class="header__center header__item-container flex-1 text-left sm:flex-1_0_0 sm:text-center">
+      <div class="header__center header__item-container flex-1 lg:flex-auto text-left sm:flex-1_0_0 sm:text-center">
         <!-- Mobile Logo -->
         <a href="{{ routes.root_url }}" class="header__logo-link--mobile hidden sm:block relative block media">
           {%- if settings.brand_logo != blank -%}
@@ -119,7 +119,7 @@
         </a>
 
         <!-- Desktop Search -->
-        <div class="header__search--desktop block sm:hidden relative mt-0 mb-0 ml-auto mr-auto">
+        <div class="w-full lg:max-w-250 header__search--desktop block sm:hidden relative mt-0 mb-0 ml-auto mr-auto">
           <predictive-search id="predictive-search" class="predictive-search">
             <form
               action="{{ routes.search_url }}"
@@ -149,19 +149,22 @@
                 {% render 'icon-close', cls: 'svg-primary-optional', height: 20, width: 20 %}
               </button>
 
-              <span class="enter hidden ff-general-sans fs-14-lh-20-ls-0_1 fw-600 absolute top-50pct right-12 translate-y--50 bg-light-gray rounded-6 pt-12 pb-12 pl-16 pr-16">
+              <a
+                class="enter no-underline hidden text-secondary-light  ff-general-sans fs-14-lh-20-ls-0_1 fw-600 absolute top-50pct right-12 translate-y--50 bg-light-gray rounded-6 pt-12 pb-12 pl-16 pr-16 cursor-pointer"
+                href="{{ routes.search_url }}?q={{ ' ' | url_encode }}"
+              >
                 {{- 'sections.header.enter' | t }}
-              </span>
+              </a>
             </form>
           </predictive-search>
         </div>
       </div>
 
       <!-- Right Section -->
-      <div class="header__right header__item-container flex justify-end items-center flex-1 gap-24 sm:flex-1_0_0 sm:gap-16 sm:flex-row-reverse sm:justify-start">
+      <div class="header__right header__item-container flex justify-end items-center flex-1 lg:flex-auto gap-24 sm:flex-1_0_0 sm:gap-16 sm:flex-row-reverse sm:justify-start">
         <a
           href="{{ routes.account_url }}"
-          class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4"
+          class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4 sm:z-10000"
         >
           {% render 'accounts-icon' %}
           <span class="header__icon-link-title block md:hidden sm:hidden ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
@@ -236,9 +239,12 @@
             {% render 'icon-close', cls: 'svg-primary-optional', height: 20, width: 20 %}
           </button>
 
-          <span class="enter hidden ff-general-sans fs-14-lh-20-ls-0_1 fw-600 absolute top-50pct right-12 translate-y--50 bg-light-gray rounded-6 pt-12 pb-12 pl-16 pr-16">
+          <a
+            class="enter no-underline hidden text-secondary-light  ff-general-sans fs-14-lh-20-ls-0_1 fw-600 absolute top-50pct right-12 translate-y--50 bg-light-gray rounded-6 pt-12 pb-12 pl-16 pr-16 cursor-pointer"
+            href="{{ routes.search_url }}?q={{ ' ' | url_encode }}"
+          >
             {{- 'sections.header.enter' | t }}
-          </span>
+          </a>
         </form>
       </predictive-search>
     </div>
@@ -346,6 +352,16 @@
   document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape') {
       closeSearchFocus();
+    }
+
+    // Prevent Enter key from submitting search forms
+    if (event.key === 'Enter') {
+      const target = event.target;
+      if (target && target.classList.contains('header__search-input')) {
+        event.preventDefault();
+        // Optional: You can add custom search behavior here
+        console.log('Enter pressed in search, but form submission prevented');
+      }
     }
   });
 

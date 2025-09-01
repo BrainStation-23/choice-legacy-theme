@@ -1,5 +1,4 @@
 <style>
-
   #password-toggle-eye-open-{{ id }},
    #password-toggle-eye-open-{{ id }} {
      stroke: rgba(var(--color-primary-text), 0.7);
@@ -33,7 +32,7 @@
       {{ extra_attributes }}
     {% endif %}
   >
-  <label class=" fs-14-lh-20-ls-0_1 ff-general-sans fw-600" for="{{ id }}">{{ label }}</label>
+  <label class=" fs-14-lh-20-ls-0_1 ff-general-sans fw-500" for="{{ id }}">{{ label }}</label>
 
   {% if type == 'password' %}
     <span
@@ -54,3 +53,4 @@
     </span>
   {% endif %}
 </div>
+
