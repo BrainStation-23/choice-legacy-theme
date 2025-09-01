@@ -365,9 +365,6 @@
 
           const result = await response.json();
           uploadedImageUrl = result.reviewImage;
-
-          // Use toast notification for image upload success
-          toastManager.show("Image uploaded successfully!", "success", 3000);
         } catch (error) {
           console.error("Error uploading image:", error);
           showFieldError("reviewImage", `Upload failed: ${error.message}`);
@@ -400,6 +397,7 @@
           return;
         }
 
+        // Disable submit button to prevent double submission
         if (submitButton) submitButton.disabled = true;
 
         const reviewData = {
@@ -455,8 +453,6 @@
             "error",
             4000
           );
-        } finally {
-          if (submitButton) submitButton.disabled = false;
         }
       });
     }
