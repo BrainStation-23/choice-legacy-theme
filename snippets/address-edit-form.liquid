@@ -1,157 +1,157 @@
 {% form 'customer_address', address, url: address.url %}
-  <div class="grid grid-cols-2 gap-16 sm:grid-cols-1">
-    {%- assign firstNameLabel = 'customer.addresses.first_name' | t -%}
-    {%- assign firstNamePlaceholder = 'customer.addresses.first_name' | t -%}
-    {%
-      render 'input',
-      type: 'text',
-      id: "AddressFirstName" | append: address.id,
-      name: "address[first_name]",
-      label: firstNameLabel,
-      placeholder: firstNamePlaceholder,
-      autocomplete: 'given-name',
-      required: false,
-      class: '',
-      value: address.first_name,
-    %}
-
-    {%- assign lastNameLabel = 'customer.addresses.last_name' | t -%}
-    {%- assign lastNamePlaceholder = 'customer.addresses.last_name' | t -%}
-    {%
-      render 'input',
-      type: 'text',
-      id: "AddressLastName" | append: address.id,
-      name: "address[last_name]",
-      label: lastNameLabel,
-      placeholder: lastNamePlaceholder,
-      autocomplete: 'family-name',
-      required: false,
-      class: '',
-      value: address.last_name,
-    %}
-
-    {%- assign companyLabel = 'customer.addresses.company' | t -%}
-    {%- assign companyPlaceholder = 'customer.addresses.company' | t -%}
-    {%
-      render 'input',
-      type: 'text',
-      id: "AddressCompany" | append: address.id,
-      name: "address[company]",
-      label: companyLabel,
-      placeholder: companyPlaceholder,
-      autocomplete: 'organization',
-      required: false,
-      class: '',
-      value: address.company,
-    %}
-
-    {%- assign address1Label = 'customer.addresses.address1' | t -%}
-    {%- assign address1Placeholder = 'customer.addresses.address1' | t -%}
-    {%
-      render 'input',
-      type: 'text',
-      id: "AddressAddress1" | append: address.id,
-      name: "address[address1]",
-      label: address1Label,
-      placeholder: address1Placeholder,
-      autocomplete: 'address-line1',
-      required: true,
-      class: '',
-      value: address.address1,
-    %}
-
-    {%- assign address2Label = 'customer.addresses.address2' | t -%}
-    {%- assign address2Placeholder = 'customer.addresses.address2' | t -%}
-    {%
-      render 'input',
-      type: 'text',
-      id: "AddressAddress2" | append: address.id,
-      name: "address[address2]",
-      label: address2Label,
-      placeholder: address2Placeholder,
-      autocomplete: 'address-line2',
-      required: false,
-      class: '',
-      value: address.address2,
-    %}
-
-    {%- assign cityLabel = 'customer.addresses.city' | t -%}
-    {%- assign cityPlaceholder = 'customer.addresses.city' | t -%}
-    {%
-      render 'input',
-      type: 'text',
-      id: "AddressCity" | append: address.id,
-      name: "address[city]",
-      label: cityLabel,
-      placeholder: cityPlaceholder,
-      autocomplete: 'address-level2',
-      required: true,
-      class: '',
-      value: address.city,
-    %}
-
-    {%- assign provinceLabel = 'customer.addresses.province' | t -%}
-    {%- assign provincePlaceholder = 'customer.addresses.province' | t -%}
-    {%
-      render 'input',
-      type: 'text',
-      id: "AddressProvince" | append: address.id,
-      name: "address[province]",
-      label: provinceLabel,
-      placeholder: provincePlaceholder,
-      autocomplete: 'address-level1',
-      required: false,
-      class: '',
-      value: address.province,
-    %}
-
-    {%- assign zipLabel = 'customer.addresses.zip' | t -%}
-    {%- assign zipPlaceholder = 'customer.addresses.zip' | t -%}
-    {%
-      render 'input',
-      type: 'text',
-      id: "AddressZip" | append: address.id,
-      name: "address[zip]",
-      label: zipLabel,
-      placeholder: zipPlaceholder,
-      autocomplete: 'postal-code',
-      required: false,
-      class: '',
-      value: address.zip,
-    %}
-
-    {%- assign phoneLabel = 'customer.addresses.phone' | t -%}
-    {%- assign phonePlaceholder = 'customer.addresses.phone' | t -%}
-    {%
-      render 'input',
-      type: 'tel',
-      id: "AddressPhone" | append: address.id,
-      name: "address[phone]",
-      label: phoneLabel,
-      placeholder: phonePlaceholder,
-      autocomplete: 'tel',
-      required: false,
-      class: '',
-      value: address.phone,
-    %}
-  </div>
-
-  <div class="flex gap-8 justify-center items-center mt-16 mb-16">
-    <div id="set-default-address-checkbox-{{ address.id }}">
-      {{ form.set_as_default_checkbox }}
+  <div class="flex flex-col gap-24">
+    <div class="flex gap-8  items-center ">
+      <div id="set-default-address-checkbox-{{ address.id }}" class="flex">
+        {{ form.set_as_default_checkbox }}
+      </div>
+      <h1 class="ff-general-sans fw-500 fs-16-lh-100pct-ls-0 m-0">
+        {{ 'customer.addresses.set_default' | t }}
+      </h1>
     </div>
-    <h1 class="ff-general-sans fw-500 fs-16-lh-100pct-ls-0 m-0">
-      {{ 'customer.addresses.set_default' | t }}
-    </h1>
-  </div>
+    <div class="grid grid-cols-2 gap-16 sm:grid-cols-1">
+      {%- assign firstNameLabel = 'customer.addresses.first_name' | t -%}
+      {%- assign firstNamePlaceholder = 'customer.addresses.first_name' | t -%}
+      {%
+        render 'input',
+        type: 'text',
+        id: "AddressFirstName" | append: address.id,
+        name: "address[first_name]",
+        label: firstNameLabel,
+        placeholder: firstNamePlaceholder,
+        autocomplete: 'given-name',
+        required: false,
+        class: '',
+        value: address.first_name,
+      %}
 
-  <div class="grid grid-cols-1 gap-16">
-    <button
-      type="submit"
-      id="save-address-btn-{{ address.id }}"
-      class="button--solid border-none rounded-6 cursor-pointer ff-general-sans fw-600 fs-16-lh-100pct-ls-0"
-    >
-      {{ 'customer.addresses.save' | t }}
-    </button>
+      {%- assign lastNameLabel = 'customer.addresses.last_name' | t -%}
+      {%- assign lastNamePlaceholder = 'customer.addresses.last_name' | t -%}
+      {%
+        render 'input',
+        type: 'text',
+        id: "AddressLastName" | append: address.id,
+        name: "address[last_name]",
+        label: lastNameLabel,
+        placeholder: lastNamePlaceholder,
+        autocomplete: 'family-name',
+        required: false,
+        class: '',
+        value: address.last_name,
+      %}
+
+      {%- assign companyLabel = 'customer.addresses.company' | t -%}
+      {%- assign companyPlaceholder = 'customer.addresses.company' | t -%}
+      {%
+        render 'input',
+        type: 'text',
+        id: "AddressCompany" | append: address.id,
+        name: "address[company]",
+        label: companyLabel,
+        placeholder: companyPlaceholder,
+        autocomplete: 'organization',
+        required: false,
+        class: '',
+        value: address.company,
+      %}
+
+      {%- assign address1Label = 'customer.addresses.address1' | t -%}
+      {%- assign address1Placeholder = 'customer.addresses.address1' | t -%}
+      {%
+        render 'input',
+        type: 'text',
+        id: "AddressAddress1" | append: address.id,
+        name: "address[address1]",
+        label: address1Label,
+        placeholder: address1Placeholder,
+        autocomplete: 'address-line1',
+        required: true,
+        class: '',
+        value: address.address1,
+      %}
+
+      {%- assign address2Label = 'customer.addresses.address2' | t -%}
+      {%- assign address2Placeholder = 'customer.addresses.address2' | t -%}
+      {%
+        render 'input',
+        type: 'text',
+        id: "AddressAddress2" | append: address.id,
+        name: "address[address2]",
+        label: address2Label,
+        placeholder: address2Placeholder,
+        autocomplete: 'address-line2',
+        required: false,
+        class: '',
+        value: address.address2,
+      %}
+
+      {%- assign cityLabel = 'customer.addresses.city' | t -%}
+      {%- assign cityPlaceholder = 'customer.addresses.city' | t -%}
+      {%
+        render 'input',
+        type: 'text',
+        id: "AddressCity" | append: address.id,
+        name: "address[city]",
+        label: cityLabel,
+        placeholder: cityPlaceholder,
+        autocomplete: 'address-level2',
+        required: true,
+        class: '',
+        value: address.city,
+      %}
+
+      {%- assign provinceLabel = 'customer.addresses.province' | t -%}
+      {%- assign provincePlaceholder = 'customer.addresses.province' | t -%}
+      {%
+        render 'input',
+        type: 'text',
+        id: "AddressProvince" | append: address.id,
+        name: "address[province]",
+        label: provinceLabel,
+        placeholder: provincePlaceholder,
+        autocomplete: 'address-level1',
+        required: false,
+        class: '',
+        value: address.province,
+      %}
+
+      {%- assign zipLabel = 'customer.addresses.zip' | t -%}
+      {%- assign zipPlaceholder = 'customer.addresses.zip' | t -%}
+      {%
+        render 'input',
+        type: 'text',
+        id: "AddressZip" | append: address.id,
+        name: "address[zip]",
+        label: zipLabel,
+        placeholder: zipPlaceholder,
+        autocomplete: 'postal-code',
+        required: false,
+        class: '',
+        value: address.zip,
+      %}
+
+      {%- assign phoneLabel = 'customer.addresses.phone' | t -%}
+      {%- assign phonePlaceholder = 'customer.addresses.phone' | t -%}
+      {%
+        render 'input',
+        type: 'tel',
+        id: "AddressPhone" | append: address.id,
+        name: "address[phone]",
+        label: phoneLabel,
+        placeholder: phonePlaceholder,
+        autocomplete: 'tel',
+        required: false,
+        class: '',
+        value: address.phone,
+      %}
+    </div>
+    <div class="grid grid-cols-1 gap-16 max-w-216">
+      <button
+        type="submit"
+        id="save-address-btn-{{ address.id }}"
+        class="button--solid border-none rounded-6 cursor-pointer ff-general-sans fw-600 fs-16-lh-100pct-ls-0"
+      >
+        {{ 'customer.addresses.save' | t }}
+      </button>
+    </div>
   </div>
 {% endform %}

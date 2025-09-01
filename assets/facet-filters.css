@@ -1,0 +1,68 @@
+.active-filter:hover {
+  text-decoration: underline;
+}
+
+.filter__toggle::-webkit-details-marker {
+  display: none;
+}
+
+.filter__toggle::marker {
+  display: none;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.disclosure__panel.has-motion {
+  transition: height 0.3s ease;
+}
+
+@media (min-width: 1024px) {
+  .facets.drawer {
+    visibility: visible;
+    position: static;
+    height: auto;
+    transition: none;
+    background: none;
+    color: currentColor;
+    max-width: none;
+  }
+
+  .facets .drawer__footer {
+    display: none;
+  }
+
+  .main-products-grid__filters {
+    flex: 0 0 calc(241px + 8 * var(--space-unit, 8px));
+  }
+}
+
+@media (min-width: 1280px) {
+  .main-products-grid__filters {
+    flex: 0 0 calc(241px + 12 * var(--space-unit, 8px));
+  }
+}
+
+.clear-filter-selected:hover {
+  text-decoration: underline;
+}
+
+.filter-disabled {
+  cursor: no-drop !important;
+  opacity: 0.5 !important;
+}
+.filter-disabled:hover {
+  border-color: rgb(var(--color-border));
+}
+
+.disclosure__toggle svg path {
+  fill: rgb(var(--color-border));
+  color: rgb(var(--color-border));
+}
+
+.filter__toggle-item:hover {
+  border-color: rgb(var(--color-primary-brand));
+}

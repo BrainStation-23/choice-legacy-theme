@@ -94,7 +94,8 @@
       "cart": "Cart",
       "search": "Search products",
       "product": "Product",
-      "enter": "Enter"
+      "enter": "Enter",
+      "no_result": "No product found for "
     },
     "collections_list": {
       "default_title": "Collections"
@@ -126,6 +127,9 @@
         "kg": "kg",
         "lb": "lb"
       }
+    },
+    "collection": {
+      "empty": "No products found in this collection."
     },
     "cart": {
       "title": "Shopping Bag",
@@ -162,7 +166,7 @@
       "zip": "ZIP/Postal Code",
       "province": "Province",
       "country": "Country",
-      "set_default": "Set as default",
+      "set_default": "Set as Default Location",
       "phone": "Phone",
       "update": "Update",
       "cancel": "Cancel",
@@ -284,6 +288,9 @@
       "next": "Next",
       "page": "Page"
     },
+    "labels": {
+      "please_select": "Please select"
+    },
     "breadcrumbs": {
       "home": "Home",
       "products": "Products",
@@ -324,32 +331,39 @@
       },
       "combo_products": {
         "save": "Save"
+      }
+    },
+    "filtering": {
+      "title": "Filters",
+      "applied_filters": "Applied Filters",
+      "applied_filter_count": {
+        "one": "{{ count }} Applied Filter",
+        "other": "{{ count }} Applied Filters"
       },
-      "subscription": {
-        "name": "Subscription"
-      },
-      "quantity": {
-        "label": "Quantity",
-        "decrease": "Decrease quantity for {{ product }}",
-        "increase": "Increase quantity for {{ product }}",
-        "input_label": "Quantity for {{ product }}"
-      },
-      "add_to_cart": {
-        "label": "Add to cart",
-        "added": "Added"
-      },
-      "sold_out": "Sold out"
+      "apply": "Apply",
+      "clear": "Clear",
+      "clear_all": "Clear all",
+      "filter": "Filter",
+      "filter_sort": "Filter & Sort",
+      "min_price_label": "From",
+      "max_price_label": "To",
+      "show_more": "Show more",
+      "show_result_count": {
+        "one": "Show {{ count }} result",
+        "other": "Show {{ count }} results",
+        "showing": "Showing {{ count }} Products"
+      }
+    },
+    "sorting": {
+      "sort_by_label": "Sort by"
     }
   },
   "accessibility": {
     "unit_price_separator": "Unit Price Separator",
-    "close": "Close"
+    "close": "Close",
+    "loading": "Loading..."
   },
-  "templates": {
-    "contact": {
-      "form": {
-        "error_heading": "Error"
-      }
-    }
+  "main-category": {
+    "title": "Featured Products"
   }
 }

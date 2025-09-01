@@ -37,7 +37,7 @@
   /* Mobile Search Focus Styles */
   @media (max-width: 768px) {
     .header--search-focused .header__search--mobile .header__search-form {
-      width: 85% !important;
+      width: 86% !important;
       max-width: none !important;
       position: relative;
       transition: all 0.3s ease, width 0.3s ease;
@@ -96,10 +96,10 @@
             {% render 'menu-icon' %}
           </div>
           <div class="close-icon hidden">
-            {% render 'icon-close', cls: 'svg-brand' %}
+            {% render 'icon-close', cls: 'svg-brand', height: 28, width: 28 %}
           </div>
         </button>
-        {% render 'logo', padding_left: 138, padding_bottom: 40, logo_width: 138, logo_cls: 'block sm:hidden' %}
+        {% render 'logo', logo_width: 138, logo_cls: 'flex justify-center items-center sm:hidden' %}
       </div>
 
       <!-- Center Section -->
@@ -109,7 +109,7 @@
           {%- if settings.brand_logo != blank -%}
             {% render 'logo',
               cls: 'w-full h-auto',
-              logo_cls: 'hidden sm:block',
+              logo_cls: 'hidden sm:flex justify-center items-center',
               height: settings.logo_height,
               width: settings.logo_width
             %}
@@ -120,7 +120,7 @@
 
         <!-- Desktop Search -->
         <div class="w-full lg:max-w-250 header__search--desktop block sm:hidden relative mt-0 mb-0 ml-auto mr-auto">
-          <predictive-search id="predictive-search" class="predictive-search">
+          <predictive-search id="predictive-search" class="predictive-search ">
             <form
               action="{{ routes.search_url }}"
               method="get"
@@ -164,7 +164,7 @@
       <div class="header__right header__item-container flex justify-end items-center flex-1 lg:flex-auto gap-24 sm:flex-1_0_0 sm:gap-16 sm:flex-row-reverse sm:justify-start">
         <a
           href="{{ routes.account_url }}"
-          class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4 sm:z-10000"
+          class="header__icon-link flex items-center no-underline w-auto h-auto text-brand sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4 "
         >
           {% render 'accounts-icon' %}
           <span class="header__icon-link-title block md:hidden sm:hidden ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
@@ -232,7 +232,7 @@
 
           <button
             type="button"
-            class="search-close-btn hidden absolute right-minus-70 top-50pct translate-y--50 bg-none border-1 border-solid border-color rounded-full cursor-pointer p-8 items-center justify-center z-9999 transition-all-3 z-10000"
+            class="search-close-btn hidden absolute right-minus-70 top-50pct translate-y--50 bg-none border-1 border-solid border-color rounded-full cursor-pointer p-8 items-center justify-center z-9999 transition-all-3 "
             onclick="closeSearchFocus()"
             aria-label="Close search"
           >
@@ -280,10 +280,11 @@
     searchInputs.forEach((input) => {
       input.value = '';
       input.blur();
-      if (searchResults) {
-        searchResults.innerHTML = '';
-      }
     });
+
+    if (searchResults) {
+      searchResults.innerHTML = '';
+    }
   }
 
   // Mobile menu functionality
