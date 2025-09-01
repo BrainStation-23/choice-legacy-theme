@@ -1,0 +1,11 @@
+<a class="h-56 media block relative w-full rounded-6 mb-24" href="{{ shop.metafields.custom.offer_image_url }}" {{ block.shopify_attributes }}>
+  {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
+  {% render 'image',
+    image: shop.metafields.custom.offer_image,
+    widths: '529, 529, 529, 529',
+    src_width: 529,
+    sizes: sizes,
+    class: 'img-fit',
+    quality: 1
+  %}
+</a>

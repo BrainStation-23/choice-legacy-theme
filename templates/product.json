@@ -36,13 +36,6 @@
           "type": "buy_buttons",
           "settings": {}
         },
-        "offer_button_iQLXHM": {
-          "type": "offer_button",
-          "settings": {
-            "offer_button_text": "On Going Offers",
-            "offer_button_url": "shopify://collections/acne-treatment"
-          }
-        },
         "icon_with_text_BwkMLd": {
           "type": "icon_with_text",
           "settings": {
@@ -105,7 +98,6 @@
         "rating_N3Arng",
         "variant_picker_tCwbfe",
         "buy_buttons_fDk6gf",
-        "offer_button_iQLXHM",
         "icon_with_text_BwkMLd",
         "icon_with_text_qKym6W",
         "icon_with_text_6xiUGc",
@@ -135,9 +127,5 @@
       }
     }
   },
-  "order": [
-    "main",
-    "related-products",
-    "product-reviews"
-  ]
+  "order": ["main", "related-products", "product-reviews"]
 }
