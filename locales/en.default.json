@@ -161,7 +161,9 @@
       "update": "Update",
       "cancel": "Cancel",
       "save": "Save",
-      "add_address": "Add Address"
+      "add_address": "Add Address",
+      "confirm_delete": "Confirm deletion",
+      "submit": "Submit"
     },
     "account": {
       "log_out": "Log out",

@@ -1492,6 +1492,9 @@ address {
 .max-w-400 {
   max-width: 400px;
 }
+.max-w-300 {
+  max-width: 300px;
+}
 .max-w-screen-lg {
   max-width: 1024px;
 }

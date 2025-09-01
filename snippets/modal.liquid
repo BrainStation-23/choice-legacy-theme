@@ -1,0 +1,31 @@
+<div id="delete-modal" class="delete-modal" style="display: none;">
+  <div class="delete-modal__backdrop"></div>
+  <div class="delete-modal__content">
+    <div class="delete-modal__header">
+      <h3 class="delete-modal__title ff-general-sans fs-20-lh-24-ls-0 fw-600">
+        {{ 'customer.addresses.confirm_delete' | t }}
+      </h3>
+    </div>
+    <div class="delete-modal__body">
+      <p id="delete-modal-message" class="ff-general-sans fs-16-lh-22-ls-0 fw-400">
+        {{ 'customer.addresses.delete_confirm' | t }}
+      </p>
+    </div>
+    <div class="delete-modal__footer">
+      <button
+        id="delete-modal-cancel"
+        class="button--outline fs-14-lh-100pct-ls-0 fw-600 cursor-pointer border-1_5"
+        type="button"
+      >
+        {{ 'general.cancel' | t | default: 'Cancel' }}
+      </button>
+      <button
+        id="delete-modal-confirm"
+        class="button--solid fs-14-lh-100pct-ls-0 fw-600 cursor-pointer bg-red text-white border-0"
+        type="button"
+      >
+        {{ 'customer.addresses.delete' | t }}
+      </button>
+    </div>
+  </div>
+</div>
