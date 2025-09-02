@@ -1452,6 +1452,12 @@ address {
 .max-w-100pc-32 {
   max-width: calc(100% - 32px);
 }
+.border-color-brand {
+  border-color: rgba(var(--color-primary-brand));
+}
+.max-w-637 {
+  max-width: 637px;
+}
 .max-w-392 {
   max-width: 392px;
 }
@@ -1460,6 +1466,9 @@ address {
 }
 .max-w-216 {
   max-width: 216px;
+}
+.max-w-300 {
+  max-width: 300px;
 }
 .max-w-406 {
   max-width: 406px;
@@ -3655,10 +3664,6 @@ tr:last-child td {
 
   .slg\:max-w-400 {
     max-width: 400px;
-  }
-
-  .max-w-300 {
-    max-width: 300px;
   }
 
   .slg\:min-w-900 {
