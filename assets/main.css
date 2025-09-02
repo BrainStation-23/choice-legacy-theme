@@ -2234,6 +2234,9 @@ address {
 .pb-20 {
   padding-bottom: calc(20 * var(--space-unit));
 }
+.pb-22_5 {
+  padding-bottom: calc(22.5 * var(--space-unit));
+}
 .pb-32 {
   padding-bottom: calc(32 * var(--space-unit));
 }
@@ -2417,6 +2420,9 @@ address {
 }
 .pt-32 {
   padding-top: calc(32 * var(--space-unit));
+}
+.pt-22_5 {
+  padding-top: calc(22.5 * var(--space-unit));
 }
 .pt-34 {
   padding-top: calc(34 * var(--space-unit));

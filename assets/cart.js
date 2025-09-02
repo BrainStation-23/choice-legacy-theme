@@ -1,53 +1,36 @@
-// Debug version with console logs
-console.log("Cart.js loaded");
-
 class ProductForm extends HTMLElement {
   constructor() {
     super();
-    console.log("ProductForm constructor called");
 
     this.form = this.querySelector("form");
     this.submitButton = this.querySelector('[type="submit"]');
-
-    console.log("Form found:", this.form);
-    console.log("Submit button found:", this.submitButton);
-    console.log("Window.theme:", window.theme);
 
     this.cart =
       document.querySelector("cart-drawer") || this.createCartDrawer();
 
     if (this.form) {
       this.form.addEventListener("submit", this.onSubmitHandler.bind(this));
-      console.log("Submit event listener added");
-    } else {
-      console.error("No form found in ProductForm");
     }
   }
 
   createCartDrawer() {
-    console.log("Creating cart drawer");
     const cartDrawer = document.createElement("cart-drawer");
     document.body.appendChild(cartDrawer);
     return cartDrawer;
   }
 
   onSubmitHandler(evt) {
-    console.log("Form submitted!");
     evt.preventDefault();
 
     if (this.submitButton.getAttribute("aria-disabled") === "true") {
-      console.log("Button disabled, returning");
       return;
     }
-
-    console.log("Processing form submission...");
 
     this.handleErrorMessage();
     this.submitButton.setAttribute("aria-disabled", true);
     this.submitButton.classList.add("loading");
 
     const formData = new FormData(this.form);
-    console.log("Form data:", Array.from(formData.entries()));
 
     const config = {
       method: "POST",
@@ -58,18 +41,12 @@ class ProductForm extends HTMLElement {
       body: formData,
     };
 
-    console.log("Making fetch request to:", window.theme.routes.cartAdd);
-
     fetch(window.theme.routes.cartAdd, config)
       .then((response) => {
-        console.log("Response received:", response.status);
         return response.json();
       })
       .then((response) => {
-        console.log("Response data:", response);
-
         if (response.status) {
-          console.log("Error in response:", response.description);
           this.handleErrorMessage(response.description);
           return;
         }
@@ -97,11 +74,9 @@ class ProductForm extends HTMLElement {
   }
 
   updateCartCount() {
-    console.log("Updating cart count...");
     fetch("/cart.js")
       .then((response) => response.json())
       .then((cart) => {
-        console.log("Cart data:", cart);
         const cartCountElements =
           document.querySelectorAll("[data-cart-count]");
         cartCountElements.forEach((element) => {
@@ -113,7 +88,6 @@ class ProductForm extends HTMLElement {
   }
 
   showAddedToCartFeedback() {
-    console.log("Showing feedback");
     const originalText = this.submitButton.textContent;
     this.submitButton.textContent =
       this.submitButton.dataset.addedText || "Added to cart";
@@ -124,7 +98,6 @@ class ProductForm extends HTMLElement {
   }
 
   handleErrorMessage(errorMessage = false) {
-    console.log("Handling error message:", errorMessage);
     const errorMessageWrapper = this.querySelector(
       ".product-form__error-message-wrapper"
     );
@@ -149,7 +122,6 @@ class ProductForm extends HTMLElement {
 class CartDrawer extends HTMLElement {
   constructor() {
     super();
-    console.log("CartDrawer constructor called");
 
     this.addEventListener(
       "keyup",
@@ -161,12 +133,10 @@ class CartDrawer extends HTMLElement {
 
     if (overlay) {
       overlay.addEventListener("click", this.close.bind(this));
-      console.log("Overlay click listener added");
     }
 
     if (closeBtn) {
       closeBtn.addEventListener("click", this.close.bind(this));
-      console.log("Close button listener added");
     }
 
     // Setup quantity change handlers
@@ -196,7 +166,6 @@ class CartDrawer extends HTMLElement {
   }
 
   open() {
-    console.log("Opening cart drawer");
     this.classList.add("animate", "active");
     document.body.classList.add("overflow-hidden");
 
@@ -206,7 +175,6 @@ class CartDrawer extends HTMLElement {
   }
 
   close() {
-    console.log("Closing cart drawer");
     this.classList.remove("active");
     document.body.classList.remove("overflow-hidden");
 
@@ -220,7 +188,6 @@ class CartDrawer extends HTMLElement {
   }
 
   refresh() {
-    console.log("Refreshing cart drawer");
     fetch(`${window.theme.routes.cart}?view=drawer`)
       .then((response) => response.text())
       .then((text) => {
@@ -238,7 +205,6 @@ class CartDrawer extends HTMLElement {
   }
 
   updateQuantity(line, quantity) {
-    console.log("Updating quantity:", line, quantity);
     this.querySelector(".cart-drawer__inner").classList.add(
       "cart-drawer--loading"
     );
@@ -314,11 +280,9 @@ class CartRemoveButton extends HTMLElement {
 }
 
 // Register custom elements
-console.log("Registering custom elements...");
 customElements.define("product-form", ProductForm);
 customElements.define("cart-drawer", CartDrawer);
 customElements.define("cart-remove-button", CartRemoveButton);
-console.log("Custom elements registered");
 
 // Global cart utilities
 window.CartUtilities = {
@@ -342,8 +306,5 @@ window.testCartDrawer = function () {
   const cartDrawer = document.querySelector("cart-drawer");
   if (cartDrawer) {
     cartDrawer.open();
-    console.log("Cart drawer opened manually");
-  } else {
-    console.log("No cart drawer found");
   }
 };

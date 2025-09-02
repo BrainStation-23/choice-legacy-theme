@@ -57,6 +57,16 @@
         <div></div>
       </div>
     </div>
+
+    <div class="load-more-container text-center flex justify-center" id="load-more-container-{{ section.id }}" style="display: none;">
+      <button 
+        class="button button--solid load-more-btn fs-16-lh-100pct-ls-0 fw-600 pt-22_5 pr-16 pb-22_5 pl-16 block sm:hidden" 
+        id="load-more-btn-{{ section.id }}"
+        type="button"
+      >
+        {{ 'products.reviews.load_more' | t }}
+      </button>
+    </div>
   </div>
 
   <!-- Review Modal -->

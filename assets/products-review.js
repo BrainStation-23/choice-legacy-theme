@@ -15,6 +15,10 @@
     const starColorFilled = container.dataset.starFilledColor || "#FFD700";
     const starColorEmpty = container.dataset.starEmptyColor || "#CCCCCC";
     const showEmptyReviewsSetting = container.dataset.showEmpty === "true";
+    const loadMoreBtn = container.querySelector(`#load-more-btn-${sectionId}`);
+    const loadMoreContainer = container.querySelector(
+      `#load-more-container-${sectionId}`
+    );
 
     const API_BASE_URL = `/apps/${APP_SUB_PATH}/customer/product-review`;
 
@@ -65,6 +69,10 @@
     let uploadedImageUrl = null;
     let isUploadingImage = false;
     let allProductReviews = [];
+    let currentPage = 1;
+    let totalPages = 1;
+    let isLoadingMore = false;
+    let hasMoreReviews = false;
 
     // Rating text mapping
     const ratingTexts = {
@@ -134,6 +142,16 @@
       reviewModal.addEventListener("click", function (e) {
         if (e.target === reviewModal) {
           closeModal();
+        }
+      });
+    }
+
+    if (loadMoreBtn) {
+      loadMoreBtn.addEventListener("click", async function () {
+        if (!isLoadingMore && hasMoreReviews) {
+          isLoadingMore = true;
+          await fetchReviews(currentPage + 1, true);
+          isLoadingMore = false;
         }
       });
     }
@@ -480,18 +498,30 @@
     }
 
     // Fetch and Display Reviews
-    async function fetchReviews() {
+    async function fetchReviews(page = 1, append = false) {
       if (!reviewListContainer || !productId) return;
-      if (reviewsSpinner) reviewsSpinner.style.display = "flex";
-      if (reviewListContainer) reviewListContainer.innerHTML = "";
+
+      if (!append) {
+        if (reviewsSpinner) reviewsSpinner.style.display = "flex";
+        if (reviewListContainer) reviewListContainer.innerHTML = "";
+        allProductReviews = [];
+      } else {
+        if (loadMoreBtn) {
+          loadMoreBtn.disabled = true;
+          loadMoreBtn.textContent = "Loading...";
+        }
+      }
 
       try {
-        const response = await fetch(`${API_BASE_URL}/list/${productId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          `${API_BASE_URL}/list/${productId}?page=${page}&limit=10`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({
@@ -503,16 +533,57 @@
         }
 
         const reviewResponse = await response?.json();
-        console.log("Product review data:", reviewResponse?.data);
-        allProductReviews = reviewResponse?.data || [];
-        renderReviews(allProductReviews);
+        const newReviews = reviewResponse?.data || [];
+        const pagination = reviewResponse?.pagination || {};
+
+        currentPage = pagination.currentPage || page;
+        totalPages = pagination.totalPages || 1;
+        hasMoreReviews = pagination.hasNextPage || false;
+
+        if (append) {
+          allProductReviews = [...allProductReviews, ...newReviews];
+          // Only append new reviews to slideshow, don't rebuild entire thing
+          appendReviewsToSlideshow(newReviews);
+          // Still need to update desktop grid completely
+          const gridContainer = reviewListContainer.querySelector(
+            ".product-reviews-grid"
+          );
+          if (gridContainer) {
+            renderDesktopGrid(allProductReviews, gridContainer);
+          }
+        } else {
+          allProductReviews = newReviews;
+          renderReviews(allProductReviews);
+        }
         calculateAndRenderSummary(allProductReviews);
+        updateLoadMoreButton();
       } catch (error) {
         console.error("Error fetching reviews:", error);
-        allProductReviews = [];
-        calculateAndRenderSummary(allProductReviews);
+        if (!append) {
+          allProductReviews = [];
+          calculateAndRenderSummary(allProductReviews);
+        }
       } finally {
-        if (reviewsSpinner) reviewsSpinner.style.display = "none";
+        if (!append && reviewsSpinner) reviewsSpinner.style.display = "none";
+        if (append && loadMoreBtn) {
+          loadMoreBtn.disabled = false;
+          loadMoreBtn.textContent = "Load More Reviews";
+        }
+      }
+    }
+
+    function updateLoadMoreButton() {
+      if (!loadMoreContainer || !loadMoreBtn) return;
+
+      console.log("Update load more button:", {
+        hasMoreReviews,
+        reviewsCount: allProductReviews.length,
+      }); // Debug log
+
+      if (hasMoreReviews) {
+        loadMoreContainer.style.display = "flex";
+      } else {
+        loadMoreContainer.style.display = "none";
       }
     }
 
@@ -553,6 +624,59 @@
       }
     }
 
+    function appendReviewsToSlideshow(newReviews) {
+      const slideshowElement = reviewListContainer.querySelector(
+        "slideshow-component"
+      );
+      if (!slideshowElement) return;
+
+      const swiperWrapper = slideshowElement.querySelector(".swiper-wrapper");
+      if (!swiperWrapper) return;
+
+      newReviews.forEach((review) => {
+        const productTitle = getProductTitle(review.productId);
+        const reviewDate = review.reviewPlacedAt
+          ? formatDate(review.reviewPlacedAt)
+          : "N/A";
+        const ratingStarsHTML = createStarRating(review.rating);
+        const imageHtml = review.reviewImage
+          ? `<img src="${review.reviewImage}" class="w-full h-full" alt="${productTitle}" loading="lazy">`
+          : `<div></div>`;
+
+        const mobileReviewItem = document.createElement("div");
+        mobileReviewItem.className = "swiper-slide w-auto";
+        mobileReviewItem.style.boxSizing = "border-box";
+        mobileReviewItem.innerHTML = `
+      <div class="p-8 box-shadow flex flex-col gap-16 w-300">
+        <div class="relative flex justify-center h-220">
+          ${imageHtml}
+          <div class="absolute bottom-16 bg-brand-2 pt-8 pr-10 pb-8 pl-10 flex gap-4_8 rounded-100">
+            ${ratingStarsHTML}
+          </div>
+        </div>
+        <div class="flex flex-col gap-8">
+          <div class="fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
+            ${productTitle}
+          </div>
+          <div class="ff-general-sans fs-14-lh-20-ls-0 fw-400 text-secondary">
+            ${escapeHTML(review.reviewText || "")}
+          </div>
+        </div>
+        <div class="flex flex-col gap-4">
+          <span class="fs-12-lh-16-ls-0_6pct ff-general-sans fw-400 text-label">
+            ${reviewDate}
+          </span>
+          <span class="fs-12-lh-16-ls-0_6pct ff-general-sans fw-400 text-label">
+            By ${review.customerName || "Anonymous"}
+          </span>
+        </div>
+      </div>
+    `;
+
+        swiperWrapper.appendChild(mobileReviewItem);
+      });
+    }
+
     function renderReviews(reviewsArray) {
       if (!reviewListContainer) return;
       reviewListContainer.innerHTML = "";
@@ -574,6 +698,7 @@
       slideshowComponent.setAttribute("data-pause-on-hover", "true");
       slideshowComponent.setAttribute("data-enable-carousel", "true");
       slideshowComponent.setAttribute("data-show-progress-bar", "false");
+      slideshowComponent.setAttribute("data-nav-loop", "false");
       slideshowComponent.className =
         "flex-col gap-16 hidden md:hidden lg:hidden sm:flex";
 
@@ -671,6 +796,36 @@
       // Add both containers to the review list
       reviewListContainer.appendChild(slideshowComponent);
       reviewListContainer.appendChild(gridContainer);
+
+      setTimeout(() => {
+        const slideshowElement = reviewListContainer.querySelector(
+          "slideshow-component"
+        );
+        if (slideshowElement && slideshowElement.swiper) {
+          // Listen for when swiper reaches the end
+          slideshowElement.swiper.on("reachEnd", async () => {
+            if (!isLoadingMore && hasMoreReviews) {
+              isLoadingMore = true;
+
+              // Store the current slide index before fetching more
+              const currentSlideIndex = slideshowElement.swiper.activeIndex;
+
+              try {
+                await fetchReviews(currentPage + 1, true);
+
+                // After new reviews are added, update swiper and maintain position
+                if (slideshowElement.swiper) {
+                  slideshowElement.swiper.update();
+                  // Stay at the current slide position
+                  slideshowElement.swiper.slideTo(currentSlideIndex, 0); // 0 = no animation
+                }
+              } finally {
+                isLoadingMore = false;
+              }
+            }
+          });
+        }
+      }, 500);
     }
 
     function escapeHTML(str) {

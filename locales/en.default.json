@@ -356,6 +356,9 @@
     },
     "sorting": {
       "sort_by_label": "Sort by"
+    },
+    "reviews": {
+      "load_more": "Load More"
     }
   },
   "accessibility": {
