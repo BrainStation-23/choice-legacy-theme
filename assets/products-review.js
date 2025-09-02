@@ -372,7 +372,9 @@
             body: imageFormData,
           });
 
-          if (!response.ok) {
+          if (response?.status === 413) {
+            throw new Error("Image is too large. Try a smaller file.");
+          } else if (!response.ok) {
             const errorData = await response.json().catch(() => ({
               message: "Image upload failed with status: " + response.status,
             }));
@@ -385,7 +387,7 @@
           uploadedImageUrl = result.reviewImage;
         } catch (error) {
           console.error("Error uploading image:", error);
-          showFieldError("reviewImage", `Upload failed: ${error.message}`);
+          showFieldError("reviewImage", `${error.message}`);
           uploadedImageUrl = null;
           this.value = "";
           if (imagePreview) imagePreview.style.display = "none";
