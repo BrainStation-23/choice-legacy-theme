@@ -496,7 +496,13 @@
     }
 
     function getProductTitle(productId) {
-      return "Product Title"; // Replace with actual product title logic
+      if (!window.allShopifyProducts || !productId) return "Product Title";
+
+      // Find product by ID since the API returns productId
+      const product = Object.values(window.allShopifyProducts).find(
+        (p) => p.id === productId
+      );
+      return product ? product.title : "Product Title";
     }
 
     // Fetch and Display Reviews
