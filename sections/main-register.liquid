@@ -124,7 +124,7 @@
       <!-- External Register Button -->
       <button
         id="register-submit-button-external"
-        class="button--solid border-none rounded-6 ff-general-sans fs-14 fw-600"
+        class="button--solid border-none rounded-6 ff-general-sans fs-14 fw-600 cursor-pointer"
       >
         {{ 'customer.register.submit' | t }}
       </button>
@@ -270,7 +270,7 @@
 
         if (res.ok) {
           otpContainer.classList.add('active');
-          
+
           toastManager.show('OTP sent to your phone.', 'success');
 
           sendOtpButton.textContent = 'Resend OTP';
