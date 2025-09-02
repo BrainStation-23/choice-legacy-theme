@@ -320,18 +320,22 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
-    const reviewRules = apiResponse.configuration?.pointsPerProductReview;
+    // FIX: Correct the path to match your API structure
+    const reviewRules =
+      apiResponse.configuration?.pointsEarningRules?.pointsPerProductReview;
     if (reviewRules) {
       const threeStarText = document
         .getElementById("threeStarReview")
         .getAttribute("data-translation");
       document.getElementById("threeStarReview").textContent =
         threeStarText.replace("{points}", reviewRules.threeStarPoints);
+
       const fourStarText = document
         .getElementById("fourStarReview")
         .getAttribute("data-translation");
       document.getElementById("fourStarReview").textContent =
         fourStarText.replace("{points}", reviewRules.fourStarPoints);
+
       const fiveStarText = document
         .getElementById("fiveStarReview")
         .getAttribute("data-translation");

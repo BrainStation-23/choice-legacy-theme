@@ -97,13 +97,10 @@
             "title": "{{ product.title | escape }}",
             "price": "{{ product.price | money }}",
             "imageUrl": "{{ product.featured_image | image_url: width: 200 }}",
-            "id": "{{ product.id }}",
-            "handle": "{{ product.handle }}",
-            "url": "{{ product.url }}"
+            "id": "{{ product.id }}"
           }{% unless forloop.last %},{% endunless %}
         {% endfor %}
       };
-      console.log("HERE", window.allShopifyProducts);
     </script>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
