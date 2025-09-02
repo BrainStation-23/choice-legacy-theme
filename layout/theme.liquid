@@ -97,7 +97,9 @@
             "title": "{{ product.title | escape }}",
             "price": "{{ product.price | money }}",
             "imageUrl": "{{ product.featured_image | image_url: width: 200 }}",
-            "id": "{{ product.id }}"
+            "id": "{{ product.id }}",
+            "handle": "{{ product.handle }}",
+            "url": "{{ product.url }}"
           }{% unless forloop.last %},{% endunless %}
         {% endfor %}
       };
