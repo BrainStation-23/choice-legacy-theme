@@ -18,6 +18,9 @@
     autocomplete="off"
     placeholder=" "
     class=" fs-14-lh-20-ls-0_1 ff-general-sans fw-500"
+    {% if isDisabled %}
+      disabled
+    {% endif %}
     autocomplete="{{ autocomplete }}"
     {% if type == 'password' %}
       data-password-field="true"
@@ -53,4 +56,3 @@
     </span>
   {% endif %}
 </div>
-

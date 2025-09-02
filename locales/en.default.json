@@ -194,7 +194,7 @@
       "resend_otp": "Resend OTP",
       "submit": "Submit",
       "otp_verification": "OTP VERIFICATION",
-      "enter_your_new_email": "Enter your new email"
+      "enter_your_new_email": "Enter your new email",
     },
     "login": {
       "title": "Login",

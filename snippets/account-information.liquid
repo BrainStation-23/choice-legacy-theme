@@ -87,14 +87,22 @@
       </div>
 
       <div>
-        <div class=" bg-light-gray border-secondary-text-10pct rounded-12 pt-10 pb-10 pr-16 pl-16" id="dob-field">
-          <h2 class="ff-general-sans fs-12-lh-16-ls-0_6 fw-400 m-0 text-secondary-light">
-            {{ 'customer.account.date_of_birth' | t }}
-          </h2>
-          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">
-            {{ customer.date_of_birth | default: 'date_of_birth' }}
-          </div>
-        </div>
+        {%- assign dateOfBirthLabel = 'customer.account.date_of_birth' | t -%}
+        {%- assign dateOfBirthPlaceholder = 'customer.account.date_of_birth' | t -%}
+        {% assign date_of_birth = customer.date_of_birth | default: '' %}
+        {% render 'input',
+          type: 'text',
+          id: 'date_of_birth-input',
+          name: 'customer[date_of_birth]',
+          label: dateOfBirthLabel,
+          placeholder: dateOfBirthPlaceholder,
+          autocomplete: 'family-name',
+          required: false,
+          class: 'w-full',
+          value: date_of_birth,
+          isDisabled: true,
+          class: 'bg-light-gray  rounded-12'
+        %}
       </div>
 
       <div class="flex flex-col gap-8">
@@ -137,12 +145,22 @@
       </div>
 
       <div>
-        <div class=" bg-light-gray border-secondary-text-10pct rounded-12 pt-10 pb-10 pr-16 pl-16" id="gender-field">
-          <h2 class="ff-general-sans fs-12-lh-16-ls-0_6 fw-400 m-0 text-secondary-light">
-            {{ 'customer.account.gender' | t }}
-          </h2>
-          <div class="ff-general-sans fs-14-lh-16-ls-0 fw-500">{{ customer.gender | default: 'Female' }}</div>
-        </div>
+        {%- assign genderLabel = 'customer.account.gender' | t -%}
+        {%- assign genderPlaceholder = 'customer.account.gender' | t -%}
+        {%- assign gender = customer.gender | default: '' -%}
+        {% render 'input',
+          type: 'text',
+          id: 'gender-input',
+          name: 'customer[gender]',
+          label: genderLabel,
+          placeholder: genderPlaceholder,
+          autocomplete: 'family-name',
+          required: false,
+          class: 'w-full',
+          value: gender,
+          isDisabled: true,
+          class: 'bg-light-gray  rounded-12'
+        %}
       </div>
     </div>
   </div>
