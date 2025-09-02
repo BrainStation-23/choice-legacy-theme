@@ -47,18 +47,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
       let desktopActionHTML = `<a href="${productUrl}" class="button button--solid cursor-pointer no-underline w-65 h-32 flex items-center justify-center">View</a>`;
 
-      const viewButtonMobile = `<a href="${productUrl}" class="button button--solid w-50pct cursor-pointer no-underline block ${
-        hasRating ? "w-full h-40" : "w-50pct h-40"
-      } flex items-center justify-center">View</a>`;
-
       let mobileActionHTML = "";
       if (hasRating) {
+        const viewButtonMobile = `<a href="${productUrl}" class="button button--solid cursor-pointer no-underline block w-50pct h-40 flex items-center justify-center">View</a>`;
+        const ratingTextMobile = `<span class="ff-general-sans fw-600 fs-16-lh-24-ls-0 w-50pct text-center text-brand">${ratingDisplay} star</span>`;
         mobileActionHTML = `
-          <div class="flex justify-end items-center pt-12 pb-12 pl-24 pr-24">
+          <div class="flex justify-between items-center pt-12 pb-12 pl-24 pr-24">
+            ${ratingTextMobile}
             ${viewButtonMobile}
           </div>
         `;
       } else {
+        const viewButtonMobile = `<a href="${productUrl}" class="button button--solid w-50pct cursor-pointer no-underline block h-40 flex items-center justify-center">View</a>`;
         const reviewButtonMobile = `<p class="fw-600 w-50pct fs-14-lh-16-ls-0 text-center text-brand">Review</p>`;
         mobileActionHTML = `
           <div class="flex justify-between items-center gap-12 pt-12 pb-12 pl-24 pr-24">
@@ -87,15 +87,8 @@ document.addEventListener("DOMContentLoaded", function () {
       mobileCard.className =
         "border border-solid border-color rounded-12 flex flex-col";
       mobileCard.innerHTML = `
-        <div class="items-start flex justify-between items-start pt-10 pl-16 pb-10 pr-16">
-          <div class="flex justify-between border-b border-b-color border-b-solid w-full pb-10">
-            <div class="flex gap-6 items-center">
-              ${
-                hasRating
-                  ? `<span class="ff-general-sans fw-400 fs-16-lh-24-ls-0 text-secondary">Rating: ${ratingDisplay}</span>`
-                  : `<span class="ff-general-sans fw-400 fs-16-lh-24-ls-0 text-secondary">Not Reviewed</span>`
-              }
-            </div>
+        <div class="items-start flex justify-end items-start pt-10 pl-16 pb-10 pr-16">
+          <div class="flex justify-end border-b border-b-color border-b-solid w-full pb-10">
             <img src="${imageUrl}" alt="${productTitle}" class="w-32 h-32 object-contain">
           </div>
         </div>
@@ -169,6 +162,6 @@ document.addEventListener("DOMContentLoaded", function () {
   toReviewTab.addEventListener("click", () => handleTabClick("to_review"));
 
   // Set initial header text
-  ratingHeader.textContent = "Rating";
+  ratingHeader.textContent = "Review";
   fetchAndDisplayReviews(activeTab, 1);
 });
