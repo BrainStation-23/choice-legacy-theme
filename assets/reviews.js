@@ -1,18 +1,21 @@
+// reviews.js
 document.addEventListener("DOMContentLoaded", function () {
   const mobileCardContainer = document.querySelector(".review-mobile-view");
   const desktopTableBody = document.getElementById(
     "customer-review-items-desktop"
   );
-  const allProducts = window.allProductsData || {};
+  const reviewedTab = document.getElementById("reviewed-tab");
+  const toReviewTab = document.getElementById("to-review-tab");
+  const ratingHeader = document.getElementById("rating-header");
   const purchasedProducts = window.customerPurchasedProducts || [];
-
   const ITEMS_PER_PAGE = 10;
+  let activeTab = "reviewed";
 
   const reviewPagination = new PaginationManager({
     containerId: "pagination-controls",
     mode: "backend",
     onPageChange: (newPage) => {
-      fetchAndDisplayReviews(newPage);
+      fetchAndDisplayReviews(activeTab, newPage);
     },
   });
 
@@ -24,35 +27,42 @@ document.addEventListener("DOMContentLoaded", function () {
   const renderReviews = (items) => {
     clearContent();
     items.forEach((item) => {
-      const productInfo = allProducts[item.productHandle];
+      const productInfo = window.allShopifyProducts[item.productHandle];
       const productTitle = productInfo
         ? productInfo.title
         : `Product (ID: ${item.productId})`;
       const imageUrl = productInfo
-        ? productInfo.image
+        ? productInfo.imageUrl
         : "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png";
       const productUrl = item.productHandle
         ? `/products/${item.productHandle}`
         : "#";
-      const ratingDisplay = item.rating;
-      const viewButtonDesktop = `<a href="${productUrl}" class="button button--solid cursor-pointer no-underline block w-65 h-32 flex items-center justify-center">View</a>`;
-      const viewButtonMobile = viewButtonDesktop.replace(
-        "w-65 h-32",
-        item.rating ? "w-50pct h-40" : "w-full h-40"
-      );
+
+      const ratingDisplay = item.rating ? item.rating : "";
+      const hasRating = item.rating !== null;
+
+      // Determine content for the middle column based on the active tab
+      const reviewColumnContent =
+        activeTab === "reviewed" ? ratingDisplay : "Review";
+
+      let desktopActionHTML = `<a href="${productUrl}" class="button button--solid cursor-pointer no-underline w-65 h-32 flex items-center justify-center">View</a>`;
+
+      const viewButtonMobile = `<a href="${productUrl}" class="button button--solid w-50pct cursor-pointer no-underline block ${
+        hasRating ? "w-full h-40" : "w-50pct h-40"
+      } flex items-center justify-center">View</a>`;
 
       let mobileActionHTML = "";
-      if (item.rating === null) {
-        const reviewButtonMobile = `<div class="block w-full h-40 fw-600 fs-14-lh-16-ls-0 text-center text-brand flex items-center justify-center">Review</div>`;
+      if (hasRating) {
         mobileActionHTML = `
-          <div class="flex justify-between items-center gap-24 pt-12 pb-12 pl-24 pr-24">
-            ${reviewButtonMobile}
+          <div class="flex justify-end items-center pt-12 pb-12 pl-24 pr-24">
             ${viewButtonMobile}
           </div>
         `;
       } else {
+        const reviewButtonMobile = `<p class="fw-600 w-50pct fs-14-lh-16-ls-0 text-center text-brand">Review</p>`;
         mobileActionHTML = `
-          <div class="flex justify-end items-center pt-12 pb-12 pl-24 pr-24">
+          <div class="flex justify-between items-center gap-12 pt-12 pb-12 pl-24 pr-24">
+            ${reviewButtonMobile}
             ${viewButtonMobile}
           </div>
         `;
@@ -64,9 +74,11 @@ document.addEventListener("DOMContentLoaded", function () {
           <img src="${imageUrl}" alt="${productTitle}" class="w-32 h-32 object-contain">
           <span class="product-name fw-400 fs-16-lh-24-ls-0 text-secondary">${productTitle}</span>
         </td>
-        <td class="fw-600 fs-14-lh-16-ls-0 text-center text-brand">${ratingDisplay}</td>
+        <td class="fw-600 fs-14-lh-16-ls-0 text-center text-brand">${reviewColumnContent}</td>
         <td class="text-right relative">
-          <div class="flex justify-end">${viewButtonDesktop}</div>
+          <div class="flex justify-end">
+            ${desktopActionHTML}
+          </div>
         </td>
       `;
       desktopTableBody.appendChild(tableRow);
@@ -79,11 +91,10 @@ document.addEventListener("DOMContentLoaded", function () {
           <div class="flex justify-between border-b border-b-color border-b-solid w-full pb-10">
             <div class="flex gap-6 items-center">
               ${
-                ratingDisplay
+                hasRating
                   ? `<span class="ff-general-sans fw-400 fs-16-lh-24-ls-0 text-secondary">Rating: ${ratingDisplay}</span>`
-                  : ""
+                  : `<span class="ff-general-sans fw-400 fs-16-lh-24-ls-0 text-secondary">Not Reviewed</span>`
               }
-
             </div>
             <img src="${imageUrl}" alt="${productTitle}" class="w-32 h-32 object-contain">
           </div>
@@ -95,7 +106,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   };
 
-  const fetchAndDisplayReviews = async (page = 1) => {
+  const fetchAndDisplayReviews = async (tab, page = 1) => {
     document.getElementById("review-loader").style.display = "block";
     document.querySelector(".review-desktop-view").style.display = "none";
     document.querySelector(".review-mobile-view").style.display = "none";
@@ -111,7 +122,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      const url = `/apps/${APP_SUB_PATH}/customer/product-review/all?page=${page}&limit=${ITEMS_PER_PAGE}`;
+      const url = `/apps/${APP_SUB_PATH}/customer/product-review/all?page=${page}&limit=${ITEMS_PER_PAGE}&tab=${tab}`;
 
       const response = await fetch(url, {
         method: "POST",
@@ -140,5 +151,24 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   };
 
-  fetchAndDisplayReviews(1);
+  const handleTabClick = (tabType) => {
+    activeTab = tabType;
+    if (tabType === "reviewed") {
+      reviewedTab.classList.add("active-tab");
+      toReviewTab.classList.remove("active-tab");
+      ratingHeader.textContent = "Rating"; // Change header text
+    } else {
+      toReviewTab.classList.add("active-tab");
+      reviewedTab.classList.remove("active-tab");
+      ratingHeader.textContent = "Review"; // Change header text
+    }
+    fetchAndDisplayReviews(activeTab, 1);
+  };
+
+  reviewedTab.addEventListener("click", () => handleTabClick("reviewed"));
+  toReviewTab.addEventListener("click", () => handleTabClick("to_review"));
+
+  // Set initial header text
+  ratingHeader.textContent = "Rating";
+  fetchAndDisplayReviews(activeTab, 1);
 });
