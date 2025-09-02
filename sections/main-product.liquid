@@ -32,8 +32,8 @@
           {% when "buy_buttons" %}
             {% render "product-buy-buttons", block: block, product: product %}
           
-          {% when "offer_button" %}
-            {% render "product-offer-button", block: block %}
+          {% when "offer-image" %}
+            {% render "product-offer-image", block: block %}
 
           {% when "icon_with_text" %}
             {% render "product-icon-with-text", block: block %}
@@ -52,7 +52,6 @@
   </div>
 </div>
 
-<script src="{{ 'collapsible-content.js' | asset_url }}" defer></script>
 <script src="{{ 'product-recommendations.js' | asset_url }}" defer></script>
 
 {% schema %}
@@ -96,22 +95,10 @@
       "limit": 1
     },
     {
-      "type": "offer_button",
-      "name": "Offer button",
+      "type": "offer-image",
+      "name": "Offer image",
       "limit": 1,
-      "settings": [
-        {
-          "type": "text",
-          "id": "offer_button_text",
-          "label": "Offer button text",
-          "default": "On Going Offers"
-        },
-        {
-          "type": "url",
-          "id": "offer_button_url",
-          "label": "Offer button url"
-        }
-      ]
+      "settings": []
     },
     {
       "type": "icon_with_text",

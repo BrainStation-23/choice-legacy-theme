@@ -81,6 +81,10 @@
       "product": "Product",
       "rating": "Rating",
       "action": "Action"
+    },
+    "tabs": {
+      "review": "Review",
+      "reviewed": "Reviewed"
     }
   },
   "sections": {
@@ -94,7 +98,8 @@
       "cart": "Cart",
       "search": "Search products",
       "product": "Product",
-      "enter": "Enter"
+      "enter": "Enter",
+      "no_result": "No product found for "
     },
     "collections_list": {
       "default_title": "Collections"
@@ -127,8 +132,21 @@
         "lb": "lb"
       }
     },
+    "collection": {
+      "empty": "No products found in this collection."
+    },
     "cart": {
-      "title": "Cart"
+      "title": "Shopping Bag",
+      "empty": "Your cart is empty",
+      "remove": "Remove",
+      "subtotal": "Subtotal",
+      "taxes_included_and_shipping_policy_html": "Taxes included and <a href=\"{{ link }}\">shipping policy</a>",
+      "taxes_included_but_shipping_at_checkout": "Taxes included. Shipping calculated at checkout.",
+      "taxes_and_shipping_policy_at_checkout_html": "Taxes and shipping calculated at checkout. <a href=\"{{ link }}\">Shipping policy</a>",
+      "taxes_and_shipping_at_checkout": "Taxes and shipping calculated at checkout.",
+      "view_cart": "View cart",
+      "checkout": "Checkout",
+      "qty": "Qty"
     }
   },
   "customer": {
@@ -152,12 +170,14 @@
       "zip": "ZIP/Postal Code",
       "province": "Province",
       "country": "Country",
-      "set_default": "Set as default",
+      "set_default": "Set as Default Location",
       "phone": "Phone",
       "update": "Update",
       "cancel": "Cancel",
       "save": "Save",
-      "add_address": "Add Address"
+      "add_address": "Add Address",
+      "confirm_delete": "Confirm deletion",
+      "submit": "Submit"
     },
     "account": {
       "log_out": "Log out",
@@ -267,11 +287,15 @@
     "cancel": "Cancel",
     "save": "Save",
     "saving": "Saving...",
+    "continue_shopping": "Continue shopping",
     "pagination": {
       "label": "Pagination",
       "previous": "Previous",
       "next": "Next",
       "page": "Page"
+    },
+    "labels": {
+      "please_select": "Please select"
     },
     "breadcrumbs": {
       "home": "Home",
@@ -314,9 +338,46 @@
       "combo_products": {
         "save": "Save"
       }
+    },
+    "filtering": {
+      "title": "Filters",
+      "applied_filters": "Applied Filters",
+      "applied_filter_count": {
+        "one": "{{ count }} Applied Filter",
+        "other": "{{ count }} Applied Filters"
+      },
+      "apply": "Apply",
+      "clear": "Clear",
+      "clear_all": "Clear all",
+      "filter": "Filter",
+      "filter_sort": "Filter & Sort",
+      "min_price_label": "From",
+      "max_price_label": "To",
+      "show_more": "Show more",
+      "show_result_count": {
+        "one": "Show {{ count }} result",
+        "other": "Show {{ count }} results",
+        "showing": "Showing {{ count }} Products"
+      }
+    },
+    "sorting": {
+      "sort_by_label": "Sort by"
+    },
+    "reviews": {
+      "load_more": "Load More"
     }
   },
   "accessibility": {
-    "unit_price_separator": "Unit Price Separator"
+    "unit_price_separator": "Unit Price Separator",
+    "close": "Close",
+    "loading": "Loading..."
+  },
+  "main-category": {
+    "title": "Featured Products"
+  },
+  "cart": {
+    "product": {
+      "quantity": {}
+    }
   }
 }

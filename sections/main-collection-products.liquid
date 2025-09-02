@@ -1,0 +1,231 @@
+<script src="{{ 'products-toolbar.js' | asset_url }}" defer="defer"></script>
+
+<div class="" data-num-results="{{ collection.products_count }}">
+  <div class="flex flex-col">
+    {%- assign desktop_image = section.settings.desktop_image -%}
+    {%- assign mobile_image = section.settings.mobile_image -%}
+    <div class="w-full">
+      {%- if desktop_image != blank or mobile_image != blank -%}
+        <div class="media relative w-full h-254" style="">
+          {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
+          {%- render 'image-desktop-and-mobile',
+            class: 'img-fit',
+            desktop_image: desktop_image,
+            mobile_image: mobile_image,
+            src_width_mobile: 600,
+            widths_mobile: '600, 600, 600, 600',
+            src_width_desktop: 1440,
+            widths_desktop: '602, 602, 602, 602, 602, 602, 602, 602',
+            lazy_load: true,
+            fetchpriority: 'high',
+            sizes: sizes
+          -%}
+        </div>
+      {%- else -%}
+        {{ 'collection-1' | placeholder_svg_tag: 'w-full h-254 object-cover ' }}
+      {%- endif -%}
+    </div>
+
+    {%- paginate collection.products by section.settings.products_per_page -%}
+      <div class="main-products-grid flex pt-48 pb-88 page-width gap-32">
+        {%- if collection.filters != empty and section.settings.enable_filtering -%}
+          <div class="main-products-grid__filters">
+            {% render 'facet-filters', results: collection, section: section %}
+          </div>
+        {%- endif -%}
+
+        <div class="flex flex-col gap-32">
+          <div class="flex flex-col gap-24">
+            <h1 class="m-0 p-0 ff-bebas-neue fs-36-lh-40-ls-0 fw-400">{{ 'main-category.title' | t }}</h1>
+            <div class="grid grid-cols-4 gap-16">
+              {% for item in collection.metafields.custom.featured_collections.value %}
+                {% render 'product-card',
+                  product: item,
+                  collection: collection,
+                  image_ratio: image_ratio,
+                  show_compare: settings.enable_compare
+                %}
+              {% endfor %}
+            </div>
+          </div>
+
+          {% if section.settings.enable_sorting %}
+            {% render 'fact-sort', results: collection, section: section %}
+          {% endif %}
+
+          <div class="main-products-grid__results relative flex-auto" id="filter-results">
+            <!-- Spinner overlay for sorting -->
+            <div
+              id="sorting-spinner"
+              class="sorting-spinner hidden absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-10"
+            >
+              {% render 'spinner', size: 'medium' %}
+            </div>
+
+            {%- if collection.products.size == 0 -%}
+              <p>{{ 'sections.collection.empty' | t }}</p>
+            {%- else -%}
+              {%- liquid
+                assign active_filters_count = 0
+                if collection.filters != empty
+                  for filter in collection.filters
+                    if filter.type == 'price_range'
+                      if filter.min_value.value
+                        assign active_filters_count = active_filters_count | plus: 1
+                      endif
+                      if filter.max_value.value
+                        assign active_filters_count = active_filters_count | plus: 1
+                      endif
+                    else
+                      assign active_filters_count = active_filters_count | plus: filter.active_values.size
+                    endif
+                  endfor
+                endif
+              -%}
+
+              <div
+                class="grid grid-cols-4 sm:grid-cols-2 gap-16"
+                data-filters-open-classes=""
+                data-filters-closed-classes=""
+                role="list"
+              >
+                {%- assign rendered_product_ids = '' -%}
+                {%- for product in collection.products -%}
+                  {%- assign product_index = forloop.index -%}
+                  {%- for block in section.blocks -%}
+                    {%- liquid
+                      unless block.settings.position == 'top' or block.settings.position == 'bottom'
+                        assign is_last_position = false
+
+                        if product_index == block.settings.position or is_last_position
+                          if paginate.pages == 0 or paginate.current_page == 1
+                            if active_filters_count == 0 or block.settings.hide_on_filter == false
+                              if product_index == collection.products.size and block.settings.position > product_index
+                                assign is_last_position = true
+                              endif
+                            endif
+                          endif
+                        endif
+                      endunless
+                    -%}
+                    {%- if is_last_position -%}
+                      {%- unless rendered_product_ids contains product.id -%}
+                        {%- assign rendered_product_ids = rendered_product_ids | append: product.id | append: ',' -%}
+                        <div class="js-pagination-result">
+                          {% render 'product-card',
+                            product: product,
+                            collection: collection,
+                            image_ratio: image_ratio,
+                            show_compare: settings.enable_compare
+                          %}
+                        </div>
+                      {%- endunless -%}
+                    {%- endif -%}
+                  {%- endfor -%}
+
+                  {%- unless is_last_position and rendered_product_ids contains product.id -%}
+                    {%- assign rendered_product_ids = rendered_product_ids | append: product.id | append: ',' -%}
+                    <div class="js-pagination-result">
+                      {% render 'product-card',
+                        product: product,
+                        collection: collection,
+                        image_ratio: image_ratio,
+                        show_compare: settings.enable_compare
+                      %}
+                    </div>
+                  {%- endunless -%}
+                {%- endfor -%}
+              </div>
+            {%- endif -%}
+          </div>
+
+          {%- if paginate.pages > 1 -%}
+            {% render 'pagination', paginate: paginate, class: 'pt-0 justify-end' %}
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endpaginate -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection products",
+  "class": "cc-collection-products section section--template mb-0",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "desktop_image",
+      "label": "Desktop Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "mobile_image",
+      "label": "Mobile Image"
+    },
+    {
+      "type": "header",
+      "content": "Title"
+    },
+    {
+      "type": "text",
+      "id": "collection_title",
+      "label": "Collection Title",
+      "default": "Featured Products"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 50,
+      "step": 1,
+      "label": "Products per page",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Sorting"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "Enable sorting",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Filtering"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "Enable filtering",
+      "info": "[Customize filters](/admin/menus)",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "expand_filters",
+      "label": "Expand filters by default",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "max_filter_options",
+      "min": 5,
+      "max": 50,
+      "step": 1,
+      "label": "Maximum filter options to show",
+      "default": 10
+    }
+  ]
+}
+{% endschema %}

@@ -54,6 +54,7 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.7/swiper-bundle.min.js" defer></script>
     <script src="{{ 'toast.js' | asset_url }}" defer></script>
+    {{ 'component-cart.css' | asset_url | stylesheet_tag }}
   </head>
 
   <body class="color-scheme">
@@ -96,13 +97,15 @@
             "title": "{{ product.title | escape }}",
             "price": "{{ product.price | money }}",
             "imageUrl": "{{ product.featured_image | image_url: width: 200 }}",
-            "id": "{{ product.id }}"
+            "id": "{{ product.id }}",
+            "handle": "{{ product.handle }}",
+            "url": "{{ product.url }}"
           }{% unless forloop.last %},{% endunless %}
         {% endfor %}
       };
+      console.log("HERE", window.allShopifyProducts);
     </script>
     <script>
-      console.log('Wishlist script loaded');
       document.addEventListener('DOMContentLoaded', () => {
         window.theme = window.theme || {};
         {% if customer %}
@@ -139,5 +142,7 @@
     </script>
     <script src="{{ 'add-to-wishlist.js' | asset_url }}" defer></script>
 
+    {% render 'cart-drawer' %}
+    <script src="{{ 'cart.js' | asset_url }}" defer></script>
   </body>
 </html>

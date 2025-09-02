@@ -8,14 +8,14 @@
 >
   <div class="slideshow-container mt-0 mr-auto mb-0 ml-auto">
     <div class="swiper-container relative w-full h-410 overflow-visible sm:h-186">
-      <div class="swiper-wrapper flex">
+      <div class="swiper-wrapper flex {% if section.blocks.size <= 1 %}translate-none{% endif %}">
         {% for block in section.blocks %}
           {%- liquid
             assign img = block.settings.image
             assign m_img = block.settings.mobile_image
           -%}
           <div
-            class="swiper-slide rounded-6 sm:rounded-0 relative overflow-hidden transition-transform {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}"
+            class="swiper-slide rounded-6 sm:rounded-0 relative overflow-hidden transition-transform {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %} {% if section.blocks.size <= 1 %}w-80pct sm:w-full-priority m-0-auto-priority{% endif %}"
             {{ block.shopify_attributes }}
             data-block-id="{{ block.id }}"
             data-block-type="{{ block.type }}"
@@ -168,9 +168,11 @@
       </div>
     </div>
 
-    {% render 'nav-button', cls: 'slideshow-nav-button-prev left-10p-52 lg:left-10p-52 md:left-11p-52 sm:left-8', icon_cls: 'icon-arrow-left' %}
+    {% if section.blocks.size > 1 %}
+      {% render 'nav-button', cls: 'slideshow-nav-button-prev left-10p-52 lg:left-10p-52 md:left-11p-52 sm:left-8', icon_cls: 'icon-arrow-left' %}
 
-    {% render 'nav-button', cls: 'slideshow-nav-button-next right-10p-52 lg:right-10p-52 md:right-11p-52 sm:right-8' %}
+      {% render 'nav-button', cls: 'slideshow-nav-button-next right-10p-52 lg:right-10p-52 md:right-11p-52 sm:right-8' %}
+    {% endif %}
   </div>
 </slideshow-component>
 

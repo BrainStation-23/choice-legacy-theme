@@ -1,12 +1,12 @@
 {%- if paginate.pages > 1 -%}
-  <div class="flex justify-center pt-24">
+  <div class="flex  {{ class }}">
     <nav role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
       <ul role="list" class="flex gap-8 m-0 p-0 list-style-none ">
         {%- if paginate.previous -%}
           <li class="pl-12 pr-12 pt-10 pb-10 border border-color border-solid rounded-6">
             <a
               href="{{ paginate.previous.url }}#{{ section_id | default: 'pagination-section' }}"
-              class="text-primary  flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-500 fs-14-lh-20-ls-0_1"
+              class="text-primary  flex items-center justify-center h-32 w-32 rounded-6 no-underline text-brand ff-general-sans fw-500 fs-14-lh-20-ls-0_1"
               aria-label="{{ 'general.pagination.previous' | t }}"
             >
               {% render 'icon-left-arrow' %}
@@ -46,7 +46,7 @@
           <li class="pl-12 pr-12 pt-10 pb-10 border border-color border-solid rounded-6  ">
             <a
               href="{{ paginate.next.url }}#{{ section_id | default: 'pagination-section' }}"
-              class="flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-500 fs-14-lh-20-ls-0_1"
+              class="flex items-center justify-center h-32 w-32 rounded-6 no-underline  text-brand ff-general-sans fw-500 fs-14-lh-20-ls-0_1"
               aria-label="{{ 'general.pagination.next' | t }}"
             >
               {% render 'icon-right-arrow' %}

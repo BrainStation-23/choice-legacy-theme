@@ -1,6 +1,6 @@
 {% assign image_ratio = 1 %}
 <section class="w-full pt-88 pb-88 sm:pt-23 sm:pb-16  ">
-  <div class="page-width flex flex-col gap-64">
+  <div class="page-width flex flex-col gap-64 sm:gap-24">
     {% if section.settings.title != blank %}
       <h2 class="uppercase flex justify-center items-center ff-bebas-neue fw-400 fs-36-lh-40-ls-0 m-0 sm:fs-21-lh-24-ls-1_2pct">
         {{ section.settings.title }}
@@ -57,6 +57,7 @@
         data-enable-carousel="true"
         data-show-progress-bar="true"
         data-number-of-items="3"
+        data-nav-loop="false"
       >
         <div class="swiper-container flex flex-col gap-24 sm:relative sm:pb-20 overflow-hidden">
           <div class="swiper-wrapper">

@@ -17,7 +17,11 @@
         "main_menu": "choice-legacy-menu",
         "mega_menu_image": "shopify://shop_images/offer-image_5.png",
         "mega_menu_image_alt": "Featured products",
-        "undergarments_bg_color": "#030b1a"
+        "mega_menu_image_link": "shopify://collections/undergarment",
+        "undergarments_bg_color": "#030b1a",
+        "phone_number": "+8801330302626",
+        "whatsapp_number": "+8801330302626",
+        "messenger_link": "https://m.me/choicelegacy"
       }
     }
   },

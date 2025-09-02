@@ -33,6 +33,7 @@
         data-pause-on-hover="{{ section.settings.pause_on_hover }}"
         data-show-progress-bar="false"
         data-number-of-items="2"
+        data-nav-loop="false"
         class="flex flex-col gap-24"
       >
         {% if section.settings.heading != blank %}
@@ -48,10 +49,10 @@
           </div>
         {% endif %}
 
-        <div class="swiper-container">
+        <div class="swiper-container overflow-hidden">
           <div class="swiper-wrapper flex items-stretch">
             {% for product in collection.products limit: products_to_show %}
-              <div class="swiper-slide flex flex-col">
+              <div class="swiper-slide w-auto h-auto flex flex-col">
                 <div class="flex-1">
                   {% render 'product-card', product: product, css_classes: '', image_width: 268, image_height: 268 %}
                 </div>

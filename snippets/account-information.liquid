@@ -99,8 +99,21 @@
 
       <div class="flex flex-col gap-8">
         <div>
+          {%- assign unwanted_domain = '@choicelegacy.com.bd' -%}
+          {%- assign domain_length = unwanted_domain | size -%}
+          {%- assign customer_email = customer.email | downcase -%}
+          {%- assign email_length = customer_email | size -%}
+          {%- assign start_index = email_length | minus: domain_length -%}
+          {%- assign email_domain = customer_email | slice: start_index, domain_length -%}
+
+          {%- assign email_value = '' -%}
+          {%- if email_domain != unwanted_domain -%}
+            {%- assign email_value = customer.email -%}
+          {%- endif -%}
+
           {%- assign emailLabel = 'customer.account.email' | t -%}
           {%- assign emailPlaceholder = 'customer.account.email' | t -%}
+
           {% render 'input',
             type: 'email',
             id: 'email-input',
@@ -110,7 +123,7 @@
             autocomplete: 'email',
             required: false,
             class: 'w-full',
-            value: customer.email
+            value: email_value
           %}
         </div>
 
@@ -133,7 +146,7 @@
       </div>
     </div>
   </div>
-  <div class="flex flex-1 sm:hidden"></div>
+  <div class="flex flex-1 md:hidden sm:hidden"></div>
 </div>
 
 <!-- Email Change Modal -->
@@ -158,23 +171,36 @@
         </p>
 
         <div>
+          {%- assign unwanted_domain = '@choicelegacy.com.bd' -%}
+          {%- assign domain_length = unwanted_domain | size -%}
+          {%- assign email_to_hide = customer.email | downcase -%}
+          {%- assign email_length = email_to_hide | size -%}
+          {%- assign start_index = email_length | minus: domain_length -%}
+          {%- assign email_domain = email_to_hide | slice: start_index, domain_length -%}
+
+          {%- assign email_value = '' -%}
+          {%- if email_domain != unwanted_domain -%}
+            {%- assign email_value = customer.email -%}
+          {%- endif -%}
+
           {%- assign emailLabel = 'customer.account.email' | t -%}
           {%- assign emailPlaceholder = 'customer.account.email' | t -%}
+
           {% render 'input',
             type: 'email',
             id: 'newEmailInput',
-            name: 'customer[newEmailInput]',
+            name: 'customer[email]',
             label: emailLabel,
             placeholder: emailPlaceholder,
             autocomplete: 'email',
             required: false,
             class: 'w-full',
-            value: customer.email
+            value: email_value
           %}
         </div>
 
         <button
-          class="button--solid bg-brand border-none rounded-6 w-full"
+          class="button--solid bg-brand border-none rounded-6 w-full "
           id="sendOtpBtn"
           onclick="sendOTP()"
         >
@@ -198,7 +224,6 @@
             type="email"
             id="displayEmailInput"
             class="modal-input w-full pt-12 pb-12 pl-16 pr-16"
-            readonly
           >
         </div>
 
@@ -253,6 +278,22 @@
 </style>
 
 <script>
+  // Initialize toast manager - ensure it's available globally
+  let toastManager;
+
+  // Initialize when DOM is loaded
+  document.addEventListener('DOMContentLoaded', function () {
+    toastManager = new ToastNotificationManager();
+  });
+
+  // Fallback initialization function
+  function initToastManager() {
+    if (!toastManager) {
+      toastManager = new ToastNotificationManager();
+    }
+    return toastManager;
+  }
+
   function toggleEditMode() {
     // Hide edit button, show save/cancel buttons
     document.getElementById('editButton').style.display = 'none';
@@ -291,14 +332,17 @@
         // Success - show edit button, hide save/cancel buttons
         document.getElementById('editButton').style.display = 'flex';
         document.getElementById('saveCancel').style.display = 'none';
+
+        // Show success toast
+        initToastManager().show('Account information updated successfully!', 'success');
       } else {
-        // Handle error
+        // Handle error with toast
         console.error('Error updating customer:', result.message);
-        alert('Error updating customer: ' + result.message);
+        initToastManager().show(result.message || 'Something went wrong. Please try again.', 'error');
       }
     } catch (error) {
       console.error('Network error:', error);
-      alert('Network error occurred. Please try again.');
+      initToastManager().show('Network error occurred. Please try again.', 'error');
     } finally {
       // Hide spinner, show text
       document.getElementById('saveText').style.display = 'inline';
@@ -311,9 +355,9 @@
   }
 
   function cancelEdit() {
-
     document.getElementById('editButton').style.display = 'flex';
     document.getElementById('saveCancel').style.display = 'none';
+    initToastManager().show('Changes cancelled', 'info');
   }
 
   // Email Modal Functions
@@ -334,7 +378,7 @@
     const newEmail = document.getElementById('newEmailInput').value.trim();
 
     if (!newEmail) {
-      alert('Please enter a valid email address');
+      initToastManager().show('Please enter a valid email address', 'error');
       return;
     }
 
@@ -351,14 +395,14 @@
         .querySelector('#phone-field .ff-general-sans.fs-14-lh-16-ls-0.fw-500')
         .textContent.trim();
 
-      const response = await fetch(`/apps/${APP_SUB_PATH}/customer/account/send-otp`, {
+      const response = await fetch(`/apps/${APP_SUB_PATH}/customer/account/email-change-send-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           phone: customerPhone,
-          register: false,
+          newEmail: newEmail,
         }),
       });
 
@@ -371,13 +415,14 @@
         document.getElementById('displayEmailInput').value = newEmail;
 
         console.log('OTP sent successfully');
+        initToastManager().show('OTP sent successfully! Please check your SMS.', 'success');
       } else {
         console.error('Error sending OTP:', result.message);
-        alert('Error sending OTP: ' + result.message);
+        initToastManager().show(result.message || 'Error sending OTP. Please try again.', 'error');
       }
     } catch (error) {
       console.error('Network error:', error);
-      alert('Network error occurred. Please try again.');
+      initToastManager().show('Network error occurred. Please try again.', 'error');
     } finally {
       document.getElementById('sendOtpText').style.display = 'inline';
       document.getElementById('sendOtpSpinner').style.display = 'none';
@@ -390,6 +435,7 @@
 
   async function resendOTP() {
     // Reuse the sendOTP function logic
+    initToastManager().show('Resending OTP...', 'info');
     await sendOTP();
   }
 
@@ -399,7 +445,7 @@
     const newEmail = document.getElementById('displayEmailInput').value;
 
     if (!otpValue || otpValue.length < 6) {
-      alert('Please enter the complete 6-digit OTP');
+      initToastManager().show('Please enter the complete 6-digit OTP', 'error');
       return;
     }
 
@@ -433,7 +479,7 @@
 
       if (!otpResult.success) {
         console.error('Error confirming OTP:', otpResult.message);
-        alert('Error confirming OTP: ' + otpResult.message);
+        initToastManager().show(otpResult.message || 'Invalid OTP. Please try again.', 'error');
         return;
       }
 
@@ -465,14 +511,14 @@
         closeEmailModal();
 
         console.log('Email updated successfully');
-        alert('Email updated successfully');
+        initToastManager().show('Email updated successfully!', 'success');
       } else {
         console.error('Error updating customer:', updateResult.message);
-        alert('Error updating customer: ' + updateResult.message);
+        initToastManager().show(updateResult.message || 'Error updating customer. Please try again.', 'error');
       }
     } catch (error) {
       console.error('Network error:', error);
-      alert('Network error occurred. Please try again.');
+      initToastManager().show('Network error occurred. Please try again.', 'error');
     } finally {
       // Hide spinner, show text
       document.getElementById('submitText').style.display = 'inline';

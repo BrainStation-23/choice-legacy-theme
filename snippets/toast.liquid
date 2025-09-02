@@ -1,8 +1,38 @@
 <style>
+  .toast-wrapper {
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+    display: none;
+    transition: opacity 0.3s, transform 0.3s;
+  }
+
   .toast-wrapper.show {
     opacity: 1;
     transform: translateY(0);
     display: flex;
+  }
+
+  @media screen and (max-width: 768px) {
+    #toast-area {
+      width: calc(100% - 24px);
+    }
+  }
+
+  @media screen and (max-width: 420px) {
+    #toast-area {
+      width: calc(100% - 16px);
+    }
+
+    .toast-wrapper {
+      padding: 12px;
+      gap: 6px;
+    }
+
+    .toast-text {
+      font-size: 13px;
+      line-height: 18px;
+    }
   }
 </style>
 
@@ -18,7 +48,7 @@
 >
   <div
     id="success-toast-wrapper"
-    class="toast-wrapper rounded-12 opacity-0 transition-transform translate-y--20 pointer-events-auto success flex items-center gap-8 p-16 bg-success-light"
+    class="toast-wrapper rounded-12 opacity-0 transition-transform translate-y--20 pointer-events-auto success flex items-center gap-8 p-16 bg-success-light sm:w-full sm:justify-center"
   >
     <span class="w-20 h-20">{% render 'icon-success' %}</span>
     <span class="toast-text fw-400 fs-14-lh-20-ls-0 text-primary"></span>

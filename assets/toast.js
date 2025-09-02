@@ -33,20 +33,22 @@ class ToastNotificationManager {
 
     targetToastWrapper.style.display = "flex";
 
+    // First add "show" after a short delay
     setTimeout(() => {
       targetToastWrapper.classList.add("show");
-    }, 50);
 
-    setTimeout(() => {
-      targetToastWrapper.classList.remove("show");
-      targetToastWrapper.addEventListener(
-        "transitionend",
-        () => {
-          targetToastWrapper.style.display = "none";
-        },
-        { once: true }
-      );
-    }, duration);
+      // Now start hide timer only AFTER showing
+      setTimeout(() => {
+        targetToastWrapper.classList.remove("show");
+        targetToastWrapper.addEventListener(
+          "transitionend",
+          () => {
+            targetToastWrapper.style.display = "none";
+          },
+          { once: true }
+        );
+      }, duration);
+    }, 50);
   }
 
   hideAllToastsImmediate() {

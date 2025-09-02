@@ -4,7 +4,15 @@
   <div class="flex gap-8 mb-24" {{ block.shopify_attributes }}>
     <input type="hidden" name="id" value="{{ current_variant.id }}">
 
-    {% render "product-form", show_cart_icon: true, cls: "fs-16-lh-100pct-ls-0" %}
+    <product-form class="product-form">
+      {%- form 'product', product -%}
+        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+        <button type="submit" name="add" class="button button--outline flex items-center justify-center gap-4 fs-16-lh-100pct-ls-0 h-56">
+          {% render "cart-icon" %}
+          {{ 'general.cart.add_to_cart.label' | t }}
+        </button>
+      {%- endform -%}
+    </product-form>
 
     {{ form | payment_button }}
   </div>

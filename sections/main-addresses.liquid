@@ -1,7 +1,8 @@
 <!-- Main Address Management Template -->
-<div class="customer-account__container flex flex-row sm:flex-col  gap-64 page-width pt-40 pb-40 sm:pt-16 sm:pb-16 sm:gap-24">
+<div class="customer-account__container flex flex-row sm:flex-col gap-64 page-width pt-40 pb-40 sm:pt-16 sm:pb-16 sm:gap-24">
   <div class="">{% render 'customer-account-sidebar' %}</div>
-  <div class="flex flex-col gap-24 sm:w-full">
+
+  <div class="flex flex-col gap-24 sm:w-full w-full max-w-637">
     <div class="flex gap-24" id="manage-address-heading">
       <h2 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500">
         {{ 'customer.addresses.manage_address' | t }}
@@ -11,16 +12,13 @@
       </button>
     </div>
 
-    <div id="address-list-container" class="grid grid-cols-2  sm:grid-cols-1 gap-24">
+    <div id="address-list-container" class="grid grid-cols-2 md:grid-cols-1 sm:grid-cols-1 gap-24">
       {%- for address in customer.addresses -%}
         <div
           id="address-card-{{ address.id }}"
-          class="
-             border border-solid  rounded-12 pt-24  pb-24 flex flex-col gap-16
-            {% if address == customer.default_address %} border-color-brand {% else %} border-color {% endif %}
-          "
+          class="border border-solid rounded-12 pt-24 pb-24 flex flex-col gap-16{% if address == customer.default_address %} border-color-brand{% else %} border-color{% endif %}"
         >
-          <h1 id="address-name-{{ address.id }}" class=" pl-24 pr-24 ff-general-sans fw-600 fs-16-lh-22-ls-0 m-0">
+          <h1 id="address-name-{{ address.id }}" class="pl-24 pr-24 ff-general-sans fw-600 fs-16-lh-22-ls-0 m-0">
             {{ address.first_name }}
             {{ address.last_name }}
           </h1>
@@ -29,61 +27,53 @@
             {{ address.address2 }}
             {{ address.company }}
             {{ address.city }}, {{ address.province }}
-            {{ address.zip }},{{ address.country }}
+            {{ address.zip }}, {{ address.country }}
           </p>
 
           <div
             id="address-actions-{{ address.id }}"
-            class="mt-auto flex justify-between pl-24 pr-24 border-t border-t-color border-t-solid pt-16 "
+            class="mt-auto flex justify-between pl-24 pr-24 border-t border-t-color border-t-solid pt-16"
           >
             <button
               type="button"
               data-address="{{ address.id }}"
               id="edit-address-btn-{{ address.id }}"
-              class="button--link  no-underline text-brand ff-general-sans fw-600 fs-14-lh-20-ls-0 m-0 bg-transparent border-0 cursor-pointer"
+              class="button--link no-underline text-brand ff-general-sans fw-600 fs-14-lh-20-ls-0 m-0 bg-transparent border-0 cursor-pointer"
             >
-              {{- 'customer.addresses.edit_address' | t -}}
+              {{ 'customer.addresses.edit_address' | t }}
             </button>
             <button
               type="button"
               data-address="{{ address.id }}"
               data-confirm="{{ 'customer.addresses.delete_confirm' | t }}"
               id="delete-address-btn-{{ address.id }}"
-              class="button--link  no-underline text-brand ff-general-sans fw-600 fs-14-lh-20-ls-0 m-0 bg-transparent border-0 cursor-pointer"
+              class="button--link no-underline text-brand ff-general-sans fw-600 fs-14-lh-20-ls-0 m-0 bg-transparent border-0 cursor-pointer"
             >
-              {{- 'customer.addresses.delete' | t -}}
+              {{ 'customer.addresses.delete' | t }}
             </button>
           </div>
         </div>
       {%- endfor -%}
     </div>
 
-    <!-- Add Address Form Container -->
     <div id="add-form-container" style="display: none;">
-      <div id="add-form-wrapper" class="flex flex-col gap-24 sm:w-full">
-        <div id="add-form-header" class="mb-24 flex sm:flex items-center gap-16 ">
+      <div id="add-form-wrapper" class="flex flex-col gap-24 w-full max-w-637 sm:w-full">
+        <div id="add-form-header" class="flex sm:flex items-center gap-24">
           <div id="add-back-arrow" class="sm:flex-1 cursor-pointer">
             {% render 'icon-left-arrow' %}
           </div>
           <h2 id="add-heading" class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500 sm:flex-2 text-left">
-            {{- 'customer.addresses.add_address' | t -}}
+            {{ 'customer.addresses.add_address' | t }}
           </h2>
         </div>
         {% render 'address-add-form' %}
       </div>
     </div>
 
-    <!-- Address Edit Form Include -->
     {% for address in customer.addresses %}
-      <div
-        id="edit-form-container-{{ address.id }}"
-        data-address-edit-form="{{ address.id }}"
-        style="display: none;"
-      >
-        <!-- Updated Address Edit Form -->
-        <div id="edit-form-wrapper-{{ address.id }}" class="flex flex-col gap-24 sm:w-full">
-          <!-- Fixed: Updated edit heading to match manage heading style -->
-          <div id="edit-form-header-{{ address.id }}" class="mb-24 flex sm:flex items-center gap-16">
+      <div id="edit-form-container-{{ address.id }}" data-address-edit-form="{{ address.id }}" style="display: none;">
+        <div id="edit-form-wrapper-{{ address.id }}" class="flex flex-col gap-24 sm:w-full w-full max-w-637">
+          <div id="edit-form-header-{{ address.id }}" class="flex sm:flex items-center gap-16">
             <div id="back-arrow-{{ address.id }}" class="sm:flex-1 cursor-pointer" data-address-id="{{ address.id }}">
               {% render 'icon-left-arrow' %}
             </div>
@@ -91,17 +81,14 @@
               id="edit-heading-{{ address.id }}"
               class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500 sm:flex-2 text-left"
             >
-              {{- 'customer.addresses.edit_address' | t -}}
+              {{ 'customer.addresses.edit_address' | t }}
             </h2>
           </div>
-
-          {% comment %} Fixed: Added proper action URL {% endcomment %}
           {% render 'address-edit-form', address: address %}
         </div>
       </div>
     {% endfor %}
 
-    <!-- Hidden Delete Forms -->
     {% for address in customer.addresses %}
       <form id="delete-form-{{ address.id }}" style="display: none;" method="POST" action="{{ address.url }}">
         <input type="hidden" name="_method" value="delete">
@@ -118,192 +105,244 @@
   </div>
 </div>
 
+<div
+  id="delete-modal"
+  class="fixed top-0 left-0 w-full h-full z-9999 items-center justify-center"
+  style="display: none;"
+>
+  <div class="absolute top-0 left-0 w-full h-full bg-primary-light-50pct delete-modal__backdrop"></div>
+  <div class="p-24 flex flex-col gap-16 rounded-12 w-90pct max-w-300 bg-bg relative">
+    <div class="flex justify-between items-center">
+      <h3 class="fs-36-lh-40-ls-0 fw-400 m-0">
+        {{ 'customer.addresses.confirm_delete' | t }}
+      </h3>
+      <span id="delete-modal-close" class="fs-14-lh-100pct-ls-0 cursor-pointer">
+        {% render 'icon-cross', width: '24', height: '24' %}
+      </span>
+    </div>
+    <p id="delete-modal-message" class="ff-general-sans fs-14-lh-100pct-ls-0 fw-500">
+      {{ 'customer.addresses.delete_confirm' | t }}
+    </p>
+    <div class="flex gap-16">
+      <button
+        id="delete-modal-cancel"
+        class="button--outline fs-14-lh-100pct-ls-0 fw-600 cursor-pointer border-1_5 h-44 flex-1"
+        type="button"
+      >
+        {{ 'general.cancel' | t | default: 'Cancel' }}
+      </button>
+      <button
+        id="delete-modal-confirm"
+        class="flex-1 button--solid border-none rounded-6 cursor-pointer ff-general-sans fs-14-lh-100pct-ls-0 fw-600 text-white rounded-6 h-44"
+        type="button"
+      >
+        {{ 'customer.addresses.submit' | t }}
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const addressListContainer = document.getElementById('address-list-container');
-    const manageAddressHeading = document.getElementById('manage-address-heading');
-    const addFormContainer = document.getElementById('add-form-container');
+  class AddressManager {
+    constructor() {
+      this.elements = this.initializeElements();
+      this.toastManager = new ToastNotificationManager();
+      this.currentDeleteAddressId = null;
+      this.init();
+    }
 
-    // Single event listener for all button clicks using event delegation
-    document.addEventListener('click', function (e) {
-      const clickedElementId = e.target.id;
+    initializeElements() {
+      return {
+        addressListContainer: document.getElementById('address-list-container'),
+        manageAddressHeading: document.getElementById('manage-address-heading'),
+        addFormContainer: document.getElementById('add-form-container'),
+        deleteModal: document.getElementById('delete-modal'),
+        deleteModalClose: document.getElementById('delete-modal-close'),
+        deleteModalCancel: document.getElementById('delete-modal-cancel'),
+        deleteModalConfirm: document.getElementById('delete-modal-confirm'),
+        deleteModalMessage: document.getElementById('delete-modal-message'),
+      };
+    }
 
-      // Handle Add Address Button Click
-      if (clickedElementId === 'add-address-btn') {
-        e.preventDefault();
+    init() {
+      this.bindEvents();
+      this.handlePageLoad();
+    }
 
-        // Hide the manage address heading and address list
-        manageAddressHeading.style.display = 'none';
-        addressListContainer.style.setProperty('display', 'none', 'important');
+    bindEvents() {
+      document.addEventListener('click', this.handleClick.bind(this));
+      document.addEventListener('submit', this.handleSubmit.bind(this));
+      document.addEventListener('keydown', this.handleKeydown.bind(this));
 
-        // Hide all edit forms
-        const allEditForms = document.querySelectorAll('[id^="edit-form-container-"]');
-        allEditForms.forEach((container) => {
-          container.style.display = 'none';
-        });
-
-        // Show the add form
-        addFormContainer.style.display = 'flex';
-        return;
-      }
-
-      // Handle Add Form Back Arrow Click
-      if (clickedElementId === 'add-back-arrow' || e.target.closest('#add-back-arrow')) {
-        e.preventDefault();
-
-        // Hide the add form
-        addFormContainer.style.display = 'none';
-
-        // Hide all edit forms
-        const allEditForms = document.querySelectorAll('[id^="edit-form-container-"]');
-        allEditForms.forEach((container) => {
-          container.style.display = 'none';
-        });
-
-        // Show the manage address heading and address list
-        manageAddressHeading.style.display = 'flex';
-        addressListContainer.style.display = 'grid';
-        return;
-      }
-
-      // Check if the clicked element or its parent is a back arrow for edit forms
-      let backArrowElement = null;
-      let addressId = null;
-
-      // First check if the clicked element itself is a back arrow
-      if (clickedElementId && clickedElementId.startsWith('back-arrow-')) {
-        backArrowElement = e.target;
-        addressId = backArrowElement.getAttribute('data-address-id');
-      }
-      // If not, check if the clicked element is inside a back arrow container
-      else {
-        backArrowElement = e.target.closest('[id^="back-arrow-"]');
-        if (backArrowElement) {
-          addressId = backArrowElement.getAttribute('data-address-id');
+      this.elements.deleteModal.addEventListener('click', (e) => {
+        if (e.target.classList.contains('delete-modal__backdrop')) {
+          this.hideDeleteModal();
         }
-      }
+      });
+    }
 
-      // Handle Back Arrow Button Clicks (Cancel Edit)
-      if (backArrowElement && addressId) {
+    handleClick(e) {
+      const clickedId = e.target.id;
+
+      if (clickedId === 'add-address-btn') {
         e.preventDefault();
-
-        // Hide all edit forms
-        const allEditForms = document.querySelectorAll('[id^="edit-form-container-"]');
-        allEditForms.forEach((container) => {
-          container.style.display = 'none';
-        });
-
-        // Hide add form
-        addFormContainer.style.display = 'none';
-
-        // Show the manage address heading and address list
-        manageAddressHeading.style.display = 'flex';
-        addressListContainer.style.display = 'grid';
-        return; // Exit early to prevent other handlers
+        this.showAddForm();
+      } else if (clickedId === 'add-back-arrow' || e.target.closest('#add-back-arrow')) {
+        e.preventDefault();
+        this.showAddressList();
+      } else if (this.isBackArrow(e.target, clickedId)) {
+        e.preventDefault();
+        this.showAddressList();
+      } else if (clickedId && clickedId.startsWith('edit-address-btn-')) {
+        this.showEditForm(e.target.getAttribute('data-address'));
+      } else if (clickedId && clickedId.startsWith('delete-address-btn-')) {
+        e.preventDefault();
+        this.showDeleteModal(e.target.getAttribute('data-address'), e.target.getAttribute('data-confirm'));
+      } else if (clickedId === 'delete-modal-cancel') {
+        e.preventDefault();
+        this.hideDeleteModal();
+      } else if (clickedId === 'delete-modal-close' || e.target.closest('#delete-modal-close')) {
+        e.preventDefault();
+        this.hideDeleteModal();
+      } else if (clickedId === 'delete-modal-confirm') {
+        e.preventDefault();
+        this.confirmDelete();
       }
+    }
 
-      // Handle Edit Address Button Clicks
-      if (clickedElementId && clickedElementId.startsWith('edit-address-btn-')) {
-        const addressId = e.target.getAttribute('data-address');
-        const editFormContainer = document.getElementById(`edit-form-container-${addressId}`);
-
-        if (editFormContainer) {
-          // Hide the manage address heading and address list
-          manageAddressHeading.style.display = 'none';
-          addressListContainer.style.setProperty('display', 'none', 'important');
-
-          // Hide add form
-          addFormContainer.style.display = 'none';
-
-          // Hide all other edit forms
-          const allEditForms = document.querySelectorAll('[id^="edit-form-container-"]');
-          allEditForms.forEach((container) => {
-            container.style.display = 'none';
-          });
-
-          // Show the specific edit form
-          editFormContainer.style.display = 'block';
-
-          // Set the correct country value
-          const countrySelect = editFormContainer.querySelector('select[name="address[country]"]');
-          if (countrySelect) {
-            const defaultCountry = countrySelect.getAttribute('data-default-country');
-            if (defaultCountry) {
-              countrySelect.value = defaultCountry;
-            }
-          }
-        }
-      }
-
-      // Handle Delete Address Button Clicks
-      if (clickedElementId && clickedElementId.startsWith('delete-address-btn-')) {
-        const addressId = e.target.getAttribute('data-address');
-        const confirmMessage = e.target.getAttribute('data-confirm');
-
-        if (confirm(confirmMessage)) {
-          const deleteForm = document.getElementById(`delete-form-${addressId}`);
-          if (deleteForm) {
-            const submitButton = document.getElementById(`delete-submit-btn-${addressId}`);
-            if (submitButton) {
-              submitButton.click();
-            }
-          }
-        }
-      }
-    });
-
-    // Enhanced form submission handling
-    document.addEventListener('submit', function (e) {
+    handleSubmit(e) {
       const form = e.target;
-
-      // Check if this is an address form (edit or add)
       const editContainer = form.closest('[id^="edit-form-container-"]');
       const addContainer = form.closest('#add-form-container');
 
       if (editContainer || addContainer) {
-        console.log('Address form submitted');
-
-        // Find the submit button for this specific form
         const submitButton = form.querySelector('button[type="submit"]');
 
         if (submitButton) {
-          const originalText = submitButton.textContent;
-          submitButton.textContent = 'Saving...';
-          submitButton.disabled = true;
-
-          // Reset button after a delay (in case of errors)
-          setTimeout(() => {
-            submitButton.textContent = originalText;
-            submitButton.disabled = false;
-          }, 5000);
+          this.handleFormSubmission(submitButton, editContainer ? 'edit' : 'add');
         }
       }
-    });
-
-    // Handle page reload after successful submission
-    const urlParams = new URLSearchParams(window.location.search);
-    if (
-      urlParams.get('updated') === 'true' ||
-      urlParams.get('added') === 'true' ||
-      window.location.hash === '#updated' ||
-      window.location.hash === '#added'
-    ) {
-      // Hide all forms
-      const allEditForms = document.querySelectorAll('[id^="edit-form-container-"]');
-      allEditForms.forEach((container) => {
-        container.style.display = 'none';
-      });
-      addFormContainer.style.display = 'none';
-
-      // Show both heading and address list after successful update/add
-      manageAddressHeading.style.display = 'block';
-      addressListContainer.style.display = 'grid';
     }
-  });
+
+    handleKeydown(e) {
+      if (e.key === 'Escape' && this.elements.deleteModal.style.display === 'flex') {
+        this.hideDeleteModal();
+      }
+    }
+
+    isBackArrow(target, clickedId) {
+      if (clickedId && clickedId.startsWith('back-arrow-')) {
+        return true;
+      }
+
+      const backArrowElement = target.closest('[id^="back-arrow-"]');
+      return !!backArrowElement;
+    }
+
+    showAddForm() {
+      this.hideAllForms();
+      this.elements.manageAddressHeading.style.display = 'none';
+      this.elements.addressListContainer.style.setProperty('display', 'none', 'important');
+      this.elements.addFormContainer.style.display = 'flex';
+    }
+
+    showEditForm(addressId) {
+      const editFormContainer = document.getElementById(`edit-form-container-${addressId}`);
+
+      if (editFormContainer) {
+        this.hideAllForms();
+        this.elements.manageAddressHeading.style.display = 'none';
+        this.elements.addressListContainer.style.setProperty('display', 'none', 'important');
+        editFormContainer.style.display = 'block';
+
+        const countrySelect = editFormContainer.querySelector('select[name="address[country]"]');
+        if (countrySelect) {
+          const defaultCountry = countrySelect.getAttribute('data-default-country');
+          if (defaultCountry) {
+            countrySelect.value = defaultCountry;
+          }
+        }
+      }
+    }
+
+    showAddressList() {
+      this.hideAllForms();
+      this.elements.manageAddressHeading.style.display = 'flex';
+      this.elements.addressListContainer.style.display = 'grid';
+    }
+
+    hideAllForms() {
+      const allEditForms = document.querySelectorAll('[id^="edit-form-container-"]');
+      allEditForms.forEach((container) => (container.style.display = 'none'));
+      this.elements.addFormContainer.style.display = 'none';
+    }
+
+    showDeleteModal(addressId, confirmMessage) {
+      this.currentDeleteAddressId = addressId;
+
+      if (confirmMessage) {
+        this.elements.deleteModalMessage.textContent = confirmMessage;
+      }
+
+      this.elements.deleteModal.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    hideDeleteModal() {
+      this.elements.deleteModal.style.display = 'none';
+      document.body.style.overflow = '';
+      this.currentDeleteAddressId = null;
+    }
+
+    confirmDelete() {
+      if (this.currentDeleteAddressId) {
+        const deleteForm = document.getElementById(`delete-form-${this.currentDeleteAddressId}`);
+        const submitButton = document.getElementById(`delete-submit-btn-${this.currentDeleteAddressId}`);
+
+        if (deleteForm && submitButton) {
+          this.hideDeleteModal();
+          this.toastManager.show('Address deleted successfully', 'success');
+          submitButton.click();
+        }
+      }
+    }
+
+    handleFormSubmission(submitButton, type) {
+      const originalText = submitButton.textContent;
+      submitButton.textContent = 'Saving...';
+      submitButton.disabled = true;
+
+      setTimeout(() => {
+        const message = type === 'edit' ? 'Address updated successfully' : 'Address added successfully';
+        this.toastManager.show(message, 'success');
+      }, 500);
+
+      setTimeout(() => {
+        submitButton.textContent = originalText;
+        submitButton.disabled = false;
+      }, 5000);
+    }
+
+    handlePageLoad() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const isUpdated = urlParams.get('updated') === 'true' || window.location.hash === '#updated';
+      const isAdded = urlParams.get('added') === 'true' || window.location.hash === '#added';
+
+      if (isUpdated || isAdded) {
+        this.hideAllForms();
+        this.elements.manageAddressHeading.style.display = 'block';
+        this.elements.addressListContainer.style.display = 'grid';
+
+        const message = isUpdated ? 'Address updated successfully' : 'Address added successfully';
+        this.toastManager.show(message, 'success');
+      }
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => new AddressManager());
 </script>
 
 <style>
-  /* Make checkbox input larger on all devices */
   [id^='set-default-address-checkbox-'] input {
     width: 20px;
     height: 20px;
