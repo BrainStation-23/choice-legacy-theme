@@ -188,7 +188,7 @@
 
           {% render 'input',
             type: 'email',
-            id: 'email-input',
+            id: 'newEmailInput',
             name: 'customer[email]',
             label: emailLabel,
             placeholder: emailPlaceholder,
@@ -200,7 +200,7 @@
         </div>
 
         <button
-          class="button--solid bg-brand border-none rounded-6 w-full"
+          class="button--solid bg-brand border-none rounded-6 w-full "
           id="sendOtpBtn"
           onclick="sendOTP()"
         >
@@ -375,16 +375,14 @@
         .querySelector('#phone-field .ff-general-sans.fs-14-lh-16-ls-0.fw-500')
         .textContent.trim();
 
-      const response = await fetch(`/apps/${APP_SUB_PATH}/customer/account/send-otp`, {
+      const response = await fetch(`/apps/${APP_SUB_PATH}/customer/account/email-change-send-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           phone: customerPhone,
-          register: false,
           newEmail: newEmail,
-          customerEmailChange: true,
         }),
       });
 

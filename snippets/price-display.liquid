@@ -12,7 +12,11 @@
   {% render 'custom-price-display', money_value: order.total_net_amount, currency_object: order.currency %}
 {%- endcomment -%}
 
-{%- if currency_object == 'BDT' and money_value > 0 -%}
+{%- comment -%}
+  Changed the condition from 'money_value > 0' to 'money_value >= 0'
+  to correctly format zero values with the '৳' symbol.
+{%- endcomment -%}
+{%- if currency_object == 'BDT' and money_value >= 0 -%}
   <span class="bdt-symbol">৳</span>&nbsp;{{ money_value | money_without_currency }}
 {%- else -%}
   {{ money_value | money | default: '৳ 0.00' }}

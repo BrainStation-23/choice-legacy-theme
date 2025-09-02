@@ -376,7 +376,7 @@
         const data = await res.json();
 
         if (res.ok) {
-          toastManager.show('Registration successful! Redirecting...', 'success');
+          toastManager.show('Registration successful.', 'success');
           setTimeout(() => {
             window.location.href = '/account/login';
           }, 2000);

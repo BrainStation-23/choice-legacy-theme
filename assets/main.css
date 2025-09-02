@@ -53,12 +53,14 @@ mark {
   font-size: calc(14 * var(--font-unit));
   line-height: 100%;
   letter-spacing: 0;
+  cursor: pointer;
 }
 
 .button--solid {
   background: rgb(var(--color-primary-brand));
   color: rgb(var(--color-background));
   padding: 16px;
+  cursor: pointer;
 }
 
 .button--outline {
@@ -67,11 +69,13 @@ mark {
   border-radius: 6px;
   border: 1.5px solid rgba(var(--color-primary-brand));
   padding: 10px 16px;
+  cursor: pointer;
 }
 
 .button--link {
   color: rgb(var(--color-primary-brand));
   border: none;
+  cursor: pointer;
 }
 
 .button:disabled {
@@ -1350,6 +1354,9 @@ address {
 .w-46 {
   width: 46px;
 }
+.w-47 {
+  width: 47px;
+}
 .w-44 {
   width: 44px;
 }
@@ -2463,6 +2470,9 @@ address {
   .sm\:pl-8 {
     padding-left: calc(8 * var(--space-unit));
   }
+  .sm\:pl-10 {
+    padding-left: calc(10 * var(--space-unit));
+  }
   .sm\:pl-12 {
     padding-left: calc(12 * var(--space-unit));
   }
@@ -2475,6 +2485,9 @@ address {
 
   .sm\:pr-0 {
     padding-right: 0;
+  }
+  .sm\:pr-10 {
+    padding-right: calc(10 * var(--space-unit));
   }
   .sm\:pr-8 {
     padding-right: calc(8 * var(--space-unit));
@@ -2498,6 +2511,10 @@ address {
   .sm\:pt-10 {
     padding-top: calc(10 * var(--space-unit));
   }
+  .sm\:pt-12 {
+    padding-top: calc(12 * var(--space-unit));
+  }
+
   .sm\:pt-15 {
     padding-top: calc(15 * var(--space-unit));
   }
@@ -2531,6 +2548,9 @@ address {
   }
   .sm\:pb-10 {
     padding-bottom: calc(10 * var(--space-unit));
+  }
+  .sm\:pb-12 {
+    padding-bottom: calc(12 * var(--space-unit));
   }
   .sm\:pb-15 {
     padding-bottom: calc(15 * var(--space-unit));
