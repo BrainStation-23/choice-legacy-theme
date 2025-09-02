@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const ratingHeader = document.getElementById("rating-header");
   const purchasedProducts = window.customerPurchasedProducts || [];
   const ITEMS_PER_PAGE = 10;
-  let activeTab = "reviewed";
+  let activeTab = "to_review";
 
   const reviewPagination = new PaginationManager({
     containerId: "pagination-controls",

@@ -81,6 +81,10 @@
       "product": "Product",
       "rating": "Rating",
       "action": "Action"
+    },
+    "tabs": {
+      "review": "Review",
+      "reviewed": "Reviewed"
     }
   },
   "sections": {
