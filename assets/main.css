@@ -1458,6 +1458,9 @@ address {
 .max-w-120 {
   max-width: 120px;
 }
+.max-w-216 {
+  max-width: 216px;
+}
 .max-w-406 {
   max-width: 406px;
 }
