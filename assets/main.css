@@ -1608,6 +1608,9 @@ address {
   .sm\:w-auto {
     width: auto;
   }
+  .sm\:flex-auto {
+    flex: auto;
+  }
   .sm\:w-304 {
     width: 304px;
   }
