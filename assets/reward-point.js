@@ -20,8 +20,22 @@ document.addEventListener("DOMContentLoaded", () => {
     return data;
   };
 
+  const checkCartForDiscountCode = async (discountCode) => {
+    try {
+      const response = await fetch("/cart.js");
+      const cart = await response.json();
+
+      const discountCodes =
+        cart?.discount_codes?.map((discount) => discount.code) || [];
+      return discountCodes.includes(discountCode);
+    } catch (error) {
+      console.error("Error checking cart:", error);
+      return false;
+    }
+  };
+
   // Generate redeem cards from API response
-  const generateRedeemCards = (redeemPointsCards) => {
+  const generateRedeemCards = async (redeemPointsCards) => {
     if (!redeemPointsCards || redeemPointsCards.length === 0) {
       document.getElementById("redeemPointsSection").style.display = "none";
       return;
@@ -35,22 +49,67 @@ document.addEventListener("DOMContentLoaded", () => {
     desktopContainer.innerHTML = "";
     mobileWrapper.innerHTML = "";
 
-    redeemPointsCards.forEach((card) => {
+    for (const card of redeemPointsCards) {
       // Check if this card is the active redeem card
       const isActiveRedeemCard =
         activeRedeemData && activeRedeemData.redeemCardId === card._id;
-      const buttonText = isActiveRedeemCard
-        ? window.rewardPointLocalization.applyToCart
-        : window.rewardPointLocalization.redeemNow;
-      const buttonClass = isActiveRedeemCard
-        ? "apply-to-cart-button"
-        : "redeem-now-button";
+
+      let buttonText = window.rewardPointLocalization.redeemNow;
+      let buttonClass = "redeem-now-button";
+      let isDisabled = false;
+
+      if (isActiveRedeemCard) {
+        // Check if the discount code is already applied in cart
+        const isAppliedInCart = await checkCartForDiscountCode(
+          activeRedeemData.code
+        );
+
+        if (isAppliedInCart) {
+          buttonText = "Already Applied";
+          buttonClass = "apply-to-cart-button disabled";
+          isDisabled = true;
+        } else {
+          buttonText = window.rewardPointLocalization.applyToCart;
+          buttonClass = "apply-to-cart-button";
+        }
+      }
 
       // Desktop card
       const desktopCard = document.createElement("div");
       desktopCard.className =
         "redeem-card p-16 rounded-8 bg-brand-2 min-w-285 lg:w-full md:w-full md:min-w-auto";
       desktopCard.innerHTML = `
+      <div class="flex flex-col gap-20">
+        <div class="flex flex-col gap-8">
+          <span class="fs-16-lh-24-ls-0 fw-400 text-label">${
+            card.redeemPointValue
+          } ${window.rewardPointLocalization.rewardPointsLabel}</span>
+          <span class="fs-23-lh-24-ls-0 fw-500 text-primary">${
+            card.calculatedDiscount
+          } ${window.rewardPointLocalization.off}</span>
+        </div>
+        <div>
+          <button class="${buttonClass} button button--solid rounded-6 fs-16-lh-24-ls-0 fw-600 pr-16 pl-16 pt-10 pb-10 ${
+        isDisabled ? "disabled" : ""
+      }" data-points-required="${card.redeemPointValue}" data-redeem-card-id="${
+        card._id
+      }" ${
+        isActiveRedeemCard && !isDisabled
+          ? `data-discount-code="${activeRedeemData.code}"`
+          : ""
+      } ${isDisabled ? "disabled" : ""}>
+              ${buttonText}
+          </button>
+        </div>
+      </div>
+    `;
+
+      // Mobile card
+      const mobileSlide = document.createElement("div");
+      mobileSlide.className = "swiper-slide w-auto";
+      mobileSlide.style.boxSizing = "border-box";
+      mobileSlide.innerHTML = `
+      <div class="redeem-card p-16 rounded-8 bg-brand-2 min-w-285">
         <div class="flex flex-col gap-20">
           <div class="flex flex-col gap-8">
             <span class="fs-16-lh-24-ls-0 fw-400 text-label">${
@@ -61,56 +120,31 @@ document.addEventListener("DOMContentLoaded", () => {
             } ${window.rewardPointLocalization.off}</span>
           </div>
           <div>
-            <button class="${buttonClass} button button--solid rounded-6 fs-16-lh-24-ls-0 fw-600 pr-16 pl-16 pt-10 pb-10" data-points-required="${
-        card.redeemPointValue
-      }" data-redeem-card-id="${card._id}" ${
-        isActiveRedeemCard
+            <button class="${buttonClass} button button--solid rounded-6 fs-16-lh-24-ls-0 fw-600 pr-16 pl-16 pt-10 pb-10 ${
+        isDisabled ? "disabled" : ""
+      }" data-points-required="${card.redeemPointValue} data-redeem-card-id="${
+        card._id
+      }" ${
+        isActiveRedeemCard && !isDisabled
           ? `data-discount-code="${activeRedeemData.code}"`
           : ""
-      }>
-              ${buttonText}
+      } ${isDisabled ? "disabled" : ""}>
+                ${buttonText}
             </button>
           </div>
         </div>
-      `;
-
-      // Mobile card
-      const mobileSlide = document.createElement("div");
-      mobileSlide.className = "swiper-slide w-auto";
-      mobileSlide.style.boxSizing = "border-box";
-      mobileSlide.innerHTML = `
-        <div class="redeem-card p-16 rounded-8 bg-brand-2 min-w-285">
-          <div class="flex flex-col gap-20">
-            <div class="flex flex-col gap-8">
-              <span class="fs-16-lh-24-ls-0 fw-400 text-label">${
-                card.redeemPointValue
-              } ${window.rewardPointLocalization.rewardPointsLabel}</span>
-              <span class="fs-23-lh-24-ls-0 fw-500 text-primary">${
-                card.calculatedDiscount
-              } ${window.rewardPointLocalization.off}</span>
-            </div>
-            <div>
-              <button class="${buttonClass} button button--solid rounded-6 fs-16-lh-24-ls-0 fw-600 pr-16 pl-16 pt-10 pb-10" data-points-required="${
-        card.redeemPointValue
-      }" data-redeem-card-id="${card._id}" ${
-        isActiveRedeemCard
-          ? `data-discount-code="${activeRedeemData.code}"`
-          : ""
-      }>
-                ${buttonText}
-              </button>
-            </div>
-          </div>
-        </div>
-      `;
+      </div>
+    `;
 
       desktopContainer.appendChild(desktopCard);
       mobileWrapper.appendChild(mobileSlide);
-    });
+    }
 
     // Add event listeners to all new buttons
     const redeemButtons = document.querySelectorAll(".redeem-now-button");
-    const applyButtons = document.querySelectorAll(".apply-to-cart-button");
+    const applyButtons = document.querySelectorAll(
+      ".apply-to-cart-button:not([disabled])"
+    );
 
     redeemButtons.forEach((button) => {
       button.addEventListener("click", handleRedeemFromCard);
@@ -451,7 +485,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchHistoryForTab(tabType, 1);
   };
 
-  const updateCustomerData = (apiResponse) => {
+  const updateCustomerData = async (apiResponse) => {
     const currentPoints = apiResponse.remainingPoints || 0;
     currentPointsSpan.textContent = currentPoints;
 
@@ -463,7 +497,7 @@ document.addEventListener("DOMContentLoaded", () => {
       apiResponse.configuration &&
       apiResponse.configuration.redeemPointsCards
     ) {
-      generateRedeemCards(apiResponse.configuration.redeemPointsCards);
+      await generateRedeemCards(apiResponse.configuration.redeemPointsCards);
     }
 
     // Update redeem button states based on current points and active redeem
@@ -545,7 +579,15 @@ document.addEventListener("DOMContentLoaded", () => {
     iframe.id = "discount-iframe";
     iframe.src = `/discount/${discountCode}?redirect=/cart`;
 
-    iframe.onload = () => {
+    iframe.onload = async () => {
+      const isAppliedInCart = await checkCartForDiscountCode(discountCode);
+
+      if (isAppliedInCart) {
+        button.textContent = "Already Applied";
+        button.disabled = true;
+        button.classList.add("disabled");
+      }
+
       // After applying, clear the active redeem state and regenerate cards
       activeRedeemData = null;
 
