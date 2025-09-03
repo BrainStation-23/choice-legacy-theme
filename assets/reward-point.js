@@ -102,6 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const customerData = {
       orders: {},
       products: {},
+      productsById: {},
     };
 
     (window.customerPurchasedProducts || []).forEach((item) => {
@@ -121,6 +122,11 @@ document.addEventListener("DOMContentLoaded", () => {
           productHandle: item.productHandle,
         };
       }
+
+      // Add mapping for products by product ID
+      customerData.productsById[productIdStr] = {
+        productHandle: item.productHandle,
+      };
     });
 
     const emptyMessageHTML = `<tr><td class="fs-16-lh-24-ls-0" colspan="5" style="text-align:center; padding: 16px;">No ${tabType} history found.</td></tr>`;
@@ -198,9 +204,44 @@ document.addEventListener("DOMContentLoaded", () => {
             ? record.expDate
             : record.createdDate;
         const formattedDate = new Date(dateValue).toISOString().split("T")[0];
-        const eventName =
+        let eventName =
           String(record.event).charAt(0).toUpperCase() +
           String(record.event).slice(1);
+
+        // Get actual product/order name based on event type and referenceId
+        if (record.event === "order") {
+          const order = customerData.orders[String(record.referenceId)];
+          if (order) {
+            eventName = order.name;
+          }
+        } else if (record.event === "review") {
+          const referenceIdStr = String(record.referenceId);
+
+          // First try to find in customerPurchasedProducts by product ID
+          const purchasedProduct = (
+            window.customerPurchasedProducts || []
+          ).find((item) => String(item.productId) === referenceIdStr);
+
+          if (
+            purchasedProduct &&
+            purchasedProduct.productHandle &&
+            window.allShopifyProducts
+          ) {
+            const productInfo =
+              window.allShopifyProducts[purchasedProduct.productHandle];
+            if (productInfo && productInfo.title) {
+              eventName = productInfo.title;
+            }
+          } else {
+            // Fallback: try to find product directly in allShopifyProducts by ID
+            const productFromAll = Object.values(
+              window.allShopifyProducts || {}
+            ).find((product) => String(product.id) === referenceIdStr);
+            if (productFromAll && productFromAll.title) {
+              eventName = productFromAll.title;
+            }
+          }
+        }
 
         if (tabType === "earning") {
           pointsDisplay = `<span class="fw-600 fs-16-lh-24-ls-0 text-success">+${
@@ -222,10 +263,9 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         } else if (record.event === "review") {
           const product = customerData.products[String(record.referenceId)];
+
           if (product && product.productHandle) {
             actionLink = `/products/${product.productHandle}`;
-          } else {
-            actionLink = "/collections/all";
           }
         }
 
@@ -321,8 +361,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // FIX: Correct the path to match your API structure
-    const reviewRules =
-      apiResponse.configuration?.pointsEarningRules?.pointsPerProductReview;
+    const reviewRules = apiResponse.configuration?.pointsPerProductReview;
     if (reviewRules) {
       const threeStarText = document
         .getElementById("threeStarReview")
