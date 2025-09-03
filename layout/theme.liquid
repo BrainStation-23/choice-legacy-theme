@@ -104,6 +104,7 @@
         {% endfor %}
       };
     </script>
+    <script src="{{ 'add-to-wishlist.js' | asset_url }}" defer></script>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         window.theme = window.theme || {};
@@ -139,8 +140,6 @@
         {% endif %}
       });
     </script>
-    <script src="{{ 'add-to-wishlist.js' | asset_url }}" defer></script>
-
     {% render 'cart-drawer' %}
     <script src="{{ 'cart.js' | asset_url }}" defer></script>
   </body>
