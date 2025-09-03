@@ -46,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <span class="fs-23-lh-24-ls-0 fw-500 text-primary">${card.calculatedDiscount} ${window.rewardPointLocalization.off}</span>
           </div>
           <div>
-            <button class="redeem-now-button button button--solid rounded-6 fs-16-lh-24-ls-0 fw-600 pr-16 pl-16 pt-10 pb-10" data-points-required="${card.redeemPointValue}">
+            <button class="redeem-now-button button button--solid rounded-6 fs-16-lh-24-ls-0 fw-600 pr-16 pl-16 pt-10 pb-10" data-points-required="${card.redeemPointValue}" data-redeem-card-id="${card._id}">
               ${window.rewardPointLocalization.redeemNow}
             </button>
           </div>
@@ -504,6 +504,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const handleRedeemFromCard = async (event) => {
     const button = event.target;
     const pointsToRedeem = button.dataset.pointsRequired;
+    const redeemCardId = button.dataset.redeemCardId;
     const customerId = window.customerId;
     if (!customerId) return;
 
@@ -523,7 +524,11 @@ document.addEventListener("DOMContentLoaded", () => {
       const redeemResponse = await apiCall(API_URLS.REDEEM, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ points: Number(pointsToRedeem), customerId }),
+        body: JSON.stringify({
+          points: Number(pointsToRedeem),
+          customerId,
+          redeemCardId: redeemCardId,
+        }),
       });
       if (redeemResponse.discountCode) {
         toastManager.show(
