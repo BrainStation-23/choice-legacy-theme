@@ -15,9 +15,11 @@
         data-autoplay="{{ section.settings.autoplay }}"
         data-pause-on-hover="false"
         data-enable-carousel="true"
+        data-nav-loop="false"
         data-show-progress-bar="true"
+        class="flex flex-col gap-16"
       >
-        <div class="swiper-container flex flex-col gap-16 w-full">
+        <div class="swiper-container flex flex-col gap-16 w-full overflow-hidden">
           <div class="swiper-wrapper" id="mobile-slides-container">
             <div class="flex justify-center items-center h-200">
               <div class=" w-40 h-40 spinner-4"></div>
