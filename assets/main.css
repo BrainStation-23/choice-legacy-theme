@@ -239,8 +239,7 @@ mark {
 :root {
   --fluid-vw: 100vw;
   --fluid-max-vw: 1536;
-  --fluid-calc: (var(--fluid-vw) - 32rem) / (var(--fluid-max-vw) / 10 - 32) +
-    0.1rem;
+  --fluid-calc: (var(--fluid-vw) - 32rem) / (var(--fluid-max-vw) / 10 - 32) + 0.1rem;
   --fluid-1-065: ((1.065 / 10 - 0.1) * var(--fluid-calc));
   --fluid-1-125: ((1.125 / 10 - 0.1) * var(--fluid-calc));
   --fluid-1-2: ((1.2 / 10 - 0.1) * var(--fluid-calc));
@@ -1453,11 +1452,23 @@ address {
 .max-w-100pc-32 {
   max-width: calc(100% - 32px);
 }
+.border-color-brand {
+  border-color: rgba(var(--color-primary-brand));
+}
+.max-w-637 {
+  max-width: 637px;
+}
 .max-w-392 {
   max-width: 392px;
 }
 .max-w-120 {
   max-width: 120px;
+}
+.max-w-216 {
+  max-width: 216px;
+}
+.max-w-300 {
+  max-width: 300px;
 }
 .max-w-406 {
   max-width: 406px;
@@ -1596,6 +1607,9 @@ address {
 @media screen and (max-width: 768px) {
   .sm\:w-auto {
     width: auto;
+  }
+  .sm\:flex-auto {
+    flex: auto;
   }
   .sm\:w-304 {
     width: 304px;
@@ -2754,15 +2768,12 @@ address {
   transform: translate(-50%, -50%);
 }
 .transition {
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    -webkit-backdrop-filter;
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    backdrop-filter;
-  transition-property: color, background-color, border-color,
-    text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter,
-    backdrop-filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, -webkit-backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter;
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow,
+    transform, filter, backdrop-filter, -webkit-backdrop-filter;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
   transition-duration: 150ms;
 }
@@ -3049,47 +3060,100 @@ shop-login-button {
   cursor: default;
 }
 
-.radio {
-  position: absolute;
-  opacity: 0;
-}
-.radio + label {
-  display: inline-flex;
+.radio,
+.checkbox,
+input[type="checkbox"] {
+  appearance: none;
+
+  -webkit-appearance: none;
+
   position: relative;
-  align-items: flex-start;
+
+  width: 20px;
+
+  height: 20px;
+
+  border: 2px solid rgb(var(--color-border));
+
+  border-radius: 50%;
+
   margin: 0;
-  font-size: 1em;
-  line-height: 1.5;
-  vertical-align: top;
+
   cursor: pointer;
-}
-.radio + label::before {
-  content: "";
-  display: block;
+
   flex-shrink: 0;
-  margin-inline-end: 0.75em;
-  border: var(--input-border-width) solid rgb(var(--text-color));
-  border-radius: 2px;
-  background-color: rgb(var(--input-bg-color));
-  width: 22px;
-  height: 22px;
-  margin-top: calc(0.75em - 11px);
-  border-radius: 50%;
+
+  transition: border-color 0.2s ease;
+
+  opacity: 1 !important;
+
+  padding: 0 !important;
+
+  background-color: rgb(var(--color-background));
 }
-.radio:checked + label::after {
-  content: "";
+
+.radio + label,
+.checkbox + label,
+input[type="checkbox"] + label {
+  display: inline-flex;
+
+  position: relative;
+
+  align-items: center;
+
+  cursor: pointer;
+
+  flex: 1;
+
+  top: 0 !important;
+}
+
+.radio + label::before,
+.checkbox + label::before,
+input[type="checkbox"] + label::before {
+  display: none; /* Hide the old pseudo-element since we're styling the input directly */
+}
+
+.radio:hover,
+.checkbox:hover,
+input[type="checkbox"]:hover {
+  border-color: rgb(var(--color-primary-brand));
+}
+
+.radio:checked,
+.checkbox:checked,
+input[type="checkbox"]:checked {
+  border-color: rgb(var(--color-primary-brand));
+
+  background: rgb(var(--color-primary-brand));
+}
+
+/* Alternative positioning for the checkmark - use this if the above doesn't work perfectly */
+
+.radio:checked::after,
+.checkbox:checked::after,
+input[type="checkbox"]:checked::after {
+  content: "✓";
+
   position: absolute;
-  top: 0.75em;
-  left: 11px;
-  width: calc((22px - (var(--input-border-width) * 2)) * 0.625);
-  height: calc((22px - (var(--input-border-width) * 2)) * 0.625);
+
+  top: 50%;
+
+  left: 50%;
+
   transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background-color: rgb(var(--text-color));
+
+  color: rgb(var(--color-background));
+
+  pointer-events: none;
 }
-[dir="rtl"] .radio:checked + label::after {
+
+[dir="rtl"] .radio:checked + label::after,
+[dir="rtl"] .checkbox:checked + label::after {
   right: 11px;
+
   left: auto;
+
   transform: translate(50%, -50%);
 }
 
@@ -3348,9 +3412,7 @@ textarea + label {
 }
 
 input[type="date"] {
-  min-height: calc(
-    (var(--input-padding-y, 11px) + var(--input-border-width)) * 2 + 1.2em
-  );
+  min-height: calc((var(--input-padding-y, 11px) + var(--input-border-width)) * 2 + 1.2em);
   -webkit-appearance: none;
 }
 
@@ -3605,10 +3667,6 @@ tr:last-child td {
 
   .slg\:max-w-400 {
     max-width: 400px;
-  }
-
-  .max-w-300 {
-    max-width: 300px;
   }
 
   .slg\:min-w-900 {

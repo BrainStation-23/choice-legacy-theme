@@ -39,6 +39,21 @@
         value: address.last_name,
       %}
 
+      {%- assign companyLabel = 'customer.addresses.company' | t -%}
+      {%- assign companyPlaceholder = 'customer.addresses.company' | t -%}
+      {%
+        render 'input',
+        type: 'text',
+        id: "AddressCompany" | append: address.id,
+        name: "address[company]",
+        label: companyLabel,
+        placeholder: companyPlaceholder,
+        autocomplete: 'organization',
+        required: false,
+        class: '',
+        value: address.company,
+      %}
+
       {%- assign address1Label = 'customer.addresses.address1' | t -%}
       {%- assign address1Placeholder = 'customer.addresses.address1' | t -%}
       {%
@@ -82,6 +97,21 @@
         required: true,
         class: '',
         value: address.city,
+      %}
+
+      {%- assign provinceLabel = 'customer.addresses.province' | t -%}
+      {%- assign provincePlaceholder = 'customer.addresses.province' | t -%}
+      {%
+        render 'input',
+        type: 'text',
+        id: "AddressProvince" | append: address.id,
+        name: "address[province]",
+        label: provinceLabel,
+        placeholder: provincePlaceholder,
+        autocomplete: 'address-level1',
+        required: false,
+        class: '',
+        value: address.province,
       %}
 
       {%- assign zipLabel = 'customer.addresses.zip' | t -%}
