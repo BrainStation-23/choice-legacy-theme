@@ -475,8 +475,8 @@
       ],
       "name": "Offer Banner",
       "settings": {
-        "show_nav_desktop": true,
-        "show_nav_mobile": true
+        "show_nav_desktop": false,
+        "show_nav_mobile": false
       }
     },
     "featured-collections": {
@@ -542,29 +542,33 @@
         "service_item_H6xzdw": {
           "type": "service_item",
           "settings": {
-            "heading": "Service Title",
-            "subheading": "Service description goes here"
+            "image": "shopify://shop_images/checkmark.png",
+            "heading": "100% AUTHENTIC",
+            "subheading": "All our products are 100% verified by CHOICE LEGACY LTD."
           }
         },
         "service_item_4GrLrg": {
           "type": "service_item",
           "settings": {
-            "heading": "Service Title",
-            "subheading": "Service description goes here"
+            "image": "shopify://shop_images/beauty.png",
+            "heading": "Certified Beauty Advisors",
+            "subheading": "Get expert consultation."
           }
         },
         "service_item_xTrxLW": {
           "type": "service_item",
           "settings": {
-            "heading": "Service Title",
-            "subheading": "Service description goes here"
+            "image": "shopify://shop_images/support.png",
+            "heading": "24/7 Support",
+            "subheading": "24/7 assistance for your immediate needs."
           }
         },
         "service_item_YTeeLK": {
           "type": "service_item",
           "settings": {
-            "heading": "Service Title",
-            "subheading": "Service description goes here"
+            "image": "shopify://shop_images/delivery.png",
+            "heading": "Fastest Delivery",
+            "subheading": "Lightning-fast delivery all over Bangladesh."
           }
         }
       },
