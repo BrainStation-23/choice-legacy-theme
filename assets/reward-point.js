@@ -19,6 +19,71 @@ document.addEventListener("DOMContentLoaded", () => {
     return data;
   };
 
+  // Generate redeem cards from API response
+  const generateRedeemCards = (redeemPointsCards) => {
+    if (!redeemPointsCards || redeemPointsCards.length === 0) {
+      document.getElementById("redeemPointsSection").style.display = "none";
+      return;
+    }
+
+    document.getElementById("redeemPointsSection").style.display = "block";
+
+    const desktopContainer = document.getElementById("redeemCardsDesktop");
+    const mobileWrapper = document.getElementById("redeemCardsMobileWrapper");
+
+    desktopContainer.innerHTML = "";
+    mobileWrapper.innerHTML = "";
+
+    redeemPointsCards.forEach((card) => {
+      // Desktop card
+      const desktopCard = document.createElement("div");
+      desktopCard.className =
+        "redeem-card p-16 rounded-8 bg-brand-2 min-w-285 lg:w-full md:w-full md:min-w-auto";
+      desktopCard.innerHTML = `
+        <div class="flex flex-col gap-20">
+          <div class="flex flex-col gap-8">
+            <span class="fs-16-lh-24-ls-0 fw-400 text-label">${card.redeemPointValue} ${window.rewardPointLocalization.rewardPointsLabel}</span>
+            <span class="fs-23-lh-24-ls-0 fw-500 text-primary">${card.calculatedDiscount} ${window.rewardPointLocalization.off}</span>
+          </div>
+          <div>
+            <button class="redeem-now-button button button--solid rounded-6 fs-16-lh-24-ls-0 fw-600 pr-16 pl-16 pt-10 pb-10" data-points-required="${card.redeemPointValue}">
+              ${window.rewardPointLocalization.redeemNow}
+            </button>
+          </div>
+        </div>
+      `;
+
+      // Mobile card
+      const mobileSlide = document.createElement("div");
+      mobileSlide.className = "swiper-slide w-auto";
+      mobileSlide.style.boxSizing = "border-box";
+      mobileSlide.innerHTML = `
+        <div class="redeem-card p-16 rounded-8 bg-brand-2 min-w-285">
+          <div class="flex flex-col gap-20">
+            <div class="flex flex-col gap-8">
+              <span class="fs-16-lh-24-ls-0 fw-400 text-label">${card.redeemPointValue} ${window.rewardPointLocalization.rewardPointsLabel}</span>
+              <span class="fs-23-lh-24-ls-0 fw-500 text-primary">${card.calculatedDiscount} ${window.rewardPointLocalization.off}</span>
+            </div>
+            <div>
+              <button class="redeem-now-button button button--solid rounded-6 fs-16-lh-24-ls-0 fw-600 pr-16 pl-16 pt-10 pb-10" data-points-required="${card.redeemPointValue}">
+                ${window.rewardPointLocalization.redeemNow}
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      desktopContainer.appendChild(desktopCard);
+      mobileWrapper.appendChild(mobileSlide);
+    });
+
+    // Add event listeners to all new redeem buttons
+    const redeemButtons = document.querySelectorAll(".redeem-now-button");
+    redeemButtons.forEach((button) => {
+      button.addEventListener("click", handleRedeemFromCard);
+    });
+  };
+
   // New function to update redeem button states based on current points
   const updateRedeemButtonStates = (currentPoints) => {
     const redeemButtons = document.querySelectorAll(".redeem-now-button");
@@ -334,6 +399,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const currentPoints = apiResponse.remainingPoints || 0;
     currentPointsSpan.textContent = currentPoints;
 
+    // Generate redeem cards from API response
+    if (
+      apiResponse.configuration &&
+      apiResponse.configuration.redeemPointsCards
+    ) {
+      generateRedeemCards(apiResponse.configuration.redeemPointsCards);
+    }
+
     // Update redeem button states based on current points
     updateRedeemButtonStates(currentPoints);
 
@@ -342,22 +415,6 @@ document.addEventListener("DOMContentLoaded", () => {
     if (redemptionRulesText && redemptionRules) {
       const { pointsRequired, discountAmount } = redemptionRules;
       redemptionRulesText.textContent = `Redeem ${pointsRequired} Points for ${discountAmount} OFF`;
-
-      const redeemCards = document.querySelectorAll(".redeem-card");
-      redeemCards.forEach((card) => {
-        const pointsRequiredForCard =
-          card.querySelector(".redeem-now-button").dataset.pointsRequired;
-        const discountSpan = card.querySelector(".discount-amount");
-
-        if (redemptionRules.pointsRequired > 0) {
-          const ratio =
-            redemptionRules.discountAmount / redemptionRules.pointsRequired;
-          const calculatedDiscount = Math.round(pointsRequiredForCard * ratio);
-          discountSpan.textContent = calculatedDiscount;
-        } else {
-          discountSpan.textContent = "0";
-        }
-      });
     }
 
     // FIX: Correct the path to match your API structure
@@ -536,13 +593,8 @@ document.addEventListener("DOMContentLoaded", () => {
           tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 16px;">Failed to load reward history.</td></tr>`;
         }
 
-        // Disable all redeem buttons on error
-        updateRedeemButtonStates(0);
+        // Hide redeem points section on error
+        document.getElementById("redeemPointsSection").style.display = "none";
       });
   }
-
-  const redeemButtons = document.querySelectorAll(".redeem-now-button");
-  redeemButtons.forEach((button) => {
-    button.addEventListener("click", handleRedeemFromCard);
-  });
 });
