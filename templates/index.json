@@ -369,7 +369,7 @@
           "type": "banner",
           "settings": {
             "image": "shopify://shop_images/Silder-smaller_1.png",
-            "mobile_image": "shopify://shop_images/Silder-smaller_009add0b-9888-4e54-984c-1443ec2e3bb8.png",
+            "mobile_image": "shopify://shop_images/Silder-smaller_1_bb55d33b-7854-4523-8a2a-8bc2a5ceffe9.png",
             "link": "",
             "link_target": false
           }
@@ -464,7 +464,7 @@
           "type": "banner",
           "settings": {
             "image": "shopify://shop_images/e435a10dc65e7e31114e1a4f95e4d41a9bbb9861.jpg",
-            "mobile_image": "shopify://shop_images/image_23_4e2a8e4b-5fed-4da6-8b6a-e6df224f4b53.png",
+            "mobile_image": "shopify://shop_images/Silder-smaller_2af78ead-847b-49f5-b152-49247efd6691.png",
             "link": "",
             "link_target": false
           }
@@ -475,8 +475,8 @@
       ],
       "name": "Offer Banner",
       "settings": {
-        "show_nav_desktop": true,
-        "show_nav_mobile": true
+        "show_nav_desktop": false,
+        "show_nav_mobile": false
       }
     },
     "featured-collections": {
@@ -542,29 +542,33 @@
         "service_item_H6xzdw": {
           "type": "service_item",
           "settings": {
-            "heading": "Service Title",
-            "subheading": "Service description goes here"
+            "image": "shopify://shop_images/checkmark.png",
+            "heading": "100% AUTHENTIC",
+            "subheading": "All our products are 100% verified by CHOICE LEGACY LTD."
           }
         },
         "service_item_4GrLrg": {
           "type": "service_item",
           "settings": {
-            "heading": "Service Title",
-            "subheading": "Service description goes here"
+            "image": "shopify://shop_images/beauty.png",
+            "heading": "Certified Beauty Advisors",
+            "subheading": "Get expert consultation."
           }
         },
         "service_item_xTrxLW": {
           "type": "service_item",
           "settings": {
-            "heading": "Service Title",
-            "subheading": "Service description goes here"
+            "image": "shopify://shop_images/support.png",
+            "heading": "24/7 Support",
+            "subheading": "24/7 assistance for your immediate needs."
           }
         },
         "service_item_YTeeLK": {
           "type": "service_item",
           "settings": {
-            "heading": "Service Title",
-            "subheading": "Service description goes here"
+            "image": "shopify://shop_images/delivery.png",
+            "heading": "Fastest Delivery",
+            "subheading": "Lightning-fast delivery all over Bangladesh."
           }
         }
       },

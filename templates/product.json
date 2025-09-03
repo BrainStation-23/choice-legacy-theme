@@ -91,6 +91,13 @@
             "metafield_key": "size_chart"
           }
         },
+        "collapsible_metafield_DyfTi9": {
+          "type": "collapsible_metafield",
+          "settings": {
+            "content_title": "Material COMPOSITION",
+            "metafield_key": "key_features"
+          }
+        },
         "collapsible_metafield_6ezLbG": {
           "type": "collapsible_metafield",
           "settings": {
@@ -115,6 +122,7 @@
         "product_description_epVCCf",
         "collapsible_metafield_QiQp9Y",
         "collapsible_metafield_ecYRVW",
+        "collapsible_metafield_DyfTi9",
         "collapsible_metafield_6ezLbG"
       ],
       "settings": {}
