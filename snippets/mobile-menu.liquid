@@ -4,7 +4,12 @@
   }
 
   collapsible-content.expanded .mobile-mega-menu__category-toggle {
-    transform: rotate(-90deg);
+    transform: rotate(90deg);
+  }
+
+  collapsible-content.expanded .mobile-mega-menu__category-toggle svg path {
+    stroke: rgb(var(--color-primary-brand));
+    fill: rgb(var(--color-primary-brand));
   }
 
   collapsible-content.expanded .mobile-mega-menu__subcategory-list {
@@ -31,14 +36,24 @@
         {%- for link in linklists[section.settings.main_menu].links -%}
           <collapsible-content class="mobile-mega-menu__category block">
             <div class="mobile-mega-menu__category-header flex items-center justify-between">
-              <a href="{{ link.url }}" class="mobile-mega-menu__category-title ff-bebas-neue fw-400 fs-21-lh-24-ls-1_2pct text-primary uppercase m-0">{{ link.title }}</a>
-              {% assign undergarments_title = link.title | downcase %}
-              {% unless undergarments_title contains "undergarments" %}
-                <div class="mobile-mega-menu__category-toggle collapsible-trigger collapsible-icon w-20 h-20 flex items-center justify-center cursor-pointer user-select-none transition-transform" data-collapsible-trigger data-collapsible-icon>
-                  {% render 'icon-arrow', cls: 'icon-arrow svg-brand w-12 h-12' %}
-                </div>
-              {% endunless %}
+  <a href="{{ link.url }}" class="mobile-mega-menu__category-title ff-bebas-neue fw-400 fs-21-lh-24-ls-1_2pct text-primary uppercase m-0">
+    {{ link.title }}
+  </a>
+
+  {% assign undergarments_title = link.title | downcase %}
+  {% if link.links != blank %}
+    {% unless undergarments_title contains "undergarments" %}
+      <div
+        class="mobile-mega-menu__category-toggle collapsible-trigger collapsible-icon w-20 h-20 flex items-center justify-center cursor-pointer user-select-none transition-transform"
+        data-collapsible-trigger
+        data-collapsible-icon
+      >
+        {% render 'icon-arrow', cls: 'icon-arrow svg-primary-optional w-12 h-12' %}
+      </div>
+    {% endunless %}
+  {% endif %}
             </div>
+
             {%- if link.links != blank -%}
               <ul class="mobile-mega-menu__subcategory-list collapsible-content flex flex-col gap-16 list-style-none m-0 p-0 overflow-hidden max-h-0 transition-transform" data-collapsible-content>
                 {%- for child_link in link.links -%}

@@ -1,4 +1,48 @@
-const toastManager = new ToastNotificationManager();
+const wishlistToastManager = new ToastNotificationManager();
+
+function getProductIdFromHandle(productHandle) {
+  const productDetails = window.allShopifyProducts?.[productHandle];
+  return productDetails?.id || null;
+}
+
+async function addToWishlist(productHandle, productId) {
+  const response = await fetch(`/apps/${APP_SUB_PATH}/customer/wishlist/add`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ productHandle, productId }),
+  });
+  const result = await response.json();
+  if (result.success) {
+    wishlistToastManager.show("Added to wishlist", "success");
+  } else if (result.alreadyExists) {
+    wishlistToastManager.show("Already in wishlist", "success");
+  } else {
+    wishlistToastManager.show("Failed to add to wishlist", "error");
+  }
+  return result;
+}
+
+async function removeFromWishlist(productHandle, productId) {
+  try {
+    const response = await fetch(
+      `/apps/${APP_SUB_PATH}/customer/wishlist/remove`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productHandle, productId }),
+      }
+    );
+    const result = await response.json();
+    if (!result.success) {
+      wishlistToastManager.show("Failed to remove from wishlist", "error");
+    }
+    return result;
+  } catch (error) {
+    console.error("Remove from wishlist failed:", error);
+    wishlistToastManager.show("An error occurred. Please try again.", "error");
+    return null;
+  }
+}
 
 function updateAllWishlistButtons() {
   const wishlist = window.theme?.wishlistHandles || new Set();
@@ -10,135 +54,57 @@ function updateAllWishlistButtons() {
     const productHandle = button.dataset.productHandle;
     const iconDefault = button.querySelector(".wishlist-icon-default");
     const iconActive = button.querySelector(".wishlist-icon-active");
-
-    if (!iconDefault || !iconActive) {
-      return;
-    }
+    if (!iconDefault || !iconActive) return;
 
     if (wishlist.has(productHandle)) {
-      iconDefault.classList.remove("inline-block");
       iconDefault.classList.add("hidden");
       iconActive.classList.remove("hidden");
-      iconActive.classList.add("inline-block");
     } else {
       iconDefault.classList.remove("hidden");
-      iconDefault.classList.add("inline-block");
-      iconActive.classList.remove("inline-block");
       iconActive.classList.add("hidden");
     }
   });
 }
 
-// Helper function to get productId from productHandle
-function getProductIdFromHandle(productHandle) {
-  const productDetails = window.allShopifyProducts?.[productHandle];
-  return productDetails?.id || null;
-}
-
-async function addToWishlist(productHandle, productId) {
-  const response = await fetch(`/apps/${APP_SUB_PATH}/customer/wishlist/add`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      productHandle: productHandle,
-      productId: productId,
-    }),
-  });
-
-  const result = await response.json();
-
-  if (result.success) {
-    toastManager.show("Added to wishlist", "success");
-  } else if (result.alreadyExists) {
-    toastManager.show("Already in wishlist", "success");
-  } else {
-    toastManager.show("Failed to add to wishlist", "error");
-  }
-
-  return result;
-}
-
-async function removeFromWishlist(productHandle, productId) {
-  try {
-    const response = await fetch(
-      `/apps/${APP_SUB_PATH}/customer/wishlist/remove`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productHandle: productHandle,
-          productId: productId,
-        }),
-      }
-    );
-    const result = await response.json();
-
-    if (result.success) {
-      toastManager.show("Product removed from wishlist", "success");
-    } else {
-      toastManager.show("Failed to remove from wishlist", "error");
-    }
-
-    return result;
-  } catch (error) {
-    toastManager.show(error.message, "error");
-    return null;
-  }
-}
-
 document.addEventListener("DOMContentLoaded", function () {
   document.addEventListener("click", async (e) => {
-    if (
-      e.target.matches(".wishlist-btn") ||
-      e.target.closest(".wishlist-btn")
-    ) {
-      e.preventDefault();
-      const button = e.target.closest(".wishlist-btn");
-      const productHandle = button.dataset.productHandle;
-      const productId = getProductIdFromHandle(productHandle);
+    const button = e.target.closest(".wishlist-btn");
+    if (!button) return;
 
-      if (!productHandle) {
-        console.error("Product handle not found on the button.");
-        return;
-      }
+    e.preventDefault();
+    const productHandle = button.dataset.productHandle;
+    const productId = getProductIdFromHandle(productHandle);
 
-      if (!productId) {
-        console.error("Product ID not found for handle:", productHandle);
-        return;
-      }
+    if (!productHandle || !productId) {
+      console.error("Product handle or ID not found for button:", button);
+      return;
+    }
+    if (!window.theme?.wishlistHandles) {
+      console.error("Wishlist state is not initialized.");
+      return;
+    }
 
-      if (!window.theme?.wishlistHandles) {
-        console.error(
-          "Wishlist state (window.theme.wishlistHandles) is not initialized."
-        );
-        return;
-      }
+    button.disabled = true;
 
-      button.disabled = true;
-
-      try {
-        if (window.theme.wishlistHandles.has(productHandle)) {
-          const result = await removeFromWishlist(productHandle, productId);
-          if (result && result.success) {
-            window.theme.wishlistHandles.delete(productHandle);
-          }
-        } else {
-          const result = await addToWishlist(productHandle, productId);
-          if (result && (result.success || result.alreadyExists)) {
-            window.theme.wishlistHandles.add(productHandle);
-          }
+    try {
+      if (window.theme.wishlistHandles.has(productHandle)) {
+        const result = await removeFromWishlist(productHandle, productId);
+        if (result && result.success) {
+          window.theme.wishlistHandles.delete(productHandle);
+          toastManager.show("Product removed from wishlist", "success");
         }
-      } catch (error) {
-        console.error("Wishlist action failed:", error);
-        toastManager.show("Something went wrong. Please try again.", "error");
-      } finally {
-        if (typeof updateAllWishlistButtons === "function") {
-          updateAllWishlistButtons();
+      } else {
+        const result = await addToWishlist(productHandle, productId);
+        if (result && (result.success || result.alreadyExists)) {
+          window.theme.wishlistHandles.add(productHandle);
         }
-        button.disabled = false;
       }
+    } catch (error) {
+      console.error("Wishlist action failed:", error);
+      toastManager.show("Something went wrong. Please try again.", "error");
+    } finally {
+      updateAllWishlistButtons();
+      button.disabled = false;
     }
   });
 });

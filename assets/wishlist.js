@@ -1,4 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
+  console.log("Loaded2");
   const desktopTable = document.querySelector(".wishlist-desktop-view");
   const desktopTableBody = document.getElementById(
     "customer-wishlist-items-desktop"

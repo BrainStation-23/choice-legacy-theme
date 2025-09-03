@@ -11,7 +11,8 @@
     opacity: 0.5;
     cursor: not-allowed;
   }
-  .redeem-now-button.disabled {
+  .redeem-now-button.disabled,
+  .apply-to-cart-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
@@ -51,62 +52,34 @@
       </div>
     </div>
   </div>
-  {% if section.blocks.size > 0 %}
-    <div class="redeem-points-section">
-      <div class="flex flex-col gap-24 sm:gap-16">
-        <h3 class="ff-general-sans fs-23-lh-24-ls-0 fw-500 text-primary">{{ 'reward_points.redeem_points.label' | t }}</h3>
-        
-        <!-- Desktop view -->
-        <div class="redeem-points-cards-container grid sm:hidden grid-cols-3 lg:grid-cols-2 md:grid-cols-2 gap-24 md:gap-16">
-          {% for block in section.blocks %}
-            <div class="redeem-card p-16 rounded-8 bg-brand-2 min-w-285 lg:w-full md:w-full md:min-w-auto" {{ block.shopify_attributes }}>
-              <div class="flex flex-col gap-20">
-                <div class="flex flex-col gap-8">
-                  <span class="fs-16-lh-24-ls-0 fw-400 text-label">{{ block.settings.points_required }} {{ 'reward_points.reward_points.label' | t }}</span>
-                  <span class="fs-23-lh-24-ls-0 fw-500 text-primary"><span class="discount-amount"></span> {{ 'reward_points.redeem_points.off' | t }}</span>
-                </div>
-                <div>
-                  <button class="redeem-now-button button button--solid rounded-6 fs-16-lh-24-ls-0 fw-600 pr-16 pl-16 pt-10 pb-10" data-points-required="{{ block.settings.points_required }}">
-                  {{ 'reward_points.redeem_points.button' | t }}
-                </button>
-                </div>
-              </div>
-            </div>
-          {% endfor %}
-        </div>
 
-        <!-- Mobile slideshow -->
-        <slideshow-component
-          data-autoplay="false"
-          data-enable-carousel="true"
-          data-show-progress-bar="false"
-          class="hidden sm:block"
-        >
-          <div class="swiper-container overflow-hidden">
-            <div class="swiper-wrapper flex">
-              {% for block in section.blocks %}
-                <div class="swiper-slide w-auto" style="box-sizing: border-box;">
-                  <div class="redeem-card p-16 rounded-8 bg-brand-2 min-w-285" {{ block.shopify_attributes }}>
-                    <div class="flex flex-col gap-20">
-                      <div class="flex flex-col gap-8">
-                        <span class="fs-16-lh-24-ls-0 fw-400 text-label">{{ block.settings.points_required }} {{ 'reward_points.reward_points.label' | t }}</span>
-                        <span class="fs-23-lh-24-ls-0 fw-500 text-primary"><span class="discount-amount"></span> {{ 'reward_points.redeem_points.off' | t }}</span>
-                      </div>
-                      <div>
-                        <button class="redeem-now-button button button--solid rounded-6 fs-16-lh-24-ls-0 fw-600 pr-16 pl-16 pt-10 pb-10" data-points-required="{{ block.settings.points_required }}">
-                        {{ 'reward_points.redeem_points.button' | t }}
-                      </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              {% endfor %}
-            </div>
-          </div>
-        </slideshow-component>
+  <div class="redeem-points-section" id="redeemPointsSection" style="display: none;">
+    <div class="flex flex-col gap-24 sm:gap-16">
+      <h3 class="ff-general-sans fs-23-lh-24-ls-0 fw-500 text-primary">{{ 'reward_points.redeem_points.label' | t }}</h3>
+      
+      <!-- Desktop view -->
+      <div class="redeem-points-cards-container grid sm:hidden grid-cols-3 lg:grid-cols-2 md:grid-cols-2 gap-24 md:gap-16" id="redeemCardsDesktop">
+        <!-- Cards will be generated dynamically -->
       </div>
+
+      <!-- Mobile slideshow -->
+      <slideshow-component
+        data-autoplay="false"
+        data-enable-carousel="true"
+        data-show-progress-bar="false"
+        data-nav-loop="false"
+        class="hidden sm:block"
+        id="redeemCardsMobile"
+      >
+        <div class="swiper-container overflow-hidden">
+          <div class="swiper-wrapper flex" id="redeemCardsMobileWrapper">
+            <!-- Cards will be generated dynamically -->
+          </div>
+        </div>
+      </slideshow-component>
     </div>
-  {% endif %}
+  </div>
+
   <div class="reward-history-section">
     <div class="flex flex-col gap-24 sm:gap-16">
       <h3 class="ff-general-sans fs-23-lh-24-ls-0 fw-500 text-primary">{{ 'reward_points.reward_history.label' | t }}</h3>
@@ -121,7 +94,7 @@
         <table class="history-desktop-view w-full table sm:hidden">
           <thead>
             <tr>
-              <th class="fw-500 fs-16-lh-20-ls-0_1 text-label">{{ 'reward_points.table.event' | t }}</th>
+              <th class="fw-500 fs-16-lh-20-ls-0_1 text-label">{{ 'reward_points.table.items' | t }}</th>
               <th id="date-column-header" class="fw-500 fs-16-lh-20-ls-0_1 text-label">{{ 'reward_points.table.date' | t }}</th>
               <th id="point-column-header" class="fw-500 fs-16-lh-20-ls-0_1 text-label">{{ 'reward_points.table.point' | t }}</th>
               <th class="fw-500 fs-16-lh-20-ls-0_1 text-label">{{ 'reward_points.table.transaction' | t }}</th>
@@ -158,7 +131,9 @@
     applyToCart: "{{ 'reward_points.apply_to_cart_button.label' | t }}",
     redeemNow: "{{ 'reward_points.redeem_points.button' | t }}",
     redeemMessage: "{{ 'reward_points.redeem_message' | t }}",
-    applyToCartMessage: "{{ 'reward_points.apply_to_cart_message' | t }}"
+    applyToCartMessage: "{{ 'reward_points.apply_to_cart_message' | t }}",
+    rewardPointsLabel: "{{ 'reward_points.reward_points.label' | t }}",
+    off: "{{ 'reward_points.redeem_points.off' | t }}"
   };
 </script>
 
