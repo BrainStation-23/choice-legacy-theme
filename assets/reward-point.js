@@ -122,14 +122,14 @@ document.addEventListener("DOMContentLoaded", () => {
           <div>
             <button class="${buttonClass} button button--solid rounded-6 fs-16-lh-24-ls-0 fw-600 pr-16 pl-16 pt-10 pb-10 ${
         isDisabled ? "disabled" : ""
-      }" data-points-required="${card.redeemPointValue} data-redeem-card-id="${
+      }" data-points-required="${card.redeemPointValue}" data-redeem-card-id="${
         card._id
       }" ${
         isActiveRedeemCard && !isDisabled
           ? `data-discount-code="${activeRedeemData.code}"`
           : ""
       } ${isDisabled ? "disabled" : ""}>
-                ${buttonText}
+              ${buttonText}
             </button>
           </div>
         </div>
@@ -138,6 +138,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
       desktopContainer.appendChild(desktopCard);
       mobileWrapper.appendChild(mobileSlide);
+
+      const slideshowComponent = document.getElementById("redeemCardsMobile");
+      if (
+        slideshowComponent &&
+        typeof window.initializeSlideshow === "function"
+      ) {
+        window.initializeSlideshow(slideshowComponent);
+      }
     }
 
     // Add event listeners to all new buttons
@@ -155,6 +163,19 @@ document.addEventListener("DOMContentLoaded", () => {
         handleApplyToCart(button, button.dataset.discountCode, applyHandler);
       button.addEventListener("click", applyHandler);
     });
+
+    reinitializeSlideshow();
+  };
+
+  const reinitializeSlideshow = () => {
+    const slideshowElement = document.getElementById("redeemCardsMobile");
+    if (slideshowElement) {
+      // Force re-initialization by calling the init method directly
+      if (slideshowElement.swiper) {
+        slideshowElement.swiper.destroy(true, true);
+      }
+      slideshowElement.init();
+    }
   };
 
   // Updated function to handle active redeem state
