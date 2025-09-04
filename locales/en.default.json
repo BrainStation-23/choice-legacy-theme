@@ -48,7 +48,8 @@
       "date": "Date",
       "point": "Point",
       "transaction": "Transaction",
-      "action": "Action"
+      "action": "Action",
+      "items": "Items"
     }
   },
   "wishlist": {

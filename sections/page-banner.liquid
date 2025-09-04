@@ -1,8 +1,8 @@
 <style>
   @media screen and (min-width: 769px) {
     {% unless section.settings.show_arrows_desktop %}
-      .banner-with-text-{{ section.id }} .slideshow-nav-button-prev,
-      .banner-with-text-{{ section.id }} .slideshow-nav-button-next {
+      .page-banner-{{ section.id }} .slideshow-nav-button-prev,
+      .page-banner-{{ section.id }} .slideshow-nav-button-next {
         display: none !important;
       }
     {% endunless %}
@@ -10,8 +10,8 @@
 
   @media screen and (max-width: 768px) {
     {% unless section.settings.show_arrows_mobile %}
-      .banner-with-text-{{ section.id }} .slideshow-nav-button-prev,
-      .banner-with-text-{{ section.id }} .slideshow-nav-button-next {
+      .page-banner-{{ section.id }} .slideshow-nav-button-prev,
+      .page-banner-{{ section.id }} .slideshow-nav-button-next {
         display: none !important;
       }
     {% endunless %}
@@ -26,10 +26,10 @@
 %}
 
 {% if both_nav_none %}
-  <div class="banner-with-text banner-with-text-{{ section.id }} pt-0 pb-0 relative">
+  <div class="page-banner page-banner-{{ section.id }} pt-0 pb-0 relative">
     <div class="static-banner block">
       {% for block in section.blocks limit: 1 %}
-        <div class="static-slide h-408 sm:h-186 relative transition-transform block w-full {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
+        <div class="static-slide h-276 sm:h-149 relative transition-transform block w-full {% unless block.settings.mobile_image %}slide-no-mobile-image{% endunless %}" 
              {{ block.shopify_attributes }}
              data-block-id="{{ block.id }}"
              data-block-type="{{ block.type }}">
@@ -69,7 +69,7 @@
   </div>
 {% else %}
   <slideshow-component
-    class="banner-with-text banner-with-text-{{ section.id }}"
+    class="page-banner page-banner-{{ section.id }}"
     data-autoplay="{{ section.settings.enable_autoplay }}"
     data-autoplay-delay="{{ section.settings.autoplay_delay | times: 1000 }}"
     data-pause-on-hover="{{ section.settings.pause_on_hover }}"
@@ -145,13 +145,13 @@
       "type": "checkbox",
       "id": "show_arrows_desktop",
       "label": "Show arrows on desktop",
-      "default": true
+      "default": false
     },
     {
       "type": "checkbox",
       "id": "show_arrows_mobile",
       "label": "Show arrows on mobile",
-      "default": true
+      "default": false
     },
     {
       "type": "header",
@@ -264,7 +264,7 @@
   ],
   "presets": [
     {
-      "name": "Banner with Text",
+      "name": "Page Banner",
       "blocks": [
         {
           "type": "banner"

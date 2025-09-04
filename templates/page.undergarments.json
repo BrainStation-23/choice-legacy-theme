@@ -202,25 +202,14 @@
       ],
       "settings": {}
     },
-    "video_DcJGAC": {
-      "type": "video",
-      "name": "Video",
-      "settings": {
-        "video_url": "",
-        "youtube_url": "https://www.youtube.com/watch?v=rgZU5pDf6mw",
-        "autoplay": false,
-        "muted": true,
-        "loop": false,
-        "controls": true
-      }
-    },
     "combo_banner_3": {
       "type": "combo-banner",
       "blocks": {
         "banner_1": {
           "type": "banner",
           "settings": {
-            "image": "shopify://shop_images/Offer_banner_5.png",
+            "image": "shopify://shop_images/Offer_banner_6.png",
+            "mobile_image": "shopify://shop_images/Offer_banner_7.png",
             "link": "shopify://pages/size-calculator",
             "link_target": false
           }
@@ -230,6 +219,19 @@
         "banner_1"
       ],
       "settings": {}
+    },
+    "video_DcJGAC": {
+      "type": "video",
+      "name": "Video",
+      "settings": {
+        "video_url": "",
+        "youtube_url": "https://www.youtube.com/watch?v=rgZU5pDf6mw",
+        "description": "",
+        "autoplay": false,
+        "muted": true,
+        "loop": false,
+        "controls": true
+      }
     },
     "product_video_carousel_fjHgVj": {
       "type": "product-video-carousel",
@@ -322,8 +324,8 @@
     "combo_banner_1",
     "featured_collection_K3Ypf3",
     "combo_banner_2",
-    "video_DcJGAC",
     "combo_banner_3",
+    "video_DcJGAC",
     "product_video_carousel_fjHgVj",
     "feature_blog_h3cgHF"
   ]

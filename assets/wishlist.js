@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", function () {
         item.imageUrl ||
         "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png";
       const price = item.price || "N/A";
-      const currencySymbol = "৳";
+      const url = item.url;
       const uniqueId = item.id;
 
       const removeButtonHTML = `
@@ -53,8 +53,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const row = document.createElement("tr");
       row.id = `wishlist-item-${uniqueId}`;
       row.innerHTML = `
-        <td><img src="${imageUrl}" alt="${item.title}" class="product-image w-32 h-32"></td>
-        <td class="product-name fw-400 fs-16-lh-24-ls-0">${item.title}</td>
+        <td><a href="${url}"><img src="${imageUrl}" alt="${item.title}" class="product-image w-32 h-32"></a></td>
+        <td class="product-name fw-400 fs-16-lh-24-ls-0"><a href="${url}" class="text-brand">${item.title}</a></td>
         <td class="product-price fw-400 fs-16-lh-24-ls-0 min-w-85">${price}</td>
         <td class="wishlist-actions text-right flex justify-end items-center gap-16 md:flex-wrap slg:flex-wrap">
           ${removeButtonHTML}
@@ -70,13 +70,13 @@ document.addEventListener("DOMContentLoaded", function () {
       mobileCard.innerHTML = `
         <div class="items-start flex justify-between items-start pt-10 pl-16 pb-10 pr-16">
           <div class="flex justify-between border-b border-b-color border-b-solid w-full pb-10">
-            <img src="${imageUrl}" alt="${item.title}" class="w-32 h-32 object-contain">
+            <a href="${url}"><img src="${imageUrl}" alt="${item.title}" class="w-32 h-32 object-contain" /></a>
             <div class="flex items-center">
               <span class="product-name ff-general-sans fw-400 fs-16-lh-24-ls-0 text-secondary">${price}</span>
             </div>
           </div>
         </div>
-        <div class="product-name ff-general-sans fw-400 fs-16-lh-24-ls-0 pb-8 pl-12 pr-12 border-b border-b-color border-b-solid text-secondary">${item.title}</div>
+        <a href="${url}" class="product-name ff-general-sans fw-400 fs-16-lh-24-ls-0 pb-8 pl-12 pr-12 border-b border-b-color border-b-solid text-brand">${item.title}</a>
         <div class="flex justify-end items-center gap-24 pt-12 pb-12 pl-24 pr-24">
           ${removeButtonHTML}
           ${addToCartButtonHTML}

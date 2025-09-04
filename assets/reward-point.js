@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   let earningPagination, usedPagination, expirePagination;
+  let activeRedeemData = null; // Store active redeem data
 
   const apiCall = async (url, options = {}) => {
     const response = await fetch(url, options);
@@ -19,19 +20,194 @@ document.addEventListener("DOMContentLoaded", () => {
     return data;
   };
 
-  // New function to update redeem button states based on current points
-  const updateRedeemButtonStates = (currentPoints) => {
+  const checkCartForDiscountCode = async (discountCode) => {
+    try {
+      const response = await fetch("/cart.js");
+      const cart = await response.json();
+
+      const discountCodes =
+        cart?.discount_codes?.map((discount) => discount.code) || [];
+      return discountCodes.includes(discountCode);
+    } catch (error) {
+      console.error("Error checking cart:", error);
+      return false;
+    }
+  };
+
+  // Generate redeem cards from API response
+  const generateRedeemCards = async (redeemPointsCards) => {
+    if (!redeemPointsCards || redeemPointsCards.length === 0) {
+      document.getElementById("redeemPointsSection").style.display = "none";
+      return;
+    }
+
+    document.getElementById("redeemPointsSection").style.display = "block";
+
+    const desktopContainer = document.getElementById("redeemCardsDesktop");
+    const mobileWrapper = document.getElementById("redeemCardsMobileWrapper");
+
+    desktopContainer.innerHTML = "";
+    mobileWrapper.innerHTML = "";
+
+    for (const card of redeemPointsCards) {
+      // Check if this card is the active redeem card
+      const isActiveRedeemCard =
+        activeRedeemData && activeRedeemData.redeemCardId === card._id;
+
+      let buttonText = window.rewardPointLocalization.redeemNow;
+      let buttonClass = "redeem-now-button";
+      let isDisabled = false;
+
+      if (isActiveRedeemCard) {
+        // Check if the discount code is already applied in cart
+        const isAppliedInCart = await checkCartForDiscountCode(
+          activeRedeemData.code
+        );
+
+        if (isAppliedInCart) {
+          buttonText = "Already Applied";
+          buttonClass = "apply-to-cart-button disabled";
+          isDisabled = true;
+        } else {
+          buttonText = window.rewardPointLocalization.applyToCart;
+          buttonClass = "apply-to-cart-button";
+        }
+      }
+
+      // Desktop card
+      const desktopCard = document.createElement("div");
+      desktopCard.className =
+        "redeem-card p-16 rounded-8 bg-brand-2 min-w-285 lg:w-full md:w-full md:min-w-auto";
+      desktopCard.innerHTML = `
+      <div class="flex flex-col gap-20">
+        <div class="flex flex-col gap-8">
+          <span class="fs-16-lh-24-ls-0 fw-400 text-label">${
+            card.redeemPointValue
+          } ${window.rewardPointLocalization.rewardPointsLabel}</span>
+          <span class="fs-23-lh-24-ls-0 fw-500 text-primary">${
+            card.calculatedDiscount
+          } ${window.rewardPointLocalization.off}</span>
+        </div>
+        <div>
+          <button class="${buttonClass} button button--solid rounded-6 fs-16-lh-24-ls-0 fw-600 pr-16 pl-16 pt-10 pb-10 ${
+        isDisabled ? "disabled" : ""
+      }" data-points-required="${card.redeemPointValue}" data-redeem-card-id="${
+        card._id
+      }" ${
+        isActiveRedeemCard && !isDisabled
+          ? `data-discount-code="${activeRedeemData.code}"`
+          : ""
+      } ${isDisabled ? "disabled" : ""}>
+              ${buttonText}
+          </button>
+        </div>
+      </div>
+    `;
+
+      // Mobile card
+      const mobileSlide = document.createElement("div");
+      mobileSlide.className = "swiper-slide w-auto";
+      mobileSlide.style.boxSizing = "border-box";
+      mobileSlide.innerHTML = `
+      <div class="redeem-card p-16 rounded-8 bg-brand-2 min-w-285">
+        <div class="flex flex-col gap-20">
+          <div class="flex flex-col gap-8">
+            <span class="fs-16-lh-24-ls-0 fw-400 text-label">${
+              card.redeemPointValue
+            } ${window.rewardPointLocalization.rewardPointsLabel}</span>
+            <span class="fs-23-lh-24-ls-0 fw-500 text-primary">${
+              card.calculatedDiscount
+            } ${window.rewardPointLocalization.off}</span>
+          </div>
+          <div>
+            <button class="${buttonClass} button button--solid rounded-6 fs-16-lh-24-ls-0 fw-600 pr-16 pl-16 pt-10 pb-10 ${
+        isDisabled ? "disabled" : ""
+      }" data-points-required="${card.redeemPointValue}" data-redeem-card-id="${
+        card._id
+      }" ${
+        isActiveRedeemCard && !isDisabled
+          ? `data-discount-code="${activeRedeemData.code}"`
+          : ""
+      } ${isDisabled ? "disabled" : ""}>
+              ${buttonText}
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+      desktopContainer.appendChild(desktopCard);
+      mobileWrapper.appendChild(mobileSlide);
+
+      const slideshowComponent = document.getElementById("redeemCardsMobile");
+      if (
+        slideshowComponent &&
+        typeof window.initializeSlideshow === "function"
+      ) {
+        window.initializeSlideshow(slideshowComponent);
+      }
+    }
+
+    // Add event listeners to all new buttons
     const redeemButtons = document.querySelectorAll(".redeem-now-button");
+    const applyButtons = document.querySelectorAll(
+      ".apply-to-cart-button:not([disabled])"
+    );
 
     redeemButtons.forEach((button) => {
-      const pointsRequired = parseInt(button.dataset.pointsRequired) || 0;
+      button.addEventListener("click", handleRedeemFromCard);
+    });
 
-      if (currentPoints === 0 || currentPoints < pointsRequired) {
-        button.disabled = true;
-        button.classList.add("disabled"); // Add disabled class for styling
+    applyButtons.forEach((button) => {
+      const applyHandler = () =>
+        handleApplyToCart(button, button.dataset.discountCode, applyHandler);
+      button.addEventListener("click", applyHandler);
+    });
+
+    reinitializeSlideshow();
+  };
+
+  const reinitializeSlideshow = () => {
+    const slideshowElement = document.getElementById("redeemCardsMobile");
+    if (slideshowElement) {
+      // Force re-initialization by calling the init method directly
+      if (slideshowElement.swiper) {
+        slideshowElement.swiper.destroy(true, true);
+      }
+      slideshowElement.init();
+    }
+  };
+
+  // Updated function to handle active redeem state
+  const updateRedeemButtonStates = (currentPoints) => {
+    const allButtons = document.querySelectorAll(
+      ".redeem-now-button, .apply-to-cart-button"
+    );
+
+    allButtons.forEach((button) => {
+      const pointsRequired = parseInt(button.dataset.pointsRequired) || 0;
+      const isApplyButton = button.classList.contains("apply-to-cart-button");
+
+      // If there's an active redeem, disable all redeem buttons except the apply button
+      if (activeRedeemData) {
+        if (isApplyButton) {
+          // Keep apply button enabled
+          button.disabled = false;
+          button.classList.remove("disabled");
+        } else {
+          // Disable all redeem buttons when there's an active redeem
+          button.disabled = true;
+          button.classList.add("disabled");
+        }
       } else {
-        button.disabled = false;
-        button.classList.remove("disabled");
+        // Normal behavior when no active redeem
+        if (currentPoints === 0 || currentPoints < pointsRequired) {
+          button.disabled = true;
+          button.classList.add("disabled");
+        } else {
+          button.disabled = false;
+          button.classList.remove("disabled");
+        }
       }
     });
   };
@@ -102,6 +278,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const customerData = {
       orders: {},
       products: {},
+      productsById: {},
     };
 
     (window.customerPurchasedProducts || []).forEach((item) => {
@@ -121,6 +298,11 @@ document.addEventListener("DOMContentLoaded", () => {
           productHandle: item.productHandle,
         };
       }
+
+      // Add mapping for products by product ID
+      customerData.productsById[productIdStr] = {
+        productHandle: item.productHandle,
+      };
     });
 
     const emptyMessageHTML = `<tr><td class="fs-16-lh-24-ls-0" colspan="5" style="text-align:center; padding: 16px;">No ${tabType} history found.</td></tr>`;
@@ -162,7 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         desktopRowContent = `
-          <td class="fw-600 fs-16-lh-100pct-ls-0">${eventName}</td>
+          <td class="fw-600 fs-16-lh-100pct-ls-0 text-brand">${eventName}</td>
           <td class="fw-400 fs-16-lh-24-ls-0">${formattedDate}</td>
           <td>${pointsDisplay}</td>
           <td class="fw-400 fs-16-lh-24-ls-0">${transactionAmount}</td>
@@ -175,7 +357,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mobileCardContent = `
           <div class="card-top-row pb-10 flex justify-between items-center w-full">
             <div class="event-details flex items-center gap-6">
-              <span class="fw-600 fs-16-lh-100pct-ls-0">${eventName}</span>
+              <a href="${actionLink}" class="fw-600 fs-16-lh-100pct-ls-0 text-brand">${eventName}</a>
               <span class="fw-400 fs-16-lh-24-ls-0 text-label">${formattedDate}</span>
             </div>
             <div class="point-details flex items-center gap-12">
@@ -198,9 +380,44 @@ document.addEventListener("DOMContentLoaded", () => {
             ? record.expDate
             : record.createdDate;
         const formattedDate = new Date(dateValue).toISOString().split("T")[0];
-        const eventName =
+        let eventName =
           String(record.event).charAt(0).toUpperCase() +
           String(record.event).slice(1);
+
+        // Get actual product/order name based on event type and referenceId
+        if (record.event === "order") {
+          const order = customerData.orders[String(record.referenceId)];
+          if (order) {
+            eventName = order.name;
+          }
+        } else if (record.event === "review") {
+          const referenceIdStr = String(record.referenceId);
+
+          // First try to find in customerPurchasedProducts by product ID
+          const purchasedProduct = (
+            window.customerPurchasedProducts || []
+          ).find((item) => String(item.productId) === referenceIdStr);
+
+          if (
+            purchasedProduct &&
+            purchasedProduct.productHandle &&
+            window.allShopifyProducts
+          ) {
+            const productInfo =
+              window.allShopifyProducts[purchasedProduct.productHandle];
+            if (productInfo && productInfo.title) {
+              eventName = productInfo.title;
+            }
+          } else {
+            // Fallback: try to find product directly in allShopifyProducts by ID
+            const productFromAll = Object.values(
+              window.allShopifyProducts || {}
+            ).find((product) => String(product.id) === referenceIdStr);
+            if (productFromAll && productFromAll.title) {
+              eventName = productFromAll.title;
+            }
+          }
+        }
 
         if (tabType === "earning") {
           pointsDisplay = `<span class="fw-600 fs-16-lh-24-ls-0 text-success">+${
@@ -222,15 +439,14 @@ document.addEventListener("DOMContentLoaded", () => {
           }
         } else if (record.event === "review") {
           const product = customerData.products[String(record.referenceId)];
+
           if (product && product.productHandle) {
             actionLink = `/products/${product.productHandle}`;
-          } else {
-            actionLink = "/collections/all";
           }
         }
 
         desktopRowContent = `
-          <td class="fw-600 fs-16-lh-100pct-ls-0">${eventName}</td>
+          <td class="fw-600 fs-16-lh-100pct-ls-0 text-brand">${eventName}</td>
           <td class="fw-400 fs-16-lh-24-ls-0">${formattedDate}</td>
           <td>${pointsDisplay}</td>
           <td class="fw-400 fs-16-lh-24-ls-0">${transactionAmount}</td>
@@ -243,7 +459,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mobileCardContent = `
           <div class="card-top-row pb-10 flex justify-between items-center w-full">
             <div class="event-details flex items-center gap-6">
-              <span class="fw-600 fs-16-lh-100pct-ls-0">${eventName}</span>
+              <a href="${actionLink}" class="fw-600 fs-16-lh-100pct-ls-0 text-brand">${eventName}</a>
               <span class="fw-400 fs-16-lh-24-ls-0 text-label">${formattedDate}</span>
             </div>
             <div class="point-details flex items-center gap-12">
@@ -290,11 +506,22 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchHistoryForTab(tabType, 1);
   };
 
-  const updateCustomerData = (apiResponse) => {
+  const updateCustomerData = async (apiResponse) => {
     const currentPoints = apiResponse.remainingPoints || 0;
     currentPointsSpan.textContent = currentPoints;
 
-    // Update redeem button states based on current points
+    // Store active redeem data
+    activeRedeemData = apiResponse.activeRedeem || null;
+
+    // Generate redeem cards from API response
+    if (
+      apiResponse.configuration &&
+      apiResponse.configuration.redeemPointsCards
+    ) {
+      await generateRedeemCards(apiResponse.configuration.redeemPointsCards);
+    }
+
+    // Update redeem button states based on current points and active redeem
     updateRedeemButtonStates(currentPoints);
 
     const redemptionRulesText = document.getElementById("redemptionRulesText");
@@ -302,24 +529,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (redemptionRulesText && redemptionRules) {
       const { pointsRequired, discountAmount } = redemptionRules;
       redemptionRulesText.textContent = `Redeem ${pointsRequired} Points for ${discountAmount} OFF`;
-
-      const redeemCards = document.querySelectorAll(".redeem-card");
-      redeemCards.forEach((card) => {
-        const pointsRequiredForCard =
-          card.querySelector(".redeem-now-button").dataset.pointsRequired;
-        const discountSpan = card.querySelector(".discount-amount");
-
-        if (redemptionRules.pointsRequired > 0) {
-          const ratio =
-            redemptionRules.discountAmount / redemptionRules.pointsRequired;
-          const calculatedDiscount = Math.round(pointsRequiredForCard * ratio);
-          discountSpan.textContent = calculatedDiscount;
-        } else {
-          discountSpan.textContent = "0";
-        }
-      });
     }
 
+    // FIX: Correct the path to match your API structure
     const reviewRules = apiResponse.configuration?.pointsPerProductReview;
     if (reviewRules) {
       const threeStarText = document
@@ -327,11 +539,13 @@ document.addEventListener("DOMContentLoaded", () => {
         .getAttribute("data-translation");
       document.getElementById("threeStarReview").textContent =
         threeStarText.replace("{points}", reviewRules.threeStarPoints);
+
       const fourStarText = document
         .getElementById("fourStarReview")
         .getAttribute("data-translation");
       document.getElementById("fourStarReview").textContent =
         fourStarText.replace("{points}", reviewRules.fourStarPoints);
+
       const fiveStarText = document
         .getElementById("fiveStarReview")
         .getAttribute("data-translation");
@@ -386,16 +600,25 @@ document.addEventListener("DOMContentLoaded", () => {
     iframe.id = "discount-iframe";
     iframe.src = `/discount/${discountCode}?redirect=/cart`;
 
-    iframe.onload = () => {
-      button.textContent = window.rewardPointLocalization.redeemNow;
-      button.disabled = false;
-      button.removeAttribute("data-discount-code");
-      button.removeEventListener("click", applyHandler);
-      button.addEventListener("click", handleRedeemFromCard);
+    iframe.onload = async () => {
+      const isAppliedInCart = await checkCartForDiscountCode(discountCode);
 
-      // Re-check button state after iframe loads
-      const currentPoints = parseInt(currentPointsSpan.textContent) || 0;
-      updateRedeemButtonStates(currentPoints);
+      if (isAppliedInCart) {
+        button.textContent = "Already Applied";
+        button.disabled = true;
+        button.classList.add("disabled");
+      }
+
+      // After applying, clear the active redeem state and regenerate cards
+      activeRedeemData = null;
+
+      // Re-fetch the latest data to update the UI
+      const customerId = window.customerId;
+      if (customerId) {
+        apiCall(`${API_URLS.HISTORY}?historyType=earning&page=1`)
+          .then(updateCustomerData)
+          .catch(console.error);
+      }
     };
 
     document.body.appendChild(iframe);
@@ -404,6 +627,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const handleRedeemFromCard = async (event) => {
     const button = event.target;
     const pointsToRedeem = button.dataset.pointsRequired;
+    const redeemCardId = button.dataset.redeemCardId;
     const customerId = window.customerId;
     if (!customerId) return;
 
@@ -423,18 +647,34 @@ document.addEventListener("DOMContentLoaded", () => {
       const redeemResponse = await apiCall(API_URLS.REDEEM, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ points: Number(pointsToRedeem), customerId }),
+        body: JSON.stringify({
+          points: Number(pointsToRedeem),
+          customerId,
+          redeemCardId: redeemCardId,
+        }),
       });
       if (redeemResponse.discountCode) {
         toastManager.show(
           window.rewardPointLocalization.redeemMessage,
           "success"
         );
+
+        // Set active redeem data
+        activeRedeemData = {
+          redeemCardId: redeemCardId,
+          code: redeemResponse.discountCode,
+        };
+
         button.textContent = window.rewardPointLocalization.applyToCart;
         button.dataset.discountCode = redeemResponse.discountCode;
         button.disabled = false;
+        button.classList.remove("redeem-now-button");
+        button.classList.add("apply-to-cart-button");
         button.removeEventListener("click", handleRedeemFromCard);
         button.addEventListener("click", applyHandler);
+
+        // Update button states for all cards
+        updateRedeemButtonStates(parseInt(currentPointsSpan.textContent) || 0);
       }
 
       // Only update current points, don't call updateCustomerData with used tab data
@@ -445,7 +685,6 @@ document.addEventListener("DOMContentLoaded", () => {
       // Update the current points display and button states
       const newCurrentPoints = latestData.remainingPoints || 0;
       currentPointsSpan.textContent = newCurrentPoints;
-      updateRedeemButtonStates(newCurrentPoints);
 
       // If we're currently on the used tab, refresh it
       const activeTab = document.querySelector(".tab-button.active");
@@ -493,13 +732,8 @@ document.addEventListener("DOMContentLoaded", () => {
           tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 16px;">Failed to load reward history.</td></tr>`;
         }
 
-        // Disable all redeem buttons on error
-        updateRedeemButtonStates(0);
+        // Hide redeem points section on error
+        document.getElementById("redeemPointsSection").style.display = "none";
       });
   }
-
-  const redeemButtons = document.querySelectorAll(".redeem-now-button");
-  redeemButtons.forEach((button) => {
-    button.addEventListener("click", handleRedeemFromCard);
-  });
 });

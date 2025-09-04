@@ -28,12 +28,20 @@
           "type": "rating",
           "settings": {}
         },
+        "weight_mGUryA": {
+          "type": "weight",
+          "settings": {}
+        },
         "variant_picker_tCwbfe": {
           "type": "variant_picker",
           "settings": {}
         },
         "buy_buttons_fDk6gf": {
           "type": "buy_buttons",
+          "settings": {}
+        },
+        "offer_image_9efr4R": {
+          "type": "offer-image",
           "settings": {}
         },
         "icon_with_text_BwkMLd": {
@@ -79,15 +87,22 @@
         "collapsible_metafield_ecYRVW": {
           "type": "collapsible_metafield",
           "settings": {
-            "content_title": "Key Features",
+            "content_title": "Size Chart",
+            "metafield_key": "size_chart"
+          }
+        },
+        "collapsible_metafield_DyfTi9": {
+          "type": "collapsible_metafield",
+          "settings": {
+            "content_title": "Material COMPOSITION",
             "metafield_key": "key_features"
           }
         },
         "collapsible_metafield_6ezLbG": {
           "type": "collapsible_metafield",
           "settings": {
-            "content_title": "Key Features",
-            "metafield_key": "key_features"
+            "content_title": "How TO USE",
+            "metafield_key": "how_to_use"
           }
         }
       },
@@ -96,8 +111,10 @@
         "sku_vendor_type_XwTwe4",
         "price_DqFJnh",
         "rating_N3Arng",
+        "weight_mGUryA",
         "variant_picker_tCwbfe",
         "buy_buttons_fDk6gf",
+        "offer_image_9efr4R",
         "icon_with_text_BwkMLd",
         "icon_with_text_qKym6W",
         "icon_with_text_6xiUGc",
@@ -105,6 +122,7 @@
         "product_description_epVCCf",
         "collapsible_metafield_QiQp9Y",
         "collapsible_metafield_ecYRVW",
+        "collapsible_metafield_DyfTi9",
         "collapsible_metafield_6ezLbG"
       ],
       "settings": {}
@@ -127,5 +145,9 @@
       }
     }
   },
-  "order": ["main", "related-products", "product-reviews"]
+  "order": [
+    "main",
+    "related-products",
+    "product-reviews"
+  ]
 }

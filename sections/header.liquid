@@ -210,7 +210,8 @@
 
     <!-- Mobile Search -->
     <div class="header__search--mobile hidden sm:block sm:relative">
-      <predictive-search id="predictive-search-mobile" class="predictive-search">
+      {% if template.name != 'account' %}
+        <predictive-search id="predictive-search-mobile" class="predictive-search">
         <form
           action="{{ routes.search_url }}"
           method="get"
@@ -247,6 +248,7 @@
           </a>
         </form>
       </predictive-search>
+      {% endif %}
     </div>
 
     <!-- Mobile Mega Menu -->
