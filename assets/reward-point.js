@@ -357,7 +357,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mobileCardContent = `
           <div class="card-top-row pb-10 flex justify-between items-center w-full">
             <div class="event-details flex items-center gap-6">
-              <span class="fw-600 fs-16-lh-100pct-ls-0">${eventName}</span>
+              <a href="${actionLink}" class="fw-600 fs-16-lh-100pct-ls-0 text-brand">${eventName}</a>
               <span class="fw-400 fs-16-lh-24-ls-0 text-label">${formattedDate}</span>
             </div>
             <div class="point-details flex items-center gap-12">
@@ -459,7 +459,7 @@ document.addEventListener("DOMContentLoaded", () => {
         mobileCardContent = `
           <div class="card-top-row pb-10 flex justify-between items-center w-full">
             <div class="event-details flex items-center gap-6">
-              <span class="fw-600 fs-16-lh-100pct-ls-0">${eventName}</span>
+              <a href="${actionLink}" class="fw-600 fs-16-lh-100pct-ls-0 text-brand">${eventName}</a>
               <span class="fw-400 fs-16-lh-24-ls-0 text-label">${formattedDate}</span>
             </div>
             <div class="point-details flex items-center gap-12">
