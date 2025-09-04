@@ -5,7 +5,7 @@
   );
 
   // Initialize Toast Manager
-  const toastManager = new ToastNotificationManager();
+  const productPageReviewsToastManager = new ToastNotificationManager();
 
   reviewAppContainers.forEach((container) => {
     const sectionId = container.dataset.sectionId;
@@ -409,7 +409,7 @@
         }
 
         if (isUploadingImage) {
-          toastManager.show(
+          productPageReviewsToastManager.show(
             "Please wait, image is still uploading...",
             "error",
             4000
@@ -442,7 +442,7 @@
           if (!response.ok) {
             if (result.details && Array.isArray(result.details)) {
               parseBackendErrors(result.details);
-              toastManager.show(
+              productPageReviewsToastManager.show(
                 result.message || "Please fix the errors above",
                 "error",
                 4000
@@ -454,7 +454,7 @@
             }
           } else {
             // Success
-            toastManager.show(
+            productPageReviewsToastManager.show(
               result.message || "Review submitted successfully!",
               "success",
               3000
@@ -468,7 +468,7 @@
           }
         } catch (error) {
           console.error("Error submitting review:", error);
-          toastManager.show(
+          productPageReviewsToastManager.show(
             `Error: ${error.message || "Could not submit review."}`,
             "error",
             4000
@@ -663,9 +663,6 @@
           </div>
         </div>
         <div class="flex flex-col gap-8">
-          <div class="fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
-            ${productTitle}
-          </div>
           <div class="ff-general-sans fs-14-lh-20-ls-0 fw-400 text-secondary">
             ${escapeHTML(review.reviewText || "")}
           </div>
@@ -744,9 +741,6 @@
         </div>
       </div>
       <div class="flex flex-col gap-8">
-        <div class="fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
-          ${productTitle}
-        </div>
         <div class="ff-general-sans fs-14-lh-20-ls-0 fw-400 text-secondary">
           ${escapeHTML(review.reviewText || "")}
         </div>
@@ -774,9 +768,6 @@
           </div>
         </div>
         <div class="flex flex-col gap-8">
-          <div class="fs-21-lh-24-ls-1_2pct ff-bebas-neue fw-400">
-            ${productTitle}
-          </div>
           <div class="ff-general-sans fs-14-lh-20-ls-0 fw-400 text-secondary">
             ${escapeHTML(review.reviewText || "")}
           </div>
