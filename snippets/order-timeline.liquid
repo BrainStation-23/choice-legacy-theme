@@ -1,51 +1,288 @@
 <!-- Order Timeline Section -->
 <div class="order-timeline-section">
-  <h3 class="ff-general-sans fs-18-lh-20-ls-0 fw-500 mb-16">Order Timeline {{ order.id }}</h3>
   <div class="delivery-status-container border-1 border-solid border-color rounded-12 p-24">
-    <div class="delivery-status loading" data-order-id="gid://shopify/Order/{{ order.id }}">
-      Loading delivery status...
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loading-spinner" style="text-align: center; margin: 20px 0;">
+      {% render 'spinner' %}
+    </div>
+
+    <!-- Error Message -->
+    <div class="error-message" id="error-message" style="display: none; text-align: center; margin: 20px 0;">
+      <div class="ff-general-sans fs-14-lh-16-ls-0 text-red-600">
+        Unable to load delivery timeline. Please try again later.
+      </div>
+    </div>
+
+    <!-- Visual Timeline -->
+    <div
+      class="timeline-visual"
+      id="visual-timeline"
+      style="display: none; align-items: center; margin: 30px 0; padding: 0 20px;"
+    >
+      <div
+        class="timeline-step flex flex-col items-center relative flex-1 gap-16"
+        data-status="accepted"
+      >
+        <div>{% render 'icon-package' %}</div>
+        <div
+          class="step-circle bg-bg w-32 h-32 rounded-full  border-2 border-color border-solid flex items-center justify-center relative z-2"
+        >
+          <span class="tick-icon" style="display: none;">{% render 'icon-tick' %}</span>
+          <span
+            class="dot-icon w-8 h-8 rounded-full text-primary-optional inline-block  "
+          ></span>
+        </div>
+        <h2
+          class="step-label m-0 ff-general-sans fs-16-lh-20-ls-0_1  fw-500 text-primary-optional"
+        >
+          {{ 'customer.order.accepted' | t }}
+        </h2>
+      </div>
+      <div
+        class="timeline-step flex flex-col items-center relative flex-1 gap-16"
+        data-status="picked"
+      >
+        <div>{% render 'icon-picked' %}</div>
+        <div
+          class="step-circle bg-bg w-32 h-32 rounded-full  border-2 border-color border-solid flex items-center justify-center relative z-2"
+        >
+          <span class="tick-icon" style="display: none;">{% render 'icon-tick' %}</span>
+          <span
+            class="dot-icon w-8 h-8 rounded-full text-primary-optional inline-block"
+          ></span>
+        </div>
+        <h2
+          class="step-label m-0 ff-general-sans fs-16-lh-20-ls-0_1  fw-500 text-primary-optional "
+        >
+          {{ 'customer.order.picked' | t }}
+        </h2>
+      </div>
+      <div
+        class="timeline-step flex flex-col items-center relative flex-1 gap-16"
+        data-status="in-transit"
+      >
+        <div>{% render 'icon-track' %}</div>
+        <div
+          class="step-circle bg-bg w-32 h-32 rounded-full  border-2 border-color border-solid flex items-center justify-center relative z-2"
+        >
+          <span class="tick-icon" style="display: none;">{% render 'icon-tick' %}</span>
+          <span
+            class="dot-icon w-8 h-8 rounded-full text-primary-optional inline-block"
+          ></span>
+        </div>
+        <h2
+          class="step-label m-0 ff-general-sans fs-16-lh-20-ls-0_1  fw-500 text-primary-optional"
+        >
+          {{ 'customer.order.in-transit' | t }}
+        </h2>
+      </div>
+      <div
+        class="timeline-step flex flex-col items-center relative flex-1 gap-16"
+        data-status="out-for-delivery"
+      >
+        <div>{% render 'icon-out-for-delivery' %}</div>
+        <div
+          class="step-circle bg-bg w-32 h-32 rounded-full  border-2 border-color border-solid flex items-center justify-center relative z-2"
+        >
+          <span class="tick-icon" style="display: none;">{% render 'icon-tick' %}</span>
+          <span
+            class="dot-icon w-8 h-8 rounded-full text-primary-optional inline-block"
+          ></span>
+        </div>
+        <h2
+          class="step-label m-0 ff-general-sans fs-16-lh-20-ls-0_1  fw-500 text-primary-optional"
+        >
+          {{ 'customer.order.out-for-delivery' | t }}
+        </h2>
+      </div>
+      <div
+        class="timeline-step flex flex-col items-center relative flex-1 gap-16"
+        data-status="delivered"
+      >
+        <div>{% render 'icon-delivery' %}</div>
+        <div
+          class="step-circle bg-bg w-32 h-32 rounded-full  border-2 border-color border-solid flex items-center justify-center relative z-2"
+        >
+          <span class="tick-icon" style="display: none;">{% render 'icon-tick' %}</span>
+          <span
+            class="dot-icon w-8 h-8 rounded-full text-primary-optional inline-block"
+          ></span>
+        </div>
+        <h2
+          class="step-label m-0 ff-general-sans fs-16-lh-20-ls-0_1  fw-500 text-primary-optional"
+        >
+          {{ 'customer.order.delivered' | t }}
+        </h2>
+      </div>
     </div>
 
     <!-- Timeline will be populated by JavaScript -->
-    <div id="order-timeline" class="mt-16">
+    <div id="order-timeline" class="mt-16" style="display: none;">
       <!-- Timeline content will be inserted here -->
     </div>
   </div>
 </div>
+
+<style>
+  /* Spinner animation */
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  /* Timeline connecting lines */
+  .timeline-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: calc(50% + 10px);
+    left: calc(50% + 10px);
+    right: calc(-50% + 10px);
+    height: 3px;
+    background-color: #e5e5e5;
+    z-index: 1;
+  }
+
+  .timeline-step.completed:not(:last-child)::after {
+    background-color: #28a745;
+  }
+
+  /* Completed steps - Green background with white tick icon */
+  .step-circle.completed {
+    border-color: #28a745 !important;
+  }
+
+  .step-circle.completed .tick-icon {
+    display: inline !important;
+    color: white;
+  }
+
+  .step-circle.completed .dot-icon {
+    display: none !important;
+  }
+
+  /* Current step - Green background with white tick icon */
+  .step-circle.current {
+    border-color: #28a745 !important;
+  }
+
+  .step-circle.current .tick-icon {
+    display: inline !important;
+    color: white;
+  }
+
+  .step-circle.current .dot-icon {
+    display: none !important;
+  }
+
+  /* Pending steps - White background with gray border and dot */
+
+  .tick-icon {
+    display: none;
+  }
+  .step-circle .dot-icon {
+    background-color: rgb(167, 165, 165);
+  }
+
+  /* Icon styling */
+  .tick-icon svg {
+    color: rgb(var(--color-background));
+    fill: rgb(var(--color-background));
+  }
+</style>
+
 <script>
   // Order delivery status functionality
   let orderDeliveryStatusLoaded = false;
 
+  // Status order mapping
+  const statusOrder = ['accepted', 'picked', 'in-transit', 'out-for-delivery', 'delivered'];
+
+  // Function to show/hide loading spinner
+  function toggleSpinner(show) {
+    const spinner = document.getElementById('loading-spinner');
+    if (spinner) {
+      spinner.style.display = show ? 'block' : 'none';
+    }
+  }
+
+  // Function to show/hide error message
+  function toggleError(show) {
+    const errorMessage = document.getElementById('error-message');
+    if (errorMessage) {
+      errorMessage.style.display = show ? 'block' : 'none';
+    }
+  }
+
+  // Function to show/hide timeline
+  function toggleTimeline(show) {
+    const visualTimeline = document.getElementById('visual-timeline');
+    const orderTimeline = document.getElementById('order-timeline');
+
+    if (visualTimeline) {
+      visualTimeline.style.display = show ? 'flex' : 'none';
+    }
+    if (orderTimeline) {
+      orderTimeline.style.display = show ? 'block' : 'none';
+    }
+  }
+
+  // Function to update visual timeline
+  function updateVisualTimeline(currentStatus) {
+    const timelineSteps = document.querySelectorAll('.timeline-step');
+    const normalizedStatus = currentStatus.toLowerCase().replace(/\s+/g, '-');
+    const currentStatusIndex = statusOrder.indexOf(normalizedStatus);
+
+    timelineSteps.forEach((step, index) => {
+      const circle = step.querySelector('.step-circle');
+      const label = step.querySelector('.step-label');
+      const tickIcon = circle.querySelector('.tick-icon');
+      const dotIcon = circle.querySelector('.dot-icon');
+
+      // Reset classes
+      circle.classList.remove('completed', 'current');
+      label.classList.remove('completed', 'current');
+      step.classList.remove('completed');
+
+      if (index <= currentStatusIndex) {
+        // Completed and current steps (green background with tick icon)
+        circle.classList.add('completed');
+        label.classList.add('completed');
+        step.classList.add('completed');
+        if (tickIcon) {
+          tickIcon.style.display = 'inline';
+        }
+        if (dotIcon) {
+          dotIcon.style.display = 'none';
+        }
+      } else {
+        // Future steps (white background with gray dot)
+        if (tickIcon) {
+          tickIcon.style.display = 'none';
+        }
+        if (dotIcon) {
+          dotIcon.style.display = 'inline-block';
+        }
+      }
+    });
+  }
+
   // Function to fetch delivery status for single order
   async function fetchOrderDeliveryStatus() {
-    console.log('fetchOrderDeliveryStatus called, loaded:', orderDeliveryStatusLoaded);
-
     if (orderDeliveryStatusLoaded) return;
 
-    const deliveryStatusElement = document.querySelector('.delivery-status');
-    const timelineContainer = document.getElementById('order-timeline');
+    const orderId = 'gid://shopify/Order/{{ order.id }}'; // Get order ID
 
-    if (!deliveryStatusElement) {
-      console.log('No delivery status element found');
-      return;
-    }
-
-    const orderId = deliveryStatusElement.getAttribute('data-order-id');
-    if (!orderId) {
-      console.log('No order ID found');
-      deliveryStatusElement.textContent = 'Order Placed';
-      return;
-    }
-
-    console.log('Fetching delivery status for order ID:', orderId);
-
-    // Show loading state
-    deliveryStatusElement.textContent = 'Loading...';
-    deliveryStatusElement.classList.add('loading');
+    // Show loading spinner, hide timeline and error
+    toggleSpinner(true);
+    toggleError(false);
+    toggleTimeline(false);
 
     try {
       const apiUrl = `/apps/${APP_SUB_PATH}/customer/account/delivery-status?order_ids=${encodeURIComponent(orderId)}`;
-      console.log('API URL:', apiUrl);
 
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -55,70 +292,51 @@
         },
       });
 
-      console.log('Response status:', response.status);
-      console.log('Response ok:', response.ok);
-
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
       const result = await response.json();
-      console.log('API Response:', result);
 
       if (result.success && result.data && result.data[orderId]) {
         const orderData = result.data[orderId];
 
-        // Update delivery status
-        deliveryStatusElement.classList.remove('loading');
-        deliveryStatusElement.textContent = orderData.deliveryStatus;
-        deliveryStatusElement.setAttribute('data-consignment-id', orderData.consignment_id || '');
-        deliveryStatusElement.setAttribute('data-last-event-date', orderData.lastEventDate || '');
+        // Hide spinner and error, show timeline
+        toggleSpinner(false);
+        toggleError(false);
+        toggleTimeline(true);
 
-        // Add status-specific classes for styling
-        deliveryStatusElement.classList.remove('status-placed', 'status-transit', 'status-delivered', 'status-error');
-        const statusClass = orderData.deliveryStatus.toLowerCase().replace(/\s+/g, '-');
-        deliveryStatusElement.classList.add(`status-${statusClass}`);
+        // Update visual timeline based on API response
+        updateVisualTimeline(orderData.deliveryStatus);
 
         // Create timeline if events data is available
         if (orderData.events && Array.isArray(orderData.events)) {
-          createOrderTimeline(orderData.events, timelineContainer);
-        } else {
-          // Create simple timeline with current status
-          createSimpleTimeline(orderData, timelineContainer);
+          createOrderTimeline(orderData.events);
         }
-
-        console.log('Order delivery status updated successfully');
       } else {
-        console.log('No data found for order:', orderId);
-        deliveryStatusElement.classList.remove('loading');
-        deliveryStatusElement.textContent = 'Order Placed';
-        deliveryStatusElement.classList.add('status-placed');
+        // Hide spinner, show timeline with default state
+        toggleSpinner(false);
+        toggleError(false);
+        toggleTimeline(true);
 
-        // Create default timeline
-        createSimpleTimeline({ deliveryStatus: 'Order Placed' }, timelineContainer);
+        // Update visual timeline to default state
+        updateVisualTimeline('Accepted');
       }
     } catch (error) {
       console.error('Error fetching delivery status:', error);
 
-      deliveryStatusElement.classList.remove('loading');
-      deliveryStatusElement.textContent = 'Order Placed';
-      deliveryStatusElement.classList.add('status-error');
-
-      // Show error message in timeline
-      if (timelineContainer) {
-        timelineContainer.innerHTML = `
-          <div class="timeline-error ff-general-sans fs-14-lh-16-ls-0 text-red-600">
-            Unable to load delivery timeline. Please try again later.
-          </div>
-        `;
-      }
+      // Hide spinner and timeline, show error
+      toggleSpinner(false);
+      toggleTimeline(false);
+      toggleError(true);
     }
 
     orderDeliveryStatusLoaded = true;
   }
 
   // Function to create order timeline from events
-  function createOrderTimeline(events, container) {
+  function createOrderTimeline(events) {
+    const container = document.getElementById('order-timeline');
     if (!container || !events || events.length === 0) return;
 
     const timelineHTML = events
@@ -163,47 +381,10 @@
     `;
   }
 
-  function createSimpleTimeline(orderData, container) {
-    if (!container) return;
-
-    const currentDate = new Date().toLocaleString();
-    const status = orderData.deliveryStatus || 'Order Placed';
-
-    container.innerHTML = `
-      <div class="timeline-container">
-        <h4 class="ff-general-sans fw-500 fs-16-lh-18-ls-0 mb-16">Delivery Status</h4>
-        <div class="timeline-item flex gap-16">
-          <div class="timeline-marker flex-shrink-0 w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center">
-            <div class="w-6 h-6 rounded-full bg-white"></div>
-          </div>
-          <div class="timeline-content flex-1">
-            <div class="ff-general-sans fw-500 fs-14-lh-16-ls-0 text-brand mb-4">
-              ${status}
-            </div>
-            <div class="ff-general-sans fw-400 fs-12-lh-14-ls-0 text-primary-70pct">
-              ${orderData.lastEventDate ? new Date(orderData.lastEventDate).toLocaleString() : currentDate}
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
   // Initialize when DOM is ready
   document.addEventListener('DOMContentLoaded', function () {
     setTimeout(() => {
       fetchOrderDeliveryStatus();
     }, 300);
   });
-
-  function startDeliveryStatusRefresh() {
-    setInterval(() => {
-      if (document.querySelector('.delivery-status')) {
-        orderDeliveryStatusLoaded = false;
-        fetchOrderDeliveryStatus();
-      }
-    }, 120000);
-  }
-
-  startDeliveryStatusRefresh();
 </script>

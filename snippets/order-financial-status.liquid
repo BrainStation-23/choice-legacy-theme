@@ -11,7 +11,7 @@
   {% when 'partially_refunded' %}
     {% assign status_class = 'status-partially-refunded' %}
   {% when 'refunded' %}
-    {% assign status_class = 'status-refunded' %}
+    {% assign status_class = 'status-cancelled' %}
   {% when 'voided' %}
     {% assign status_class = 'status-voided' %}
   {% when 'cancelled' %}
@@ -21,6 +21,6 @@
 {% endcase %}
 
 <div class="ff-general-sans fw-400 fs-16-lh-24-ls-0 flex items-center gap-4 justify-start">
-  <span class="rounded-full h-10 w-10 {{ status_class }}"></span>
+  <span class="rounded-full h-10 w-10 {{ status_class }} "></span>
   {{ order.financial_status_label }}
 </div>

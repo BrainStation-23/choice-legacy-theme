@@ -208,7 +208,7 @@
       "resend_otp": "Resend OTP",
       "submit": "Submit",
       "otp_verification": "OTP VERIFICATION",
-      "enter_your_new_email": "Enter your new email",
+      "enter_your_new_email": "Enter your new email"
     },
     "login": {
       "title": "Login",
@@ -280,7 +280,12 @@
       "fulfillment_status": "Fulfillment Status",
       "name": "Name",
       "phone": "Phone",
-      "address": "Address"
+      "address": "Address",
+      "accepted": "Accepted",
+      "picked": "Picked",
+      "in-transit": "In Transit",
+      "out-for-delivery": "Out for Delivery",
+      "delivered": "Delivered"
     }
   },
   "general": {

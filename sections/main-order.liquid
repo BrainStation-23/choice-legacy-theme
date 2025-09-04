@@ -6,8 +6,9 @@
         {{ 'customer.order.title' | t: name: order.name }}
       </h2>
       {% render 'order-history-header', order: order %}
-
-      {% render 'order-timeline', order: order %}
+      {% unless order.cancelled %}
+        {% render 'order-timeline', order: order %}
+      {% endunless %}
       <!-- Order Items -->
       <div class="border-1 border-solid border-color rounded-12 p-24">
         <div class="flex flex-col gap-16">
