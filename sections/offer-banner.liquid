@@ -121,8 +121,10 @@
       %}
       
       {% if show_arrows_desktop or show_arrows_mobile %}
-        {% render "nav-button", cls: "slideshow-nav-button-prev left-24", icon_cls: "icon-arrow-left" %}
-        {% render "nav-button", cls: "slideshow-nav-button-next right-24" %}
+        {% if section.blocks.size > 1 %}
+          {% render "nav-button", cls: "slideshow-nav-button-prev left-24", icon_cls: "icon-arrow-left" %}
+          {% render "nav-button", cls: "slideshow-nav-button-next right-24" %}
+        {% endif %}
       {% endif %}
     </div>
   </slideshow-component>

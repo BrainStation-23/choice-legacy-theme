@@ -45,11 +45,11 @@ document.addEventListener("DOMContentLoaded", function () {
       const reviewColumnContent =
         activeTab === "reviewed" ? ratingDisplay : "Review";
 
-      let desktopActionHTML = `<a href="${productUrl}" class="button button--solid cursor-pointer no-underline w-65 h-32 flex items-center justify-center">View</a>`;
+      let desktopActionHTML = `<a href="${productUrl}"><svg width="28" height="17" viewBox="0 0 28 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.9785 16.8535C6.08789 16.8535 0.658203 10.418 0.658203 8.44531C0.658203 6.46289 6.09766 0.0273438 13.9785 0.0273438C21.957 0.0273438 27.2891 6.46289 27.2891 8.44531C27.2891 10.418 21.9668 16.8535 13.9785 16.8535ZM13.9785 13.709C16.8984 13.709 19.2715 11.3066 19.2715 8.44531C19.2715 5.50586 16.8984 3.18164 13.9785 3.18164C11.0391 3.18164 8.68555 5.50586 8.68555 8.44531C8.68555 11.3066 11.0391 13.709 13.9785 13.709ZM13.9785 10.4473C12.8652 10.4473 11.957 9.53906 11.957 8.44531C11.957 7.3418 12.8652 6.43359 13.9785 6.43359C15.082 6.43359 16 7.3418 16 8.44531C16 9.53906 15.082 10.4473 13.9785 10.4473Z" fill="#FB6F92"/></svg></a>`;
 
       let mobileActionHTML = "";
       if (hasRating) {
-        const viewButtonMobile = `<a href="${productUrl}" class="button button--solid cursor-pointer no-underline block w-50pct h-40 flex items-center justify-center">View</a>`;
+        const viewButtonMobile = `<a href="${productUrl}"><svg width="28" height="17" viewBox="0 0 28 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.9785 16.8535C6.08789 16.8535 0.658203 10.418 0.658203 8.44531C0.658203 6.46289 6.09766 0.0273438 13.9785 0.0273438C21.957 0.0273438 27.2891 6.46289 27.2891 8.44531C27.2891 10.418 21.9668 16.8535 13.9785 16.8535ZM13.9785 13.709C16.8984 13.709 19.2715 11.3066 19.2715 8.44531C19.2715 5.50586 16.8984 3.18164 13.9785 3.18164C11.0391 3.18164 8.68555 5.50586 8.68555 8.44531C8.68555 11.3066 11.0391 13.709 13.9785 13.709ZM13.9785 10.4473C12.8652 10.4473 11.957 9.53906 11.957 8.44531C11.957 7.3418 12.8652 6.43359 13.9785 6.43359C15.082 6.43359 16 7.3418 16 8.44531C16 9.53906 15.082 10.4473 13.9785 10.4473Z" fill="#FB6F92"/></svg></a>`;
         const ratingTextMobile = `<span class="ff-general-sans fw-600 fs-16-lh-24-ls-0 w-50pct text-center text-brand">${ratingDisplay} star</span>`;
         mobileActionHTML = `
           <div class="flex justify-between items-center pt-12 pb-12 pl-24 pr-24">
@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
           </div>
         `;
       } else {
-        const viewButtonMobile = `<a href="${productUrl}" class="button button--solid w-50pct cursor-pointer no-underline block h-40 flex items-center justify-center">View</a>`;
+        const viewButtonMobile = `<a href="${productUrl}"><svg width="28" height="17" viewBox="0 0 28 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.9785 16.8535C6.08789 16.8535 0.658203 10.418 0.658203 8.44531C0.658203 6.46289 6.09766 0.0273438 13.9785 0.0273438C21.957 0.0273438 27.2891 6.46289 27.2891 8.44531C27.2891 10.418 21.9668 16.8535 13.9785 16.8535ZM13.9785 13.709C16.8984 13.709 19.2715 11.3066 19.2715 8.44531C19.2715 5.50586 16.8984 3.18164 13.9785 3.18164C11.0391 3.18164 8.68555 5.50586 8.68555 8.44531C8.68555 11.3066 11.0391 13.709 13.9785 13.709ZM13.9785 10.4473C12.8652 10.4473 11.957 9.53906 11.957 8.44531C11.957 7.3418 12.8652 6.43359 13.9785 6.43359C15.082 6.43359 16 7.3418 16 8.44531C16 9.53906 15.082 10.4473 13.9785 10.4473Z" fill="#FB6F92"/></svg></a>`;
         const reviewButtonMobile = `<p class="fw-600 w-50pct fs-14-lh-16-ls-0 text-center text-brand">Review</p>`;
         mobileActionHTML = `
           <div class="flex justify-between items-center gap-12 pt-12 pb-12 pl-24 pr-24">
