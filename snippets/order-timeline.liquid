@@ -115,16 +115,10 @@
         </h2>
       </div>
     </div>
-
-    <!-- Timeline will be populated by JavaScript -->
-    <div id="order-timeline" class="mt-16" style="display: none;">
-      <!-- Timeline content will be inserted here -->
-    </div>
   </div>
 </div>
 
 <style>
-  /* Spinner animation */
   @keyframes spin {
     0% {
       transform: rotate(0deg);
@@ -134,7 +128,6 @@
     }
   }
 
-  /* Timeline connecting lines */
   .timeline-step:not(:last-child)::after {
     content: '';
     position: absolute;
@@ -142,7 +135,7 @@
     left: calc(50% + 10px);
     right: calc(-50% + 10px);
     height: 3px;
-    background-color: #e5e5e5;
+    background-color: rgba(var(--color-primary-text), 0.3);
     z-index: 1;
   }
 
@@ -150,14 +143,13 @@
     background-color: #28a745;
   }
 
-  /* Completed steps - Green background with white tick icon */
   .step-circle.completed {
     border-color: #28a745 !important;
   }
 
   .step-circle.completed .tick-icon {
     display: inline !important;
-    color: white;
+    color: rgb(var(--color-background));
   }
 
   .step-circle.completed .dot-icon {
@@ -171,20 +163,18 @@
 
   .step-circle.current .tick-icon {
     display: inline !important;
-    color: white;
+    color: rgb(var(--color-background));
   }
 
   .step-circle.current .dot-icon {
     display: none !important;
   }
 
-  /* Pending steps - White background with gray border and dot */
-
   .tick-icon {
     display: none;
   }
   .step-circle .dot-icon {
-    background-color: rgb(167, 165, 165);
+    background-color: rgba(var(--color-primary-text), 0.3);
   }
 
   /* Icon styling */
