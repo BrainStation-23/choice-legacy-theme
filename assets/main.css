@@ -1813,6 +1813,9 @@ address {
   .sm\:flex-row-reverse {
     flex-direction: row-reverse;
   }
+  .sm\:flex-row {
+    flex-direction: row;
+  }
 
   .sm\:justify-start {
     justify-content: flex-start;

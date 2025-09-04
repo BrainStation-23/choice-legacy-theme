@@ -1,4 +1,4 @@
-{% paginate customer.orders by 1 %}
+{% paginate customer.orders by 10 %}
   <div class="flex flex-col gap-24 overflow-hidden">
     <div>
       <h2 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500">{{ 'customer.order.title' | t }}</h2>
@@ -88,6 +88,8 @@
                     data-order-id="gid://shopify/Order/{{ order.id }}"
                   >
                   </span>
+
+                  {% comment %} {{ order.order_status_url }} {% endcomment %}
                 </td>
                 <td role="cell" class="pt-0 pb-0 pl-12 pr-12">
                   <span class="ff-general-sans fw-400 fs-16-lh-24-ls-0 flex gap-4">

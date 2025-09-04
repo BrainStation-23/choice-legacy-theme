@@ -281,7 +281,12 @@
       "fulfillment_status": "Fulfillment Status",
       "name": "Name",
       "phone": "Phone",
-      "address": "Address"
+      "address": "Address",
+      "accepted": "Accepted",
+      "picked": "Picked",
+      "in-transit": "In Transit",
+      "out-for-delivery": "Out for Delivery",
+      "delivered": "Delivered"
     }
   },
   "general": {
