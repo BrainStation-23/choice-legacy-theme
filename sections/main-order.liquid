@@ -504,7 +504,33 @@
           <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0 fw-500">
             {{ 'customer.addresses.address2' | t }}
           </h1>
+        </div>
+        <div class="flex justify-between pt-16">
+          <h2 class="customer-order-cell flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400">
+            {{ customer.name | default: '-' }}
+          </h2>
+          <h2 class="customer-order-cell flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400">
+            {{ order.shipping_address.address1 | default: '-' }}
+          </h2>
+          <h2 class="m-0 flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400">
+            {{ order.shipping_address.address2 | default: '-' }}
+          </h2>
+        </div>
+      </div>
+    </div>
+    {% comment %} billing address desktop {% endcomment %}
+
+    <div class="sm:hidden flex flex-col gap-16">
+      <h1 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500">{{ 'customer.addresses.billing_address' | t }}</h1>
+      <div class="border-1 border-solid border-color rounded-12 p-24">
+        <div class="border-b border-b-color border-b-solid flex justify-between pb-16">
           <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0 fw-500">
+            {{ 'customer.addresses.address1' | t }}
+          </h1>
+          <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0 fw-500">
+            {{ 'customer.addresses.address2' | t }}
+          </h1>
+          <h1 class="m-0 flex-1 ff-general-sans fs-16-lh-16-ls-0 fw-500 text-end">
             {{ 'customer.addresses.payment_status' | t }}
           </h1>
         </div>
@@ -515,8 +541,8 @@
           <h2 class="m-0 flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400">
             {{ order.billing_address.address2 | default: '-' }}
           </h2>
-          <h2 class="m-0 flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400">
-            {{ order.payment_status | default: '-' }}
+          <h2 class="m-0 flex-1 fs-16-lh-24-ls-0 ff-general-sans fw-400 text-end">
+            {{ order.financial_status | default: '-' }}
           </h2>
         </div>
       </div>
@@ -543,8 +569,6 @@
           <h2 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">
             {{ order.shipping_address.address1 }}
             {{ order.shipping_address.address2 }}
-            {{ order.shipping_address.city }}
-            {{ order.shipping_address.country }}
           </h2>
         </div>
       </div>
@@ -571,8 +595,6 @@
           <h2 class="m-0 ff-general-sans fs-16-lh-24-ls-0 fw-400">
             {{ order.billing_address.address1 }}
             {{ order.billing_address.address2 }}
-            {{ order.billing_address.city }}
-            {{ order.billing_address.country }}
           </h2>
         </div>
       </div>
