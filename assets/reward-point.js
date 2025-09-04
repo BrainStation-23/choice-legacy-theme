@@ -344,7 +344,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         desktopRowContent = `
-          <td class="fw-600 fs-16-lh-100pct-ls-0">${eventName}</td>
+          <td class="fw-600 fs-16-lh-100pct-ls-0 text-brand">${eventName}</td>
           <td class="fw-400 fs-16-lh-24-ls-0">${formattedDate}</td>
           <td>${pointsDisplay}</td>
           <td class="fw-400 fs-16-lh-24-ls-0">${transactionAmount}</td>
@@ -446,7 +446,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         desktopRowContent = `
-          <td class="fw-600 fs-16-lh-100pct-ls-0">${eventName}</td>
+          <td class="fw-600 fs-16-lh-100pct-ls-0 text-brand">${eventName}</td>
           <td class="fw-400 fs-16-lh-24-ls-0">${formattedDate}</td>
           <td>${pointsDisplay}</td>
           <td class="fw-400 fs-16-lh-24-ls-0">${transactionAmount}</td>
