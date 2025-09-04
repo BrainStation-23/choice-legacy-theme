@@ -12,6 +12,8 @@
   }
 </style>
 
+{%- unless product.has_only_default_variant -%}
+
 <variant-picker 
   class="variant-picker-element block mt-24 mb-24 flex flex-col gap-16" 
   data-section-id="{{ section.id }}" data-product-url="{{ product.url | within: collection }}"
@@ -59,9 +61,9 @@
 
             if downcased_option_name == 'color' or downcased_option_name == 'colour'
               assign is_color_option = true
-              assign color_handle = value | handle
-              assign color_swatch_image_file = color_handle | append: '.png'
-              assign color_swatch_asset_url = images[color_swatch_image_file] | image_url: width: 44
+              assign color_swatch_image_file = value.swatch.image
+              assign image_url = value.swatch.image | image_url: width: 36
+              assign image_swatch_value = 'url(' | append: image_url | append: ')'
               assign color_of_swatch = value.swatch.color
             elsif product.type == "Combo products"
               for main_option in all_products[main_title_handle].options_with_values
@@ -91,8 +93,8 @@
               class="variant-picker__label flex items-center justify-center relative cursor-pointer left-0-priority pointer-events-auto fw-500 fs-13-lh-16-ls-0_2-priority border-0 border-solid {% if is_color_option %}variant-picker__label--swatch w-36 h-36 rounded-12{% else %}min-w-64 h-44 border-1 border-color rounded-100 pt-18 pr-16 pb-18 pl-16{% endif %}"
               style="
                 {%- if is_color_option -%}
-                  {%- if images[color_swatch_image_file] != blank -%}
-                    background-image: url({{ color_swatch_asset_url }});
+                  {%- if color_swatch_image_file != blank -%}
+                    background-image: {{ image_swatch_value }}
                   {%- else -%}
                     background-color: {{ color_of_swatch }};
                   {%- endif -%}
@@ -107,6 +109,8 @@
     </fieldset>
   {%- endfor -%}
 </variant-picker>
+
+{% endunless %}
 
 <script>
   class VariantPicker extends HTMLElement {
