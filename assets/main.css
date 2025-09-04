@@ -2210,6 +2210,9 @@ address {
 .p-32 {
   padding: calc(32 * var(--space-unit));
 }
+.p-2 {
+  padding: calc(2 * var(--space-unit));
+}
 .p-4 {
   padding: calc(4 * var(--space-unit));
 }

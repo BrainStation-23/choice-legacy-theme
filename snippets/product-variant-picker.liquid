@@ -5,6 +5,10 @@
     border-width: 2px;
   }
 
+  .variant-picker__radio-input:checked + .variant-picker__label div {
+    height: 28px !important;
+  }
+
   .variant-picker__label.unavailable {
     text-decoration: line-through;
     opacity: 0.4;
@@ -62,7 +66,7 @@
             if downcased_option_name == 'color' or downcased_option_name == 'colour'
               assign is_color_option = true
               assign color_swatch_image_file = value.swatch.image
-              assign image_url = value.swatch.image | image_url: width: 36
+              assign image_url = value.swatch.image | image_url: width: 34
               assign image_swatch_value = 'url(' | append: image_url | append: ')'
               assign color_of_swatch = value.swatch.color
             elsif product.type == "Combo products"
@@ -90,18 +94,23 @@
             >
             <label
               for="option-{{ option.position }}-{{ forloop.index }}"
-              class="variant-picker__label flex items-center justify-center relative cursor-pointer left-0-priority pointer-events-auto fw-500 fs-13-lh-16-ls-0_2-priority border-0 border-solid {% if is_color_option %}variant-picker__label--swatch w-36 h-36 rounded-12{% else %}min-w-64 h-44 border-1 border-color rounded-100 pt-18 pr-16 pb-18 pl-16{% endif %}"
-              style="
-                {%- if is_color_option -%}
+              class="variant-picker__label flex p-2 items-center justify-center relative cursor-pointer left-0-priority pointer-events-auto fw-500 fs-13-lh-16-ls-0_2-priority border-0 border-solid {% if is_color_option %}variant-picker__label--swatch w-36 h-36 rounded-12{% else %}min-w-64 h-44 border-1 border-color rounded-100 pt-18 pr-16 pb-18 pl-16{% endif %}"
+            >
+              {% if is_color_option %}
+                <div class="variant-picker__label-span rounded-8" style="
+                  width: 34px;
+                  height: 34px;
                   {%- if color_swatch_image_file != blank -%}
                     background-image: {{ image_swatch_value }}
                   {%- else -%}
                     background-color: {{ color_of_swatch }};
                   {%- endif -%}
-                {%- endif -%}
-              "
-            >
-              {% if is_color_option == false %}{{ value }}{% endif %} 
+                ">
+                  {% if is_color_option == false %}{{ value }}{% endif %}
+                </div>
+              {% else %}
+                  {% if is_color_option == false %}{{ value }}{% endif %}
+              {% endif %}
             </label>
           </div>
         {%- endfor -%}
