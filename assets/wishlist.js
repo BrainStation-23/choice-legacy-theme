@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
       row.id = `wishlist-item-${uniqueId}`;
       row.innerHTML = `
         <td><a href="${url}"><img src="${imageUrl}" alt="${item.title}" class="product-image w-32 h-32"></a></td>
-        <td class="product-name fw-400 fs-16-lh-24-ls-0"><a href="${url}" class="text-primary">${item.title}</a></td>
+        <td class="product-name fw-400 fs-16-lh-24-ls-0"><a href="${url}" class="text-brand">${item.title}</a></td>
         <td class="product-price fw-400 fs-16-lh-24-ls-0 min-w-85">${price}</td>
         <td class="wishlist-actions text-right flex justify-end items-center gap-16 md:flex-wrap slg:flex-wrap">
           ${removeButtonHTML}
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
             </div>
           </div>
         </div>
-        <a href="${url}" class="product-name ff-general-sans fw-400 fs-16-lh-24-ls-0 pb-8 pl-12 pr-12 border-b border-b-color border-b-solid text-secondary">${item.title}</a>
+        <a href="${url}" class="product-name ff-general-sans fw-400 fs-16-lh-24-ls-0 pb-8 pl-12 pr-12 border-b border-b-color border-b-solid text-brand">${item.title}</a>
         <div class="flex justify-end items-center gap-24 pt-12 pb-12 pl-24 pr-24">
           ${removeButtonHTML}
           ${addToCartButtonHTML}
