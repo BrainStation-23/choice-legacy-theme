@@ -8,17 +8,44 @@
   {% render 'cart-drawer' %}
 {% endcomment %}
 
-<cart-drawer id="cart-drawer" class="cart-drawer">
-  <div class="cart-drawer__overlay"></div>
+<style>
+  .cart-drawer.active .cart-drawer__overlay {
+    opacity: 1;
+  }
+
+  .cart-drawer.active .cart-drawer__inner {
+    transform: translateX(0);
+  }
+
+  .cart-drawer.animate {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .cart-drawer.active {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  .cart-drawer {
+    top: var(--header-height, 0);
+    height: calc(100vh - var(--header-height, 0));
+  }
+</style>
+
+<cart-drawer id="cart-drawer" class="cart-drawer fixed right-0 w-full z-1000 invisible opacity-0 transition-transform">
+  <div class="cart-drawer__overlay overlay absolute top-0 left-0 w-full h-full cursor-pointer opacity-0 transition-transform"></div>
   <div class="cart-drawer__inner pt-20 pr-16 pb-20 pl-16 flex flex-col gap-16 absolute top-0 right-0 w-full h-full transition-transform translate-x-full w-430 bg-bg">
     <div class="cart-drawer__header pb-12 border-top-none border-right-none border-left-none border-b border-solid border-color flex items-center justify-between flex-shrink">
       <h2 class="cart-drawer__title ff-general-sans fw-400 fs-17-lh-24-ls-0">{{ 'sections.cart.title' | t }} ({{ cart.item_count }})</h2>
-      <button class="cart-drawer__close" type="button" aria-label="{{ 'accessibility.close' | t }}">
-        {% render 'icon-close' %}
+      <button class="cart-drawer__close bg-transparent border-none w-28 h-28 cursor-pointer" type="button" aria-label="{{ 'accessibility.close' | t }}">
+        <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0.683594 15.5078C0.263672 15.0977 0.273438 14.375 0.683594 13.9746L6.68945 7.95898L0.683594 1.95312C0.273438 1.55273 0.263672 0.839844 0.683594 0.410156C1.10352 -0.00976562 1.81641 0 2.22656 0.410156L8.23242 6.41602L14.2383 0.410156C14.6582 0 15.3516 0 15.7812 0.419922C16.2109 0.830078 16.2012 1.54297 15.791 1.95312L9.78516 7.95898L15.791 13.9746C16.2012 14.3848 16.2012 15.0879 15.7812 15.5078C15.3613 15.9375 14.6582 15.9277 14.2383 15.5176L8.23242 9.51172L2.22656 15.5176C1.81641 15.9277 1.11328 15.9277 0.683594 15.5078Z" fill="#FB6F92"/>
+        </svg>
       </button>
     </div>
 
-    <div class="cart-drawer__contents">
+    <div class="cart-drawer__contents flex-1 flex flex-col overflow-hidden">
       {% if cart == empty %}
         <div class="cart-drawer__empty">
           <p class="cart-drawer__empty-text">{{ 'sections.cart.empty' | t }}</p>
@@ -27,7 +54,7 @@
           </a>
         </div>
       {% else %}
-        <div class="cart-drawer__items scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover">
+        <div class="cart-drawer__items flex-1 overflow-y-auto pb-0 scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover">
           {% for item in cart.items %}
             <div class="cart-drawer__item flex gap-16 p-12 border-top-none border-right-none border-left-none border-b border-solid border-color" id="CartDrawer-Item-{{ item.index | plus: 1 }}">
               <div class="cart-drawer__item-media media block relative w-100 h-116">
