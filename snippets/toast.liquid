@@ -14,29 +14,48 @@
   }
 </style>
 
-<div
-  id="toast-area"
-  class="fixed top-20 right-20 z-9999 pointer-events-none"
-  {% if liquid_toast_message %}
-    data-show-toast="true"
-    data-message="{{ liquid_toast_message | escape }}"
-    data-type="{{ liquid_toast_type | default: 'success' | escape }}"
-    data-duration="{{ liquid_toast_duration | default: 3000 }}"
-  {% endif %}
->
+<div id="toast-area" class="fixed top-20 right-20 z-9999 pointer-events-none">
+  <!-- Success Toast -->
   <div
     id="success-toast-wrapper"
-    class="toast-wrapper rounded-12 opacity-0 transition-transform translate-y--20 pointer-events-auto success flex items-center gap-8 p-16 bg-success-light sm:w-full sm:justify-center"
+    class="toast-wrapper rounded-12 flex items-center gap-8 p-16 bg-success-light sm:w-full sm:justify-center"
   >
     <span class="w-20 h-20">{% render 'icon-success' %}</span>
     <span class="toast-text fw-400 fs-14-lh-20-ls-0 text-primary"></span>
   </div>
 
+  <!-- Error Toast -->
   <div
     id="error-toast-wrapper"
-    class="toast-wrapper rounded-12 opacity-0 transition-transform translate-y--20 pointer-events-auto error flex items-center gap-8 p-16 bg-brand-2"
+    class="toast-wrapper rounded-12 flex items-center gap-8 p-16 bg-brand-2 sm:w-full sm:justify-center"
   >
     <span class="w-20 h-20">{% render 'icon-error' %}</span>
     <span class="toast-text fw-400 fs-14-lh-20-ls-0 text-primary"></span>
   </div>
 </div>
+
+<script>
+  function showToast(message, type = 'success', duration = 3000) {
+    const successToast = document.getElementById('success-toast-wrapper');
+    const errorToast = document.getElementById('error-toast-wrapper');
+
+    const toast = type === 'error' ? errorToast : successToast;
+    const otherToast = type === 'error' ? successToast : errorToast;
+
+    otherToast.classList.remove('show'); // hide other toast
+
+    toast.querySelector('.toast-text').textContent = message;
+    toast.classList.add('show');
+
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, duration);
+  }
+
+  // Auto-show messages from Liquid
+  {% if error %}
+    showToast(`{{ error | escape }}`, 'error', 5000);
+  {% elsif success %}
+    showToast(`{{ success | escape }}`, 'success', 3000);
+  {% endif %}
+</script>
