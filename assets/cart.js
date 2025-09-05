@@ -304,10 +304,3 @@ window.CartUtilities = {
     }
   },
 };
-
-window.testCartDrawer = function () {
-  const cartDrawer = document.querySelector("cart-drawer");
-  if (cartDrawer) {
-    cartDrawer.open();
-  }
-};
