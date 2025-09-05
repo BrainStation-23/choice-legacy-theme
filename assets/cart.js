@@ -209,6 +209,9 @@ class CartDrawer extends HTMLElement {
       "cart-drawer--loading"
     );
 
+    const lineItem = this.querySelector(`#CartDrawer-Item-${line}`);
+    if (lineItem) lineItem.classList.add("is-loading");
+
     const body = JSON.stringify({
       line: line,
       quantity: quantity,
@@ -230,12 +233,16 @@ class CartDrawer extends HTMLElement {
       })
       .catch((e) => {
         console.error("Error updating quantity:", e);
+        const errorLineItem = this.querySelector(`#CartDrawer-Item-${line}`);
+        if (errorLineItem) errorLineItem.classList.remove("is-loading");
         this.refresh();
       })
       .finally(() => {
         this.querySelector(".cart-drawer__inner").classList.remove(
           "cart-drawer--loading"
         );
+        const finalLineItem = this.querySelector(`#CartDrawer-Item-${line}`);
+        if (finalLineItem) finalLineItem.classList.remove("is-loading");
       });
   }
 

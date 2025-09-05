@@ -31,6 +31,12 @@
     top: var(--header-height, 0);
     height: calc(100vh - var(--header-height, 0));
   }
+
+  .cart-drawer__item.is-loading {
+    opacity: 0.6;
+    pointer-events: none;
+    transition: opacity 0.2s ease-in-out;
+  }
 </style>
 
 <cart-drawer id="cart-drawer" class="cart-drawer fixed right-0 w-full z-1000 invisible opacity-0 transition-transform">
@@ -144,7 +150,7 @@
                     <div class="quantity h-24 flex gap-6 border-top-none border-right-none border-left-none border-bottom border-solid border-color">
                       <button class="quantity__button bg-transparent border-none w-24 h-24 cursor-pointer" name="minus" type="button">
                         <span class="visually-hidden">{{ 'cart.product.quantity.decrease' | t: product: item.product.title | escape }}</span>
-                        {% render 'icon-quantity-minus' %}
+                        {% render 'icon-quantity-minus', cls: "pointer-events-none" %}
                       </button>
                       <input class="quantity__input fw-500 fs-14-lh-20-ls-0_1 bg-transparent border-none p-0 h-auto min-w-14 text-center w-3ch"
                         type="number"
@@ -159,7 +165,7 @@
                       >
                       <button class="quantity__button bg-transparent border-none w-24 h-24 cursor-pointer" name="plus" type="button">
                         <span class="visually-hidden">{{ 'cart.product.quantity.increase' | t: product: item.product.title | escape }}</span>
-                        {% render 'icon-quantity-plus' %}
+                        {% render 'icon-quantity-plus', cls: "pointer-events-none" %}
                       </button>
                     </div>
                   </div>
