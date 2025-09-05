@@ -106,7 +106,6 @@ class ProductForm extends HTMLElement {
     );
 
     if (!errorMessageWrapper) {
-      console.log("No error wrapper found");
       return;
     }
 
@@ -175,6 +174,7 @@ class CartDrawer extends HTMLElement {
   }
 
   close() {
+    console.log("close button clicked!");
     this.classList.remove("active");
     document.body.classList.remove("overflow-hidden");
 
