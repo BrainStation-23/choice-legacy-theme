@@ -279,10 +279,56 @@ class CartRemoveButton extends HTMLElement {
   }
 }
 
+class CartNote extends HTMLElement {
+  constructor() {
+    super();
+
+    this.noteInput = this.querySelector("textarea");
+    this.debounceTimeout = null;
+
+    this.noteInput.addEventListener("input", this.onNoteChange.bind(this));
+  }
+
+  onNoteChange() {
+    // Clear previous timeout to debounce
+    if (this.debounceTimeout) {
+      clearTimeout(this.debounceTimeout);
+    }
+
+    // Set a new timeout
+    this.debounceTimeout = setTimeout(() => {
+      this.saveNote();
+    }, 800); // Wait 800ms after user stops typing
+  }
+
+  async saveNote() {
+    const noteValue = this.noteInput.value;
+    const body = JSON.stringify({ note: noteValue });
+
+    try {
+      const response = await fetch(window.theme.routes.cartUpdate, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed with status ${response.status}`);
+      }
+    } catch (error) {
+      console.error("Failed to save cart note:", error);
+    }
+  }
+}
+
 // Register custom elements
 customElements.define("product-form", ProductForm);
 customElements.define("cart-drawer", CartDrawer);
 customElements.define("cart-remove-button", CartRemoveButton);
+customElements.define("cart-note", CartNote);
 
 // Global cart utilities
 window.CartUtilities = {

@@ -141,6 +141,8 @@
       "empty": "Your cart is empty",
       "remove": "Remove",
       "subtotal": "Subtotal",
+      "note": "Add a note to your order",
+      "note_label": "Cart note",
       "taxes_included_and_shipping_policy_html": "Taxes included and <a href=\"{{ link }}\">shipping policy</a>",
       "taxes_included_but_shipping_at_checkout": "Taxes included. Shipping calculated at checkout.",
       "taxes_and_shipping_policy_at_checkout_html": "Taxes and shipping calculated at checkout. <a href=\"{{ link }}\">Shipping policy</a>",
