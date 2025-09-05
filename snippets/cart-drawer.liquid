@@ -27,15 +27,15 @@
     opacity: 1;
   }
 
-  .cart-drawer {
-    {% comment %} top: var(--header-height, 0); {% endcomment %}
-    {% comment %} height: calc(100vh - var(--header-height, 0)); {% endcomment %}
-  }
-
   .cart-drawer__item.is-loading {
     opacity: 0.6;
     pointer-events: none;
     transition: opacity 0.2s ease-in-out;
+  }
+
+  .quantity__input:focus {
+    border: none;
+    outline: none;
   }
 </style>
 
