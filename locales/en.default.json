@@ -145,8 +145,9 @@
       "taxes_included_but_shipping_at_checkout": "Taxes included. Shipping calculated at checkout.",
       "taxes_and_shipping_policy_at_checkout_html": "Taxes and shipping calculated at checkout. <a href=\"{{ link }}\">Shipping policy</a>",
       "taxes_and_shipping_at_checkout": "Taxes and shipping calculated at checkout.",
-      "view_cart": "View cart",
+      "view_cart": "View My Cart",
       "checkout": "Checkout",
+      "continue_shopping": "Continue Shopping",
       "qty": "Qty"
     }
   },
@@ -271,6 +272,8 @@
       "fulfilled_at": "Fulfilled At",
       "track_shipment": "Track Shipment",
       "subtotal": "Subtotal",
+      "summary": "Summary",
+      "grand_total": "Grand Total",
       "shipping": "Shipping",
       "tax": "Tax",
       "total_duties": "Total Duties",
@@ -378,7 +381,16 @@
   },
   "cart": {
     "product": {
-      "quantity": {}
+      "quantity": {
+        "decrease": "Decrease quantity for {{ product }}",
+        "increase": "Increase quantity for {{ product }}",
+        "input_label": "Quantity for {{ product }}"
+      }
+    },
+    "drawer": {
+      "line-item": {
+        "off": "OFF"
+      }
     }
   }
 }

@@ -1450,6 +1450,9 @@ address {
 .w-50pct {
   width: 50%;
 }
+.w-3ch {
+  width: 3ch;
+}
 .max-w-none {
   max-width: none;
 }
@@ -1477,9 +1480,11 @@ address {
 .max-w-406 {
   max-width: 406px;
 }
-
 .max-w-374 {
   max-width: 374px;
+}
+.max-w-30 {
+  max-width: 30px;
 }
 .min-w-285 {
   min-width: 285px;
@@ -1504,6 +1509,9 @@ address {
 }
 .min-w-64 {
   min-width: 64px;
+}
+.min-w-14 {
+  min-width: 14px;
 }
 .min-w-1134 {
   min-width: 1134px;
