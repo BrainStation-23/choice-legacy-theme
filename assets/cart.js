@@ -1,13 +1,10 @@
 class ProductForm extends HTMLElement {
   constructor() {
     super();
-
     this.form = this.querySelector("form");
     this.submitButton = this.querySelector('[type="submit"]');
-
     this.cart =
       document.querySelector("cart-drawer") || this.createCartDrawer();
-
     if (this.form) {
       this.form.addEventListener("submit", this.onSubmitHandler.bind(this));
     }
@@ -21,17 +18,13 @@ class ProductForm extends HTMLElement {
 
   onSubmitHandler(evt) {
     evt.preventDefault();
-
     if (this.submitButton.getAttribute("aria-disabled") === "true") {
       return;
     }
-
     this.handleErrorMessage();
     this.submitButton.setAttribute("aria-disabled", true);
     this.submitButton.classList.add("loading");
-
     const formData = new FormData(this.form);
-
     const config = {
       method: "POST",
       headers: {
@@ -40,27 +33,16 @@ class ProductForm extends HTMLElement {
       },
       body: formData,
     };
-
     fetch(window.theme.routes.cartAdd, config)
-      .then((response) => {
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((response) => {
         if (response.status) {
           this.handleErrorMessage(response.description);
           return;
         }
-
-        // Update cart count
         this.updateCartCount();
-
-        // Open cart drawer
         this.cart.open();
-
-        // Refresh cart drawer content
         this.cart.refresh();
-
-        // Show success feedback
         this.showAddedToCartFeedback();
       })
       .catch((e) => {
@@ -91,7 +73,6 @@ class ProductForm extends HTMLElement {
     const originalText = this.submitButton.textContent;
     this.submitButton.textContent =
       this.submitButton.dataset.addedText || "Added to cart";
-
     setTimeout(() => {
       this.submitButton.textContent = originalText;
     }, 2000);
@@ -104,11 +85,7 @@ class ProductForm extends HTMLElement {
     const errorMessage_element = this.querySelector(
       ".product-form__error-message"
     );
-
-    if (!errorMessageWrapper) {
-      return;
-    }
-
+    if (!errorMessageWrapper) return;
     if (errorMessage) {
       errorMessage_element.textContent = errorMessage;
       errorMessageWrapper.toggleAttribute("hidden", false);
@@ -121,24 +98,22 @@ class ProductForm extends HTMLElement {
 class CartDrawer extends HTMLElement {
   constructor() {
     super();
-
     this.addEventListener(
       "keyup",
       (evt) => evt.code === "Escape" && this.close()
     );
+    this._setupEventListeners();
+  }
 
+  _setupEventListeners() {
     const overlay = this.querySelector(".cart-drawer__overlay");
-    const closeBtn = this.querySelector(".cart-drawer__close");
-
     if (overlay) {
       overlay.addEventListener("click", this.close.bind(this));
     }
-
+    const closeBtn = this.querySelector(".cart-drawer__close");
     if (closeBtn) {
       closeBtn.addEventListener("click", this.close.bind(this));
     }
-
-    // Setup quantity change handlers
     this.setUpQuantityHandlers();
   }
 
@@ -148,7 +123,6 @@ class CartDrawer extends HTMLElement {
         this.updateQuantity(event.target.dataset.index, event.target.value);
       }
     });
-
     this.addEventListener("click", (event) => {
       if (event.target.classList.contains("quantity__button")) {
         const input = event.target.parentNode.querySelector(".quantity__input");
@@ -158,7 +132,6 @@ class CartDrawer extends HTMLElement {
         const newQuantity = isIncrease
           ? currentQuantity + 1
           : Math.max(0, currentQuantity - 1);
-
         this.updateQuantity(index, newQuantity);
       }
     });
@@ -167,24 +140,19 @@ class CartDrawer extends HTMLElement {
   open() {
     this.classList.add("animate", "active");
     document.body.classList.add("overflow-hidden");
-
-    // Show the overlay
     this.style.visibility = "visible";
     this.style.opacity = "1";
   }
 
   close() {
-    console.log("close button clicked!");
     this.classList.remove("active");
     document.body.classList.remove("overflow-hidden");
-
-    // Hide the overlay after animation completes
     setTimeout(() => {
       if (!this.classList.contains("active")) {
         this.style.visibility = "hidden";
         this.style.opacity = "0";
       }
-    }, 300); // Match the CSS transition duration
+    }, 300);
   }
 
   refresh() {
@@ -194,11 +162,10 @@ class CartDrawer extends HTMLElement {
         const html = document.createElement("div");
         html.innerHTML = text;
         const newCartDrawer = html.querySelector("cart-drawer");
-
         if (newCartDrawer) {
           this.querySelector(".cart-drawer__inner").innerHTML =
             newCartDrawer.querySelector(".cart-drawer__inner").innerHTML;
-          this.setUpQuantityHandlers();
+          this._setupEventListeners();
         }
       })
       .catch((e) => console.error("Error refreshing cart:", e));
@@ -208,17 +175,14 @@ class CartDrawer extends HTMLElement {
     this.querySelector(".cart-drawer__inner").classList.add(
       "cart-drawer--loading"
     );
-
     const lineItem = this.querySelector(`#CartDrawer-Item-${line}`);
     if (lineItem) lineItem.classList.add("is-loading");
-
     const body = JSON.stringify({
       line: line,
       quantity: quantity,
       sections: this.getSectionsToRender().map((section) => section.id),
       sections_url: window.location.pathname,
     });
-
     fetch(window.theme.routes.cartChange, {
       method: "POST",
       headers: {
@@ -264,8 +228,7 @@ class CartDrawer extends HTMLElement {
         section.selector
       );
     });
-
-    this.setUpQuantityHandlers();
+    this._setupEventListeners();
   }
 
   getSectionInnerHTML(html, selector) {
@@ -289,29 +252,21 @@ class CartRemoveButton extends HTMLElement {
 class CartNote extends HTMLElement {
   constructor() {
     super();
-
     this.noteInput = this.querySelector("textarea");
     this.debounceTimeout = null;
-
     this.noteInput.addEventListener("input", this.onNoteChange.bind(this));
   }
-
   onNoteChange() {
-    // Clear previous timeout to debounce
     if (this.debounceTimeout) {
       clearTimeout(this.debounceTimeout);
     }
-
-    // Set a new timeout
     this.debounceTimeout = setTimeout(() => {
       this.saveNote();
-    }, 800); // Wait 800ms after user stops typing
+    }, 800);
   }
-
   async saveNote() {
     const noteValue = this.noteInput.value;
     const body = JSON.stringify({ note: noteValue });
-
     try {
       const response = await fetch(window.theme.routes.cartUpdate, {
         method: "POST",
@@ -321,7 +276,6 @@ class CartNote extends HTMLElement {
         },
         body,
       });
-
       if (!response.ok) {
         throw new Error(`Request failed with status ${response.status}`);
       }
@@ -331,13 +285,11 @@ class CartNote extends HTMLElement {
   }
 }
 
-// Register custom elements
 customElements.define("product-form", ProductForm);
 customElements.define("cart-drawer", CartDrawer);
 customElements.define("cart-remove-button", CartRemoveButton);
 customElements.define("cart-note", CartNote);
 
-// Global cart utilities
 window.CartUtilities = {
   openDrawer() {
     const cartDrawer = document.querySelector("cart-drawer");
@@ -345,7 +297,6 @@ window.CartUtilities = {
       cartDrawer.open();
     }
   },
-
   refreshCart() {
     const cartDrawer = document.querySelector("cart-drawer");
     if (cartDrawer) {
@@ -354,7 +305,6 @@ window.CartUtilities = {
   },
 };
 
-// Test function to manually trigger
 window.testCartDrawer = function () {
   const cartDrawer = document.querySelector("cart-drawer");
   if (cartDrawer) {
