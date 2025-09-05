@@ -104,6 +104,9 @@
           class="step-circle bg-bg w-32 h-32 rounded-full  border-2 border-color border-solid flex items-center justify-center relative z-2"
         >
           <span class="tick-icon" style="display: none;">{% render 'icon-tick' %}</span>
+          <span class="cross-icon" style="display: none;">
+            {%- render 'icon-close', height: '22px', width: '22px' -%}
+          </span>
           <span
             class="dot-icon w-8 h-8 rounded-full text-primary-optional inline-block"
           ></span>
@@ -111,7 +114,8 @@
         <h2
           class="step-label m-0 ff-general-sans fs-16-lh-20-ls-0_1  fw-500 text-primary-optional"
         >
-          {{ 'customer.order.delivered' | t }}
+          <span class="delivered-text">{{ 'customer.order.delivered' | t }}</span>
+          <span class="cancelled-text" style="display: none;">Cancelled</span>
         </h2>
       </div>
     </div>
@@ -170,11 +174,40 @@
     display: none !important;
   }
 
+  /* Cancelled status styling */
+  .step-circle.cancelled {
+  }
+
+  .step-circle.cancelled .cross-icon {
+    display: inline !important;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .step-circle.cancelled .tick-icon,
+  .step-circle.cancelled .dot-icon {
+    display: none !important;
+  }
+
+  .timeline-step.cancelled .step-label {
+    color: #dc3545 !important;
+  }
+  .timeline-step.cancelled .step-circle {
+    border-color: #dc3545 !important;
+  }
+
   .tick-icon {
     display: none;
   }
   .step-circle .dot-icon {
     background-color: rgba(var(--color-primary-text), 0.3);
+  }
+
+  /* Cross icon styling */
+  .cross-icon svg {
+    color: red;
+    fill: red;
   }
 
   /* Icon styling */
@@ -262,35 +295,91 @@
     const normalizedStatus = currentStatus.toLowerCase().replace(/\s+/g, '-');
     const currentStatusIndex = statusOrder.indexOf(normalizedStatus);
 
+    // Check if status is cancelled
+    const isCancelled = normalizedStatus === 'cancelled';
+
     timelineSteps.forEach((step, index) => {
       const circle = step.querySelector('.step-circle');
       const label = step.querySelector('.step-label');
       const tickIcon = circle.querySelector('.tick-icon');
       const dotIcon = circle.querySelector('.dot-icon');
+      const crossIcon = circle.querySelector('.cross-icon');
+      const deliveredText = label.querySelector('.delivered-text');
+      const cancelledText = label.querySelector('.cancelled-text');
 
       // Reset classes
-      circle.classList.remove('completed', 'current');
+      circle.classList.remove('completed', 'current', 'cancelled');
       label.classList.remove('completed', 'current');
-      step.classList.remove('completed');
+      step.classList.remove('completed', 'cancelled');
 
-      if (index <= currentStatusIndex) {
-        // Completed and current steps (green background with tick icon)
-        circle.classList.add('completed');
-        label.classList.add('completed');
-        step.classList.add('completed');
-        if (tickIcon) {
-          tickIcon.style.display = 'inline';
-        }
-        if (dotIcon) {
-          dotIcon.style.display = 'none';
+      if (isCancelled) {
+        // Handle cancelled status - make all previous 4 steps green, last step red
+        if (index < timelineSteps.length - 1) {
+          // First 4 steps (accepted, picked, in-transit, out-for-delivery) - show as completed/green
+          circle.classList.add('completed');
+          label.classList.add('completed');
+          step.classList.add('completed');
+          if (tickIcon) {
+            tickIcon.style.display = 'inline';
+          }
+          if (dotIcon) {
+            dotIcon.style.display = 'none';
+          }
+          if (crossIcon) {
+            crossIcon.style.display = 'none';
+          }
+        } else {
+          // Last step (delivered/cancelled) - show as cancelled with red circle and cross
+          circle.classList.add('cancelled');
+          step.classList.add('cancelled');
+          if (crossIcon) {
+            crossIcon.style.display = 'inline';
+          }
+          if (tickIcon) {
+            tickIcon.style.display = 'none';
+          }
+          if (dotIcon) {
+            dotIcon.style.display = 'none';
+          }
+          // Show cancelled text instead of delivered
+          if (deliveredText) {
+            deliveredText.style.display = 'none';
+          }
+          if (cancelledText) {
+            cancelledText.style.display = 'inline';
+          }
         }
       } else {
-        // Future steps (white background with gray dot)
-        if (tickIcon) {
-          tickIcon.style.display = 'none';
+        // Handle normal statuses
+        if (deliveredText) {
+          deliveredText.style.display = 'inline';
         }
-        if (dotIcon) {
-          dotIcon.style.display = 'inline-block';
+        if (cancelledText) {
+          cancelledText.style.display = 'none';
+        }
+        if (crossIcon) {
+          crossIcon.style.display = 'none';
+        }
+
+        if (index <= currentStatusIndex) {
+          // Completed and current steps (green background with tick icon)
+          circle.classList.add('completed');
+          label.classList.add('completed');
+          step.classList.add('completed');
+          if (tickIcon) {
+            tickIcon.style.display = 'inline';
+          }
+          if (dotIcon) {
+            dotIcon.style.display = 'none';
+          }
+        } else {
+          // Future steps (white background with gray dot)
+          if (tickIcon) {
+            tickIcon.style.display = 'none';
+          }
+          if (dotIcon) {
+            dotIcon.style.display = 'inline-block';
+          }
         }
       }
     });
