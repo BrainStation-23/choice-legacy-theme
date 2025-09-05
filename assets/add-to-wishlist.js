@@ -44,6 +44,57 @@ async function removeFromWishlist(productHandle, productId) {
   }
 }
 
+async function removeFromCart(lineIndex) {
+  try {
+    const body = JSON.stringify({
+      line: lineIndex,
+      quantity: 0,
+    });
+
+    const response = await fetch(window.theme.routes.cartChange, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: body,
+    });
+
+    const result = await response.json();
+
+    if (response.ok) {
+      // Update cart count
+      updateCartCount();
+
+      // Refresh cart drawer
+      const cartDrawer = document.querySelector("cart-drawer");
+      if (cartDrawer) {
+        cartDrawer.refresh();
+      }
+
+      return { success: true, result };
+    } else {
+      throw new Error("Failed to remove from cart");
+    }
+  } catch (error) {
+    console.error("Remove from cart failed:", error);
+    return { success: false, error };
+  }
+}
+
+function updateCartCount() {
+  fetch("/cart.js")
+    .then((response) => response.json())
+    .then((cart) => {
+      const cartCountElements = document.querySelectorAll("[data-cart-count]");
+      cartCountElements.forEach((element) => {
+        element.textContent = cart.item_count;
+        element.classList.toggle("hidden", cart.item_count === 0);
+      });
+    })
+    .catch((e) => console.error("Error updating cart count:", e));
+}
+
 function updateAllWishlistButtons() {
   const wishlist = window.theme?.wishlistHandles || new Set();
   const allButtons = document.querySelectorAll(
@@ -64,6 +115,21 @@ function updateAllWishlistButtons() {
       iconActive.classList.add("hidden");
     }
   });
+}
+
+function getCartItemLineIndex(button) {
+  // Find the cart item element that contains this button
+  const cartItem = button.closest(".cart-drawer__item");
+  if (!cartItem) return null;
+
+  // Extract line index from the cart item ID
+  const itemId = cartItem.id; // Should be like "CartDrawer-Item-1"
+  const match = itemId.match(/CartDrawer-Item-(\d+)/);
+  return match ? match[1] : null;
+}
+
+function isInCartDrawer(button) {
+  return button.closest("cart-drawer") !== null;
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -87,21 +153,56 @@ document.addEventListener("DOMContentLoaded", function () {
     button.disabled = true;
 
     try {
-      if (window.theme.wishlistHandles.has(productHandle)) {
-        const result = await removeFromWishlist(productHandle, productId);
-        if (result && result.success) {
-          window.theme.wishlistHandles.delete(productHandle);
-          toastManager.show("Product removed from wishlist", "success");
-        }
-      } else {
+      const inCartDrawer = isInCartDrawer(button);
+
+      if (inCartDrawer) {
+        // Cart drawer: Always add to wishlist and remove from cart
         const result = await addToWishlist(productHandle, productId);
         if (result && (result.success || result.alreadyExists)) {
           window.theme.wishlistHandles.add(productHandle);
+
+          const lineIndex = getCartItemLineIndex(button);
+          if (lineIndex) {
+            const cartRemoveResult = await removeFromCart(lineIndex);
+            if (cartRemoveResult.success) {
+              wishlistToastManager.show("Moved to wishlist", "success");
+            } else {
+              wishlistToastManager.show(
+                "Added to wishlist, but failed to remove from cart",
+                "warning"
+              );
+            }
+          } else {
+            console.warn("Could not find cart line index for item");
+            wishlistToastManager.show("Added to wishlist", "success");
+          }
+        }
+      } else {
+        // Normal wishlist behavior outside cart drawer
+        if (window.theme.wishlistHandles.has(productHandle)) {
+          // Product is already in wishlist, remove from wishlist
+          const result = await removeFromWishlist(productHandle, productId);
+          if (result && result.success) {
+            window.theme.wishlistHandles.delete(productHandle);
+            wishlistToastManager.show(
+              "Product removed from wishlist",
+              "success"
+            );
+          }
+        } else {
+          // Product is not in wishlist, add to wishlist
+          const result = await addToWishlist(productHandle, productId);
+          if (result && (result.success || result.alreadyExists)) {
+            window.theme.wishlistHandles.add(productHandle);
+          }
         }
       }
     } catch (error) {
       console.error("Wishlist action failed:", error);
-      toastManager.show("Something went wrong. Please try again.", "error");
+      wishlistToastManager.show(
+        "Something went wrong. Please try again.",
+        "error"
+      );
     } finally {
       updateAllWishlistButtons();
       button.disabled = false;
