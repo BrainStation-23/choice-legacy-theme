@@ -203,10 +203,7 @@ class CartPage extends HTMLElement {
         return;
       }
 
-      const elementToReplace = this.querySelector(section.selector);
-      if (elementToReplace) {
-        elementToReplace.innerHTML = container.innerHTML;
-      }
+      this.innerHTML = container.innerHTML;
     });
 
     this.updateCartCount();
@@ -247,7 +244,7 @@ class CartPage extends HTMLElement {
     return [
       {
         id: sectionId || "cart-page",
-        selector: ".cart-page__contents",
+        selector: "cart-page",
       },
     ];
   }
