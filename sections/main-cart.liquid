@@ -2,6 +2,12 @@
   .cart-page__footer {
     width: calc(100% - 802px - 32px);
   }
+
+  .cart-page__item.is-loading {
+    opacity: 0.6;
+    position: relative;
+    transition: opacity 0.2s ease-in-out;
+  }
 </style>
 
 <cart-page class="cart-page flex flex-col gap-32 page-width pt-48 pb-88">
@@ -88,6 +94,14 @@
     {% endif %}
   </div>
 </cart-page>
+
+<script>
+  window.theme.strings = {
+    cartEmpty: {{ 'sections.cart.empty' | t | json }},
+    cartItemSingle: {{ 'cart.page.items_with_count' | t: count: 1 | json }},
+    cartItemsWithCount: {{ 'cart.page.items_with_count' | t: count: '%count%' | json }}
+  };
+</script>
 
 {% schema %}
 {

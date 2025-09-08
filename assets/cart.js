@@ -22,7 +22,7 @@ class ProductForm extends HTMLElement {
       return;
     }
 
-    this.handleErrorMessage(); // Clear previous errors
+    this.handleErrorMessage();
     this.submitButton.setAttribute("aria-disabled", true);
     this.submitButton.classList.add("loading");
 
@@ -39,18 +39,14 @@ class ProductForm extends HTMLElement {
     fetch(window.theme.routes.cartAdd, config)
       .then((response) => response.json())
       .then((response) => {
-        // Always open the cart drawer
         this.cart.open();
 
         if (response.status) {
-          // Handle error case - show error in drawer
-          // DON'T refresh cart on error to preserve error message
           this.cart.showError(response.description || response.message);
           this.handleErrorMessage(response.description || response.message);
           return;
         }
 
-        // Success case - refresh cart to show updated content
         this.updateCartCount();
         this.cart.refresh();
         this.showAddedToCartFeedback();
@@ -59,8 +55,6 @@ class ProductForm extends HTMLElement {
         console.error("Fetch error:", e);
         const errorMessage = "An error occurred. Please try again.";
 
-        // Open drawer and show error even on fetch failure
-        // DON'T refresh cart on error
         this.cart.open();
         this.cart.showError(errorMessage);
         this.handleErrorMessage(errorMessage);
@@ -114,156 +108,53 @@ class ProductForm extends HTMLElement {
 class CartPage extends HTMLElement {
   constructor() {
     super();
+    this.addEventListener("change", this.onQuantityChange.bind(this));
+    this.addEventListener("click", this.onButtonClick.bind(this));
     this.form = this.querySelector("form");
-    this._setupEventListeners();
-    this.createErrorContainer();
   }
 
-  createErrorContainer() {
-    // Check if error container already exists
-    let errorContainer = this.querySelector(".cart-page__error");
-
-    if (!errorContainer) {
-      // If not in HTML, create it
-      errorContainer = document.createElement("div");
-      errorContainer.className = "cart-page__error hidden";
-
-      const errorMessage = document.createElement("span");
-      errorMessage.className = "cart-page__error-message error-text";
-      errorContainer.appendChild(errorMessage);
-
-      // Insert before cart items
-      const cartItems = this.querySelector(".cart-page__items");
-      if (cartItems) {
-        cartItems.parentNode.insertBefore(errorContainer, cartItems);
-      }
-    } else {
-      // Ensure the error message span exists
-      if (!errorContainer.querySelector(".cart-page__error-message")) {
-        const errorMessage = document.createElement("span");
-        errorMessage.className = "cart-page__error-message error-text";
-        errorContainer.appendChild(errorMessage);
-      }
+  onQuantityChange(event) {
+    if (event.target.classList.contains("quantity__input")) {
+      const line = event.target.dataset.index;
+      const quantity = parseInt(event.target.value);
+      this.updateQuantity(line, quantity);
     }
   }
 
-  showError(message) {
-    const errorContainer = this.querySelector(".cart-page__error");
-    const errorMessage = this.querySelector(".cart-page__error-message");
-
-    if (errorContainer && errorMessage) {
-      errorMessage.textContent = message;
-      errorContainer.classList.remove("hidden");
-
-      if (this.errorTimeout) {
-        clearTimeout(this.errorTimeout);
-      }
-      this.errorTimeout = setTimeout(() => {
-        this.hideError();
-      }, 8000);
-    }
-  }
-
-  hideError() {
-    const errorContainer = this.querySelector(".cart-page__error");
-    if (errorContainer) {
-      errorContainer.classList.add("hidden");
-    }
-    if (this.errorTimeout) {
-      clearTimeout(this.errorTimeout);
-    }
-  }
-
-  _setupEventListeners() {
-    // Handle form submission for update button
-    if (this.form) {
-      this.form.addEventListener("submit", this.onSubmitHandler.bind(this));
+  onButtonClick(event) {
+    const removeButton = event.target.closest(".cart-page__remove");
+    if (removeButton) {
+      event.preventDefault();
+      const line = removeButton.dataset.index;
+      this.updateQuantity(line, 0);
+      return;
     }
 
-    this.setUpQuantityHandlers();
-  }
-
-  onSubmitHandler(evt) {
-    evt.preventDefault();
-    const submitButton = evt.submitter;
-
-    if (submitButton && submitButton.name === "update") {
-      this.hideError();
-      this.updateCart();
-    }
-  }
-
-  updateCart() {
-    const updateButton = this.querySelector('[name="update"]');
-    if (updateButton) {
-      updateButton.disabled = true;
-      updateButton.textContent = "Updating...";
-    }
-
-    const formData = new FormData(this.form);
-
-    fetch(window.theme.routes.cartUpdate, {
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => {
-        if (response.redirected) {
-          window.location.href = response.url;
-        } else {
-          return response.json();
-        }
-      })
-      .then((data) => {
-        if (data && data.status) {
-          this.showError(
-            data.description || data.message || "Failed to update cart"
-          );
-        } else {
-          // Refresh page to show updated cart
-          window.location.reload();
-        }
-      })
-      .catch((error) => {
-        console.error("Error updating cart:", error);
-        this.showError("Failed to update cart. Please try again.");
-      })
-      .finally(() => {
-        if (updateButton) {
-          updateButton.disabled = false;
-          updateButton.textContent = "Update";
-        }
-      });
-  }
-
-  setUpQuantityHandlers() {
-    // Reuse the same quantity handler pattern from CartDrawer
-    this.addEventListener("change", (event) => {
-      if (event.target.classList.contains("quantity__input")) {
-        this.updateQuantity(event.target.dataset.index, event.target.value);
-      }
-    });
-
-    this.addEventListener("click", (event) => {
-      if (event.target.classList.contains("quantity__button")) {
-        const input = event.target.parentNode.querySelector(".quantity__input");
-        const index = input.dataset.index;
-        const currentQuantity = parseInt(input.value);
-        const isIncrease = event.target.name === "plus";
-        const newQuantity = isIncrease
+    const quantityButton = event.target.closest(".quantity__button");
+    if (quantityButton) {
+      const input = quantityButton.parentNode.querySelector(".quantity__input");
+      const line = input.dataset.index;
+      const currentQuantity = parseInt(input.value);
+      const newQuantity =
+        quantityButton.name === "plus"
           ? currentQuantity + 1
           : Math.max(0, currentQuantity - 1);
-        this.updateQuantity(index, newQuantity);
-      }
-    });
+      this.updateQuantity(line, newQuantity);
+    }
   }
 
   updateQuantity(line, quantity) {
     const lineItem = this.querySelector(`#CartItem-${line}`);
-    if (lineItem) lineItem.classList.add("is-loading");
+    if (lineItem) {
+      lineItem.classList.add("is-loading");
+    }
+
+    this.classList.add("cart-page--loading");
 
     const body = JSON.stringify({
       line: line,
       quantity: quantity,
+      sections: this.getSectionsToRender().map((section) => section.id),
     });
 
     fetch(window.theme.routes.cartChange, {
@@ -276,73 +167,121 @@ class CartPage extends HTMLElement {
     })
       .then((response) => response.json())
       .then((parsedState) => {
+        this.classList.remove("cart-page--loading");
         if (parsedState.status) {
           this.showError(
             parsedState.description ||
               parsedState.message ||
-              "Failed to update quantity"
+              "Failed to update cart."
           );
-          // Refresh page on error to sync state
-          setTimeout(() => window.location.reload(), 2000);
         } else {
-          // Update cart count in header
-          this.updateCartCount();
-
-          // If quantity is 0, refresh the page to remove the item
-          if (quantity === 0) {
-            window.location.reload();
-          } else {
-            // Update the input value and totals
-            const input = lineItem.querySelector(".quantity__input");
-            if (input) input.value = quantity;
-
-            // Update line total if we have the item data
-            if (parsedState.items) {
-              const item = parsedState.items.find(
-                (item) => item.index === parseInt(line) - 1
-              );
-              if (item) {
-                const totalElement = lineItem.querySelector(
-                  ".cart-page__item-total"
-                );
-                if (totalElement) {
-                  totalElement.textContent = `৳${(item.line_price / 100)
-                    .toFixed(2)
-                    .replace(/\.00$/, "")}`;
-                }
-              }
-            }
-          }
+          this.renderSections(parsedState);
         }
       })
-      .catch((error) => {
-        console.error("Error updating quantity:", error);
-        this.showError("Failed to update quantity. Please try again.");
-        setTimeout(() => window.location.reload(), 2000);
+      .catch((e) => {
+        this.classList.remove("cart-page--loading");
+        console.error("Error updating quantity:", e);
+        this.showError("An error occurred. Please try again.");
+      });
+  }
+
+  renderSections(parsedState) {
+    this.getSectionsToRender().forEach((section) => {
+      const sectionHtml = parsedState.sections[section.id];
+
+      const container = new DOMParser()
+        .parseFromString(sectionHtml, "text/html")
+        .querySelector(section.selector);
+
+      if (!container) {
+        console.error(
+          "Cart Page Error: Invalid section received. Triggering AJAX refresh for recovery.",
+          parsedState
+        );
+
+        this.refresh();
+        return;
+      }
+
+      const elementToReplace = this.querySelector(section.selector);
+      if (elementToReplace) {
+        elementToReplace.innerHTML = container.innerHTML;
+      }
+    });
+
+    this.updateCartCount();
+  }
+
+  refresh() {
+    this.classList.add("cart-page--loading");
+
+    fetch("/cart?section_id=cart-page")
+      .then((response) => response.text())
+      .then((htmlString) => {
+        const html = new DOMParser().parseFromString(htmlString, "text/html");
+        const newContents = html.querySelector(".cart-page__contents");
+
+        if (newContents) {
+          const currentContents = this.querySelector(".cart-page__contents");
+          if (currentContents) {
+            currentContents.innerHTML = newContents.innerHTML;
+          }
+        }
+
+        this.updateCartCount();
+      })
+      .catch((e) => {
+        console.error("Error refreshing cart page:", e);
+        window.location.reload();
       })
       .finally(() => {
-        if (lineItem) lineItem.classList.remove("is-loading");
+        this.classList.remove("cart-page--loading");
       });
+  }
+
+  getSectionsToRender() {
+    const sectionId = this.closest(".shopify-section")?.id.replace(
+      "shopify-section-",
+      ""
+    );
+    return [
+      {
+        id: sectionId || "cart-page",
+        selector: ".cart-page__contents",
+      },
+    ];
+  }
+
+  getSectionInnerHTML(html, selector) {
+    return new DOMParser()
+      .parseFromString(html, "text/html")
+      .querySelector(selector).innerHTML;
   }
 
   updateCartCount() {
     fetch("/cart.js")
       .then((response) => response.json())
       .then((cart) => {
-        const cartCountElements =
-          document.querySelectorAll("[data-cart-count]");
-        cartCountElements.forEach((element) => {
-          element.textContent = cart.item_count;
-          element.classList.toggle("hidden", cart.item_count === 0);
+        document.querySelectorAll("[data-cart-count]").forEach((el) => {
+          el.textContent = cart.item_count;
         });
+      });
+  }
 
-        // Update cart title
-        const cartTitle = this.querySelector(".cart-page__title");
-        if (cartTitle) {
-          cartTitle.textContent = `{{ 'sections.cart.title' | t }} (${cart.item_count})`;
-        }
-      })
-      .catch((e) => console.error("Error updating cart count:", e));
+  showError(message) {
+    const errorContainer = this.querySelector(".cart-page__error");
+    if (errorContainer) {
+      errorContainer.querySelector(".cart-page__error-message").textContent =
+        message;
+      errorContainer.classList.remove("hidden");
+    }
+  }
+
+  hideError() {
+    const errorContainer = this.querySelector(".cart-page__error");
+    if (errorContainer) {
+      errorContainer.classList.add("hidden");
+    }
   }
 }
 
@@ -615,8 +554,13 @@ class CartRemoveButton extends HTMLElement {
     super();
     this.addEventListener("click", (event) => {
       event.preventDefault();
-      const cartDrawer = this.closest("cart-drawer");
-      cartDrawer.updateQuantity(this.dataset.index, 0);
+
+      const cartContainer =
+        this.closest("cart-drawer") || this.closest("cart-page");
+
+      if (cartContainer) {
+        cartContainer.updateQuantity(this.dataset.index, 0);
+      }
     });
   }
 }
