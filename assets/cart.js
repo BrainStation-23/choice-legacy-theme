@@ -21,9 +21,11 @@ class ProductForm extends HTMLElement {
     if (this.submitButton.getAttribute("aria-disabled") === "true") {
       return;
     }
-    this.handleErrorMessage();
+
+    this.handleErrorMessage(); // Clear previous errors
     this.submitButton.setAttribute("aria-disabled", true);
     this.submitButton.classList.add("loading");
+
     const formData = new FormData(this.form);
     const config = {
       method: "POST",
@@ -33,21 +35,35 @@ class ProductForm extends HTMLElement {
       },
       body: formData,
     };
+
     fetch(window.theme.routes.cartAdd, config)
       .then((response) => response.json())
       .then((response) => {
+        // Always open the cart drawer
+        this.cart.open();
+
         if (response.status) {
-          this.handleErrorMessage(response.description);
+          // Handle error case - show error in drawer
+          // DON'T refresh cart on error to preserve error message
+          this.cart.showError(response.description || response.message);
+          this.handleErrorMessage(response.description || response.message);
           return;
         }
+
+        // Success case - refresh cart to show updated content
         this.updateCartCount();
-        this.cart.open();
         this.cart.refresh();
         this.showAddedToCartFeedback();
       })
       .catch((e) => {
         console.error("Fetch error:", e);
-        this.handleErrorMessage("An error occurred. Please try again.");
+        const errorMessage = "An error occurred. Please try again.";
+
+        // Open drawer and show error even on fetch failure
+        // DON'T refresh cart on error
+        this.cart.open();
+        this.cart.showError(errorMessage);
+        this.handleErrorMessage(errorMessage);
       })
       .finally(() => {
         this.submitButton.removeAttribute("aria-disabled");
@@ -103,6 +119,68 @@ class CartDrawer extends HTMLElement {
       (evt) => evt.code === "Escape" && this.close()
     );
     this._setupEventListeners();
+    this.createErrorContainer();
+  }
+
+  createErrorContainer() {
+    // Check if error container already exists in the HTML
+    let errorContainer = this.querySelector(".cart-drawer__error");
+
+    if (!errorContainer) {
+      // If not in HTML, create it and place before cart note
+      errorContainer = document.createElement("div");
+      errorContainer.className = "cart-drawer__error hidden";
+
+      const errorMessage = document.createElement("span");
+      errorMessage.className = "cart-drawer__error-message error-text";
+      errorContainer.appendChild(errorMessage);
+
+      // Insert before cart-note
+      const cartNote = this.querySelector("cart-note");
+      if (cartNote) {
+        cartNote.parentNode.insertBefore(errorContainer, cartNote);
+      } else {
+        // Fallback: insert at beginning of footer
+        const footer = this.querySelector(".cart-drawer__footer");
+        if (footer) {
+          footer.insertBefore(errorContainer, footer.firstChild);
+        }
+      }
+    } else {
+      // Ensure the error message span exists
+      if (!errorContainer.querySelector(".cart-drawer__error-message")) {
+        const errorMessage = document.createElement("span");
+        errorMessage.className = "cart-drawer__error-message error-text";
+        errorContainer.appendChild(errorMessage);
+      }
+    }
+  }
+
+  showError(message) {
+    const errorContainer = this.querySelector(".cart-drawer__error");
+    const errorMessage = this.querySelector(".cart-drawer__error-message");
+
+    if (errorContainer && errorMessage) {
+      errorMessage.textContent = message;
+      errorContainer.classList.remove("hidden");
+
+      if (this.errorTimeout) {
+        clearTimeout(this.errorTimeout);
+      }
+      // this.errorTimeout = setTimeout(() => {
+      //   this.hideError();
+      // }, 8000);
+    }
+  }
+
+  hideError() {
+    const errorContainer = this.querySelector(".cart-drawer__error");
+    if (errorContainer) {
+      errorContainer.classList.add("hidden");
+    }
+    if (this.errorTimeout) {
+      clearTimeout(this.errorTimeout);
+    }
   }
 
   _setupEventListeners() {
@@ -110,10 +188,12 @@ class CartDrawer extends HTMLElement {
     if (overlay) {
       overlay.addEventListener("click", this.close.bind(this));
     }
+
     const closeBtn = this.querySelector(".cart-drawer__close");
     if (closeBtn) {
       closeBtn.addEventListener("click", this.close.bind(this));
     }
+
     this.setUpQuantityHandlers();
   }
 
@@ -123,6 +203,7 @@ class CartDrawer extends HTMLElement {
         this.updateQuantity(event.target.dataset.index, event.target.value);
       }
     });
+
     this.addEventListener("click", (event) => {
       if (event.target.classList.contains("quantity__button")) {
         const input = event.target.parentNode.querySelector(".quantity__input");
@@ -147,6 +228,7 @@ class CartDrawer extends HTMLElement {
   close() {
     this.classList.remove("active");
     document.body.classList.remove("overflow-hidden");
+    this.hideError();
     setTimeout(() => {
       if (!this.classList.contains("active")) {
         this.style.visibility = "hidden";
@@ -163,12 +245,29 @@ class CartDrawer extends HTMLElement {
         html.innerHTML = text;
         const newCartDrawer = html.querySelector("cart-drawer");
         if (newCartDrawer) {
+          const currentError = this.querySelector(".cart-drawer__error");
+          const hasError =
+            currentError && !currentError.classList.contains("hidden");
+          const errorMessage = hasError
+            ? currentError.querySelector(".cart-drawer__error-message")
+                .textContent
+            : null;
+
           this.querySelector(".cart-drawer__inner").innerHTML =
             newCartDrawer.querySelector(".cart-drawer__inner").innerHTML;
+
+          this.createErrorContainer();
           this._setupEventListeners();
+
+          if (hasError && errorMessage) {
+            this.showError(errorMessage);
+          }
         }
       })
-      .catch((e) => console.error("Error refreshing cart:", e));
+      .catch((e) => {
+        console.error("Error refreshing cart:", e);
+        this.showError("Failed to refresh cart. Please try again.");
+      });
   }
 
   updateQuantity(line, quantity) {
@@ -177,12 +276,14 @@ class CartDrawer extends HTMLElement {
     );
     const lineItem = this.querySelector(`#CartDrawer-Item-${line}`);
     if (lineItem) lineItem.classList.add("is-loading");
+
     const body = JSON.stringify({
       line: line,
       quantity: quantity,
       sections: this.getSectionsToRender().map((section) => section.id),
       sections_url: window.location.pathname,
     });
+
     fetch(window.theme.routes.cartChange, {
       method: "POST",
       headers: {
@@ -193,10 +294,20 @@ class CartDrawer extends HTMLElement {
     })
       .then((response) => response.json())
       .then((parsedState) => {
-        this.renderContents(parsedState);
+        if (parsedState.status) {
+          this.showError(
+            parsedState.description ||
+              parsedState.message ||
+              "Failed to update quantity"
+          );
+          this.refresh();
+        } else {
+          this.renderContents(parsedState);
+        }
       })
       .catch((e) => {
         console.error("Error updating quantity:", e);
+        this.showError("Failed to update quantity. Please try again.");
         const errorLineItem = this.querySelector(`#CartDrawer-Item-${line}`);
         if (errorLineItem) errorLineItem.classList.remove("is-loading");
         this.refresh();
@@ -228,6 +339,7 @@ class CartDrawer extends HTMLElement {
         section.selector
       );
     });
+    this.createErrorContainer();
     this._setupEventListeners();
   }
 
@@ -256,6 +368,7 @@ class CartNote extends HTMLElement {
     this.debounceTimeout = null;
     this.noteInput.addEventListener("input", this.onNoteChange.bind(this));
   }
+
   onNoteChange() {
     if (this.debounceTimeout) {
       clearTimeout(this.debounceTimeout);
@@ -264,6 +377,7 @@ class CartNote extends HTMLElement {
       this.saveNote();
     }, 800);
   }
+
   async saveNote() {
     const noteValue = this.noteInput.value;
     const body = JSON.stringify({ note: noteValue });
@@ -281,6 +395,10 @@ class CartNote extends HTMLElement {
       }
     } catch (error) {
       console.error("Failed to save cart note:", error);
+      const cartDrawer = this.closest("cart-drawer");
+      if (cartDrawer) {
+        cartDrawer.showError("Failed to save note. Please try again.");
+      }
     }
   }
 }
@@ -301,6 +419,13 @@ window.CartUtilities = {
     const cartDrawer = document.querySelector("cart-drawer");
     if (cartDrawer) {
       cartDrawer.refresh();
+    }
+  },
+  showError(message) {
+    const cartDrawer = document.querySelector("cart-drawer");
+    if (cartDrawer) {
+      cartDrawer.open();
+      cartDrawer.showError(message);
     }
   },
 };
