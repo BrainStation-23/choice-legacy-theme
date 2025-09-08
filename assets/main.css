@@ -1632,6 +1632,9 @@ address {
   .sm\:w-421 {
     width: 421px;
   }
+  .sm\:w-367 {
+    width: 367px;
+  }
   .sm\:w-180 {
     width: 180px;
   }
@@ -2115,10 +2118,6 @@ address {
   }
   .sm\:gap-y-48 {
     column-gap: calc(48 * var(--space-unit));
-  }
-
-  .sm\:flex-col {
-    flex-direction: column;
   }
 }
 
