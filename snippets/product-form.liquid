@@ -1,11 +1,24 @@
+
 <product-form class="product-form">
-  {%- form 'product', product -%}
+  {%- form 'product', product, class: cls -%}
+    {%- assign no_point_tag = 'no_point_tag' -%}
+    {%- if product.tags contains no_point_tag -%}
+      <input
+        type="hidden"
+        name="properties[{{ no_point_tag }}]"
+        value="true"
+      >
+    {%- endif -%}
     <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-    <button type="submit" name="add" class="button button--outline flex items-center justify-center gap-4 w-full">
+    <button type="submit" name="add" class="button button--outline flex items-center justify-center gap-4 min-w-154 {% if inline_button %}w-auto{% else %}w-full{% endif %}">
       {% if show_icon %}
         {% render "cart-icon" %}
       {% endif %}
       {{ 'general.cart.add_to_cart.label' | t }}
     </button>
+
+    {% if show_buy_button %}
+      {{ form | payment_button }}
+    {% endif %}
   {%- endform -%}
 </product-form>

@@ -1498,6 +1498,9 @@ address {
 .min-w-430 {
   min-width: 430px;
 }
+.min-w-154 {
+  min-width: 154px;
+}
 .min-w-120 {
   min-width: 120px;
 }

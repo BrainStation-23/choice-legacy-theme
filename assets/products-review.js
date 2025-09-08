@@ -686,16 +686,6 @@
       if (!reviewListContainer) return;
       reviewListContainer.innerHTML = "";
 
-      if (!reviewsArray || reviewsArray.length === 0) {
-        if (showEmptyReviewsSetting) {
-          reviewListContainer.innerHTML =
-            '<p class="no-reviews">Be the first to review this product!</p>';
-        } else {
-          reviewListContainer.innerHTML = "";
-        }
-        return;
-      }
-
       // Create slideshow component wrapper for mobile
       const slideshowComponent = document.createElement("slideshow-component");
       slideshowComponent.setAttribute("data-autoplay", "false");
