@@ -47,7 +47,7 @@ mark {
 .button {
   border: none;
   border: none;
-  border-radius: 6px;
+  border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
   font-size: calc(14 * var(--font-unit));
@@ -65,7 +65,6 @@ mark {
 .button--outline {
   background: rgb(var(--color-background));
   color: rgb(var(--color-primary-brand));
-  border-radius: 6px;
   border: 1.5px solid rgba(var(--color-primary-brand));
   padding: 10px 16px;
   cursor: pointer;
@@ -91,8 +90,8 @@ mark {
   padding: calc(16 * var(--space-unit)) !important;
   background: rgb(var(--color-primary-brand)) !important;
   color: rgb(var(--color-background)) !important;
-  border-radius: 6px !important;
-  min-height: calc(56 * calc(var(--space-unit))) !important;
+  border-radius: calc(12 * var(--space-unit)) !important;
+  min-height: calc(48 * calc(var(--space-unit))) !important;
   display: flex !important;
   align-items: center !important;
 }

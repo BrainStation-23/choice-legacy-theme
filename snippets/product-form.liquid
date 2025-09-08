@@ -10,7 +10,7 @@
       >
     {%- endif -%}
     <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-    <button type="submit" name="add" class="button button--outline flex items-center justify-center gap-4 min-w-154 {% if inline_button %}w-auto{% else %}w-full{% endif %}">
+    <button type="submit" name="add" class="button button--outline flex items-center justify-center gap-4 min-w-154 rounded-6 {% if inline_button %}w-auto{% else %}w-full{% endif %}">
       {% if show_icon %}
         {% render "cart-icon" %}
       {% endif %}
