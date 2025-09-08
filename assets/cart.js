@@ -333,12 +333,21 @@ class CartDrawer extends HTMLElement {
 
   renderContents(parsedState) {
     this.getSectionsToRender().forEach((section) => {
+      const sectionHtml = parsedState.sections[section.section];
+
+      const container = new DOMParser()
+        .parseFromString(sectionHtml, "text/html")
+        .querySelector(section.selector);
+
+      if (!container) {
+        this.refresh();
+        return;
+      }
+
       const elementToReplace = this.querySelector(section.selector) || this;
-      elementToReplace.innerHTML = this.getSectionInnerHTML(
-        parsedState.sections[section.section],
-        section.selector
-      );
+      elementToReplace.innerHTML = container.innerHTML;
     });
+
     this.createErrorContainer();
     this._setupEventListeners();
   }
