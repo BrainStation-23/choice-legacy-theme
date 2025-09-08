@@ -84,106 +84,18 @@
                 </a>
 
                 <div class="flex flex-col gap-8">
-                  {% comment %} {% unless item.original_price == item.final_price %}
-                    <div class="cart-drawer__item-discounts">
-                      {% for discount in item.discounts %}
-                        <span class="cart-drawer__discount">
-                          {% comment %} {% render 'icon-discount' %} {% endcomment %}
-                          {{ discount.title }}
-                        </span>
-                      {% endfor %}
-                    </div>
-                  {% endunless %} {% endcomment %}
-
-                  {% comment %} {% if item.product.has_only_default_variant == false or item.properties.size != 0 or item.selling_plan_allocation != null %}
-                    <dl class="cart-drawer__item-options">
-                      {% if item.product.has_only_default_variant == false %}
-                        {% for option in item.options_with_values %}
-                          <div class="cart-drawer__item-option">
-                            <dt>{{ option.name }}:</dt>
-                            <dd>{{ option.value }}</dd>
-                          </div>
-                        {% endfor %}
-                      {% endif %}
-
-                      {% for property in item.properties %}
-                        {% assign property_first_char = property.first | slice: 0 %}
-                        {% if property.last != blank and property_first_char != '_' %}
-                          <div class="cart-drawer__item-option">
-                            <dt>{{ property.first }}:</dt>
-                            <dd>{{ property.last }}</dd>
-                          </div>
-                        {% endif %}
-                      {% endfor %}
-
-                      {% if item.selling_plan_allocation != null %}
-                        <div class="cart-drawer__item-option">
-                          <dt>{{ 'products.product.subscription.name' | t }}:</dt>
-                          <dd>{{ item.selling_plan_allocation.selling_plan.name }}</dd>
-                        </div>
-                      {% endif %}
-                    </dl>
-                  {% endif %} {% endcomment %}
-
                   <div class="cart-drawer__item-pricing">
                     <div class="cart-drawer__item-price-wrapper">
-                      {% if item.original_price != item.final_price %}
-                        {% assign discount = item.original_price | minus: item.final_price %}
-                        {% assign discount_percentage = discount | times: 100 | divided_by: item.original_price %}
-                        <dl class="cart-drawer__item-discounted-prices flex items-center gap-8 flex-wrap">
-                          <dt class="hidden">{{ 'products.product.price.sale_price' | t }}</dt>
-                          <dd class="cart-drawer__item-new-price text-brand fs-16-lh-22-ls-0 fw-400">
-                            ৳{{ item.final_price | money_without_currency }}
-                          </dd>
-                          <dt class="hidden">{{ 'products.product.price.regular_price' | t }}</dt>
-                          <dd class="cart-drawer__item-old-price fs-14-lh-16-ls-0 fw-500 line-through">
-                            ৳{{ item.original_price | money_without_currency }}
-                          </dd>
-                          <dd class="cart-drawer__item-discount-percent text-brand fs-16-lh-22-ls-0 fw-400">
-                            {{ discount_percentage }}%
-                          </dd>
-                        </dl>
-                      {% else %}
-                        <span class="cart-drawer__item-price  text-brand fs-16-lh-22-ls-0 fw-400">{{ item.original_price | money }}</span>
-                      {% endif %}
+                      {% render "cart-price", item: item %}
                     </div>
                   </div>
 
                   <div class="cart-drawer__item-quantity flex gap-12 items-center pt-4 pb-4">
-                    <span class="fw-400 fs-12-lh-16-ls-0_072">{{ 'sections.cart.qty' | t }}:</span>
-                    <div class="quantity h-24 flex gap-6 border-top-none border-right-none border-left-none border-bottom border-solid border-color">
-                      <button class="quantity__button bg-transparent border-none w-24 h-24 cursor-pointer p-0" name="minus" type="button">
-                        <span class="visually-hidden">{{ 'cart.product.quantity.decrease' | t: product: item.product.title | escape }}</span>
-                        {% render 'icon-quantity-minus', cls: "pointer-events-none" %}
-                      </button>
-                      <input class="quantity__input fw-500 fs-14-lh-20-ls-0_1 bg-transparent border-none p-0 h-auto min-w-14 text-center w-3ch"
-                        type="number"
-                        data-quantity-variant-id="{{ item.variant.id }}"
-                        data-index="{{ item.index | plus: 1 }}"
-                        name="updates[]"
-                        value="{{ item.quantity }}"
-                        min="0"
-                        aria-label="{{ 'cart.product.quantity.input_label' | t: product: item.product.title | escape }}"
-                        id="Drawer-quantity-{{ item.index | plus: 1 }}"
-                        data-index="{{ item.index | plus: 1 }}"
-                      >
-                      <button class="quantity__button bg-transparent border-none w-24 h-24 cursor-pointer p-0" name="plus" type="button">
-                        <span class="visually-hidden">{{ 'cart.product.quantity.increase' | t: product: item.product.title | escape }}</span>
-                        {% render 'icon-quantity-plus', cls: "pointer-events-none" %}
-                      </button>
-                    </div>
+                    {% render "cart-quantity-picker", item: item %}
                   </div>
                 </div>
 
-                <div class="flex items-center gap-12">
-                  <cart-remove-button class="cart-drawer__remove" data-index="{{ item.index | plus: 1 }}">
-                    <button type="button" class="button cursor-pointer bg-transparent fw-400 fs-12-lh-16-ls-0_6 p-0">
-                      {{ 'sections.cart.remove' | t }}
-                    </button>
-                  </cart-remove-button>
-
-                  {% render "wishlist-button", button_text: "Move To Wishlist", product: item.product %}
-                </div>
+                {% render "cart-line-item-buttons", item: item %}
               </div>
             </div>
           {% endfor %}
@@ -193,58 +105,8 @@
           </div>
         </div>
 
-       
-
         <div class="cart-drawer__footer flex flex-col gap-16">
-          <cart-note class="cart-note pt-16">
-            <div class="cart-note__wrapper">
-              {% assign label = 'sections.cart.note_label' | t %}
-              {% render "textarea", id: "CartDrawer-Note", name: "note", label: label  %}
-            </div>
-          </cart-note>
-
-          <div class="cart-drawer__subtotal flex flex-col gap-8">
-            <h2 class="ff-general-sans fw-400 fs-17-lh-24-ls-0">{{ 'customer.order.summary' | t }}</h2>
-            
-            <div class="flex flex-col">
-              <div class="flex justify-between">
-                <h3 class="totals__subtotal ff-general-sans fs-14-lh-24-ls-0 fw-400 text-label">{{ 'customer.order.subtotal' | t }}</h3>
-                <p class="totals__subtotal-value fs-14-lh-20-ls-0_1 fw-400 text-secondary">৳{{ cart.total_price | money_without_currency }}</p>
-              </div>
-              <div class="flex justify-between pt-12 pb-12 border-top-none border-right-none border-left-none border-b border-solid border-color">
-                <h3 class="totals__discount ff-general-sans fs-14-lh-24-ls-0 fw-400 text-label">{{ 'customer.order.discount' | t }}</h3>
-                <p class="totals__discount-value fs-14-lh-20-ls-0_1 fw-400 text-brand">৳{{ cart.total_discount | money_without_currency }}</p>
-              </div>
-              <div class="flex justify-between pt-8 pb-16">
-                <h3 class="grand-total ff-general-sans fw-400 fs-17-lh-24-ls-0">{{ 'customer.order.grand_total' | t }}</h3>
-                <p class="grand-total-value fs-17-lh-24-ls-0 fw-400">৳{{ cart.original_total_price | money_without_currency }}</p>
-              </div>
-            </div>
-
-            {% comment %} {% if cart.cart_level_discount_applications.size > 0 %}
-              <ul class="cart-drawer__discounts" role="list" aria-label="{{ 'customer.order.discount' | t }}">
-                {% for discount in cart.cart_level_discount_applications %}
-                  <li class="cart-drawer__discount">
-                    {% comment %} {% render 'icon-discount' %} {% endcomment %}
-                    {{ discount.title }}
-                    (-{{ discount.total_allocated_amount | money }})
-                  </li>
-                {% endfor %}
-              </ul>
-            {% endif %} {% endcomment %}
-          </div>
-
-          {% comment %} <small class="tax-note caption-large rte">
-            {%- if cart.taxes_included and shop.shipping_policy.body != blank -%}
-              {{ 'sections.cart.taxes_included_and_shipping_policy_html' | t: link: shop.shipping_policy.url }}
-            {%- elsif cart.taxes_included -%}
-              {{ 'sections.cart.taxes_included_but_shipping_at_checkout' | t }}
-            {%- elsif shop.shipping_policy.body != blank -%}
-              {{ 'sections.cart.taxes_and_shipping_policy_at_checkout_html' | t: link: shop.shipping_policy.url }}
-            {%- else -%}
-              {{ 'sections.cart.taxes_and_shipping_at_checkout' | t }}
-            {%- endif -%}
-          </small> {% endcomment %}
+          {% render "cart-summary", item: item, cart_note_id: "CartDrawer-Note" %}
 
           <div class="cart-drawer__cta flex gap-16 sm:flex-col">
             <a href="{{ routes.root_url }}" class="button button--outline w-50pct sm:w-full h-48 flex items-center justify-center fs-16-lh-100pct-ls-0">

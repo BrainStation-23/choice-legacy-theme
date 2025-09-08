@@ -398,6 +398,17 @@
       "line-item": {
         "off": "OFF"
       }
+    },
+    "page": {
+      "items_with_count": {
+        "one": "{{ count }} item in cart",
+        "other": "{{ count }} items in cart"
+      },
+      "login_banner": {
+        "heading": "LOGIN FOR EXTRA OFFERS",
+        "subheading": "Apply a promo code to get discounts",
+        "cta": "Sign in/Register"
+      }
     }
   }
 }

@@ -1,0 +1,80 @@
+<style>
+  .cart-page__footer {
+    width: calc(100% - 802px - 32px);
+  }
+</style>
+
+<cart-page class="cart-page flex flex-col gap-32 page-width pt-48 pb-88">
+  <h1 class="cart-page__title fw-400 fs-36-lh-40-ls-0">{{ 'cart.page.items_with_count' | t: count: cart.item_count }}</h1>
+
+  <div class="cart-page__contents">
+    {% if cart == empty %}
+      <div class="cart-page__empty">
+        <p class=" fs-14-lh-20-ls-0 fw-400">{{ 'sections.cart.empty' | t }}</p>
+      </div>
+    {% else %}
+      <form action="{{ routes.cart_url }}" method="post" novalidate class="cart-page__form flex gap-32" id="cart-form">
+        <div class="flex flex-col gap-16 w-802">
+          <div class="cart-page__error hidden">
+            <span class="cart-page__error-message error-text"></span>
+          </div>
+
+          {% render "cart-login-banner" %}
+
+          <div class="cart-page__items flex flex-col gap-16">
+            {% for item in cart.items %}
+              <div class="cart-page__item rounded-6 box-shadow p-12 flex gap-16 items-center" id="CartItem-{{ item.index | plus: 1 }}">
+                
+                <div class="cart-page__item-media relative block media w-100 h-116">
+                  {% if item.image %}
+                    {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
+                    {% render 'image',
+                      image: item.image,
+                      widths: '100, 100, 100, 100',
+                      src_width: 100,
+                      sizes: sizes,
+                      class: 'img-fit w-full'
+                    %}
+                  {% endif %}
+                </div>
+
+                <div class="cart-page__item-details flex flex-col gap-12">
+                  <a href="{{ item.url }}" class="cart-page__item-title text-primary fw-400 fs-12-lh-16-ls-0_6">
+                    {{ item.product.title | escape }}{% if item.product.has_only_default_variant == false %}{% for option in item.options_with_values %} | {{ option.value }}{% endfor %}{% endif %}
+                  </a>
+
+                  <div class="flex gap-12 items-center">
+                     <div class="cart-page__item-pricing">
+                      {% render "cart-price", item: item %}
+                    </div>
+
+                    <div class="cart-page__item-quantity flex gap-12 items-center">
+                      {% render "cart-quantity-picker", item: item %}
+                    </div>
+                  </div>
+
+                  {% render "cart-line-item-buttons", item: item %}
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="cart-page__footer flex flex-col gap-16">
+          {% render "cart-summary", id: "cart-note", label: "Cart note" %}
+
+          <a href="/checkout" class="button button--solid w-full text-center">
+            {{ 'sections.cart.checkout' | t }}
+          </a>
+        </div>
+      </form>
+    {% endif %}
+  </div>
+</cart-page>
+
+{% schema %}
+{
+  "name": "Main Cart",
+  "settings": []
+}
+{% endschema %}

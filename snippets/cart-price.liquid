@@ -1,0 +1,19 @@
+{% if item.original_price != item.final_price %}
+  {% assign discount = item.original_price | minus: item.final_price %}
+  {% assign discount_percentage = discount | times: 100 | divided_by: item.original_price %}
+  <dl class="cart-drawer__item-discounted-prices flex items-center gap-8 flex-wrap">
+    <dt class="hidden">{{ 'products.product.price.sale_price' | t }}</dt>
+    <dd class="cart-drawer__item-new-price text-brand fs-16-lh-22-ls-0 fw-400">
+      ৳{{ item.final_price | money_without_currency }}
+    </dd>
+    <dt class="hidden">{{ 'products.product.price.regular_price' | t }}</dt>
+    <dd class="cart-drawer__item-old-price fs-14-lh-16-ls-0 fw-500 line-through">
+      ৳{{ item.original_price | money_without_currency }}
+    </dd>
+    <dd class="cart-drawer__item-discount-percent text-brand fs-16-lh-22-ls-0 fw-400">
+      {{ discount_percentage }}%
+    </dd>
+  </dl>
+{% else %}
+  <span class="cart-drawer__item-price  text-brand fs-16-lh-22-ls-0 fw-400">{{ item.original_price | money }}</span>
+{% endif %}

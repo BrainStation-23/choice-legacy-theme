@@ -1,0 +1,9 @@
+<div class="flex items-center gap-12">
+  <cart-remove-button class="cart-drawer__remove" data-index="{{ item.index | plus: 1 }}">
+    <button type="button" class="button cursor-pointer bg-transparent fw-400 fs-12-lh-16-ls-0_6 p-0">
+      {{ 'sections.cart.remove' | t }}
+    </button>
+  </cart-remove-button>
+
+  {% render "wishlist-button", button_text: "Move To Wishlist", product: item.product %}
+</div>
