@@ -2219,6 +2219,9 @@ address {
 .bg-theme-text {
   background-color: rgb(var(--text-color));
 }
+.bg-warning-alt {
+  background-color: #fef9f3;
+}
 .object-center {
   object-position: center;
 }
@@ -2254,6 +2257,9 @@ address {
 }
 .p-14 {
   padding: calc(14 * var(--space-unit));
+}
+.p-20 {
+  padding: calc(20 * var(--space-unit));
 }
 .p-24 {
   padding: calc(24 * var(--space-unit));

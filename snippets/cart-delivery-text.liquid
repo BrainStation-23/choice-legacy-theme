@@ -1,0 +1,20 @@
+<div class="flex items-center gap-10 p-16 bg-warning-alt">
+  {% if icon %}
+    <div class="w-20 h-20 media block relative">
+      {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
+        {% render 'image',
+          image: icon,
+          widths: '20, 20, 20, 20',
+          src_width: 20,
+          sizes: sizes,
+          class: 'img-fit',
+          quality: 1
+        %}
+    </div>
+  {% else %}
+    <div class="w-24 h-24">{{ 'image' | placeholder_svg_tag: "placeholder-svg" }}</div>
+  {% endif %}
+  {% if text != blank %}
+    <span class="fs-14-lh-20-ls-0_1 fw-400">{{ text }}</span>
+  {% endif %}
+</div>

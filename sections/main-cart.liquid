@@ -60,12 +60,29 @@
           </div>
         </div>
 
-        <div class="cart-page__footer flex flex-col gap-16">
-          {% render "cart-summary", id: "cart-note", label: "Cart note" %}
+        <div class="cart-page__footer">
+          <div class="flex flex-col gap-16 box-shadow p-20">
+            <div>
+              {% render "cart-summary", id: "cart-note", label: "Cart note" %}
 
-          <a href="/checkout" class="button button--solid w-full text-center">
-            {{ 'sections.cart.checkout' | t }}
-          </a>
+              {% render "cart-delivery-text", icon: section.settings.delivery_icon, text: section.settings.delivery_text %}
+            </div>
+
+            {% if section.blocks.size > 0 %}
+              <div>
+                {% for block in section.blocks %}
+                  {% case block.type %}
+                    {% when "icon_with_text" %}
+                      {% render "product-icon-with-text", block: block, cls: "mb-8" %}
+                  {% endcase %}
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <a href="/checkout" class="button button--solid w-full text-center">
+              {{ 'sections.cart.checkout' | t }}
+            </a>
+          </div>
         </div>
       </form>
     {% endif %}
@@ -75,6 +92,41 @@
 {% schema %}
 {
   "name": "Main Cart",
-  "settings": []
+  "blocks": [
+    {
+      "type": "icon_with_text",
+      "name": "Icon with text",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon"
+        },
+        {
+          "type": "text",
+          "id": "text",
+          "label": "Text",
+          "default": "Fastest Delivery"
+        }
+      ]
+    },
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Delivery Text"
+    },
+    {
+      "type": "image_picker",
+      "id": "delivery_icon",
+      "label": "Icon"
+    },
+    {
+      "type": "text",
+      "id": "delivery_text",
+      "label": "Text",
+      "default": "Delivery charge will add"
+    }
+  ]
 }
 {% endschema %}
