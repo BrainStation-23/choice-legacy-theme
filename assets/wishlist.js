@@ -28,6 +28,22 @@ document.addEventListener("DOMContentLoaded", function () {
     mobileCardContainer.innerHTML = "";
   };
 
+  const createProductForm = (item) => {
+    const formId = `product-form-${item.id}`;
+    const variantId = item.variantId || item.id;
+
+    return `
+      <product-form class="product-form w-full" id="${formId}">
+        <form action="/cart/add" method="post" enctype="multipart/form-data" class="form">
+          <input type="hidden" name="id" value="${variantId}">
+          <button type="submit" name="add" class="button button--solid cursor-pointer w-full p-11">
+            Add to cart
+          </button>
+        </form>
+      </product-form>
+    `;
+  };
+
   const renderWishlist = (items) => {
     clearContent();
 
@@ -48,7 +64,8 @@ document.addEventListener("DOMContentLoaded", function () {
           Remove
         </button>
       `;
-      const addToCartButtonHTML = `<button class="button button--solid cursor-pointer w-full p-11">Add to cart</button>`;
+
+      const addToCartFormHTML = createProductForm(item);
 
       const row = document.createElement("tr");
       row.id = `wishlist-item-${uniqueId}`;
@@ -58,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <td class="product-price fw-400 fs-16-lh-24-ls-0 min-w-85">${price}</td>
         <td class="wishlist-actions text-right flex justify-end items-center gap-16 md:flex-wrap slg:flex-wrap">
           ${removeButtonHTML}
-          ${addToCartButtonHTML}
+          ${addToCartFormHTML}
         </td>
       `;
       desktopTableBody.appendChild(row);
@@ -79,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function () {
         <a href="${url}" class="product-name ff-general-sans fw-400 fs-16-lh-24-ls-0 pb-8 pl-12 pr-12 border-b border-b-color border-b-solid text-brand">${item.title}</a>
         <div class="flex justify-end items-center gap-24 pt-12 pb-12 pl-24 pr-24">
           ${removeButtonHTML}
-          ${addToCartButtonHTML}
+          ${addToCartFormHTML}
         </div>
       `;
       mobileCardContainer.appendChild(mobileCard);

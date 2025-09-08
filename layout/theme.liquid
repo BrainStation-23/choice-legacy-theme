@@ -98,7 +98,8 @@
             "imageUrl": "{{ product.featured_image | image_url: width: 200 }}",
             "id": "{{ product.id }}",
             "handle": "{{ product.handle }}",
-            "url": "{{ product.url }}"
+            "url": "{{ product.url }}",
+            "variantId": "{{ product.selected_or_first_available_variant.id }}"
           }{% unless forloop.last %},{% endunless %}
         {% endfor %}
       };
