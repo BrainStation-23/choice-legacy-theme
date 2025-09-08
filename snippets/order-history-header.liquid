@@ -12,6 +12,18 @@
     {{ order.created_at | time_tag: format: 'date_at_time' }}
   </h4>
   <h4 class="m-0">
-    {% render 'order-financial-status', order: order %}
+    {% if order.cancelled %}
+      <div class="flex gap-8 items-center">
+        {% render 'order-financial-status', order: order %}
+
+        <div class="ff-general-sans fw-400 fs-16-lh-24-ls-0 flex items-center gap-4 justify-start">
+          <span class="rounded-full h-10 w-10  status-cancelled"></span>
+          {{ 'general.cancel' | t }}
+        </div>
+      </div>
+
+    {% else %}
+      {% render 'order-financial-status', order: order %}
+    {% endif %}
   </h4>
 </div>
