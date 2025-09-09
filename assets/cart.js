@@ -247,7 +247,18 @@ class CartPage extends HTMLElement {
     super();
     this.addEventListener("change", this.onQuantityChange.bind(this));
     this.addEventListener("click", this.onButtonClick.bind(this));
+    this.addEventListener("keydown", this.onKeyDown.bind(this));
     this.form = this.querySelector("form");
+  }
+
+  onKeyDown(event) {
+    if (
+      event.target.classList.contains("quantity__input") &&
+      event.key === "Enter"
+    ) {
+      event.preventDefault();
+      event.target.blur();
+    }
   }
 
   onQuantityChange(event) {
