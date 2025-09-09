@@ -95,13 +95,13 @@
   </div>
 </cart-page>
 
-<script>
+{% comment %} <script>
   window.theme.strings = {
     cartEmpty: {{ 'sections.cart.empty' | t | json }},
     cartItemSingle: {{ 'cart.page.items_with_count' | t: count: 1 | json }},
     cartItemsWithCount: {{ 'cart.page.items_with_count' | t: count: '%count%' | json }}
   };
-</script>
+</script> {% endcomment %}
 
 {% schema %}
 {

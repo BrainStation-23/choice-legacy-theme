@@ -1,4 +1,17 @@
 {
-  "sections": { "main": { "type": "main-cart", "settings": {} } },
-  "order": ["main"]
+  "sections": {
+    "main": { "type": "main-cart", "settings": {} },
+    "related-products": {
+      "type": "related-products",
+      "settings": {
+        "heading": "product You Might have mixed",
+        "products_to_show": 16,
+        "intent": "related",
+        "autoplay": false,
+        "autoplay_delay": 5000,
+        "pause_on_hover": true
+      }
+    }
+  },
+  "order": ["main", "related-products"]
 }
