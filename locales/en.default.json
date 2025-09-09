@@ -150,7 +150,8 @@
       "view_cart": "View My Cart",
       "checkout": "Checkout",
       "continue_shopping": "Continue Shopping",
-      "qty": "Qty"
+      "qty": "Qty",
+      "move_to_wishlist": "Move To Wishlist"
     }
   },
   "customer": {

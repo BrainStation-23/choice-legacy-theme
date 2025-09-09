@@ -63,13 +63,16 @@ async function removeFromCart(lineIndex) {
     const result = await response.json();
 
     if (response.ok) {
-      // Update cart count
       updateCartCount();
 
-      // Refresh cart drawer
       const cartDrawer = document.querySelector("cart-drawer");
       if (cartDrawer) {
         cartDrawer.refresh();
+      }
+
+      const cartPage = document.querySelector("cart-page");
+      if (cartPage) {
+        window.location.reload();
       }
 
       return { success: true, result };
@@ -118,18 +121,20 @@ function updateAllWishlistButtons() {
 }
 
 function getCartItemLineIndex(button) {
-  // Find the cart item element that contains this button
-  const cartItem = button.closest(".cart-drawer__item");
+  const cartItem = button.closest(".cart-drawer__item, .cart-page__item");
   if (!cartItem) return null;
 
-  // Extract line index from the cart item ID
-  const itemId = cartItem.id; // Should be like "CartDrawer-Item-1"
-  const match = itemId.match(/CartDrawer-Item-(\d+)/);
+  const itemId = cartItem.id;
+  const match = itemId.match(/Cart(?:Drawer-)?Item-(\d+)/);
   return match ? match[1] : null;
 }
 
 function isInCartDrawer(button) {
   return button.closest("cart-drawer") !== null;
+}
+
+function isInCartPage(button) {
+  return button.closest("cart-page") !== null;
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -154,9 +159,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     try {
       const inCartDrawer = isInCartDrawer(button);
+      const inCartPage = isInCartPage(button);
 
-      if (inCartDrawer) {
-        // Cart drawer: Always add to wishlist and remove from cart
+      if (inCartDrawer || inCartPage) {
         const result = await addToWishlist(productHandle, productId);
         if (result && (result.success || result.alreadyExists)) {
           window.theme.wishlistHandles.add(productHandle);

@@ -5,5 +5,6 @@
     </button>
   </cart-remove-button>
 
-  {% render "wishlist-button", button_text: "Move To Wishlist", product: item.product %}
+  {% assign move_to_wishlist = 'sections.cart.move_to_wishlist' | t %}
+  {% render "wishlist-button", button_text: move_to_wishlist, product: item.product %}
 </div>
