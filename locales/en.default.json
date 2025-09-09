@@ -271,6 +271,7 @@
       "sku": "SKU",
       "price": "Price",
       "discount": "Discount",
+      "discount_coupon": "Discount coupon",
       "fulfilled_at": "Fulfilled At",
       "track_shipment": "Track Shipment",
       "subtotal": "Subtotal",
@@ -408,6 +409,12 @@
         "heading": "LOGIN FOR EXTRA OFFERS",
         "subheading": "Apply a promo code to get discounts",
         "cta": "Sign in/Register"
+      },
+      "discount": {
+        "input": {
+          "discount_code_label": "Apply Promo Code",
+          "discount_code_placeholder": "Enter Code"
+        }
       }
     }
   }

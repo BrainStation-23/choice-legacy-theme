@@ -68,8 +68,40 @@
 
         <div class="cart-page__footer">
           <div class="flex flex-col gap-16 box-shadow p-20">
-            <div>
-              {% render "cart-summary", id: "cart-note", label: "Cart note" %}
+
+            <div class="cart-page__summary">
+              <cart-discounts class="discounts flex flex-col gap-8" data-section-id="{{ section.id }}">
+                <div class="discount-form flex flex-col gap-8">
+                  <label for="discount-code" class="text-primary-label fw-500 fs-12-lh-11-ls-0">{{ 'cart.page.discount.input.discount_code_label' | t }}</label>
+                  <div class="discount-form__field-wrapper">
+                    <input
+                      id="discount-code"
+                      type="text"
+                      name="discount"
+                      class="discount-form__input h-40 pt-10 pr-8 pb-10 pl-8 rounded-6"
+                      placeholder="{{ 'cart.page.discount.input.discount_code_placeholder' | t }}"
+                      autocomplete="off"
+                    >
+                  </div>
+                </div>
+
+                {%- if cart.cart_level_discount_applications.size > 0 -%}
+                  <div class="applied-discounts flex flex-wrap gap-8">
+                    {% for discount in cart.cart_level_discount_applications %}
+                      <div class="applied-discount flex justify-between items-center p-8" data-code="{{ discount.title }}">
+                        <span class="applied-discount__code flex items-center gap-4 fw-600 fs-14-lh-100pct-ls-0">
+                          {{ discount.title }}
+                          {% render "icon-remove", cls: "cursor-pointer" %}
+                        </span>
+                      </div>
+                    {% endfor %}
+                  </div>
+                {%- endif -%}
+              </cart-discounts>
+            </div>
+            
+            <div class="flex flex-col gap-16">
+              {% render "cart-summary", id: "cart-note", label: "Cart note", show_discount: true %}
 
               {% render "cart-delivery-text", icon: section.settings.delivery_icon, text: section.settings.delivery_text %}
             </div>

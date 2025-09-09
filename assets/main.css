@@ -403,6 +403,12 @@ h6,
   letter-spacing: -0.275px;
 }
 
+.fs-12-lh-11-ls-0 {
+  font-size: calc(12 * var(--font-unit));
+  line-height: calc(11 * var(--font-unit));
+  letter-spacing: 0;
+}
+
 .fs-12-lh-16-ls-0_6 {
   font-size: calc(12 * var(--font-unit));
   line-height: calc(16 * var(--font-unit));

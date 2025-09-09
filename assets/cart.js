@@ -1,3 +1,140 @@
+class CartDiscounts extends HTMLElement {
+  constructor() {
+    super();
+    this.input = this.querySelector(".discount-form__input");
+    this.messageContainer = this.querySelector(".discount-form__message");
+    this.messageText = this.querySelector(
+      ".discount-form__message .error-text"
+    );
+
+    this.input.addEventListener("keydown", this.onKeyDown.bind(this));
+    this.addEventListener("click", this.onRemove.bind(this));
+  }
+
+  onKeyDown(event) {
+    if (event.key === "Enter") {
+      event.preventDefault();
+      this.applyNewDiscount();
+    }
+  }
+
+  applyNewDiscount() {
+    const newCode = this.input.value.trim();
+    if (!newCode) return;
+
+    const currentCodes = this.getCurrentDiscounts();
+    const codesToApply = new Set([...currentCodes, newCode]);
+
+    this.updateDiscounts(Array.from(codesToApply));
+  }
+
+  onRemove(event) {
+    const removeButton = event.target.closest(".applied-discount__remove");
+    const appliedDiscount = event.target.closest(".applied-discount");
+
+    if (!removeButton || !appliedDiscount) return;
+
+    event.preventDefault();
+    const codeToRemove = appliedDiscount.dataset.code;
+
+    const currentCodes = this.getCurrentDiscounts();
+    const codesToApply = currentCodes.filter((code) => code !== codeToRemove);
+
+    this.updateDiscounts(codesToApply);
+  }
+
+  getCurrentDiscounts() {
+    const appliedDiscountElements = this.querySelectorAll("[data-code]");
+    return Array.from(appliedDiscountElements).map((el) => el.dataset.code);
+  }
+
+  updateDiscounts(codes = []) {
+    const cartPage = this.closest("cart-page");
+    if (!cartPage) return;
+
+    const currentCodeCount = this.getCurrentDiscounts().length;
+
+    cartPage.classList.add("cart-page--loading");
+    this.hideMessage();
+
+    const discountString = codes.join(",");
+
+    const sections = cartPage
+      .getSectionsToRender()
+      .map((section) => section.id);
+    const body = JSON.stringify({
+      discount: discountString,
+      sections: sections,
+      sections_url: window.location.pathname,
+    });
+
+    fetch("/cart/update.js", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body,
+    })
+      .then((response) => {
+        if (!response.ok) {
+          return response.json().then((error) => {
+            throw error;
+          });
+        }
+        return response.json();
+      })
+      .then((state) => {
+        cartPage.renderSections(state);
+
+        const successfullyAppliedCodes =
+          state.cart_level_discount_applications.map(
+            (d) => d.discount_application.title
+          );
+        const attemptWasSuccessful =
+          codes.length === successfullyAppliedCodes.length &&
+          codes.every((c) => successfullyAppliedCodes.includes(c));
+
+        if (attemptWasSuccessful) {
+          const message =
+            codes.length < currentCodeCount
+              ? "Discount removed"
+              : "Discount applied successfully";
+          window.toast.show(message, "success");
+        } else {
+          const errorMessage = "Invalid discount code";
+          this.showMessage(errorMessage);
+          window.toast.show(errorMessage, "error");
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+        const errorMessage =
+          error.description ||
+          error.message ||
+          "An error occurred while applying the discount.";
+
+        this.showMessage(errorMessage);
+        window.toast.show(errorMessage, "error");
+      })
+      .finally(() => {
+        this.input.value = "";
+        cartPage.classList.remove("cart-page--loading");
+      });
+  }
+
+  showMessage(message) {
+    if (!this.messageContainer || !this.messageText) return;
+    this.messageContainer.classList.remove("hidden");
+    this.messageText.textContent = message;
+  }
+
+  hideMessage() {
+    if (!this.messageContainer) return;
+    this.messageContainer.classList.add("hidden");
+  }
+}
+
 class ProductForm extends HTMLElement {
   constructor() {
     super();
@@ -609,6 +746,7 @@ customElements.define("cart-drawer", CartDrawer);
 customElements.define("cart-remove-button", CartRemoveButton);
 customElements.define("cart-note", CartNote);
 customElements.define("cart-page", CartPage);
+customElements.define("cart-discounts", CartDiscounts);
 
 window.CartUtilities = {
   openDrawer() {
