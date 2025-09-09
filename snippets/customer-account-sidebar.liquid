@@ -104,6 +104,7 @@
           {{ 'customer.account.addresses' | t }}
         </h2>
       </div>
+
       <div
         class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
         data-tab="rewards"
@@ -159,6 +160,7 @@
 
     init() {
       this.setupEventListeners();
+
       this.loadInitialTab();
     }
 
@@ -352,4 +354,15 @@
       arrow.classList.remove('expanded');
     }
   });
+
+  const rewardPointTab = document.querySelector('.customer-account__sidebar-item[data-tab="rewards"]');
+  if (rewardPointTab) {
+    const isRewardPointEnabled = window.theme.rewardPointEnabled;
+    console.log('Reward Point Enabled in Sidebar:', isRewardPointEnabled);
+    if (!isRewardPointEnabled) {
+      rewardPointTab.style.display = 'none';
+    } else {
+      rewardPointTab.style.display = 'flex';
+    }
+  }
 </script>

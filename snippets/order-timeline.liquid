@@ -397,7 +397,8 @@
     toggleTimeline(false);
 
     try {
-      const apiUrl = `/apps/${APP_SUB_PATH}/customer/account/delivery-status?order_ids=${encodeURIComponent(orderId)}`;
+      // Changed from order_ids to order_id
+      const apiUrl = `/apps/${APP_SUB_PATH}/customer/account/delivery-status?order_id=${orderId}`;
 
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -413,8 +414,9 @@
 
       const result = await response.json();
 
-      if (result.success && result.data && result.data[orderId]) {
-        const orderData = result.data[orderId];
+      // Updated to access result.data directly since it's now a single object, not a map
+      if (result.success && result.data) {
+        const orderData = result.data;
 
         // Hide spinner and error, show timeline
         toggleSpinner(false);
@@ -423,6 +425,15 @@
 
         // Update visual timeline based on API response
         updateVisualTimeline(orderData.deliveryStatus);
+
+        // Dispatch event to notify main page about delivery status
+        const deliveryStatusEvent = new CustomEvent('deliveryStatusUpdated', {
+          detail: { 
+            status: orderData.deliveryStatus,
+            returnStatus: orderData.returnStatus || null
+          },
+        });
+        document.dispatchEvent(deliveryStatusEvent);
 
         // Create timeline if events data is available
         if (orderData.events && Array.isArray(orderData.events)) {
@@ -436,6 +447,15 @@
 
         // Update visual timeline to default state
         updateVisualTimeline('Accepted');
+
+        // Dispatch event with default status
+        const deliveryStatusEvent = new CustomEvent('deliveryStatusUpdated', {
+          detail: { 
+            status: 'Accepted',
+            returnStatus: null
+          },
+        });
+        document.dispatchEvent(deliveryStatusEvent);
       }
     } catch (error) {
       console.error('Error fetching delivery status:', error);

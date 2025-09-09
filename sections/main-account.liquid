@@ -31,11 +31,12 @@
         </div>
       {% endcomment %}
 
-      <div id="rewards-content" class="account-content-section" style="display: none;">
-        <div id="rewards-section">
-          {% render 'reward-points', section: section %}
+        <div id="rewards-content" class="account-content-section" style="display: none;">
+          <div id="rewards-section">
+            {% render 'reward-points', section: section %}
+          </div>
         </div>
-      </div>
+    
 
       <div id="wishlist-content" class="account-content-section" style="display: none;">
         <div id="wishlist-section">
@@ -57,60 +58,6 @@
 <script>
   let loadedSections = ['my-profile'];
   let deliveryStatusLoaded = false;
-
-  async function fetchDeliveryStatuses() {
-    if (deliveryStatusLoaded) return;
-
-    const deliveryStatusElements = document.querySelectorAll('.delivery-status');
-
-    if (deliveryStatusElements.length === 0) {
-      console.log('No delivery status elements found');
-      return;
-    }
-
-    // Show loading state for all elements
-    deliveryStatusElements.forEach((element) => {
-      element.textContent = 'Loading...';
-    });
-
-    // Collect all order IDs
-    const orderIds = Array.from(deliveryStatusElements).map((element) => element.getAttribute('data-order-id'));
-
-    try {
-      // Make single API call with all order IDs
-      const orderIdsParam = orderIds.join(',');
-      const response = await fetch(
-        `/apps/${APP_SUB_PATH}/customer/account/delivery-status?order_ids=${encodeURIComponent(orderIdsParam)}`
-      );
-
-      const result = await response.json();
-
-      if (result.success && result.data) {
-        // Update each element with its corresponding status
-        deliveryStatusElements.forEach((element) => {
-          const orderId = element.getAttribute('data-order-id');
-          const orderData = result.data[orderId];
-
-          if (orderData) {
-            element.textContent = orderData.deliveryStatus;
-          } else {
-            element.textContent = 'Order Placed';
-          }
-        });
-      } else {
-        deliveryStatusElements.forEach((element) => {
-          element.textContent = 'Order Placed';
-        });
-      }
-    } catch (error) {
-      console.error('Error fetching delivery statuses:', error);
-      deliveryStatusElements.forEach((element) => {
-        element.textContent = 'Order Placed';
-      });
-    }
-
-    deliveryStatusLoaded = true;
-  }
 
   // Enhanced showAccountContent function with query parameter and URL path support
   async function showAccountContent(contentType) {
@@ -134,7 +81,6 @@
 
     // Handle coming soon sections
     if (contentType === 'coming-soon') {
-      alert('This section is coming soon!');
       // Fall back to my-profile
       contentType = 'my_profile';
     }
@@ -160,13 +106,6 @@
     const targetContent = document.getElementById(targetContentType + '-content');
     if (targetContent) {
       targetContent.style.display = 'block';
-
-      // Handle specific section logic
-      if (targetContentType === 'orders') {
-        setTimeout(() => {
-          fetchDeliveryStatuses();
-        }, 100);
-      }
     } else {
       // Fallback to my-profile if content section doesn't exist
       const profileContent = document.getElementById('my-profile-content');
@@ -263,17 +202,14 @@
     }
   }
 
-  /* Content section transitions */
   .account-content-section {
     transition: opacity 0.2s ease-in-out;
   }
-
-  /* Loading and status styles */
 </style>
 
 {% schema %}
 {
   "name": "Main Account",
-  "settings": [],
+  "settings": []
 }
 {% endschema %}

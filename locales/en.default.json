@@ -286,7 +286,9 @@
       "picked": "Picked",
       "in-transit": "In Transit",
       "out-for-delivery": "Out for Delivery",
-      "delivered": "Delivered"
+      "delivered": "Delivered",
+      "return-Request": "Return Request",
+      "fulfillment-status": "Fulfillment Status"
     }
   },
   "general": {
