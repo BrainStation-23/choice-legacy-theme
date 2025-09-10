@@ -1,13 +1,3 @@
-{% comment %}
-  Renders cart drawer
-
-  Accepts:
-  - cart: cart object
-
-  Usage:
-  {% render 'cart-drawer' %}
-{% endcomment %}
-
 <style>
   .cart-drawer.active .cart-drawer__overlay {
     opacity: 1;
@@ -56,11 +46,7 @@
     </div>
 
     <div class="cart-drawer__contents flex-1 flex flex-col overflow-hidden">
-      {% if cart == empty %}
-        <div class="cart-drawer__empty">
-          <p class="cart-drawer__empty-text fs-14-lh-20-ls-0 fw-400">{{ 'sections.cart.empty' | t }}</p>
-        </div>
-      {% else %}
+       {% if cart != empty %}
         <div class="cart-drawer__items flex-1 overflow-y-auto pb-0 scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover">
           {% for item in cart.items %}
             <div class="cart-drawer__item flex gap-16 p-12 border-top-none border-right-none border-left-none border-b border-solid border-color" id="CartDrawer-Item-{{ item.index | plus: 1 }}">
@@ -104,21 +90,31 @@
             <span class="cart-drawer__error-message flex items-start-priority error-text"></span>
           </div>
         </div>
-
-        <div class="cart-drawer__footer flex flex-col gap-16">
-          {% render "cart-summary", item: item, cart_note_id: "CartDrawer-Note" %}
-
-          <div class="cart-drawer__cta flex gap-16 sm:flex-col">
-            <a href="{{ routes.root_url }}" class="button button--outline w-50pct sm:w-full h-48 flex items-center justify-center fs-16-lh-100pct-ls-0">
-              {{ 'sections.cart.continue_shopping' | t }}
-            </a>
-            <a href="{{ routes.cart_url }}" type="submit" class="button button--solid w-50pct sm:w-full h-48 flex justify-center items-center fs-16-lh-100pct-ls-0" name="add" form="cart" 
-              {% if cart == empty %}disabled{% endif %}>
-              {{ 'sections.cart.view_cart' | t }}
-            </a>
-          </div>
+      {% else %}
+        <div class="h-308 flex justify-center items-center cart-drawer__items flex-1 overflow-y-auto pb-0 scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover">
+          <img 
+            src="{{ 'empty-cart.jpg' | asset_url }}"
+            width="auto"
+            height="auto"
+            loading="lazy"
+            class="object-contain h-full"
+          />
         </div>
       {% endif %}
+
+      <div class="cart-drawer__footer flex flex-col gap-16">
+        {% render "cart-summary", item: item, cart_note_id: "CartDrawer-Note" %}
+
+        <div class="cart-drawer__cta flex gap-16 sm:flex-col">
+          <a href="{{ routes.root_url }}" class="button button--outline w-50pct sm:w-full h-48 flex items-center justify-center fs-16-lh-100pct-ls-0">
+            {{ 'sections.cart.continue_shopping' | t }}
+          </a>
+          <a href="{{ routes.cart_url }}" type="submit" class="button button--solid w-50pct sm:w-full h-48 flex justify-center items-center fs-16-lh-100pct-ls-0" name="add" form="cart" 
+            {% if cart == empty %}disabled{% endif %}>
+            {{ 'sections.cart.view_cart' | t }}
+          </a>
+        </div>
+      </div>
     </div>
   </div>
 
