@@ -26,12 +26,14 @@
         <p class="totals__subtotal-value fs-14-lh-20-ls-0_1 fw-400 text-secondary">৳{{ cart.total_price | money_without_currency }}</p>
       </div>
 
-      <div class="flex justify-between">
-        <h3 class="totals__discount ff-general-sans fs-14-lh-24-ls-0 fw-400 text-label">{% if cart_page %}{{ 'customer.order.discount_coupon' | t }}{% else %}{{ 'customer.order.discount' | t }}{% endif %}</h3>
-        <p class="totals__discount-value fs-14-lh-20-ls-0_1 fw-400 text-brand">৳{{ cart.total_discount | money_without_currency }}</p>
-      </div>
+      {% if cart_page %}
+        <div class="flex justify-between">
+          <h3 class="totals__discount ff-general-sans fs-14-lh-24-ls-0 fw-400 text-label">{{ 'customer.order.discount_coupon' | t }}</h3>
+          <p class="totals__discount-value fs-14-lh-20-ls-0_1 fw-400 text-brand">৳{{ cart.total_discount | money_without_currency }}</p>
+        </div>
+      {% endif %}
 
-      {%- if manual_total_savings > 0 and cart_page -%}
+      {%- if manual_total_savings > 0 -%}
         <div class="flex justify-between pb-12 border-top-none border-right-none border-left-none border-b border-solid border-color">
           <h3 class="totals__discount ff-general-sans fs-14-lh-24-ls-0 fw-400 text-label">{{ 'customer.order.discount' | t }}</h3>
           <p class="totals__discount-value fs-14-lh-20-ls-0_1 fw-400 text-brand">৳{{ manual_total_savings | money_without_currency }}</p>
