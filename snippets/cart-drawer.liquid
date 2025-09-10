@@ -47,6 +47,10 @@
 
     <div class="cart-drawer__contents flex-1 flex flex-col overflow-hidden">
        {% if cart != empty %}
+        <div class="cart-drawer__error hidden mb-16">
+          <span class="cart-drawer__error-message flex items-start-priority error-text"></span>
+        </div>
+
         <div class="cart-drawer__items flex-1 overflow-y-auto pb-0 scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover">
           {% for item in cart.items %}
             <div class="cart-drawer__item flex gap-16 p-12 border-top-none border-right-none border-left-none border-b border-solid border-color" id="CartDrawer-Item-{{ item.index | plus: 1 }}">
@@ -85,10 +89,6 @@
               </div>
             </div>
           {% endfor %}
-
-          <div class="cart-drawer__error hidden mt-16">
-            <span class="cart-drawer__error-message flex items-start-priority error-text"></span>
-          </div>
         </div>
       {% else %}
         <div class="h-308 flex justify-center items-center cart-drawer__items flex-1 overflow-y-auto pb-0 scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover">
