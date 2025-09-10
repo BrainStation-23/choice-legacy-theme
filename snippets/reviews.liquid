@@ -45,4 +45,6 @@
   </div>
 </div>
 
+{%- render 'product-review-form', section_id: 'customer-review-modal', product: customer.orders.first.line_items.first.product, customer: customer, initial_classes: 'hidden' -%}
+
 <script src="{{ 'reviews.js' | asset_url }}" defer></script>

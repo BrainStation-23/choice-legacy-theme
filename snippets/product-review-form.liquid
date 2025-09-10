@@ -1,14 +1,4 @@
-{%- comment -%}
-  Reusable product review form modal.
-
-  Accepts:
-  - product: The product object.
-  - customer: The customer object.
-  - section_id: A unique ID for the section, to keep elements unique.
-  - trigger_class: (Optional) A class for the button that opens this modal.
-{%- endcomment -%}
-
-<div class="review-modal fixed left-0 top-0 w-full h-full z-1000 overlay" id="review-modal-{{ section_id }}" data-product-id="{{ product.id }}" data-product-handle="{{ product.handle }}">
+<div class="review-modal fixed left-0 top-0 w-full h-full z-1000 overlay flex items-center justify-center {{ initial_classes }}" id="review-modal-{{ section_id }}" data-product-id="{{ product.id }}" data-product-handle="{{ product.handle }}">
   <div class="review-modal-content bg-bg w-375 pt-40 pr-32 pb-40 pl-32 rounded-16 relative">
     <div class="review-modal-header">
       <h3 class="review-modal-title fw-400 fs-36-lh-40-ls-0">{{ 'products.product.review.write_review' | t }}</h3>

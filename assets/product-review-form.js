@@ -1,23 +1,22 @@
 (function () {
-  const writeReviewTriggers = document.querySelectorAll(
-    "[data-write-review-btn]"
-  );
   const productPageReviewsToastManager = new ToastNotificationManager();
 
-  writeReviewTriggers.forEach((trigger) => {
+  document.addEventListener("click", function (event) {
+    const trigger = event.target.closest("[data-write-review-btn]");
+
+    if (!trigger) {
+      return;
+    }
+
     const sectionId = trigger.dataset.sectionId;
     const reviewModal = document.querySelector(`#review-modal-${sectionId}`);
     if (!reviewModal) return;
-
-    const productId = reviewModal.dataset.productId;
-    const productHandle = reviewModal.dataset.productHandle;
 
     const API_BASE_URL = `/apps/${APP_SUB_PATH}/customer/product-review`;
 
     const modalCloseBtn = reviewModal.querySelector(
       `#review-modal-close-${sectionId}`
     );
-
     const reviewForm = reviewModal.querySelector(
       `#review-submission-form-${sectionId}`
     );
@@ -42,7 +41,9 @@
     );
     const previewImg = reviewModal.querySelector(`#preview-img-${sectionId}`);
 
-    const container = trigger.closest(".review-extension-container");
+    const container = trigger.closest(
+      ".review-extension-container, .review-page-container"
+    );
     const starColorFilled = container?.dataset.starFilledColor || "#FB6F92";
     const starColorEmpty = container?.dataset.starEmptyColor || "#CBD3D7";
 
@@ -51,28 +52,33 @@
     let isUploadingImage = false;
 
     function openModal() {
-      reviewModal.classList.add("show");
+      reviewModal.classList.remove("hidden");
       document.body.style.overflow = "hidden";
     }
 
     function closeModal() {
-      reviewModal.classList.remove("show");
+      reviewModal.classList.add("hidden");
       document.body.style.overflow = "";
       resetForm();
     }
 
-    trigger.addEventListener("click", openModal);
+    if (reviewModal.dataset.initialized === "true") {
+      openModal();
+      return;
+    }
+    reviewModal.dataset.initialized = "true";
+
     modalCloseBtn.addEventListener("click", closeModal);
     reviewModal.addEventListener("click", (e) => {
       if (e.target === reviewModal) closeModal();
     });
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape" && reviewModal.classList.contains("show"))
+      if (e.key === "Escape" && !reviewModal.hasAttribute("hidden"))
         closeModal();
     });
 
     function resetForm() {
-      reviewForm.reset();
+      if (reviewForm) reviewForm.reset();
       currentRating = 0;
       uploadedImageUrl = null;
       hideAllFieldErrors();
@@ -85,7 +91,7 @@
 
       imagePreview.style.display = "none";
       previewImg.src = "";
-      formMessage.style.display = "none";
+      if (formMessage) formMessage.style.display = "none";
     }
 
     function showFieldError(fieldName, message) {
@@ -240,53 +246,61 @@
       }
     });
 
-    reviewForm.addEventListener("submit", async function (event) {
-      event.preventDefault();
-      if (!validateForm()) return;
-      if (isUploadingImage) {
-        productPageReviewsToastManager.show(
-          "Please wait, image is still uploading...",
-          "error",
-          4000
-        );
-        return;
-      }
-
-      submitButton.disabled = true;
-      const reviewData = {
-        reviewText: reviewTextInput.value.trim(),
-        rating: currentRating,
-        productId,
-        productHandle,
-        reviewImage: uploadedImageUrl,
-      };
-
-      try {
-        const response = await fetch(`${API_BASE_URL}/add`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(reviewData),
-        });
-        const result = await response.json();
-        if (!response.ok) {
-          if (result.details) parseBackendErrors(result.details);
-          throw new Error(result.message || "Could not submit review");
+    if (reviewForm) {
+      reviewForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        if (!validateForm()) return;
+        if (isUploadingImage) {
+          productPageReviewsToastManager.show(
+            "Please wait, image is still uploading...",
+            "error",
+            4000
+          );
+          return;
         }
-        productPageReviewsToastManager.show(
-          result.message || "Review submitted successfully!",
-          "success"
-        );
-        setTimeout(() => {
-          closeModal();
-          document.dispatchEvent(new CustomEvent("review:submitted"));
-        }, 1500);
-      } catch (error) {
-        productPageReviewsToastManager.show(
-          `Error: ${error.message}`,
-          "error",
-          4000
-        );
-      }
-    });
+
+        submitButton.disabled = true;
+        const currentProductId = reviewModal.dataset.productId;
+        const currentProductHandle = reviewModal.dataset.productHandle;
+
+        const reviewData = {
+          reviewText: reviewTextInput.value.trim(),
+          rating: currentRating,
+          productId: currentProductId,
+          productHandle: currentProductHandle,
+          reviewImage: uploadedImageUrl,
+        };
+
+        try {
+          const response = await fetch(`${API_BASE_URL}/add`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(reviewData),
+          });
+          const result = await response.json();
+          if (!response.ok) {
+            if (result.details) parseBackendErrors(result.details);
+            throw new Error(result.message || "Could not submit review");
+          }
+          productPageReviewsToastManager.show(
+            result.message || "Review submitted successfully!",
+            "success"
+          );
+          setTimeout(() => {
+            closeModal();
+            document.dispatchEvent(new CustomEvent("review:submitted"));
+          }, 1500);
+        } catch (error) {
+          productPageReviewsToastManager.show(
+            `Error: ${error.message}`,
+            "error",
+            4000
+          );
+          submitButton.disabled = false;
+        }
+      });
+    }
+
+    openModal();
   });
 })();
