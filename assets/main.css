@@ -616,6 +616,12 @@ h6,
     letter-spacing: calc(0.012 * var(--font-unit));
   }
 
+  .sm\:fs-21-lh-21-ls-0_252 {
+    font-size: calc(21 * var(--font-unit));
+    line-height: calc(21 * var(--font-unit));
+    letter-spacing: calc(0.252 * var(--font-unit));
+  }
+
   .sm\:fs-26-lh-26-ls-1_2 {
     font-size: calc(26 * var(--font-unit));
     line-height: calc(26 * var(--font-unit));
@@ -1096,10 +1102,6 @@ address {
   .lg\:right-10p-52 {
     right: calc(10% - 52px);
   }
-
-  .lg\:gap-20 {
-    gap: 20px;
-  }
 }
 @media screen and (max-width: 768px) {
   .sm\:grid-cols-1 {
@@ -1554,7 +1556,9 @@ address {
 .w-116 {
   width: 116px !important;
 }
-
+.cart-page__footer {
+  width: calc(100% - 802px - 32px);
+}
 @media screen and (min-width: 1024px) and (max-width: 1439px) {
   .lg\:w-full {
     width: 100%;
@@ -1572,13 +1576,12 @@ address {
   .lg\:w-800 {
     width: 800px;
   }
+  .lg\:w-50pct {
+    width: 50%;
+  }
 
   .lg\:h-500 {
     height: 500px;
-  }
-
-  .lg\:w-50pct {
-    width: 50%;
   }
 
   .lg\:hidden {
@@ -1590,31 +1593,30 @@ address {
   .md\:w-full {
     width: 100%;
   }
-
   .md\:max-w-300 {
     max-width: 300px;
   }
-
   .md\:max-w-450 {
     max-width: 450px;
   }
-
   .md\:max-w-720 {
     max-width: 720px;
   }
-
   .md\:min-w-auto {
     min-width: auto;
   }
-
   .md\:min-w-720 {
     min-width: 720px;
   }
-
   .md\:w-720 {
     width: 720px;
   }
-
+  .md\:w-500 {
+    width: 500px;
+  }
+  .md\:cart-page__footer {
+    width: calc(100% - 500px - 16px);
+  }
   .md\:w-380 {
     width: 380px;
   }
@@ -1990,6 +1992,12 @@ address {
 @media screen and (min-width: 1024px) and (max-width: 1439px) {
   .lg\:gap-10 {
     gap: calc(10 * var(--space-unit));
+  }
+  .lg\:gap-20 {
+    gap: calc(20 * var(--space-unit));
+  }
+  .lg\:gap-24 {
+    gap: calc(24 * var(--space-unit));
   }
   .lg\:gap-32 {
     gap: calc(32 * var(--space-unit));
@@ -3735,6 +3743,14 @@ tr:last-child td {
 
   .slg\:w-auto {
     width: auto;
+  }
+
+  .slg\:w-650 {
+    width: 650px;
+  }
+
+  .slg\:cart-page__footer {
+    width: calc(100% - 650px - 32px);
   }
 
   .slg\:pt-20 {

@@ -1,8 +1,4 @@
 <style>
-  .cart-page__footer {
-    width: calc(100% - 802px - 32px);
-  }
-
   .cart-page__item.is-loading {
     opacity: 0.6;
     position: relative;
@@ -10,64 +6,75 @@
   }
 </style>
 
-<cart-page class="cart-page flex flex-col gap-32 page-width pt-48 pb-88">
-  <h1 class="cart-page__title fw-400 fs-36-lh-40-ls-0">{{ 'cart.page.items_with_count' | t: count: cart.item_count }}</h1>
+<cart-page class="cart-page flex flex-col gap-32 sm:gap-16 page-width pt-48 pb-88 sm:pt-8 sm:pb-20">
+  <h1 class="cart-page__title fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-21-ls-0_252 sm:pt-8 sm:pb-8">{{ 'cart.page.items_with_count' | t: count: cart.item_count }}</h1>
 
   <div class="cart-page__contents">
-    {% if cart == empty %}
+    {% comment %} {% if cart == empty %}
       <div class="cart-page__empty">
         <p class=" fs-14-lh-20-ls-0 fw-400">{{ 'sections.cart.empty' | t }}</p>
       </div>
-    {% else %}
-      <form action="{{ routes.cart_url }}" method="post" novalidate class="cart-page__form flex gap-32" id="cart-form">
-        <div class="flex flex-col gap-16 w-802">
-          <div class="cart-page__error hidden">
-            <span class="cart-page__error-message error-text"></span>
+    {% else %} {% endcomment %}
+      <form action="{{ routes.cart_url }}" method="post" novalidate class="cart-page__form flex gap-32 lg:gap-24 md:gap-16 sm:gap-16 sm:flex-col" id="cart-form">
+        {% if cart == empty %}
+          <div class="w-802 h-508 lg:w-750 flex justify-center items-center">
+            <img 
+              src="{{ 'empty-cart.jpg' | asset_url }}"
+              width="auto"
+              height="508"
+              loading="lazy"
+              class="h-508"
+            />
           </div>
+        {% else %}
+          <div class="flex flex-col gap-16 w-802 slg:w-650 md:w-500 sm:w-full">
+            <div class="cart-page__error hidden">
+              <span class="cart-page__error-message error-text"></span>
+            </div>
 
-          {% render "cart-login-banner" %}
+            {% render "cart-login-banner" %}
 
-          <div class="cart-page__items flex flex-col gap-16">
-            {% for item in cart.items %}
-              <div class="cart-page__item rounded-6 box-shadow p-12 flex gap-16 items-center" id="CartItem-{{ item.index | plus: 1 }}">
-                
-                <div class="cart-page__item-media relative block media w-100 h-116">
-                  {% if item.image %}
-                    {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
-                    {% render 'image',
-                      image: item.image,
-                      widths: '100, 100, 100, 100',
-                      src_width: 100,
-                      sizes: sizes,
-                      class: 'img-fit w-full'
-                    %}
-                  {% endif %}
-                </div>
-
-                <div class="cart-page__item-details flex flex-col gap-12">
-                  <a href="{{ item.url }}" class="cart-page__item-title text-primary fw-400 fs-12-lh-16-ls-0_6">
-                    {{ item.product.title | escape }}{% if item.product.has_only_default_variant == false %}{% for option in item.options_with_values %} | {{ option.value }}{% endfor %}{% endif %}
-                  </a>
-
-                  <div class="flex gap-12 items-center">
-                     <div class="cart-page__item-pricing">
-                      {% render "cart-price", item: item %}
-                    </div>
-
-                    <div class="cart-page__item-quantity flex gap-12 items-center">
-                      {% render "cart-quantity-picker", item: item %}
-                    </div>
+            <div class="cart-page__items flex flex-col gap-16">
+              {% for item in cart.items %}
+                <div class="cart-page__item rounded-6 box-shadow p-12 flex gap-16 items-center" id="CartItem-{{ item.index | plus: 1 }}">
+                  
+                  <div class="cart-page__item-media relative block media w-100 h-116">
+                    {% if item.image %}
+                      {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
+                      {% render 'image',
+                        image: item.image,
+                        widths: '100, 100, 100, 100',
+                        src_width: 100,
+                        sizes: sizes,
+                        class: 'img-fit w-full'
+                      %}
+                    {% endif %}
                   </div>
 
-                  {% render "cart-line-item-buttons", item: item %}
-                </div>
-              </div>
-            {% endfor %}
-          </div>
-        </div>
+                  <div class="cart-page__item-details flex flex-col gap-12">
+                    <a href="{{ item.url }}" class="cart-page__item-title text-primary fw-400 fs-12-lh-16-ls-0_6">
+                      {{ item.product.title | escape }}{% if item.product.has_only_default_variant == false %}{% for option in item.options_with_values %} | {{ option.value }}{% endfor %}{% endif %}
+                    </a>
 
-        <div class="cart-page__footer">
-          <div class="flex flex-col gap-16 box-shadow p-20">
+                    <div class="flex gap-12 items-center">
+                      <div class="cart-page__item-pricing">
+                        {% render "cart-price", item: item %}
+                      </div>
+
+                      <div class="cart-page__item-quantity flex gap-12 items-center">
+                        {% render "cart-quantity-picker", item: item %}
+                      </div>
+                    </div>
+
+                    {% render "cart-line-item-buttons", item: item %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+        {% endif %}
+        <div class="cart-page__footer slg:cart-page__footer md:cart-page__footer sm:w-full">
+          <div class="flex flex-col gap-16 box-shadow p-20 md:p-16">
 
             <div class="cart-page__summary">
               <cart-discounts class="discounts flex flex-col gap-8" data-section-id="{{ section.id }}">
@@ -101,7 +108,7 @@
             </div>
             
             <div class="flex flex-col gap-16">
-              {% render "cart-summary", id: "cart-note", label: "Cart note", show_discount: true %}
+              {% render "cart-summary", id: "cart-note", label: "Cart note", cart_page: true %}
 
               {% render "cart-delivery-text", icon: section.settings.delivery_icon, text: section.settings.delivery_text %}
             </div>
@@ -123,7 +130,7 @@
           </div>
         </div>
       </form>
-    {% endif %}
+    {% comment %} {% endif %} {% endcomment %}
   </div>
 </cart-page>
 
