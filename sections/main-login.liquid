@@ -45,14 +45,17 @@
       <div class="flex gap-16 flex-col">
         {%- form 'customer_login', novalidate: 'novalidate', class: 'login-submit-form flex flex-col gap-16' -%}
           {%- comment -%} Hide default form errors - will be handled by toast notifications {%- endcomment -%}
-          {% comment %}
-            {%- if form.errors -%}
-              <div class="alert alert-error" tabindex="-1" autofocus>
-                {{ form.errors | default_errors }}
-              </div>
-            {%- endif -%}
-          {% endcomment %}
-          {% comment %} {% render 'toast' %} {% endcomment %}
+
+          {%- if form.errors -%}
+            <div>
+              {% render 'toast', error: 'Credentials not correct' %}
+            </div>
+          {% endif %}
+
+          {%- if form.posted_successfully? -%}
+            <p class="form-success">{% render 'toast', success: 'Login successful!' %}.</p>
+          {%- endif -%}
+
           <!-- Hidden Email Field -->
           <div class="hidden">
             <input
