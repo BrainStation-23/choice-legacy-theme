@@ -3656,6 +3656,10 @@ a,
   text-decoration: none;
 }
 
+.hover-brand:hover {
+  color: rgb(var(--color-primary-brand));
+}
+
 html:not([dir="rtl"]) .is-success::before {
   content: "";
   position: absolute;
