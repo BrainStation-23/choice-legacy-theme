@@ -1,6 +1,6 @@
 <!-- Order Timeline Section -->
 <div class="order-timeline-section">
-  <div class="delivery-status-container border-1 border-solid border-color rounded-12 p-24">
+  <div class="delivery-status-container border-1 border-solid border-color rounded-12 p-24 sm:p-16">
     <!-- Loading Spinner -->
     <div class="loading-spinner" id="loading-spinner" style="text-align: center; margin: 20px 0;">
       {% render 'spinner' %}
@@ -15,12 +15,12 @@
 
     <!-- Visual Timeline -->
     <div
-      class="timeline-visual"
+      class="timeline-visual sm:flex-col sm:gap-20"
       id="visual-timeline"
-      style="display: none; align-items: center; margin: 30px 0; padding: 0 20px;"
+      style="display: none;"
     >
       <div
-        class="timeline-step flex flex-col items-center relative flex-1 gap-16"
+        class="timeline-step flex flex-col items-center relative flex-1 gap-16 sm:flex-row"
         data-status="accepted"
       >
         <div>{% render 'icon-package' %}</div>
@@ -39,7 +39,7 @@
         </h2>
       </div>
       <div
-        class="timeline-step flex flex-col items-center relative flex-1 gap-16"
+        class="timeline-step flex flex-col items-center relative flex-1 gap-16 sm:flex-row"
         data-status="picked"
       >
         <div>{% render 'icon-picked' %}</div>
@@ -58,7 +58,7 @@
         </h2>
       </div>
       <div
-        class="timeline-step flex flex-col items-center relative flex-1 gap-16"
+        class="timeline-step flex flex-col items-center relative flex-1 gap-16 sm:flex-row"
         data-status="in-transit"
       >
         <div>{% render 'icon-track' %}</div>
@@ -77,7 +77,7 @@
         </h2>
       </div>
       <div
-        class="timeline-step flex flex-col items-center relative flex-1 gap-16"
+        class="timeline-step flex flex-col items-center relative flex-1 gap-16 sm:flex-row"
         data-status="out-for-delivery"
       >
         <div>{% render 'icon-out-for-delivery' %}</div>
@@ -96,7 +96,7 @@
         </h2>
       </div>
       <div
-        class="timeline-step flex flex-col items-center relative flex-1 gap-16"
+        class="timeline-step flex flex-col items-center relative flex-1 gap-16 sm:flex-row"
         data-status="delivered"
       >
         <div>{% render 'icon-delivery' %}</div>
@@ -104,6 +104,9 @@
           class="step-circle bg-bg w-32 h-32 rounded-full  border-2 border-color border-solid flex items-center justify-center relative z-2"
         >
           <span class="tick-icon" style="display: none;">{% render 'icon-tick' %}</span>
+          <span class="cross-icon" style="display: none;">
+            {%- render 'icon-close', height: '22px', width: '22px' -%}
+          </span>
           <span
             class="dot-icon w-8 h-8 rounded-full text-primary-optional inline-block"
           ></span>
@@ -111,7 +114,8 @@
         <h2
           class="step-label m-0 ff-general-sans fs-16-lh-20-ls-0_1  fw-500 text-primary-optional"
         >
-          {{ 'customer.order.delivered' | t }}
+          <span class="delivered-text">{{ 'customer.order.delivered' | t }}</span>
+          <span class="cancelled-text" style="display: none;">Cancelled</span>
         </h2>
       </div>
     </div>
@@ -170,6 +174,29 @@
     display: none !important;
   }
 
+  /* Cancelled status styling */
+  .step-circle.cancelled {
+  }
+
+  .step-circle.cancelled .cross-icon {
+    display: inline !important;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .step-circle.cancelled .tick-icon,
+  .step-circle.cancelled .dot-icon {
+    display: none !important;
+  }
+
+  .timeline-step.cancelled .step-label {
+    color: #dc3545 !important;
+  }
+  .timeline-step.cancelled .step-circle {
+    border-color: #dc3545 !important;
+  }
+
   .tick-icon {
     display: none;
   }
@@ -177,10 +204,43 @@
     background-color: rgba(var(--color-primary-text), 0.3);
   }
 
+  /* Cross icon styling */
+  .cross-icon svg {
+    color: red;
+    fill: red;
+  }
+
   /* Icon styling */
   .tick-icon svg {
     color: rgb(var(--color-background));
     fill: rgb(var(--color-background));
+  }
+
+  /* Mobile styles */
+  @media screen and (max-width: 767px) {
+    .timeline-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      left: 73px;
+      top: calc(100% - 11px);
+      width: 2px;
+      height: 100%;
+      background-color: rgba(var(--color-primary-text), 0.3);
+      right: auto;
+    }
+
+    .timeline-step.completed:not(:last-child)::after {
+      background-color: #28a745;
+    }
+  }
+
+  @media screen and (min-width: 768px) and (max-width: 1023px) {
+    .step-label {
+      font-size: 14px !important;
+    }
+    .delivery-status-container {
+      padding: 16px !important;
+    }
   }
 
   @media screen and (min-width: 1024px) and (max-width: 1439px) {
@@ -235,35 +295,91 @@
     const normalizedStatus = currentStatus.toLowerCase().replace(/\s+/g, '-');
     const currentStatusIndex = statusOrder.indexOf(normalizedStatus);
 
+    // Check if status is cancelled
+    const isCancelled = normalizedStatus === 'cancelled';
+
     timelineSteps.forEach((step, index) => {
       const circle = step.querySelector('.step-circle');
       const label = step.querySelector('.step-label');
       const tickIcon = circle.querySelector('.tick-icon');
       const dotIcon = circle.querySelector('.dot-icon');
+      const crossIcon = circle.querySelector('.cross-icon');
+      const deliveredText = label.querySelector('.delivered-text');
+      const cancelledText = label.querySelector('.cancelled-text');
 
       // Reset classes
-      circle.classList.remove('completed', 'current');
+      circle.classList.remove('completed', 'current', 'cancelled');
       label.classList.remove('completed', 'current');
-      step.classList.remove('completed');
+      step.classList.remove('completed', 'cancelled');
 
-      if (index <= currentStatusIndex) {
-        // Completed and current steps (green background with tick icon)
-        circle.classList.add('completed');
-        label.classList.add('completed');
-        step.classList.add('completed');
-        if (tickIcon) {
-          tickIcon.style.display = 'inline';
-        }
-        if (dotIcon) {
-          dotIcon.style.display = 'none';
+      if (isCancelled) {
+        // Handle cancelled status - make all previous 4 steps green, last step red
+        if (index < timelineSteps.length - 1) {
+          // First 4 steps (accepted, picked, in-transit, out-for-delivery) - show as completed/green
+          circle.classList.add('completed');
+          label.classList.add('completed');
+          step.classList.add('completed');
+          if (tickIcon) {
+            tickIcon.style.display = 'inline';
+          }
+          if (dotIcon) {
+            dotIcon.style.display = 'none';
+          }
+          if (crossIcon) {
+            crossIcon.style.display = 'none';
+          }
+        } else {
+          // Last step (delivered/cancelled) - show as cancelled with red circle and cross
+          circle.classList.add('cancelled');
+          step.classList.add('cancelled');
+          if (crossIcon) {
+            crossIcon.style.display = 'inline';
+          }
+          if (tickIcon) {
+            tickIcon.style.display = 'none';
+          }
+          if (dotIcon) {
+            dotIcon.style.display = 'none';
+          }
+          // Show cancelled text instead of delivered
+          if (deliveredText) {
+            deliveredText.style.display = 'none';
+          }
+          if (cancelledText) {
+            cancelledText.style.display = 'inline';
+          }
         }
       } else {
-        // Future steps (white background with gray dot)
-        if (tickIcon) {
-          tickIcon.style.display = 'none';
+        // Handle normal statuses
+        if (deliveredText) {
+          deliveredText.style.display = 'inline';
         }
-        if (dotIcon) {
-          dotIcon.style.display = 'inline-block';
+        if (cancelledText) {
+          cancelledText.style.display = 'none';
+        }
+        if (crossIcon) {
+          crossIcon.style.display = 'none';
+        }
+
+        if (index <= currentStatusIndex) {
+          // Completed and current steps (green background with tick icon)
+          circle.classList.add('completed');
+          label.classList.add('completed');
+          step.classList.add('completed');
+          if (tickIcon) {
+            tickIcon.style.display = 'inline';
+          }
+          if (dotIcon) {
+            dotIcon.style.display = 'none';
+          }
+        } else {
+          // Future steps (white background with gray dot)
+          if (tickIcon) {
+            tickIcon.style.display = 'none';
+          }
+          if (dotIcon) {
+            dotIcon.style.display = 'inline-block';
+          }
         }
       }
     });
@@ -281,7 +397,8 @@
     toggleTimeline(false);
 
     try {
-      const apiUrl = `/apps/${APP_SUB_PATH}/customer/account/delivery-status?order_ids=${encodeURIComponent(orderId)}`;
+      // Changed from order_ids to order_id
+      const apiUrl = `/apps/${APP_SUB_PATH}/customer/account/delivery-status?order_id=${orderId}`;
 
       const response = await fetch(apiUrl, {
         method: 'GET',
@@ -297,8 +414,9 @@
 
       const result = await response.json();
 
-      if (result.success && result.data && result.data[orderId]) {
-        const orderData = result.data[orderId];
+      // Updated to access result.data directly since it's now a single object, not a map
+      if (result.success && result.data) {
+        const orderData = result.data;
 
         // Hide spinner and error, show timeline
         toggleSpinner(false);
@@ -307,6 +425,15 @@
 
         // Update visual timeline based on API response
         updateVisualTimeline(orderData.deliveryStatus);
+
+        // Dispatch event to notify main page about delivery status
+        const deliveryStatusEvent = new CustomEvent('deliveryStatusUpdated', {
+          detail: { 
+            status: orderData.deliveryStatus,
+            returnStatus: orderData.returnStatus || null
+          },
+        });
+        document.dispatchEvent(deliveryStatusEvent);
 
         // Create timeline if events data is available
         if (orderData.events && Array.isArray(orderData.events)) {
@@ -320,6 +447,15 @@
 
         // Update visual timeline to default state
         updateVisualTimeline('Accepted');
+
+        // Dispatch event with default status
+        const deliveryStatusEvent = new CustomEvent('deliveryStatusUpdated', {
+          detail: { 
+            status: 'Accepted',
+            returnStatus: null
+          },
+        });
+        document.dispatchEvent(deliveryStatusEvent);
       }
     } catch (error) {
       console.error('Error fetching delivery status:', error);

@@ -5,7 +5,36 @@
       <h2 class="m-0 ff-general-sans fs-23-lh-24-ls-0 fw-500 sm:text-center">
         {{ 'customer.order.title' | t: name: order.name }}
       </h2>
-      {% render 'order-history-header', order: order %}
+      <div class="flex justify-between">
+        {% render 'order-history-header', order: order %}
+        <div class="flex flex-col  gap-8">
+          <button
+            id="return-order"
+            class="button--link bg-none fw-600 fs-14-lh-100pct-ls-0 p-0 m-0"
+            aria-label="{{ 'customer.order.return-Request' | t }}"
+            data-order-id="gid://shopify/Order/{{ order.id }}"
+            style="display: none;"
+          >
+            <span class="button-content p-0 m-0">
+              {{ 'customer.order.return-Request' | t }}
+            </span>
+
+            <span class="loading-content" style="display: none;">
+              {% render 'spinner', size: 'small', color: 'primary' %}
+            </span>
+          </button>
+          <div
+            id="return-status-display"
+            class="ff-general-sans fs-12-lh-14-ls-0 text-primary-70pct gap-8"
+            style="display: none;"
+          >
+            <span class="return-status-dot h-8 w-8 rounded-full "></span>
+            <h2 class="return-status-message m-0 p-0 fs-12-lh-16-ls-0_072 fw-500 ff-general-sans"></h2>
+            <!-- Return status will be displayed here -->
+          </div>
+        </div>
+      </div>
+
       {% unless order.cancelled %}
         {% render 'order-timeline', order: order %}
       {% endunless %}
@@ -602,9 +631,196 @@
   </div>
 </div>
 
+<style>
+  /* Hide normal content when loading */
+  #return-order.loading .button-content {
+    display: none;
+  }
+
+  /* Show spinner content when loading */
+  #return-order.loading .loading-content {
+    display: inline-flex !important;
+  }
+
+  /* Return button disabled state */
+  #return-order.return-button-disabled {
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    color: rgb(var(--color-primary-text)) !important; /* Black color for button text when disabled */
+  }
+
+  #return-order.return-button-disabled .button-content {
+    color: rgb(var(--color-primary-text)) !important; /* Black color for button content text */
+  }
+
+  #return-status-display {
+    display: flex;
+    align-items: center;
+  }
+
+
+
+  #return-status-display.return-status-approved .return-status-dot {
+    background-color: rgba(40, 167, 69, 0.8); /* Green with opacity */
+  }
+
+  #return-status-display.return-status-declined .return-status-dot {
+    background-color: rgba(220, 53, 69, 0.8);
+  }
+
+  #return-status-display.return-status-requested .return-status-dot {
+    background-color: rgba(255, 140, 0, 0.8); /
+  }
+</style>
+
 {% schema %}
 {
   "name": "Order details",
   "settings": []
 }
 {% endschema %}
+
+<script>
+  // Function to get CSS class based on return status
+  function getReturnStatusClass(returnStatus) {
+    if (!returnStatus) return '';
+
+    const normalizedStatus = returnStatus.toLowerCase().replace(/\s+/g, '-');
+
+    switch (normalizedStatus) {
+      case 'approved':
+      case 'approve':
+        return 'return-status-approved';
+      case 'declined':
+      case 'decline':
+        return 'return-status-declined';
+      case 'return-requested':
+      case 'return-requisted':
+      case 'requested':
+        return 'return-status-requested';
+      default:
+        return 'return-status-requested'; // Default to requested if unknown
+    }
+  }
+
+  // Function to show/hide return button based on delivery status and returnStatus
+  function toggleReturnButton(deliveryStatus, returnStatus) {
+    const returnOrderButton = document.getElementById('return-order');
+    const returnStatusDisplay = document.getElementById('return-status-display');
+
+    if (returnOrderButton) {
+      const normalizedStatus = deliveryStatus.toLowerCase().replace(/\s+/g, '-');
+
+      if (normalizedStatus === 'delivered') {
+        returnOrderButton.style.display = 'inline-flex';
+
+        // If returnStatus is present, make button non-clickable and show status
+        if (returnStatus) {
+          // Add disabled class and disable button
+          returnOrderButton.classList.add('return-button-disabled');
+          returnOrderButton.disabled = true;
+
+          // Show return status with appropriate color class
+          if (returnStatusDisplay) {
+            // Remove all previous status classes
+            returnStatusDisplay.classList.remove(
+              'return-status-approved',
+              'return-status-declined',
+              'return-status-requested'
+            );
+
+            // Add the appropriate status class
+            const statusClass = getReturnStatusClass(returnStatus);
+            if (statusClass) {
+              returnStatusDisplay.classList.add(statusClass);
+            }
+
+            // Update the status message in the h2 element
+            const statusMessageElement = returnStatusDisplay.querySelector('.return-status-message');
+            if (statusMessageElement) {
+              statusMessageElement.textContent = ` ${returnStatus}`;
+            }
+
+            returnStatusDisplay.style.display = 'flex';
+          }
+        } else {
+          // Remove disabled class and enable button
+          returnOrderButton.classList.remove('return-button-disabled');
+          returnOrderButton.disabled = false;
+
+          // Hide return status
+          if (returnStatusDisplay) {
+            returnStatusDisplay.style.display = 'none';
+            // Remove all status classes
+            returnStatusDisplay.classList.remove(
+              'return-status-approved',
+              'return-status-declined',
+              'return-status-requested'
+            );
+          }
+        }
+      } else {
+        returnOrderButton.style.display = 'none';
+
+        // Hide return status when button is hidden
+        if (returnStatusDisplay) {
+          returnStatusDisplay.style.display = 'none';
+          // Remove all status classes
+          returnStatusDisplay.classList.remove(
+            'return-status-approved',
+            'return-status-declined',
+            'return-status-requested'
+          );
+        }
+      }
+    }
+  }
+
+  // Listen for delivery status updates from the order timeline
+  document.addEventListener('deliveryStatusUpdated', function (event) {
+    toggleReturnButton(event.detail.status, event.detail.returnStatus);
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+    const returnOrderButton = document.getElementById('return-order');
+    const toastManager = new ToastNotificationManager();
+
+    if (returnOrderButton) {
+      returnOrderButton.addEventListener('click', async function () {
+        const orderId = this.getAttribute('data-order-id');
+
+        this.classList.add('loading');
+        this.disabled = true;
+
+        try {
+          const response = await fetch(`/apps/${APP_SUB_PATH}/order/return`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              orderId: orderId,
+            }),
+          });
+
+          const data = await response.json();
+
+          if (response.ok) {
+            // Success toast
+            toastManager.show('Return request submitted successfully', 'success');
+          } else {
+            // Error toast
+            toastManager.show(data.message || 'Failed to process return request', 'error');
+          }
+        } catch (error) {
+          // Error toast
+          toastManager.show('Failed to process return request', 'error');
+        } finally {
+          // Hide loading state
+          this.classList.remove('loading');
+          this.disabled = false;
+        }
+      });
+    }
+  });
+</script>

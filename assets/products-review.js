@@ -424,7 +424,6 @@
           reviewText: reviewTextInput.value.trim(),
           rating: currentRating,
           productId: productId,
-          productHandle: productHandle,
           reviewImage: uploadedImageUrl,
         };
 
