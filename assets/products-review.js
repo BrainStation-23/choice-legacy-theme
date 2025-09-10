@@ -1,8 +1,6 @@
 // products-review.js - Fixed version without premature validation
 (function () {
-  const reviewAppContainers = document.querySelectorAll(
-    ".review-extension-container"
-  );
+  const reviewAppContainers = document.querySelectorAll(".review-extension-container");
 
   // Initialize Toast Manager
   const toastManager = new ToastNotificationManager();
@@ -16,54 +14,30 @@
     const starColorEmpty = container.dataset.starEmptyColor || "#CCCCCC";
     const showEmptyReviewsSetting = container.dataset.showEmpty === "true";
     const loadMoreBtn = container.querySelector(`#load-more-btn-${sectionId}`);
-    const loadMoreContainer = container.querySelector(
-      `#load-more-container-${sectionId}`
-    );
+    const loadMoreContainer = container.querySelector(`#load-more-container-${sectionId}`);
 
     const API_BASE_URL = `/apps/${APP_SUB_PATH}/customer/product-review`;
 
     // Modal elements
-    const writeReviewBtn = container.querySelector(
-      `#write-review-btn-${sectionId}`
-    );
+    const writeReviewBtn = container.querySelector(`#write-review-btn-${sectionId}`);
     const reviewModal = container.querySelector(`#review-modal-${sectionId}`);
-    const modalCloseBtn = container.querySelector(
-      `#review-modal-close-${sectionId}`
-    );
+    const modalCloseBtn = container.querySelector(`#review-modal-close-${sectionId}`);
 
     // Form elements
-    const reviewForm = container.querySelector(
-      `#review-submission-form-${sectionId}`
-    );
-    const reviewListContainer = container.querySelector(
-      `#reviews-list-${sectionId}`
-    );
+    const reviewForm = container.querySelector(`#review-submission-form-${sectionId}`);
+    const reviewListContainer = container.querySelector(`#reviews-list-${sectionId}`);
     const formMessage = container.querySelector(`#form-message-${sectionId}`);
-    const submitButton = container.querySelector(
-      `#submit-review-btn-${sectionId}`
-    );
-    const ratingStarsContainer = container.querySelector(
-      `#form-star-rating-${sectionId}`
-    );
-    const ratingValueInput = container.querySelector(
-      `#rating-value-${sectionId}`
-    );
+    const submitButton = container.querySelector(`#submit-review-btn-${sectionId}`);
+    const ratingStarsContainer = container.querySelector(`#form-star-rating-${sectionId}`);
+    const ratingValueInput = container.querySelector(`#rating-value-${sectionId}`);
     const ratingText = container.querySelector(`#rating-text-${sectionId}`);
-    const reviewsSpinner = container.querySelector(
-      `#reviews-spinner-${sectionId}`
-    );
-    const reviewSummaryContainer = container.querySelector(
-      `#review-summary-${sectionId}`
-    );
-    const reviewImageInput = container.querySelector(
-      `#reviewImage-${sectionId}`
-    );
+    const reviewsSpinner = container.querySelector(`#reviews-spinner-${sectionId}`);
+    const reviewSummaryContainer = container.querySelector(`#review-summary-${sectionId}`);
+    const reviewImageInput = container.querySelector(`#reviewImage-${sectionId}`);
     const reviewTextInput = container.querySelector(`#reviewText-${sectionId}`);
     const imagePreview = container.querySelector(`#image-preview-${sectionId}`);
     const previewImg = container.querySelector(`#preview-img-${sectionId}`);
-    const removeImageBtn = container.querySelector(
-      `#remove-image-${sectionId}`
-    );
+    const removeImageBtn = container.querySelector(`#remove-image-${sectionId}`);
 
     let currentRating = 0;
     let uploadedImageUrl = null;
@@ -158,11 +132,7 @@
 
     // Close modal with Escape key
     document.addEventListener("keydown", function (e) {
-      if (
-        e.key === "Escape" &&
-        reviewModal &&
-        reviewModal.classList.contains("show")
-      ) {
+      if (e.key === "Escape" && reviewModal && reviewModal.classList.contains("show")) {
         closeModal();
       }
     });
@@ -180,9 +150,7 @@
 
     // Validation functions
     function showFieldError(fieldName, message) {
-      const errorDiv = container.querySelector(
-        `#${fieldName}-error-${sectionId}`
-      );
+      const errorDiv = container.querySelector(`#${fieldName}-error-${sectionId}`);
       const formGroup = errorDiv?.closest(".form-group");
 
       if (errorDiv) {
@@ -193,9 +161,7 @@
     }
 
     function hideFieldError(fieldName) {
-      const errorDiv = container.querySelector(
-        `#${fieldName}-error-${sectionId}`
-      );
+      const errorDiv = container.querySelector(`#${fieldName}-error-${sectionId}`);
       const formGroup = errorDiv?.closest(".form-group");
 
       if (errorDiv) {
@@ -272,9 +238,7 @@
 
     // Initialize stars
     if (ratingStarsContainer) {
-      ratingStarsContainer
-        .querySelectorAll(".star")
-        .forEach((s) => (s.style.color = starColorEmpty));
+      ratingStarsContainer.querySelectorAll(".star").forEach((s) => (s.style.color = starColorEmpty));
     }
 
     // Star Rating Logic for Form
@@ -327,12 +291,7 @@
 
         // Frontend validation for image
         const maxSize = 5 * 1024 * 1024; // 5MB
-        const allowedTypes = [
-          "image/jpeg",
-          "image/jpg",
-          "image/png",
-          "image/gif",
-        ];
+        const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/gif"];
 
         if (file.size > maxSize) {
           showFieldError("reviewImage", "Image size must be less than 5MB");
@@ -341,10 +300,7 @@
         }
 
         if (!allowedTypes.includes(file.type)) {
-          showFieldError(
-            "reviewImage",
-            "Only JPEG, PNG, and GIF images are allowed"
-          );
+          showFieldError("reviewImage", "Only JPEG, PNG, and GIF images are allowed");
           this.value = "";
           return;
         }
@@ -378,9 +334,7 @@
             const errorData = await response.json().catch(() => ({
               message: "Image upload failed with status: " + response.status,
             }));
-            throw new Error(
-              errorData.message || `HTTP error! status: ${response.status}`
-            );
+            throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
           }
 
           const result = await response.json();
@@ -409,11 +363,7 @@
         }
 
         if (isUploadingImage) {
-          toastManager.show(
-            "Please wait, image is still uploading...",
-            "error",
-            4000
-          );
+          toastManager.show("Please wait, image is still uploading...", "error", 4000);
           return;
         }
 
@@ -424,7 +374,6 @@
           reviewText: reviewTextInput.value.trim(),
           rating: currentRating,
           productId: productId,
-          productHandle: productHandle,
           reviewImage: uploadedImageUrl,
         };
 
@@ -442,23 +391,13 @@
           if (!response.ok) {
             if (result.details && Array.isArray(result.details)) {
               parseBackendErrors(result.details);
-              toastManager.show(
-                result.message || "Please fix the errors above",
-                "error",
-                4000
-              );
+              toastManager.show(result.message || "Please fix the errors above", "error", 4000);
             } else {
-              throw new Error(
-                result.message || `HTTP error! status: ${response.status}`
-              );
+              throw new Error(result.message || `HTTP error! status: ${response.status}`);
             }
           } else {
             // Success
-            toastManager.show(
-              result.message || "Review submitted successfully!",
-              "success",
-              3000
-            );
+            toastManager.show(result.message || "Review submitted successfully!", "success", 3000);
 
             // Close modal and refresh reviews
             setTimeout(() => {
@@ -468,11 +407,7 @@
           }
         } catch (error) {
           console.error("Error submitting review:", error);
-          toastManager.show(
-            `Error: ${error.message || "Could not submit review."}`,
-            "error",
-            4000
-          );
+          toastManager.show(`Error: ${error.message || "Could not submit review."}`, "error", 4000);
         }
       });
     }
@@ -499,9 +434,7 @@
       if (!window.allShopifyProducts || !productId) return "Product Title";
 
       // Find product by ID since the API returns productId
-      const product = Object.values(window.allShopifyProducts).find(
-        (p) => p.id === productId
-      );
+      const product = Object.values(window.allShopifyProducts).find((p) => p.id === productId);
       return product ? product.title : "Product Title";
     }
 
@@ -521,23 +454,18 @@
       }
 
       try {
-        const response = await fetch(
-          `${API_BASE_URL}/list/${productId}?page=${page}&limit=10`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        const response = await fetch(`${API_BASE_URL}/list/${productId}?page=${page}&limit=10`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({
             message: "Failed to fetch reviews with status: " + response.status,
           }));
-          throw new Error(
-            errorData.message || `HTTP error! status: ${response.status}`
-          );
+          throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
 
         const reviewResponse = await response?.json();
@@ -553,9 +481,7 @@
           // Only append new reviews to slideshow, don't rebuild entire thing
           appendReviewsToSlideshow(newReviews);
           // Still need to update desktop grid completely
-          const gridContainer = reviewListContainer.querySelector(
-            ".product-reviews-grid"
-          );
+          const gridContainer = reviewListContainer.querySelector(".product-reviews-grid");
           if (gridContainer) {
             renderDesktopGrid(allProductReviews, gridContainer);
           }
@@ -603,10 +529,7 @@
       }
 
       const totalReviews = reviewsArray.length;
-      const sumOfRatings = reviewsArray.reduce(
-        (sum, review) => sum + (review.rating || 0),
-        0
-      );
+      const sumOfRatings = reviewsArray.reduce((sum, review) => sum + (review.rating || 0), 0);
       const averageRating = totalReviews > 0 ? sumOfRatings / totalReviews : 0;
 
       const fullStars = Math.floor(averageRating);
@@ -633,9 +556,7 @@
     }
 
     function appendReviewsToSlideshow(newReviews) {
-      const slideshowElement = reviewListContainer.querySelector(
-        "slideshow-component"
-      );
+      const slideshowElement = reviewListContainer.querySelector("slideshow-component");
       if (!slideshowElement) return;
 
       const swiperWrapper = slideshowElement.querySelector(".swiper-wrapper");
@@ -643,9 +564,7 @@
 
       newReviews.forEach((review) => {
         const productTitle = getProductTitle(review.productId);
-        const reviewDate = review.reviewPlacedAt
-          ? formatDate(review.reviewPlacedAt)
-          : "N/A";
+        const reviewDate = review.reviewPlacedAt ? formatDate(review.reviewPlacedAt) : "N/A";
         const ratingStarsHTML = createStarRating(review.rating);
         const imageHtml = review.reviewImage
           ? `<img src="${review.reviewImage}" class="w-full h-full" alt="${productTitle}" loading="lazy">`
@@ -691,8 +610,7 @@
 
       if (!reviewsArray || reviewsArray.length === 0) {
         if (showEmptyReviewsSetting) {
-          reviewListContainer.innerHTML =
-            '<p class="no-reviews">Be the first to review this product!</p>';
+          reviewListContainer.innerHTML = '<p class="no-reviews">Be the first to review this product!</p>';
         } else {
           reviewListContainer.innerHTML = "";
         }
@@ -707,13 +625,11 @@
       slideshowComponent.setAttribute("data-enable-carousel", "true");
       slideshowComponent.setAttribute("data-show-progress-bar", "false");
       slideshowComponent.setAttribute("data-nav-loop", "false");
-      slideshowComponent.className =
-        "flex-col gap-16 hidden md:hidden lg:hidden sm:flex";
+      slideshowComponent.className = "flex-col gap-16 hidden md:hidden lg:hidden sm:flex";
 
       // Create swiper container for mobile
       const swiperContainer = document.createElement("div");
-      swiperContainer.className =
-        "swiper-container overflow-hidden pt-10 pr-4 pb-10 pl-4";
+      swiperContainer.className = "swiper-container overflow-hidden pt-10 pr-4 pb-10 pl-4";
 
       const swiperWrapper = document.createElement("div");
       swiperWrapper.className = "swiper-wrapper flex";
@@ -725,9 +641,7 @@
 
       reviewsArray.forEach((review) => {
         const productTitle = getProductTitle(review.productId);
-        const reviewDate = review.reviewPlacedAt
-          ? formatDate(review.reviewPlacedAt)
-          : "N/A";
+        const reviewDate = review.reviewPlacedAt ? formatDate(review.reviewPlacedAt) : "N/A";
         const ratingStarsHTML = createStarRating(review.rating);
         const imageHtml = review.reviewImage
           ? `<img src="${review.reviewImage}" class="w-full h-full" alt="${productTitle}" loading="lazy">`
@@ -806,9 +720,7 @@
       reviewListContainer.appendChild(gridContainer);
 
       setTimeout(() => {
-        const slideshowElement = reviewListContainer.querySelector(
-          "slideshow-component"
-        );
+        const slideshowElement = reviewListContainer.querySelector("slideshow-component");
         if (slideshowElement && slideshowElement.swiper) {
           // Listen for when swiper reaches the end
           slideshowElement.swiper.on("reachEnd", async () => {
