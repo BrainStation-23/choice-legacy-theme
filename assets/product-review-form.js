@@ -14,12 +14,10 @@
 
     const API_BASE_URL = `/apps/${APP_SUB_PATH}/customer/product-review`;
 
-    // Modal elements
     const modalCloseBtn = reviewModal.querySelector(
       `#review-modal-close-${sectionId}`
     );
 
-    // Form elements
     const reviewForm = reviewModal.querySelector(
       `#review-submission-form-${sectionId}`
     );
@@ -44,7 +42,6 @@
     );
     const previewImg = reviewModal.querySelector(`#preview-img-${sectionId}`);
 
-    // Config from parent
     const container = trigger.closest(".review-extension-container");
     const starColorFilled = container?.dataset.starFilledColor || "#FB6F92";
     const starColorEmpty = container?.dataset.starEmptyColor || "#CBD3D7";
@@ -53,7 +50,6 @@
     let uploadedImageUrl = null;
     let isUploadingImage = false;
 
-    // Modal functionality
     function openModal() {
       reviewModal.classList.add("show");
       document.body.style.overflow = "hidden";
@@ -92,7 +88,6 @@
       formMessage.style.display = "none";
     }
 
-    // Validation
     function showFieldError(fieldName, message) {
       const errorDiv = reviewModal.querySelector(
         `#${fieldName}-error-${sectionId}`
@@ -153,7 +148,6 @@
       if (this.value.trim() !== "") hideFieldError("reviewText");
     });
 
-    // Star Rating Logic
     const stars = ratingStarsContainer.querySelectorAll(".star");
     stars.forEach((s) => (s.style.color = starColorEmpty));
 
@@ -181,7 +175,6 @@
       });
     }
 
-    // Image upload
     reviewImageInput.addEventListener("change", async function () {
       const file = this.files[0];
       if (!file) {
@@ -247,7 +240,6 @@
       }
     });
 
-    // Handle Review Submission
     reviewForm.addEventListener("submit", async function (event) {
       event.preventDefault();
       if (!validateForm()) return;
@@ -286,7 +278,6 @@
         );
         setTimeout(() => {
           closeModal();
-          // Dispatch a custom event to tell the other script to refresh reviews
           document.dispatchEvent(new CustomEvent("review:submitted"));
         }, 1500);
       } catch (error) {

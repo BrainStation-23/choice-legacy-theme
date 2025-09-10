@@ -28,7 +28,6 @@
 
     let allProductReviews = [];
     let currentPage = 1;
-    let totalPages = 1;
     let isLoadingMore = false;
     let hasMoreReviews = false;
 
@@ -223,7 +222,6 @@
       if (!reviewListContainer) return;
       reviewListContainer.innerHTML = "";
 
-      // Create slideshow component wrapper for mobile
       const slideshowComponent = document.createElement("slideshow-component");
       slideshowComponent.setAttribute("data-autoplay", "false");
       slideshowComponent.setAttribute("data-autoplay-delay", "5000");
@@ -234,7 +232,6 @@
       slideshowComponent.className =
         "flex-col gap-16 hidden md:hidden lg:hidden sm:flex";
 
-      // Create swiper container for mobile
       const swiperContainer = document.createElement("div");
       swiperContainer.className =
         "swiper-container overflow-hidden pt-10 pr-4 pb-10 pl-4";
@@ -242,7 +239,6 @@
       const swiperWrapper = document.createElement("div");
       swiperWrapper.className = "swiper-wrapper flex";
 
-      // Create grid container for desktop
       const gridContainer = document.createElement("div");
       gridContainer.className =
         "product-reviews-grid grid sm:hidden grid-cols-5 lg:grid-cols-4 md:grid-cols-3 gap-24 md:gap-16";
@@ -257,7 +253,6 @@
           ? `<img src="${review.reviewImage}" class="w-full h-full" alt="${productTitle}" loading="lazy">`
           : `<div></div>`;
 
-        // Desktop grid item
         const desktopReviewItem = document.createElement("div");
         desktopReviewItem.className = "p-8 box-shadow flex flex-col gap-16";
         desktopReviewItem.innerHTML = `
@@ -282,7 +277,6 @@
       </div>
     `;
 
-        // Mobile swiper slide
         const mobileReviewItem = document.createElement("div");
         mobileReviewItem.className = "swiper-slide w-auto";
         mobileReviewItem.style.boxSizing = "border-box";
@@ -310,16 +304,13 @@
       </div>
     `;
 
-        // Add to respective containers
         gridContainer.appendChild(desktopReviewItem);
         swiperWrapper.appendChild(mobileReviewItem);
       });
 
-      // Assemble mobile slideshow
       swiperContainer.appendChild(swiperWrapper);
       slideshowComponent.appendChild(swiperContainer);
 
-      // Add both containers to the review list
       reviewListContainer.appendChild(slideshowComponent);
       reviewListContainer.appendChild(gridContainer);
 
@@ -328,22 +319,18 @@
           "slideshow-component"
         );
         if (slideshowElement && slideshowElement.swiper) {
-          // Listen for when swiper reaches the end
           slideshowElement.swiper.on("reachEnd", async () => {
             if (!isLoadingMore && hasMoreReviews) {
               isLoadingMore = true;
 
-              // Store the current slide index before fetching more
               const currentSlideIndex = slideshowElement.swiper.activeIndex;
 
               try {
                 await fetchReviews(currentPage + 1, true);
 
-                // After new reviews are added, update swiper and maintain position
                 if (slideshowElement.swiper) {
                   slideshowElement.swiper.update();
-                  // Stay at the current slide position
-                  slideshowElement.swiper.slideTo(currentSlideIndex, 0); // 0 = no animation
+                  slideshowElement.swiper.slideTo(currentSlideIndex, 0);
                 }
               } finally {
                 isLoadingMore = false;
@@ -365,15 +352,10 @@
         .replace(/'/g, "&#039;");
     }
 
-    // Initialize and listen for refresh events
     if (productId && productHandle && shopDomain) {
       fetchReviews();
-      // Listen for the custom event dispatched by the form script
       document.addEventListener("review:submitted", () => fetchReviews());
     } else {
-      console.warn(
-        `[Product Reviews App ${sectionId}]: Missing data. Cannot fetch reviews.`
-      );
       if (reviewsSpinner) reviewsSpinner.style.display = "none";
     }
   });
