@@ -81,6 +81,10 @@ mark {
   cursor: not-allowed;
 }
 
+.disabled {
+  cursor: not-allowed !important;
+}
+
 .shopify-payment-button__button,
 .shopify-payment-button__button--unbranded {
   font-weight: 600 !important;
