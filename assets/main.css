@@ -2029,17 +2029,17 @@ address {
   .sm\:flex {
     display: flex;
   }
-
   .sm\:justify-between {
     justify-content: space-between;
   }
-
   .sm\:justify-center {
     justify-content: center;
   }
-
   .sm\:items-center {
     align-items: center;
+  }
+  .sm\:items-start {
+    align-items: flex-start;
   }
   .sm\:cursor-pointer {
     cursor: pointer;
