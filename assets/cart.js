@@ -178,9 +178,12 @@ class ProductForm extends HTMLElement {
       .then((response) => {
         this.cart.open();
 
-        if (response.status) {
-          this.cart.showError(response.description || response.message);
-          this.handleErrorMessage(response.description || response.message);
+        // Handle errors field from API response
+        if (response.status || response.errors) {
+          const errorMessage =
+            response.description || response.message || response.errors;
+          this.cart.showError(errorMessage);
+          this.handleErrorMessage(errorMessage);
           return;
         }
 
@@ -315,21 +318,28 @@ class CartPage extends HTMLElement {
     })
       .then((response) => response.json())
       .then((parsedState) => {
-        this.classList.remove("cart-page--loading");
-        if (parsedState.status) {
-          this.showError(
+        // Handle errors field from API response
+        if (parsedState.status || parsedState.errors) {
+          const errorMessage =
             parsedState.description ||
-              parsedState.message ||
-              "Failed to update cart."
-          );
+            parsedState.message ||
+            parsedState.errors ||
+            "Failed to update cart.";
+          this.showError(errorMessage);
         } else {
           this.renderSections(parsedState);
         }
       })
       .catch((e) => {
-        this.classList.remove("cart-page--loading");
         console.error("Error updating quantity:", e);
         this.showError("An error occurred. Please try again.");
+      })
+      .finally(() => {
+        // Always remove loading states in finally block
+        this.classList.remove("cart-page--loading");
+        if (lineItem) {
+          lineItem.classList.remove("is-loading");
+        }
       });
   }
 
@@ -629,12 +639,14 @@ class CartDrawer extends HTMLElement {
     })
       .then((response) => response.json())
       .then((parsedState) => {
-        if (parsedState.status) {
-          this.showError(
+        // Handle errors field from API response
+        if (parsedState.status || parsedState.errors) {
+          const errorMessage =
             parsedState.description ||
-              parsedState.message ||
-              "Failed to update quantity"
-          );
+            parsedState.message ||
+            parsedState.errors ||
+            "Failed to update quantity";
+          this.showError(errorMessage);
           this.refresh();
         } else {
           this.renderContents(parsedState);

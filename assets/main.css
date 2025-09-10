@@ -2770,6 +2770,7 @@ address {
   padding: 7px 8px;
   color: rgb(var(--color-primary-text));
   background: rgb(var(--color-secondary-brand));
+  display: flex;
   align-items: center;
   gap: calc(8 * var(--space-unit));
   border-radius: 4px;
