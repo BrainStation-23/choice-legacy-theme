@@ -7,12 +7,14 @@
   {%- endif -%}
 {%- endfor -%}
 
+{% if cart_page %}
 <cart-note class="cart-note">
   <div class="cart-note__wrapper">
     {% assign label = 'sections.cart.note_label' | t %}
     {% render "textarea", id: "{{ id }}", name: "note", label: label  %}
   </div>
 </cart-note>
+{% endif %}
 
 <div class="flex flex-col gap-8">
   <h2 class="ff-general-sans fw-400 fs-17-lh-24-ls-0">{{ 'customer.order.summary' | t }}</h2>
