@@ -102,16 +102,17 @@
         </div>
       {% endif %}
 
-      <div class="cart-drawer__footer flex flex-col gap-16">
+      <div class="cart-drawer__footer flex flex-col gap-16 pt-16">
         {% render "cart-summary", item: item, cart_note_id: "CartDrawer-Note" %}
 
         <div class="cart-drawer__cta flex gap-16 sm:flex-col">
-          <a href="{{ routes.root_url }}" class="button button--outline w-50pct sm:w-full h-48 flex items-center justify-center fs-16-lh-100pct-ls-0">
-            {{ 'sections.cart.continue_shopping' | t }}
-          </a>
-          <a href="{{ routes.cart_url }}" type="submit" class="button button--solid w-50pct sm:w-full h-48 flex justify-center items-center fs-16-lh-100pct-ls-0" name="add" form="cart" 
+          <a href="{{ routes.cart_url }}" type="submit" class="button button--outline w-50pct sm:w-full h-48 flex justify-center items-center fs-16-lh-100pct-ls-0" name="add" form="cart" 
             {% if cart == empty %}disabled{% endif %}>
             {{ 'sections.cart.view_cart' | t }}
+          </a>
+
+          <a href="/checkout" class="button button--solid w-50pct sm:w-full h-48 flex items-center justify-center fs-16-lh-100pct-ls-0">
+            {{ 'sections.cart.checkout' | t }}
           </a>
         </div>
       </div>
