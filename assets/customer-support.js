@@ -1,4 +1,12 @@
-document.addEventListener("DOMContentLoaded", async () => {
+let isSupportChatInitialized = false;
+let supportChatIntervalId = null;
+
+window.initializeSupportChat = async function () {
+  if (isSupportChatInitialized) {
+    return;
+  }
+  isSupportChatInitialized = true;
+
   const form = document.getElementById("support-form");
   const messageInput = document.getElementById("message-input");
   const sendButton = document.getElementById("send-button");
@@ -42,7 +50,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   form?.addEventListener("submit", async (e) => {
     e.preventDefault();
-
     const message = messageInput.value.trim();
     if (!message) return;
 
@@ -59,9 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         },
         body: JSON.stringify({ message }),
       });
-
       const data = await res.json();
-
       if (res.ok) {
         messageInput.value = "";
         await loadMessages();
@@ -79,42 +84,28 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function loadMessages() {
     if (!customerId) {
-      messagesContainer.innerHTML = `
-          <div class="empty-state">
-            <p>Please log in to view messages.</p>
-          </div>
-        `;
+      messagesContainer.innerHTML = `<div class="empty-state"><p>Please log in to view messages.</p></div>`;
       return;
     }
-
     try {
       loadingEl.innerHTML =
         '<spinner-component size="medium" color="primary"></spinner-component>';
       loadingEl.style.display = "block";
 
       const res = await fetch(apiUrl, {
-        headers: {
-          "X-Requested-With": "XMLHttpRequest",
-        },
+        headers: { "X-Requested-With": "XMLHttpRequest" },
       });
       const data = await res.json();
 
       if (res.ok) {
         loadingEl.style.display = "none";
-
         if (!data.messages || !data.messages.length) {
-          messagesContainer.innerHTML = `
-              <div class="empty-state">
-                <p class="fw-500 fs-14-lh-16-ls-0">No messages yet. Start a conversation with our support team!</p>
-              </div>
-            `;
+          messagesContainer.innerHTML = `<div class="empty-state"><p class="fw-500 fs-14-lh-16-ls-0">No messages yet. Start a conversation!</p></div>`;
           return;
         }
-
         document
           .querySelector("#unread-messages-count")
           .classList.add("hidden");
-
         const html = data.messages
           .map((msg) => {
             const isUser = msg.sender === "user";
@@ -124,39 +115,26 @@ document.addEventListener("DOMContentLoaded", async () => {
               : "support items-start";
             const messageBubbleClass = isUser ? "bg-brand-2" : "bg-light-gray";
             const formattedDate = formatDate(msg.created_at);
-
             return `
-                <div class="message ${messageClass} flex flex-col gap-8">
-                  <div class="message-info fw-400 fs-12-lh-16-ls-0_072 flex justify-between text-primary-label">
-                    <span>${senderName}</span>
-                    <span class="ml-8 mr-8">•</span>
-                    <span>${formattedDate}</span>
-                  </div>
-                  <div class="message-bubble ${messageBubbleClass} text-primary rounded-12 fw-500 fs-14-lh-20-ls-0_1 pt-12 pr-16 pb-12 pl-16">
-                    ${msg.message}
-                  </div>
+              <div class="message ${messageClass} flex flex-col gap-8">
+                <div class="message-info fw-400 fs-12-lh-16-ls-0_072 flex justify-between text-primary-label">
+                  <span>${senderName}</span><span class="ml-8 mr-8">•</span><span>${formattedDate}</span>
                 </div>
-              `;
+                <div class="message-bubble ${messageBubbleClass} text-primary rounded-12 fw-500 fs-14-lh-20-ls-0_1 pt-12 pr-16 pb-12 pl-16">${msg.message}</div>
+              </div>`;
           })
           .join("");
-
         messagesContainer.innerHTML = html;
         scrollToBottom();
       } else {
         loadingEl.style.display = "none";
-        messagesContainer.innerHTML = `
-            <div class="empty-state">
-              <p>${data.error || "Could not load messages."}</p>
-            </div>
-          `;
+        messagesContainer.innerHTML = `<div class="empty-state"><p>${
+          data.error || "Could not load messages."
+        }</p></div>`;
       }
     } catch (err) {
       loadingEl.style.display = "none";
-      messagesContainer.innerHTML = `
-          <div class="empty-state">
-            <p>Failed to load messages.<br>Please refresh the page.</p>
-          </div>
-        `;
+      messagesContainer.innerHTML = `<div class="empty-state"><p>Failed to load messages.<br>Please refresh the page.</p></div>`;
     }
   }
 
@@ -170,10 +148,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadMessages();
 
   if (customerId) {
-    setInterval(async () => {
+    supportChatIntervalId = setInterval(async () => {
       await loadMessages();
     }, 10000);
   }
 
   messageInput?.focus();
-});
+};
+
+window.stopSupportChatPolling = function () {
+  if (supportChatIntervalId) {
+    clearInterval(supportChatIntervalId);
+    supportChatIntervalId = null;
+  }
+};

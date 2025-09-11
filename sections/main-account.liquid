@@ -65,36 +65,32 @@
   let loadedSections = ['my-profile'];
   let deliveryStatusLoaded = false;
 
-  // Enhanced showAccountContent function with query parameter and URL path support
   async function showAccountContent(contentType) {
-    // Hide all content sections
+    if (contentType !== 'support' && typeof window.stopSupportChatPolling === 'function') {
+      window.stopSupportChatPolling();
+    }
+
     const contentSections = document.querySelectorAll('.account-content-section');
     contentSections.forEach((section) => {
       section.style.display = 'none';
     });
 
-    // Handle special cases that redirect to other pages
     if (contentType === 'logout') {
       window.location.href = '/account/logout';
       return;
     }
 
-    // Handle addresses - redirect to addresses page
     if (contentType === 'addresses') {
       window.location.href = '/account/addresses';
       return;
     }
 
-    // Handle coming soon sections
     if (contentType === 'coming-soon') {
-      // Fall back to my-profile
       contentType = 'my_profile';
     }
 
-    // Normalize contentType for content ID matching
     let targetContentType = contentType;
 
-    // Map content types to their corresponding content IDs
     const contentMapping = {
       'my-profile': 'my-profile',
       my_profile: 'my-profile',
@@ -109,12 +105,17 @@
 
     targetContentType = contentMapping[contentType] || 'my-profile';
 
-    // Show the target content section
+    if (targetContentType === 'support' && !loadedSections.includes('support')) {
+      if (typeof window.initializeSupportChat === 'function') {
+        window.initializeSupportChat();
+      }
+      loadedSections.push('support');
+    }
+
     const targetContent = document.getElementById(targetContentType + '-content');
     if (targetContent) {
       targetContent.style.display = 'block';
     } else {
-      // Fallback to my-profile if content section doesn't exist
       const profileContent = document.getElementById('my-profile-content');
       if (profileContent) {
         profileContent.style.display = 'block';
