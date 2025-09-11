@@ -555,11 +555,23 @@ class CartDrawer extends HTMLElement {
     });
   }
 
+  resetItemAnimations() {
+    const items = this.querySelectorAll(".cart-drawer__item");
+    items.forEach((item, index) => {
+      item.style.opacity = "";
+      item.style.transform = "";
+      item.style.transitionDelay = "";
+      item.offsetHeight;
+    });
+  }
+
   open() {
     this.classList.add("animate", "active");
     document.body.classList.add("overflow-hidden");
     this.style.visibility = "visible";
     this.style.opacity = "1";
+
+    this.resetItemAnimations();
   }
 
   close() {
