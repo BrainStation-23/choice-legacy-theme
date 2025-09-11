@@ -74,7 +74,7 @@
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8  flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        class="customer-account__sidebar-item gap-8  flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
         data-tab="my-beauties-profile"
         onclick="selectItem(this, 'brash-icon', '{{ 'customer.account.my_beauties_profile' | t }}', 'my_beauties_profile')"
       >
@@ -95,7 +95,7 @@
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
         data-tab="addresses"
         onclick="selectItem(this, 'address-icon', '{{ 'customer.account.addresses' | t }}', 'addresses')"
       >
@@ -106,7 +106,7 @@
       </div>
 
       <div
-        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
         data-tab="rewards"
         onclick="selectItem(this, 'reward-icon', '{{ 'customer.account.rewards' | t }}', 'rewards')"
       >
@@ -116,7 +116,7 @@
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
         data-tab="wishlist"
         onclick="selectItem(this, 'love-icon', '{{ 'customer.account.wishlist' | t }}', 'wishlist')"
       >
@@ -126,7 +126,17 @@
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
+        data-tab="support"
+        onclick="selectItem(this, 'icon-support', '{{ 'customer.account.support' | t }}', 'support')"
+      >
+        {% render 'icon-chat' %}
+        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500 text-primary-90pct m-0">
+          {{ 'customer.account.support' | t }} <span id="unread-messages-count"></span>
+        </h2>
+      </div>
+      <div
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
         data-tab="reviews"
         onclick="selectItem(this, 'star-icon', '{{ 'customer.account.reviews' | t }}', 'reviews')"
       >
@@ -136,7 +146,7 @@
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
         data-tab="logout"
         onclick="selectItem(this, 'logout-icon', '{{ 'customer.account.logout' | t }}', 'logout')"
       >

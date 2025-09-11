@@ -197,6 +197,7 @@
       "addresses": "Addresses",
       "rewards": "Rewards Points",
       "wishlist": "My Wishlist",
+      "support": "Customer Support",
       "reviews": "Reviews",
       "logout": "Logout",
       "date_of_birth": "Date of Birth",
@@ -296,6 +297,15 @@
       "delivered": "Delivered",
       "return-Request": "Return Request",
       "fulfillment-status": "Fulfillment Status"
+    },
+    "support": {
+      "title": "Customer Support",
+      "message": {
+        "button": {
+          "text": "Send",
+          "label": "Write a message"
+        }
+      }
     }
   },
   "general": {
