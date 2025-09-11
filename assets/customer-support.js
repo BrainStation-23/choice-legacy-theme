@@ -12,9 +12,10 @@ window.initializeSupportChat = async function () {
   const errorEl = document.getElementById("error-message");
   const messagesContainer = document.getElementById("messages-container");
   const loadingEl = document.getElementById("loading");
+  const chatContainer = document.querySelector(".chat-container");
 
   // Gracefully exit if the required elements aren't on the page
-  if (!messagesContainer || !loadingEl || !form) {
+  if (!messagesContainer || !loadingEl || !form || !chatContainer) {
     console.error("Support chat elements not found. Aborting initialization.");
     return;
   }
@@ -33,7 +34,9 @@ window.initializeSupportChat = async function () {
   }
 
   function scrollToBottom() {
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    requestAnimationFrame(() => {
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    });
   }
 
   function formatDate(dateString) {
