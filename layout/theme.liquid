@@ -113,16 +113,19 @@
           window.theme.profilePromise = fetch(`/apps/${APP_SUB_PATH}/customer/account/profile`)
             .then(response => response.json())
             .then(data => {
-               window.theme.rewardPointEnabled = data?.rewardPointEnabled ;
-               console.log('Reward Point Enabled:', window.theme.rewardPointEnabled);
-                     const rewardPointTab = document.querySelector('.customer-account__sidebar-item[data-tab="rewards"]');
-                     if (rewardPointTab) {
-                       if (window.theme.rewardPointEnabled) {
-                         rewardPointTab.style.display = 'flex';
-                       } else {
-                         rewardPointTab.style.display = 'none';
-                       }
-                     }
+              window.theme.rewardPointEnabled = data?.rewardPointEnabled;
+              if(data?.unreadSupportMessages > 0) {
+                document.querySelector("#unread-messages-count").innerHTML = data.unreadSupportMessages;
+                document.querySelector("#unread-messages-count").classList.remove("hidden");
+              }
+              const rewardPointTab = document.querySelector('.customer-account__sidebar-item[data-tab="rewards"]');
+              if (rewardPointTab) {
+                if (window.theme.rewardPointEnabled) {
+                  rewardPointTab.style.display = 'flex';
+                } else {
+                  rewardPointTab.style.display = 'none';
+                }
+              }
 
               if (data.success && data.wishlist && data.wishlist.products) {
                 const wishlistHandles = data.wishlist.products.map(product => product.productHandle);

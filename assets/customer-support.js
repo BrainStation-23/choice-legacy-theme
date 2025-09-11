@@ -111,6 +111,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           return;
         }
 
+        document
+          .querySelector("#unread-messages-count")
+          .classList.add("hidden");
+
         const html = data.messages
           .map((msg) => {
             const isUser = msg.sender === "user";

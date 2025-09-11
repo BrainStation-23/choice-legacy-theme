@@ -126,14 +126,17 @@
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
+        class="customer-account__sidebar-item gap-8 flex items-center justify-between pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
         data-tab="support"
         onclick="selectItem(this, 'icon-support', '{{ 'customer.account.support' | t }}', 'support')"
       >
-        {% render 'icon-chat' %}
-        <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500 text-primary-90pct m-0">
-          {{ 'customer.account.support' | t }} <span id="unread-messages-count"></span>
-        </h2>
+        <div class="flex flex-8 items-center">
+          {% render 'icon-chat' %}
+          <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500 text-primary-90pct m-0">
+            {{ 'customer.account.support' | t }}
+          </h2>
+        </div>
+        <span id="unread-messages-count" class="bg-brand hidden text-bg fw-400 fs-14-lh-20-ls-0 w-20 h-20 rounded-full flex justify-center items-center"></span>
       </div>
       <div
         class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
