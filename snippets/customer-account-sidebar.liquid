@@ -367,15 +367,4 @@
       arrow.classList.remove('expanded');
     }
   });
-
-  const rewardPointTab = document.querySelector('.customer-account__sidebar-item[data-tab="rewards"]');
-  if (rewardPointTab) {
-    const isRewardPointEnabled = window.theme.rewardPointEnabled;
-    console.log('Reward Point Enabled in Sidebar:', isRewardPointEnabled);
-    if (!isRewardPointEnabled) {
-      rewardPointTab.style.display = 'none';
-    } else {
-      rewardPointTab.style.display = 'flex';
-    }
-  }
 </script>

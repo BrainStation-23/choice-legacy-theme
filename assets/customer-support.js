@@ -5,7 +5,6 @@ window.initializeSupportChat = async function () {
   if (isSupportChatInitialized) {
     return;
   }
-  isSupportChatInitialized = true;
 
   const form = document.getElementById("support-form");
   const messageInput = document.getElementById("message-input");
@@ -14,7 +13,15 @@ window.initializeSupportChat = async function () {
   const messagesContainer = document.getElementById("messages-container");
   const loadingEl = document.getElementById("loading");
 
-  const customerId = messagesContainer?.dataset?.customerId;
+  // Gracefully exit if the required elements aren't on the page
+  if (!messagesContainer || !loadingEl || !form) {
+    console.error("Support chat elements not found. Aborting initialization.");
+    return;
+  }
+
+  isSupportChatInitialized = true;
+
+  const customerId = messagesContainer.dataset.customerId;
   const apiUrl = `/apps/${APP_SUB_PATH}/customer/customer-service-management/message`;
 
   function showMessage(element, message, isError = false) {
@@ -48,7 +55,7 @@ window.initializeSupportChat = async function () {
     }
   }
 
-  form?.addEventListener("submit", async (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
     const message = messageInput.value.trim();
     if (!message) return;
@@ -88,8 +95,6 @@ window.initializeSupportChat = async function () {
       return;
     }
     try {
-      loadingEl.innerHTML =
-        '<spinner-component size="medium" color="primary"></spinner-component>';
       loadingEl.style.display = "block";
 
       const res = await fetch(apiUrl, {
@@ -103,9 +108,9 @@ window.initializeSupportChat = async function () {
           messagesContainer.innerHTML = `<div class="empty-state"><p class="fw-500 fs-14-lh-16-ls-0">No messages yet. Start a conversation!</p></div>`;
           return;
         }
-        document
-          .querySelector("#unread-messages-count")
-          .classList.add("hidden");
+        const unreadCountEl = document.querySelector("#unread-messages-count");
+        if (unreadCountEl) unreadCountEl.classList.add("hidden");
+
         const html = data.messages
           .map((msg) => {
             const isUser = msg.sender === "user";
@@ -138,7 +143,7 @@ window.initializeSupportChat = async function () {
     }
   }
 
-  messageInput?.addEventListener("keydown", (e) => {
+  messageInput.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       form.dispatchEvent(new Event("submit"));
@@ -153,7 +158,7 @@ window.initializeSupportChat = async function () {
     }, 10000);
   }
 
-  messageInput?.focus();
+  messageInput.focus();
 };
 
 window.stopSupportChatPolling = function () {
