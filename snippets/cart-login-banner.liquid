@@ -1,0 +1,16 @@
+{% unless customer %}
+  <div class="bg-brand rounded-6 p-16 flex items-center justify-between gap-4">
+    <div class="flex flex-col gap-4">
+      <h3 class="fs-21-lh-24-ls-1_2pct fw-400 text-bg">
+        {{ 'cart.page.login_banner.heading' | t }}
+      </h3>
+      <p class="fs-14-lh-20-ls-0 fw-400 text-bg">
+        {{ 'cart.page.login_banner.subheading' | t }}
+      </p>
+    </div>
+    
+    <a href="{{ routes.account_login_url }}" class="button button--solid bg-bg text-brand rounded-6 no-underline h-32 pl-16 pr-16 flex items-center justify-center">
+      {{ 'cart.page.login_banner.cta' | t }}
+    </a>
+  </div>
+{% endunless %}

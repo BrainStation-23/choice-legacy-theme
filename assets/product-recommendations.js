@@ -7,7 +7,11 @@ if (!customElements.get("product-recommendations")) {
     }
 
     connectedCallback() {
-      this.initializeRecommendations(this.dataset.productId);
+      const productId = this.dataset.productId;
+
+      if (productId) {
+        this.initializeRecommendations(productId);
+      }
     }
 
     initializeRecommendations(productId) {
@@ -24,11 +28,14 @@ if (!customElements.get("product-recommendations")) {
     }
 
     loadRecommendations(productId) {
-      // Build URL like Dawn does - include section_id parameter
       const limit = this.dataset.limit || 4;
       const intent = this.dataset.intent || "related";
       const url = `${this.dataset.url}&product_id=${productId}&limit=${limit}&intent=${intent}&section_id=${this.dataset.sectionId}`;
 
+      this.fetchRecommendations(url);
+    }
+
+    fetchRecommendations(url) {
       fetch(url)
         .then((response) => response.text())
         .then((text) => {
@@ -57,6 +64,7 @@ if (!customElements.get("product-recommendations")) {
         })
         .catch((e) => {
           console.error("Error loading product recommendations:", e);
+          this.remove();
         });
     }
 

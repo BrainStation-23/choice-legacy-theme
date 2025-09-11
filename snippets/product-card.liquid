@@ -104,15 +104,17 @@
           {% if show_type and product.type != blank %}
             {% assign collection_handle = product.type | handleize %}
             {% assign collection_url = routes.collections_url | append: '/' | append: collection_handle %}
-            <a
-              href="{{ collection_url }}"
-              class="product-card__type-link relative z-3 no-underline text-inherit flex items-center"
-              onclick="event.stopPropagation();"
-            >
-              <p class="product-card__type rounded-100 pt-2 pr-8 pb-2 pl-8 cursor-pointer relative z-2 min-h-24 bg-brand-2 fw-500 fs-11-lh-11-ls--0_275 flex items-center">
-                {{ product.type }}
-              </p>
-            </a>
+            <div>
+               <a
+                href="{{ collection_url }}"
+                class="product-card__type-link relative z-3 no-underline text-inherit inline-block"
+                onclick="event.stopPropagation();"
+              >
+                <p class="product-card__type rounded-100 pt-2 pr-8 pb-2 pl-8 cursor-pointer relative z-2 min-h-24 bg-brand-2 fw-500 fs-11-lh-11-ls--0_275 flex items-center">
+                  {{ product.type }}
+                </p>
+              </a>
+            </div>
           {% endif %}
 
           <h3 class="product-card__title ff-general-sans fw-400 fs-14-lh-20-ls-0">{{ product.title }}</h3>
@@ -169,15 +171,17 @@
       <div class="flex flex-col gap-6">
         <div class="flex flex-col gap-4">
           {% if show_type %}
-            <a
-              href="#"
-              class="product-card__type-link relative z-3 no-underline text-inherit flex items-center"
-              onclick="event.stopPropagation();"
-            >
-              <p class="product-card__type rounded-100 pt-2 pr-8 pb-2 pl-8 cursor-pointer relative z-2 min-h-24 bg-brand-2 fw-500 fs-11-lh-11-ls--0_275 flex items-center">
-                {{ 'sections.product.placeholder.product_type' | t }}
-              </p>
-            </a>
+            <div>
+              <a
+                href="#"
+                class="product-card__type-link relative z-3 no-underline text-inherit inline-block"
+                onclick="event.stopPropagation();"
+              >
+                <p class="product-card__type rounded-100 pt-2 pr-8 pb-2 pl-8 cursor-pointer relative z-2 min-h-24 bg-brand-2 fw-500 fs-11-lh-11-ls--0_275 flex items-center">
+                  {{ 'sections.product.placeholder.product_type' | t }}
+                </p>
+              </a>
+            </div>
           {% endif %}
 
           <h3 class="product-card__title ff-general-sans fw-400 fs-14-lh-20-ls-0">

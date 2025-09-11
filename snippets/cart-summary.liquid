@@ -1,0 +1,49 @@
+{%- assign manual_total_savings = 0 -%}
+{%- for item in cart.items -%}
+  {%- if item.variant.compare_at_price and item.variant.compare_at_price > item.variant.price -%}
+    {%- assign single_item_saving = item.variant.compare_at_price | minus: item.variant.price -%}
+    {%- assign line_item_savings = single_item_saving | times: item.quantity -%}
+    {%- assign manual_total_savings = manual_total_savings | plus: line_item_savings -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{% if cart_page %}
+<cart-note class="cart-note">
+  <div class="cart-note__wrapper">
+    {% assign label = 'sections.cart.note_label' | t %}
+    {% render "textarea", id: "{{ id }}", name: "note", label: label  %}
+  </div>
+</cart-note>
+{% endif %}
+
+<div class="flex flex-col gap-8">
+  <h2 class="ff-general-sans fw-400 fs-17-lh-24-ls-0">{{ 'customer.order.summary' | t }}</h2>
+  
+  <div class="flex flex-col">
+    <div class="flex flex-col gap-8">
+      <div class="flex justify-between">
+        <h3 class="totals__subtotal ff-general-sans fs-14-lh-24-ls-0 fw-400 text-label">{{ 'customer.order.subtotal' | t }}</h3>
+        <p class="totals__subtotal-value fs-14-lh-20-ls-0_1 fw-400 text-secondary">৳{{ cart.total_price | money_without_currency }}</p>
+      </div>
+
+      {% if cart_page %}
+        <div class="flex justify-between">
+          <h3 class="totals__discount ff-general-sans fs-14-lh-24-ls-0 fw-400 text-label">{{ 'customer.order.discount_coupon' | t }}</h3>
+          <p class="totals__discount-value fs-14-lh-20-ls-0_1 fw-400 text-brand">৳{{ cart.total_discount | money_without_currency }}</p>
+        </div>
+      {% endif %}
+
+      {%- if manual_total_savings > 0 -%}
+        <div class="flex justify-between pb-12 border-top-none border-right-none border-left-none border-b border-solid border-color">
+          <h3 class="totals__discount ff-general-sans fs-14-lh-24-ls-0 fw-400 text-label">{{ 'customer.order.discount' | t }}</h3>
+          <p class="totals__discount-value fs-14-lh-20-ls-0_1 fw-400 text-brand">৳{{ manual_total_savings | money_without_currency }}</p>
+        </div>
+      {%- endif -%}
+    </div>
+
+    <div class="flex justify-between pt-8 pb-8">
+      <h3 class="grand-total ff-general-sans fw-400 fs-17-lh-24-ls-0">{{ 'customer.order.grand_total' | t }}</h3>
+      <p class="grand-total-value fs-17-lh-24-ls-0 fw-400">৳{{ cart.original_total_price | money_without_currency }}</p>
+    </div>
+  </div>
+</div>

@@ -289,6 +289,56 @@
     }
   }
 
+  function isHeaderVisible() {
+  const header = document.querySelector('.header');
+  if (!header) return false;
+  
+  const headerRect = header.getBoundingClientRect();
+  return headerRect.bottom > 0;
+}
+
+function updateCartDrawerPosition() {
+  const cartDrawer = document.getElementById('cart-drawer');
+  if (!cartDrawer) return;
+  
+  if (isHeaderVisible()) {
+    cartDrawer.style.setProperty('top', 'var(--header-height, 75px)', 'important');
+    cartDrawer.style.setProperty('height', 'calc(100vh - var(--header-height, 75px))', 'important');
+  } else {
+    cartDrawer.style.setProperty('top', '0', 'important');
+    cartDrawer.style.setProperty('height', '100vh', 'important');
+  }
+}
+
+const observer = new MutationObserver(function(mutations) {
+  mutations.forEach(function(mutation) {
+    if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+      const cartDrawer = mutation.target;
+      if (cartDrawer.id === 'cart-drawer' && cartDrawer.classList.contains('active')) {
+        updateCartDrawerPosition();
+      }
+    }
+  });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const cartDrawer = document.getElementById('cart-drawer');
+  if (cartDrawer) {
+    observer.observe(cartDrawer, { attributes: true, attributeFilter: ['class'] });
+  }
+});
+
+let scrollTimeout;
+window.addEventListener('scroll', function() {
+  clearTimeout(scrollTimeout);
+  scrollTimeout = setTimeout(function() {
+    const cartDrawer = document.getElementById('cart-drawer');
+    if (cartDrawer && cartDrawer.classList.contains('active')) {
+      updateCartDrawerPosition();
+    }
+  }, 10);
+});
+
   // Mobile menu functionality
   function toggleMobileMenu() {
     const mobileMenu = document.getElementById('mobileMegaMenu');
