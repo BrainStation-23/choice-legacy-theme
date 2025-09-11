@@ -122,6 +122,12 @@ if (!customElements.get("facet-filters")) {
     handleFilterChange(evt) {
       console.log("Filter change event:", evt.type, evt.target);
 
+      // Show spinner immediately for any filter interaction
+      const spinner = document.getElementById("filtering-spinner");
+      if (spinner) {
+        spinner.classList.remove("hidden");
+      }
+
       // Handle checkbox changes immediately
       if (evt.target.type === "checkbox") {
         console.log("Processing checkbox change immediately");
@@ -130,8 +136,14 @@ if (!customElements.get("facet-filters")) {
       }
 
       // Only allow price 'change' events with delay
-      if (evt.type === "change" && !(evt.target.id?.includes("price-range") || evt.target.id?.includes("sort-by")))
+      if (evt.type === "change" && !(evt.target.id?.includes("price-range") || evt.target.id?.includes("sort-by"))) {
+        // Hide spinner if we're not processing this event
+        const spinner = document.getElementById("filtering-spinner");
+        if (spinner) {
+          spinner.classList.add("hidden");
+        }
         return;
+      }
 
       // Don't reload when typing a price
       if (evt.target.id?.includes("price-range") && evt.constructor.name === "InputEvent") return;
@@ -178,6 +190,10 @@ if (!customElements.get("facet-filters")) {
         }
       }
 
+      // Remove pagination parameters when applying filters (should reset to page 1)
+      searchParams.delete("page");
+      searchParams.delete("phcursor");
+
       // Get empty parameters.
       searchParams.forEach((value, key) => {
         if (!value) emptyParams.push(key);
@@ -202,6 +218,13 @@ if (!customElements.get("facet-filters")) {
       // Filter 'clear' button clicked.
       if (target.matches(".js-clear-filter")) {
         evt.preventDefault();
+
+        // Show spinner when clearing filters
+        const spinner = document.getElementById("filtering-spinner");
+        if (spinner) {
+          spinner.classList.remove("hidden");
+        }
+
         this.applyFilters(new URL(evt.target.href).searchParams.toString(), evt);
       }
 
@@ -227,6 +250,13 @@ if (!customElements.get("facet-filters")) {
     handleActiveFiltersClick(evt) {
       if (evt.target.tagName !== "A") return;
       evt.preventDefault();
+
+      // Show spinner when removing active filters
+      const spinner = document.getElementById("filtering-spinner");
+      if (spinner) {
+        spinner.classList.remove("hidden");
+      }
+
       this.applyFilters(new URL(evt.target.href).searchParams.toString(), evt);
     }
 
@@ -344,6 +374,16 @@ if (!customElements.get("facet-filters")) {
             this.results.innerHTML = newResults.innerHTML;
           }
 
+          // Update pagination if it exists
+          const currentPaginationContainer = document.querySelector(".pagination-container");
+          const newPaginationContainer = tmpl.content.querySelector(".pagination-container");
+          if (currentPaginationContainer && newPaginationContainer) {
+            currentPaginationContainer.innerHTML = newPaginationContainer.innerHTML;
+          } else if (currentPaginationContainer && !newPaginationContainer) {
+            // Hide pagination if no pages
+            currentPaginationContainer.style.display = "none";
+          }
+
           // Set the CSS class of the results to what it was
           const newResultsContainer = this.results.querySelector('[role="list"]');
           if (newResultsContainer && this.currentResultsClass) {
@@ -403,6 +443,12 @@ if (!customElements.get("facet-filters")) {
       } finally {
         if (this.results) {
           this.results.classList.remove("is-loading");
+        }
+
+        // Hide spinner when filtering is complete
+        const spinner = document.getElementById("filtering-spinner");
+        if (spinner) {
+          spinner.classList.add("hidden");
         }
       }
     }

@@ -139,9 +139,11 @@
             {%- endif -%}
           </div>
 
-          {%- if paginate.pages > 1 -%}
-            {% render 'pagination', paginate: paginate, class: 'pt-0 justify-end' %}
-          {%- endif -%}
+          <div class="pagination-container">
+            {%- if paginate.pages > 1 -%}
+              {% render 'pagination', paginate: paginate, class: 'pt-0 justify-end' %}
+            {%- endif -%}
+          </div>
         </div>
       </div>
     {%- endpaginate -%}

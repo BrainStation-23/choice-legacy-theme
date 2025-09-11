@@ -8,15 +8,17 @@
 {%- endcomment -%}
 
 {%- liquid
-  assign sort_by = results.sort_by | default: results.default_sort_by
+  assign sort_by = results.sort_by
   assign current_sort_name = 'products.sorting.sort_by_label' | t
 
-  for option in results.sort_options
-    if option.value == sort_by
-      assign current_sort_name = option.name
-      break
-    endif
-  endfor
+  if sort_by and sort_by != blank
+    for option in results.sort_options
+      if option.value == sort_by
+        assign current_sort_name = option.name
+        break
+      endif
+    endfor
+  endif
 -%}
 
 <style>
@@ -59,9 +61,13 @@
     backdrop-filter: blur(3px);
     transition: all 0.3s ease-in-out;
   }
+  .disclosure__toggle svg {
+    height: 36px !important;
+    width: 36px !important;
+  }
 </style>
 
-<details-disclosure class="md:hidden no-js-visible">
+<details-disclosure m-0 ff-bebas-neue fs-36-lh-40-ls-0 fw-400 class="md:hidden no-js-visible max-w-180  h-40">
   <details
     class="filter disclosure"
     id="filter-sort"
@@ -79,7 +85,7 @@
       </span>
     </summary>
 
-    <div class="disclosure__panel has-motion absolute z-9999 w-full max-w-240 bg-bg rounded-6 pt-8 pb-8 pl-0 pr-0 box-shadow">
+    <div class="disclosure__panel has-motion absolute z-9999  max-w-340 w-full bg-bg rounded-6 pl-0 pr-0 box-shadow">
       <div>
         <div class="sort__content flex flex-col gap-8 p-16">
           <div class="flex items-center justify-between">
@@ -95,7 +101,7 @@
               {%- unless option.value == 'manual' and section.settings.show_feat_sort_opt == false -%}
                 {%- liquid
                   assign is_checked = false
-                  if option.value == sort_by
+                  if sort_by and sort_by != blank and option.value == sort_by
                     assign is_checked = true
                   endif
                 -%}
@@ -174,9 +180,11 @@
         // Close dropdown
         sortDetails.removeAttribute('open');
 
-        // Clear sort by removing sort_by parameter
+        // Clear sort by removing sort_by parameter and reset to page 1
         const urlObj = new URL(window.location.href);
         urlObj.searchParams.delete('sort_by');
+        urlObj.searchParams.delete('page');
+        urlObj.searchParams.delete('phcursor');
         window.location.href = urlObj.toString();
       });
     }
@@ -219,6 +227,9 @@
         } else {
           const urlObj = new URL(window.location.href);
           urlObj.searchParams.set('sort_by', value);
+          // Reset to page 1 when sorting
+          urlObj.searchParams.delete('page');
+          urlObj.searchParams.delete('phcursor');
           urlObj.hash = 'products-toolbar';
           window.location.href = urlObj.toString();
         }
