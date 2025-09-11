@@ -413,7 +413,7 @@
         .querySelector('#phone-field .ff-general-sans.fs-14-lh-16-ls-0.fw-500')
         .textContent.trim();
 
-      const response = await fetch(`/apps/${APP_SUB_PATH}/customer/account/email-change-send-otp`, {
+      const response = await fetch(`/apps/${APP_SUB_PATH}/customer/account/email-send-otp`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

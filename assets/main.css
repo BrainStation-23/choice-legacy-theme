@@ -2071,6 +2071,9 @@ address {
   .sm\:gap-16 {
     gap: calc(16 * var(--space-unit));
   }
+  .sm\:gap-20 {
+    gap: calc(20 * var(--space-unit));
+  }
   .sm\:gap-24 {
     gap: calc(24 * var(--space-unit));
   }
