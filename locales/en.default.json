@@ -272,7 +272,7 @@
       "sku": "SKU",
       "price": "Price",
       "discount": "Discount",
-      "discount_coupon": "Discount coupon",
+      "discount_coupon": "Coupon discount",
       "fulfilled_at": "Fulfilled At",
       "track_shipment": "Track Shipment",
       "subtotal": "Subtotal",

@@ -8,14 +8,9 @@ if (!customElements.get("product-recommendations")) {
 
     connectedCallback() {
       const productId = this.dataset.productId;
-      const productIds = this.dataset.productIds;
 
       if (productId) {
         this.initializeRecommendations(productId);
-      } else if (productIds) {
-        // For cart page, use the first product as seed
-        const firstProductId = productIds.split(",")[0];
-        this.initializeRecommendations(firstProductId);
       }
     }
 

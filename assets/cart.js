@@ -140,6 +140,8 @@ class ProductForm extends HTMLElement {
     super();
     this.form = this.querySelector("form");
     this.submitButton = this.querySelector('[type="submit"]');
+    this.submitButtonText = this.submitButton.querySelector(".button__text");
+    this.spinner = this.submitButton.querySelector("spinner-component");
     this.cart =
       document.querySelector("cart-drawer") || this.createCartDrawer();
     if (this.form) {
@@ -161,7 +163,8 @@ class ProductForm extends HTMLElement {
 
     this.handleErrorMessage();
     this.submitButton.setAttribute("aria-disabled", true);
-    this.submitButton.classList.add("loading");
+    this.submitButtonText.hidden = true;
+    this.spinner.hidden = false;
 
     const formData = new FormData(this.form);
     const config = {
@@ -178,7 +181,6 @@ class ProductForm extends HTMLElement {
       .then((response) => {
         this.cart.open();
 
-        // Handle errors field from API response
         if (response.status || response.errors) {
           const errorMessage =
             response.description || response.message || response.errors;
@@ -189,19 +191,18 @@ class ProductForm extends HTMLElement {
 
         this.updateCartCount();
         this.cart.refresh();
-        this.showAddedToCartFeedback();
       })
       .catch((e) => {
         console.error("Fetch error:", e);
         const errorMessage = "An error occurred. Please try again.";
-
         this.cart.open();
         this.cart.showError(errorMessage);
         this.handleErrorMessage(errorMessage);
       })
       .finally(() => {
         this.submitButton.removeAttribute("aria-disabled");
-        this.submitButton.classList.remove("loading");
+        this.submitButtonText.hidden = false;
+        this.spinner.hidden = true;
       });
   }
 
@@ -217,15 +218,6 @@ class ProductForm extends HTMLElement {
         });
       })
       .catch((e) => console.error("Error updating cart count:", e));
-  }
-
-  showAddedToCartFeedback() {
-    const originalText = this.submitButton.textContent;
-    this.submitButton.textContent =
-      this.submitButton.dataset.addedText || "Added to cart";
-    setTimeout(() => {
-      this.submitButton.textContent = originalText;
-    }, 2000);
   }
 
   handleErrorMessage(errorMessage = false) {
@@ -563,11 +555,23 @@ class CartDrawer extends HTMLElement {
     });
   }
 
+  resetItemAnimations() {
+    const items = this.querySelectorAll(".cart-drawer__item");
+    items.forEach((item, index) => {
+      item.style.opacity = "";
+      item.style.transform = "";
+      item.style.transitionDelay = "";
+      item.offsetHeight;
+    });
+  }
+
   open() {
     this.classList.add("animate", "active");
     document.body.classList.add("overflow-hidden");
     this.style.visibility = "visible";
     this.style.opacity = "1";
+
+    this.resetItemAnimations();
   }
 
   close() {
