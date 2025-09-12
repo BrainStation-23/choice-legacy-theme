@@ -65,6 +65,7 @@
 <script>
   let loadedSections = ['my-profile'];
   let deliveryStatusLoaded = false;
+  let unreadMessageInterval = null;
 
   async function showAccountContent(contentType) {
     if (contentType !== 'support' && typeof window.stopSupportChatPolling === 'function') {
@@ -152,11 +153,40 @@
 
   window.showAccountContent = showAccountContent;
 
+  async function fetchAndUpdateUnreadCount() {
+    try {
+      const unreadMessagesResponse = await fetch(`/apps/${APP_SUB_PATH}/customer/customer-service-management/unread-messages-count`);
+      if (!unreadMessagesResponse.ok) {
+        throw new Error('Failed to fetch unread messages count');
+      }
+      const unreadMessagesData = await unreadMessagesResponse.json();
+      
+      const unreadCountElement = document.querySelector("#unread-messages-count");
+      if (unreadCountElement) {
+        if (unreadMessagesData.success && unreadMessagesData.unreadCount > 0) {
+          unreadCountElement.textContent = unreadMessagesData.unreadCount;
+          unreadCountElement.classList.remove("hidden");
+        } else {
+          unreadCountElement.classList.add("hidden");
+        }
+      }
+    } catch (error) {
+      console.error('Error fetching unread messages count:', error);
+      if (unreadMessageInterval) {
+        clearInterval(unreadMessageInterval);
+      }
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', async () => {
     initializePageContent();
     window.addEventListener('popstate', handlePopState);
 
     if (!window.customerLoggedIn) return;
+
+    await fetchAndUpdateUnreadCount();
+
+    unreadMessageInterval = setInterval(fetchAndUpdateUnreadCount, 10000);
 
     const wishlistStorageKey = 'customerWishlist';
     
@@ -175,7 +205,6 @@
       const productHandles = wishlistData?.wishlist?.products.map(p => p.productHandle) || [];
       window.theme.wishlistHandles = new Set(productHandles);
 
-      // DIRECTLY CALL THE WISHLIST DISPLAY FUNCTION
       if (typeof window.initializeWishlistPage === 'function') {
         window.initializeWishlistPage(Array.from(window.theme.wishlistHandles));
       } else {
@@ -184,10 +213,15 @@
 
     } catch (error) {
       console.error('Failed to prepare wishlist on account page:', error);
-      // Still try to call the display function to at least hide the loader
       if (typeof window.initializeWishlistPage === 'function') {
         window.initializeWishlistPage([]);
       }
+    }
+  });
+
+  window.addEventListener('beforeunload', () => {
+    if (unreadMessageInterval) {
+      clearInterval(unreadMessageInterval);
     }
   });
 </script>

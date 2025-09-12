@@ -115,13 +115,6 @@
             .then(data => {
               if (!data) return;
               window.theme.rewardPointEnabled = data.rewardPointEnabled;
-              if (data.unreadSupportMessages > 0) {
-                const unreadCount = document.querySelector("#unread-messages-count");
-                if (unreadCount) {
-                  unreadCount.innerHTML = data.unreadSupportMessages;
-                  unreadCount.classList.remove("hidden");
-                }
-              }
               const rewardPointTab = document.querySelector('.customer-account__sidebar-item[data-tab="rewards"]');
               if (rewardPointTab) {
                 rewardPointTab.style.display = data.rewardPointEnabled ? 'flex' : 'none';
