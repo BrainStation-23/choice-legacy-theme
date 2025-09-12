@@ -5,6 +5,34 @@ function getProductIdFromHandle(productHandle) {
   return productDetails?.id || null;
 }
 
+function updateLocalStorageWishlist(productHandle, action) {
+  const wishlistStorageKey = "customerWishlist";
+  const storedWishlistJSON = localStorage.getItem(wishlistStorageKey);
+  if (!storedWishlistJSON) return;
+
+  try {
+    const wishlistData = JSON.parse(storedWishlistJSON);
+    const products = wishlistData?.wishlist?.products || [];
+    const productIndex = products.findIndex(
+      (p) => p.productHandle === productHandle
+    );
+
+    if (action === "add" && productIndex === -1) {
+      const productId = getProductIdFromHandle(productHandle);
+      if (productId) {
+        products.push({ productHandle, productId });
+      }
+    } else if (action === "remove" && productIndex > -1) {
+      products.splice(productIndex, 1);
+    }
+
+    wishlistData.wishlist.products = products;
+    localStorage.setItem(wishlistStorageKey, JSON.stringify(wishlistData));
+  } catch (e) {
+    console.error("Could not update local storage wishlist:", e);
+  }
+}
+
 async function addToWishlist(productHandle, productId) {
   const response = await fetch(`/apps/${APP_SUB_PATH}/customer/wishlist/add`, {
     method: "POST",
@@ -165,6 +193,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const result = await addToWishlist(productHandle, productId);
         if (result && (result.success || result.alreadyExists)) {
           window.theme.wishlistHandles.add(productHandle);
+          updateLocalStorageWishlist(productHandle, "add");
 
           const lineIndex = getCartItemLineIndex(button);
           if (lineIndex) {
@@ -183,22 +212,21 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         }
       } else {
-        // Normal wishlist behavior outside cart drawer
         if (window.theme.wishlistHandles.has(productHandle)) {
-          // Product is already in wishlist, remove from wishlist
           const result = await removeFromWishlist(productHandle, productId);
           if (result && result.success) {
             window.theme.wishlistHandles.delete(productHandle);
+            updateLocalStorageWishlist(productHandle, "remove");
             wishlistToastManager.show(
               "Product removed from wishlist",
               "success"
             );
           }
         } else {
-          // Product is not in wishlist, add to wishlist
           const result = await addToWishlist(productHandle, productId);
           if (result && (result.success || result.alreadyExists)) {
             window.theme.wishlistHandles.add(productHandle);
+            updateLocalStorageWishlist(productHandle, "add");
           }
         }
       }

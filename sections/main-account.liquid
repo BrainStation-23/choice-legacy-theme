@@ -69,28 +69,22 @@
     if (contentType !== 'support' && typeof window.stopSupportChatPolling === 'function') {
       window.stopSupportChatPolling();
     }
-
     const contentSections = document.querySelectorAll('.account-content-section');
     contentSections.forEach((section) => {
       section.style.display = 'none';
     });
-
     if (contentType === 'logout') {
       window.location.href = '/account/logout';
       return;
     }
-
     if (contentType === 'addresses') {
       window.location.href = '/account/addresses';
       return;
     }
-
     if (contentType === 'coming-soon') {
       contentType = 'my_profile';
     }
-
     let targetContentType = contentType;
-
     const contentMapping = {
       'my-profile': 'my-profile',
       my_profile: 'my-profile',
@@ -102,16 +96,13 @@
       support: 'support',
       reviews: 'reviews',
     };
-
     targetContentType = contentMapping[contentType] || 'my-profile';
-
     if (targetContentType === 'support' && !loadedSections.includes('support')) {
       if (typeof window.initializeSupportChat === 'function') {
         window.initializeSupportChat();
       }
       loadedSections.push('support');
     }
-
     const targetContent = document.getElementById(targetContentType + '-content');
     if (targetContent) {
       targetContent.style.display = 'block';
@@ -123,13 +114,10 @@
     }
   }
 
-  // Get initial content type from URL parameters and path
   function getInitialContentType() {
     const currentPath = window.location.pathname;
     const urlParams = new URLSearchParams(window.location.search);
     const navParam = urlParams.get('nav');
-
-    // Check URL path for sub-pages first (highest priority)
     if (currentPath.includes('/account/orders')) {
       return 'orders';
     }
@@ -139,47 +127,57 @@
     if (currentPath.includes('/account/rewards')) {
       return 'rewards';
     }
-
-    // Then check query parameter
     if (navParam) {
       return navParam;
     }
-
-    // Check for legacy hash-based navigation
     if (window.location.hash === '#orders-section') {
       return 'orders';
     }
-
-    // Check for pagination (legacy orders page detection)
     if (window.location.search.includes('page=')) {
       return 'orders';
     }
-
-    // Return default
     return 'my_profile';
   }
 
-  // Initialize page content based on URL parameters
   function initializePageContent() {
     const initialContentType = getInitialContentType();
     showAccountContent(initialContentType);
   }
 
-  // Handle browser back/forward navigation
   function handlePopState() {
     const contentType = getInitialContentType();
     showAccountContent(contentType);
   }
 
-  // Make showAccountContent globally available
   window.showAccountContent = showAccountContent;
 
-  // Initialize when DOM is ready
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', async () => {
     initializePageContent();
-
-    // Listen for browser navigation events
     window.addEventListener('popstate', handlePopState);
+
+    if (!window.customerLoggedIn) return;
+
+    try {
+      const response = await fetch(`/apps/${APP_SUB_PATH}/customer/wishlist/fetch`);
+      if (!response.ok) throw new Error('API response was not ok.');
+      
+      const wishlistData = await response.json();
+
+      localStorage.setItem('customerWishlist', JSON.stringify(wishlistData));
+
+      const productHandles = wishlistData?.wishlist?.products.map(p => p.productHandle) || [];
+      window.theme.wishlistHandles = new Set(productHandles);
+
+      document.dispatchEvent(new CustomEvent('wishlistRefreshed', {
+        detail: { handles: Array.from(window.theme.wishlistHandles) }
+      }));
+
+    } catch (error) {
+      console.error('Failed to refresh wishlist on account page:', error);
+      document.dispatchEvent(new CustomEvent('wishlistRefreshed', {
+        detail: { handles: Array.from(window.theme.wishlistHandles || []) }
+      }));
+    }
   });
 </script>
 
