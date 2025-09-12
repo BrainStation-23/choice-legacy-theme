@@ -158,7 +158,7 @@ window.initializeSupportChat = async function () {
   if (customerId) {
     supportChatIntervalId = setInterval(async () => {
       await loadMessages();
-    }, 10000);
+    }, 600000);
   }
 
   messageInput.focus();
