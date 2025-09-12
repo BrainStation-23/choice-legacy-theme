@@ -4,11 +4,12 @@
   <div class="chat-container border border-solid border-color rounded-6 p-32 h-512 flex flex-col overflow-y-auto scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover">
     <div id="error-message" class="error-message"></div>
 
-    <div id="messages-container" class="messages-container flex flex-col gap-8" data-customer-id="{{ customer.id }}">
-      <div id="loading" class="loading" style="text-align: center; padding: 2.5rem 0;">
-        <spinner-component size="medium" color="primary"></spinner-component>
-      </div>
+    <div id="loading" class="loading" style="text-align: center; padding: 2.5rem 0; display: none;">
+      <spinner-component size="medium" color="primary"></spinner-component>
     </div>
+
+    <div id="messages-container" class="messages-container flex flex-col gap-8" data-customer-id="{{ customer.id }}">
+      </div>
   </div>
 
   <form id="support-form" class="message-input-container flex gap-24">

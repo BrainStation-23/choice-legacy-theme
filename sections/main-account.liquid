@@ -63,18 +63,14 @@
 <script src="{{ 'wishlist.js' | asset_url }}" defer></script>
 
 <script>
-  let loadedSections = ['my-profile'];
+  let loadedSections = [];
   let deliveryStatusLoaded = false;
   let unreadMessageInterval = null;
 
   async function showAccountContent(contentType) {
-    if (contentType !== 'support' && typeof window.stopSupportChatPolling === 'function') {
-      window.stopSupportChatPolling();
-    }
     const contentSections = document.querySelectorAll('.account-content-section');
-    contentSections.forEach((section) => {
-      section.style.display = 'none';
-    });
+    contentSections.forEach((section) => section.style.display = 'none');
+    
     if (contentType === 'logout') {
       window.location.href = '/account/logout';
       return;
@@ -83,36 +79,29 @@
       window.location.href = '/account/addresses';
       return;
     }
-    if (contentType === 'coming-soon') {
-      contentType = 'my_profile';
-    }
-    let targetContentType = contentType;
+    if (contentType === 'coming-soon') contentType = 'my_profile';
+
     const contentMapping = {
-      'my-profile': 'my-profile',
-      my_profile: 'my-profile',
-      my_beauties_profile: 'my_beauties_profile',
-      orders: 'orders',
-      addresses: 'addresses',
-      rewards: 'rewards',
-      wishlist: 'wishlist',
-      support: 'support',
-      reviews: 'reviews',
+      'my-profile': 'my-profile', my_profile: 'my-profile', my_beauties_profile: 'my_beauties_profile',
+      orders: 'orders', addresses: 'addresses', rewards: 'rewards',
+      wishlist: 'wishlist', support: 'support', reviews: 'reviews',
     };
-    targetContentType = contentMapping[contentType] || 'my-profile';
-    if (targetContentType === 'support' && !loadedSections.includes('support')) {
+    
+    const targetContentType = contentMapping[contentType] || 'my-profile';
+    
+    document.body.dataset.activeTab = targetContentType;
+
+    if (targetContentType === 'support') {
       if (typeof window.initializeSupportChat === 'function') {
         window.initializeSupportChat();
       }
-      loadedSections.push('support');
     }
+    
     const targetContent = document.getElementById(targetContentType + '-content');
     if (targetContent) {
       targetContent.style.display = 'block';
     } else {
-      const profileContent = document.getElementById('my-profile-content');
-      if (profileContent) {
-        profileContent.style.display = 'block';
-      }
+      document.getElementById('my-profile-content').style.display = 'block';
     }
   }
 
@@ -120,24 +109,12 @@
     const currentPath = window.location.pathname;
     const urlParams = new URLSearchParams(window.location.search);
     const navParam = urlParams.get('nav');
-    if (currentPath.includes('/account/orders')) {
-      return 'orders';
-    }
-    if (currentPath.includes('/account/addresses')) {
-      return 'addresses';
-    }
-    if (currentPath.includes('/account/rewards')) {
-      return 'rewards';
-    }
-    if (navParam) {
-      return navParam;
-    }
-    if (window.location.hash === '#orders-section') {
-      return 'orders';
-    }
-    if (window.location.search.includes('page=')) {
-      return 'orders';
-    }
+    if (currentPath.includes('/account/orders')) return 'orders';
+    if (currentPath.includes('/account/addresses')) return 'addresses';
+    if (currentPath.includes('/account/rewards')) return 'rewards';
+    if (navParam) return navParam;
+    if (window.location.hash === '#orders-section') return 'orders';
+    if (window.location.search.includes('page=')) return 'orders';
     return 'my_profile';
   }
 
@@ -153,41 +130,42 @@
 
   window.showAccountContent = showAccountContent;
 
-  async function fetchAndUpdateUnreadCount() {
+  async function fetchAndStoreUnreadCount() {
     try {
       const unreadMessagesResponse = await fetch(`/apps/${APP_SUB_PATH}/customer/customer-service-management/unread-messages-count`);
-      if (!unreadMessagesResponse.ok) {
-        throw new Error('Failed to fetch unread messages count');
-      }
+      if (!unreadMessagesResponse.ok) throw new Error('Failed to fetch count');
+
       const unreadMessagesData = await unreadMessagesResponse.json();
-      
       const unreadCountElement = document.querySelector("#unread-messages-count");
-      if (unreadCountElement) {
-        if (unreadMessagesData.success && unreadMessagesData.unreadCount > 0) {
-          unreadCountElement.textContent = unreadMessagesData.unreadCount;
+      let count = 0;
+
+      if (unreadMessagesData.success && unreadMessagesData.unreadCount > 0) {
+        count = unreadMessagesData.unreadCount;
+        if (unreadCountElement) {
+          unreadCountElement.textContent = count;
           unreadCountElement.classList.remove("hidden");
-        } else {
-          unreadCountElement.classList.add("hidden");
         }
+      } else {
+        if (unreadCountElement) unreadCountElement.classList.add("hidden");
       }
+      
+      document.body.dataset.unreadMessages = count;
+
     } catch (error) {
       console.error('Error fetching unread messages count:', error);
-      if (unreadMessageInterval) {
-        clearInterval(unreadMessageInterval);
-      }
+      if (unreadMessageInterval) clearInterval(unreadMessageInterval);
     }
   }
 
   document.addEventListener('DOMContentLoaded', async () => {
     initializePageContent();
     window.addEventListener('popstate', handlePopState);
-
     if (!window.customerLoggedIn) return;
 
-    await fetchAndUpdateUnreadCount();
+    await fetchAndStoreUnreadCount();
+    unreadMessageInterval = setInterval(fetchAndStoreUnreadCount, 10000);
 
-    unreadMessageInterval = setInterval(fetchAndUpdateUnreadCount, 10000);
-
+    // --- WISHLIST LOGIC RESTORED ---
     const wishlistStorageKey = 'customerWishlist';
     
     try {
@@ -220,9 +198,7 @@
   });
 
   window.addEventListener('beforeunload', () => {
-    if (unreadMessageInterval) {
-      clearInterval(unreadMessageInterval);
-    }
+    if (unreadMessageInterval) clearInterval(unreadMessageInterval);
   });
 </script>
 
