@@ -60,6 +60,7 @@
 </div>
 
 <script src="{{ 'pagination.js' | asset_url }}" defer></script>
+<script src="{{ 'wishlist.js' | asset_url }}" defer></script>
 
 <script>
   let loadedSections = ['my-profile'];
@@ -157,26 +158,36 @@
 
     if (!window.customerLoggedIn) return;
 
+    const wishlistStorageKey = 'customerWishlist';
+    
     try {
-      const response = await fetch(`/apps/${APP_SUB_PATH}/customer/wishlist/fetch`);
-      if (!response.ok) throw new Error('API response was not ok.');
-      
-      const wishlistData = await response.json();
+      const storedWishlistJSON = localStorage.getItem(wishlistStorageKey);
+      let wishlistData = storedWishlistJSON ? JSON.parse(storedWishlistJSON) : null;
 
-      localStorage.setItem('customerWishlist', JSON.stringify(wishlistData));
+      if (!wishlistData || !wishlistData.wishlist || wishlistData.wishlist.products.length === 0) {
+        const response = await fetch(`/apps/${APP_SUB_PATH}/customer/wishlist/fetch`);
+        if (!response.ok) throw new Error('API response was not ok.');
+        
+        wishlistData = await response.json();
+        localStorage.setItem(wishlistStorageKey, JSON.stringify(wishlistData));
+      }
 
       const productHandles = wishlistData?.wishlist?.products.map(p => p.productHandle) || [];
       window.theme.wishlistHandles = new Set(productHandles);
 
-      document.dispatchEvent(new CustomEvent('wishlistRefreshed', {
-        detail: { handles: Array.from(window.theme.wishlistHandles) }
-      }));
+      // DIRECTLY CALL THE WISHLIST DISPLAY FUNCTION
+      if (typeof window.initializeWishlistPage === 'function') {
+        window.initializeWishlistPage(Array.from(window.theme.wishlistHandles));
+      } else {
+        console.error('Wishlist display function not found. Check if wishlist.js is loaded.');
+      }
 
     } catch (error) {
-      console.error('Failed to refresh wishlist on account page:', error);
-      document.dispatchEvent(new CustomEvent('wishlistRefreshed', {
-        detail: { handles: Array.from(window.theme.wishlistHandles || []) }
-      }));
+      console.error('Failed to prepare wishlist on account page:', error);
+      // Still try to call the display function to at least hide the loader
+      if (typeof window.initializeWishlistPage === 'function') {
+        window.initializeWishlistPage([]);
+      }
     }
   });
 </script>

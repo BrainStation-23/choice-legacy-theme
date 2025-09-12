@@ -5,33 +5,19 @@ function getProductIdFromHandle(productHandle) {
   return productDetails?.id || null;
 }
 
-function updateLocalStorageWishlist(productHandle, action) {
-  const wishlistStorageKey = "customerWishlist";
-  const storedWishlistJSON = localStorage.getItem(wishlistStorageKey);
-  if (!storedWishlistJSON) return;
+window.updateStateFromApiResponse = function (apiResult) {
+  if (!apiResult || !Array.isArray(apiResult.wishlist)) return;
 
-  try {
-    const wishlistData = JSON.parse(storedWishlistJSON);
-    const products = wishlistData?.wishlist?.products || [];
-    const productIndex = products.findIndex(
-      (p) => p.productHandle === productHandle
-    );
+  const productHandles = apiResult.wishlist.map((p) => p.productHandle);
+  window.theme.wishlistHandles = new Set(productHandles);
 
-    if (action === "add" && productIndex === -1) {
-      const productId = getProductIdFromHandle(productHandle);
-      if (productId) {
-        products.push({ productHandle, productId });
-      }
-    } else if (action === "remove" && productIndex > -1) {
-      products.splice(productIndex, 1);
-    }
-
-    wishlistData.wishlist.products = products;
-    localStorage.setItem(wishlistStorageKey, JSON.stringify(wishlistData));
-  } catch (e) {
-    console.error("Could not update local storage wishlist:", e);
-  }
-}
+  const dataToStore = {
+    wishlist: {
+      products: apiResult.wishlist,
+    },
+  };
+  localStorage.setItem("customerWishlist", JSON.stringify(dataToStore));
+};
 
 async function addToWishlist(productHandle, productId) {
   const response = await fetch(`/apps/${APP_SUB_PATH}/customer/wishlist/add`, {
@@ -78,7 +64,6 @@ async function removeFromCart(lineIndex) {
       line: lineIndex,
       quantity: 0,
     });
-
     const response = await fetch(window.theme.routes.cartChange, {
       method: "POST",
       headers: {
@@ -87,22 +72,17 @@ async function removeFromCart(lineIndex) {
       },
       body: body,
     });
-
     const result = await response.json();
-
     if (response.ok) {
       updateCartCount();
-
       const cartDrawer = document.querySelector("cart-drawer");
       if (cartDrawer) {
         cartDrawer.refresh();
       }
-
       const cartPage = document.querySelector("cart-page");
       if (cartPage) {
         window.location.reload();
       }
-
       return { success: true, result };
     } else {
       throw new Error("Failed to remove from cart");
@@ -131,13 +111,11 @@ function updateAllWishlistButtons() {
   const allButtons = document.querySelectorAll(
     ".wishlist-btn[data-product-handle]"
   );
-
   allButtons.forEach((button) => {
     const productHandle = button.dataset.productHandle;
     const iconDefault = button.querySelector(".wishlist-icon-default");
     const iconActive = button.querySelector(".wishlist-icon-active");
     if (!iconDefault || !iconActive) return;
-
     if (wishlist.has(productHandle)) {
       iconDefault.classList.add("hidden");
       iconActive.classList.remove("hidden");
@@ -151,7 +129,6 @@ function updateAllWishlistButtons() {
 function getCartItemLineIndex(button) {
   const cartItem = button.closest(".cart-drawer__item, .cart-page__item");
   if (!cartItem) return null;
-
   const itemId = cartItem.id;
   const match = itemId.match(/Cart(?:Drawer-)?Item-(\d+)/);
   return match ? match[1] : null;
@@ -186,15 +163,10 @@ document.addEventListener("DOMContentLoaded", function () {
     button.disabled = true;
 
     try {
-      const inCartDrawer = isInCartDrawer(button);
-      const inCartPage = isInCartPage(button);
-
-      if (inCartDrawer || inCartPage) {
+      if (isInCartDrawer(button) || isInCartPage(button)) {
         const result = await addToWishlist(productHandle, productId);
         if (result && (result.success || result.alreadyExists)) {
-          window.theme.wishlistHandles.add(productHandle);
-          updateLocalStorageWishlist(productHandle, "add");
-
+          updateStateFromApiResponse(result);
           const lineIndex = getCartItemLineIndex(button);
           if (lineIndex) {
             const cartRemoveResult = await removeFromCart(lineIndex);
@@ -208,15 +180,13 @@ document.addEventListener("DOMContentLoaded", function () {
             }
           } else {
             console.warn("Could not find cart line index for item");
-            wishlistToastManager.show("Added to wishlist", "success");
           }
         }
       } else {
         if (window.theme.wishlistHandles.has(productHandle)) {
           const result = await removeFromWishlist(productHandle, productId);
           if (result && result.success) {
-            window.theme.wishlistHandles.delete(productHandle);
-            updateLocalStorageWishlist(productHandle, "remove");
+            updateStateFromApiResponse(result);
             wishlistToastManager.show(
               "Product removed from wishlist",
               "success"
@@ -225,8 +195,7 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
           const result = await addToWishlist(productHandle, productId);
           if (result && (result.success || result.alreadyExists)) {
-            window.theme.wishlistHandles.add(productHandle);
-            updateLocalStorageWishlist(productHandle, "add");
+            updateStateFromApiResponse(result);
           }
         }
       }
