@@ -26,7 +26,10 @@ window.initializeWishlistPage = (wishlistHandles) => {
         <form action="/cart/add" method="post" enctype="multipart/form-data" class="form">
           <input type="hidden" name="id" value="${variantId}">
           <button type="submit" name="add" class="button button--solid cursor-pointer w-full p-11">
-            Add to cart
+            <span class="button__text">
+              Add to cart
+            </span>
+            <spinner-component class="button__spinner" size="small" color="white" hidden></spinner-component>
           </button>
         </form>
       </product-form>
@@ -129,16 +132,16 @@ document.addEventListener("DOMContentLoaded", function () {
       const toastManager = new ToastNotificationManager();
 
       button.disabled = true;
-      button.textContent = "Removing...";
+      // REPLACE THE TEXT WITH THE SPINNER COMPONENT
+      button.innerHTML =
+        '<spinner-component size="small" color="primary"></spinner-component>';
 
       try {
         const result = await removeFromWishlist(productHandle, productId);
         if (result.success) {
           toastManager.show("Product removed from wishlist", "success");
-
           window.updateStateFromApiResponse(result);
 
-          // Re-render the wishlist with the updated list from the API response
           if (typeof window.initializeWishlistPage === "function") {
             const newHandles = result.wishlist.map((p) => p.productHandle);
             window.initializeWishlistPage(newHandles);
