@@ -135,9 +135,12 @@ if (!customElements.get("facet-filters")) {
         return;
       }
 
-      // Only allow price 'change' events with delay
-      if (evt.type === "change" && !(evt.target.id?.includes("price-range") || evt.target.id?.includes("sort-by"))) {
-        // Hide spinner if we're not processing this event
+      // Handle price range changes with delay when it's a change event
+      if (evt.target.id?.includes("price-range") && evt.type === "change") {
+        console.log("Processing price range change with delay");
+        // Continue with delay logic below
+      } else if (evt.type === "change" && !evt.target.id?.includes("sort-by")) {
+        // Hide spinner if we're not processing this event type
         const spinner = document.getElementById("filtering-spinner");
         if (spinner) {
           spinner.classList.add("hidden");

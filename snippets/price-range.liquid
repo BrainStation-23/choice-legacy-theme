@@ -33,55 +33,66 @@
         {{- 'products.filtering.min_price_label' | t | escape -}}
       </label>
       <span class="price-range__currency">{{ cart.currency.symbol }}</span>
-      <input type="number"
-             class="input w-full"
-             id="price-range-number-min"
-             name="{{ filter.min_value.param_name }}"
-             placeholder="0"
-             {% if filter.min_value.value %}value="{{ min_value }}"{% endif %}
-             min="0"
-             max="{{ range_max }}"
-             step="10">
+      <input
+        type="number"
+        class="input w-full"
+        id="price-range-number-min"
+        name="{{ filter.min_value.param_name }}"
+        placeholder="0"
+        {% if filter.min_value.value %}
+          value="{{ min_value }}"
+        {% endif %}
+        min="0"
+        max="{{ range_max }}"
+        step="10"
+      >
     </div>
-    <span class="price-range__input-separator">-</span>
     <div class="price-range__input-wrapper flex items-center flex-auto relative">
       <label class="visually-hidden" for="price-range-number-max">
         {{- 'products.filtering.max_price_label' | t | escape -}}
       </label>
       <span class="price-range__currency">{{ cart.currency.symbol }}</span>
-      <input type="number"
-             class="input w-full"
-             id="price-range-number-max"
-             name="{{ filter.max_value.param_name }}"
-             placeholder="{{ range_max }}"
-             {% if filter.max_value.value %}value="{{ max_value }}"{% endif %}
-             min="0"
-             max="{{ range_max }}"
-             step="10">
+      <input
+        type="number"
+        class="input w-full"
+        id="price-range-number-max"
+        name="{{ filter.max_value.param_name }}"
+        placeholder="{{ range_max }}"
+        {% if filter.max_value.value %}
+          value="{{ max_value }}"
+        {% endif %}
+        min="0"
+        max="{{ range_max }}"
+        step="10"
+      >
     </div>
   </div>
   <div class="price-range__sliders relative no-js-hidden">
     <label class="visually-hidden" for="price-range-slider-min">
       {{- 'products.filtering.min_price_label' | t | escape -}}
     </label>
-    <input type="range"
-           class="price-range__slider-input m-0"
-           id="price-range-slider-min"
-           value="{% if filter.min_value.value %}{{ min_value }}{% else %}0{% endif %}"
-           min="0"
-           max="{{ range_max }}"
-           step="1"
-           tabindex="-1">
+    <input
+      type="range"
+      class="price-range__slider-input m-0"
+      id="price-range-slider-min"
+      value="{% if filter.min_value.value %}{{ min_value }}{% else %}0{% endif %}"
+      min="0"
+      max="{{ range_max }}"
+      step="1"
+      tabindex="-1"
+    >
     <label class="visually-hidden" for="price-range-slider-max">
       {{- 'products.filtering.max_price_label' | t | escape -}}
     </label>
-    <input type="range"
-           class="price-range__slider-input m-0"
-           id="price-range-slider-max"
-           value="{% if filter.max_value.value %}{{ max_value }}{% else %}{{ range_max }}{% endif %}"
-           min="0"
-           max="{{ range_max }}"
-           step="1"
-           tabindex="-1">
+    <input
+      type="range"
+      class="price-range__slider-input m-0"
+      id="price-range-slider-max"
+      value="{% if filter.max_value.value %}{{ max_value }}{% else %}{{ range_max }}{% endif %}"
+      min="0"
+      max="{{ range_max }}"
+      step="1"
+      tabindex="-1"
+    >
   </div>
 </price-range>
