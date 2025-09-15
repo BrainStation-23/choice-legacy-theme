@@ -923,14 +923,21 @@ address {
 .ml-50pct {
   margin-left: 50%;
 }
+.ml-8 {
+  margin-left: calc(8 * var(--space-unit));
+}
 .ml-2 {
   margin-left: calc(2 * var(--space-unit));
 }
 .ml-auto {
   margin-left: auto;
 }
+
 .mr-auto {
   margin-right: auto;
+}
+.mr-8 {
+  margin-right: calc(8 * var(--space-unit));
 }
 .mr-2 {
   margin-right: calc(2 * var(--space-unit));
@@ -938,7 +945,6 @@ address {
 .mr-minus-16 {
   margin-right: calc(-20 * var(--space-unit));
 }
-
 .mr-auto {
   margin-right: auto;
 }
@@ -1177,6 +1183,9 @@ address {
 }
 .h-550 {
   height: 550px;
+}
+.h-512 {
+  height: 512px;
 }
 .h-508 {
   height: 508px;
@@ -1519,6 +1528,12 @@ address {
 }
 .min-w-120 {
   min-width: 120px;
+}
+.min-w-123 {
+  min-width: 123px;
+}
+.min-w-116 {
+  min-width: 116px;
 }
 .min-w-144 {
   min-width: 144px;

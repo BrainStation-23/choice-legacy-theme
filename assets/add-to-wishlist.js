@@ -5,6 +5,20 @@ function getProductIdFromHandle(productHandle) {
   return productDetails?.id || null;
 }
 
+window.updateStateFromApiResponse = function (apiResult) {
+  if (!apiResult || !Array.isArray(apiResult.wishlist)) return;
+
+  const productHandles = apiResult.wishlist.map((p) => p.productHandle);
+  window.theme.wishlistHandles = new Set(productHandles);
+
+  const dataToStore = {
+    wishlist: {
+      products: apiResult.wishlist,
+    },
+  };
+  localStorage.setItem("customerWishlist", JSON.stringify(dataToStore));
+};
+
 async function addToWishlist(productHandle, productId) {
   const response = await fetch(`/apps/${APP_SUB_PATH}/customer/wishlist/add`, {
     method: "POST",
@@ -50,7 +64,6 @@ async function removeFromCart(lineIndex) {
       line: lineIndex,
       quantity: 0,
     });
-
     const response = await fetch(window.theme.routes.cartChange, {
       method: "POST",
       headers: {
@@ -59,22 +72,17 @@ async function removeFromCart(lineIndex) {
       },
       body: body,
     });
-
     const result = await response.json();
-
     if (response.ok) {
       updateCartCount();
-
       const cartDrawer = document.querySelector("cart-drawer");
       if (cartDrawer) {
         cartDrawer.refresh();
       }
-
       const cartPage = document.querySelector("cart-page");
       if (cartPage) {
         window.location.reload();
       }
-
       return { success: true, result };
     } else {
       throw new Error("Failed to remove from cart");
@@ -103,13 +111,11 @@ function updateAllWishlistButtons() {
   const allButtons = document.querySelectorAll(
     ".wishlist-btn[data-product-handle]"
   );
-
   allButtons.forEach((button) => {
     const productHandle = button.dataset.productHandle;
     const iconDefault = button.querySelector(".wishlist-icon-default");
     const iconActive = button.querySelector(".wishlist-icon-active");
     if (!iconDefault || !iconActive) return;
-
     if (wishlist.has(productHandle)) {
       iconDefault.classList.add("hidden");
       iconActive.classList.remove("hidden");
@@ -123,7 +129,6 @@ function updateAllWishlistButtons() {
 function getCartItemLineIndex(button) {
   const cartItem = button.closest(".cart-drawer__item, .cart-page__item");
   if (!cartItem) return null;
-
   const itemId = cartItem.id;
   const match = itemId.match(/Cart(?:Drawer-)?Item-(\d+)/);
   return match ? match[1] : null;
@@ -158,14 +163,10 @@ document.addEventListener("DOMContentLoaded", function () {
     button.disabled = true;
 
     try {
-      const inCartDrawer = isInCartDrawer(button);
-      const inCartPage = isInCartPage(button);
-
-      if (inCartDrawer || inCartPage) {
+      if (isInCartDrawer(button) || isInCartPage(button)) {
         const result = await addToWishlist(productHandle, productId);
         if (result && (result.success || result.alreadyExists)) {
-          window.theme.wishlistHandles.add(productHandle);
-
+          updateStateFromApiResponse(result);
           const lineIndex = getCartItemLineIndex(button);
           if (lineIndex) {
             const cartRemoveResult = await removeFromCart(lineIndex);
@@ -179,26 +180,22 @@ document.addEventListener("DOMContentLoaded", function () {
             }
           } else {
             console.warn("Could not find cart line index for item");
-            wishlistToastManager.show("Added to wishlist", "success");
           }
         }
       } else {
-        // Normal wishlist behavior outside cart drawer
         if (window.theme.wishlistHandles.has(productHandle)) {
-          // Product is already in wishlist, remove from wishlist
           const result = await removeFromWishlist(productHandle, productId);
           if (result && result.success) {
-            window.theme.wishlistHandles.delete(productHandle);
+            updateStateFromApiResponse(result);
             wishlistToastManager.show(
               "Product removed from wishlist",
               "success"
             );
           }
         } else {
-          // Product is not in wishlist, add to wishlist
           const result = await addToWishlist(productHandle, productId);
           if (result && (result.success || result.alreadyExists)) {
-            window.theme.wishlistHandles.add(productHandle);
+            updateStateFromApiResponse(result);
           }
         }
       }

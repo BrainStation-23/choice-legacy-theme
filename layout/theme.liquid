@@ -25,7 +25,6 @@
       }
     {%- endstyle %}
 
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ 'main.css' | asset_url }}">
 
     {%- unless settings.body_font.system? -%}
@@ -68,7 +67,7 @@
     {%- sections 'footer-group' -%}
 
     <script>
-      window.APP_SUB_PATH = "choice_legacy_app";
+      window.APP_SUB_PATH = "choice-legacy-app";
       window.theme = {
         routes: {
           cart: '{{ routes.cart_url }}',
@@ -109,48 +108,44 @@
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         window.theme = window.theme || {};
+
         {% if customer %}
-          window.theme.profilePromise = fetch(`/apps/${APP_SUB_PATH}/customer/account/profile`)
+          fetch(`/apps/${APP_SUB_PATH}/customer/account/profile`)
             .then(response => response.json())
             .then(data => {
-               window.theme.rewardPointEnabled = data?.rewardPointEnabled ;
-               console.log('Reward Point Enabled:', window.theme.rewardPointEnabled);
-                     const rewardPointTab = document.querySelector('.customer-account__sidebar-item[data-tab="rewards"]');
-                     if (rewardPointTab) {
-                       if (window.theme.rewardPointEnabled) {
-                         rewardPointTab.style.display = 'flex';
-                       } else {
-                         rewardPointTab.style.display = 'none';
-                       }
-                     }
-
-              if (data.success && data.wishlist && data.wishlist.products) {
-                const wishlistHandles = data.wishlist.products.map(product => product.productHandle);
-                window.theme.wishlistHandles = new Set(wishlistHandles);
-
-              } else {
-                window.theme.wishlistHandles = new Set();
+              if (!data) return;
+              window.theme.rewardPointEnabled = data.rewardPointEnabled;
+              const rewardPointTab = document.querySelector('.customer-account__sidebar-item[data-tab="rewards"]');
+              if (rewardPointTab) {
+                rewardPointTab.style.display = data.rewardPointEnabled ? 'flex' : 'none';
               }
-              if (typeof updateAllWishlistButtons === 'function') {
-                updateAllWishlistButtons();
-              }
-              return data;
             })
-            .catch(error => {
-              console.error('Failed to fetch profile/wishlist:', error);
-              window.theme.wishlistHandles = new Set();
-              if (typeof updateAllWishlistButtons === 'function') {
-                updateAllWishlistButtons();
-              }
-              return Promise.reject(error);
-            });
-        {% else %}
-            window.theme.wishlistHandles = new Set();
-            if (typeof updateAllWishlistButtons === 'function') {
-                updateAllWishlistButtons();
-            }
-            window.theme.profilePromise = Promise.resolve({ success: true, wishlist: { products: [] } });
+            .catch(error => console.error('Failed to fetch profile:', error));
         {% endif %}
+
+        const initializeWishlistFromStorage = () => {
+          if (!window.customerLoggedIn) {
+            window.theme.wishlistHandles = new Set();
+            return;
+          }
+
+          let wishlistData = null;
+          try {
+            const storedJSON = localStorage.getItem('customerWishlist');
+            wishlistData = storedJSON ? JSON.parse(storedJSON) : null;
+          } catch (e) {
+            console.error('Could not parse wishlist from local storage.', e);
+          }
+
+          const productHandles = wishlistData?.wishlist?.products.map(p => p.productHandle) || [];
+          window.theme.wishlistHandles = new Set(productHandles);
+        };
+
+        initializeWishlistFromStorage();
+        
+        if (typeof updateAllWishlistButtons === 'function') {
+          updateAllWishlistButtons();
+        }
       });
     </script>
     {% render 'cart-drawer' %}

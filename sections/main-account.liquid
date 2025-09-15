@@ -44,6 +44,12 @@
         </div>
       </div>
 
+      <div id="support-content" class="account-content-section" style="display: none;">
+        <div id="support-section">
+          {% render 'support' %}
+        </div>
+      </div>
+
       <div id="reviews-content" class="account-content-section" style="display: none;">
         <div id="reviews-section">
           {% render 'reviews' %}
@@ -54,124 +60,145 @@
 </div>
 
 <script src="{{ 'pagination.js' | asset_url }}" defer></script>
+<script src="{{ 'wishlist.js' | asset_url }}" defer></script>
 
 <script>
-  let loadedSections = ['my-profile'];
+  let loadedSections = [];
   let deliveryStatusLoaded = false;
+  let unreadMessageInterval = null;
 
-  // Enhanced showAccountContent function with query parameter and URL path support
   async function showAccountContent(contentType) {
-    // Hide all content sections
     const contentSections = document.querySelectorAll('.account-content-section');
-    contentSections.forEach((section) => {
-      section.style.display = 'none';
-    });
-
-    // Handle special cases that redirect to other pages
+    contentSections.forEach((section) => section.style.display = 'none');
+    
     if (contentType === 'logout') {
       window.location.href = '/account/logout';
       return;
     }
-
-    // Handle addresses - redirect to addresses page
     if (contentType === 'addresses') {
       window.location.href = '/account/addresses';
       return;
     }
+    if (contentType === 'coming-soon') contentType = 'my_profile';
 
-    // Handle coming soon sections
-    if (contentType === 'coming-soon') {
-      // Fall back to my-profile
-      contentType = 'my_profile';
-    }
-
-    // Normalize contentType for content ID matching
-    let targetContentType = contentType;
-
-    // Map content types to their corresponding content IDs
     const contentMapping = {
-      'my-profile': 'my-profile',
-      my_profile: 'my-profile',
-      my_beauties_profile: 'my_beauties_profile',
-      orders: 'orders',
-      addresses: 'addresses',
-      rewards: 'rewards',
-      wishlist: 'wishlist',
-      reviews: 'reviews',
+      'my-profile': 'my-profile', my_profile: 'my-profile', my_beauties_profile: 'my_beauties_profile',
+      orders: 'orders', addresses: 'addresses', rewards: 'rewards',
+      wishlist: 'wishlist', support: 'support', reviews: 'reviews',
     };
+    
+    const targetContentType = contentMapping[contentType] || 'my-profile';
+    
+    document.body.dataset.activeTab = targetContentType;
 
-    targetContentType = contentMapping[contentType] || 'my-profile';
-
-    // Show the target content section
+    if (targetContentType === 'support') {
+      if (typeof window.initializeSupportChat === 'function') {
+        window.initializeSupportChat();
+      }
+    }
+    
     const targetContent = document.getElementById(targetContentType + '-content');
     if (targetContent) {
       targetContent.style.display = 'block';
     } else {
-      // Fallback to my-profile if content section doesn't exist
-      const profileContent = document.getElementById('my-profile-content');
-      if (profileContent) {
-        profileContent.style.display = 'block';
-      }
+      document.getElementById('my-profile-content').style.display = 'block';
     }
   }
 
-  // Get initial content type from URL parameters and path
   function getInitialContentType() {
     const currentPath = window.location.pathname;
     const urlParams = new URLSearchParams(window.location.search);
     const navParam = urlParams.get('nav');
-
-    // Check URL path for sub-pages first (highest priority)
-    if (currentPath.includes('/account/orders')) {
-      return 'orders';
-    }
-    if (currentPath.includes('/account/addresses')) {
-      return 'addresses';
-    }
-    if (currentPath.includes('/account/rewards')) {
-      return 'rewards';
-    }
-
-    // Then check query parameter
-    if (navParam) {
-      return navParam;
-    }
-
-    // Check for legacy hash-based navigation
-    if (window.location.hash === '#orders-section') {
-      return 'orders';
-    }
-
-    // Check for pagination (legacy orders page detection)
-    if (window.location.search.includes('page=')) {
-      return 'orders';
-    }
-
-    // Return default
+    if (currentPath.includes('/account/orders')) return 'orders';
+    if (currentPath.includes('/account/addresses')) return 'addresses';
+    if (currentPath.includes('/account/rewards')) return 'rewards';
+    if (navParam) return navParam;
+    if (window.location.hash === '#orders-section') return 'orders';
+    if (window.location.search.includes('page=')) return 'orders';
     return 'my_profile';
   }
 
-  // Initialize page content based on URL parameters
   function initializePageContent() {
     const initialContentType = getInitialContentType();
     showAccountContent(initialContentType);
   }
 
-  // Handle browser back/forward navigation
   function handlePopState() {
     const contentType = getInitialContentType();
     showAccountContent(contentType);
   }
 
-  // Make showAccountContent globally available
   window.showAccountContent = showAccountContent;
 
-  // Initialize when DOM is ready
-  document.addEventListener('DOMContentLoaded', function () {
-    initializePageContent();
+  async function fetchAndStoreUnreadCount() {
+    try {
+      const unreadMessagesResponse = await fetch(`/apps/${APP_SUB_PATH}/customer/customer-service-management/unread-messages-count`);
+      if (!unreadMessagesResponse.ok) throw new Error('Failed to fetch count');
 
-    // Listen for browser navigation events
+      const unreadMessagesData = await unreadMessagesResponse.json();
+      const unreadCountElement = document.querySelector("#unread-messages-count");
+      let count = 0;
+
+      if (unreadMessagesData.success && unreadMessagesData.unreadCount > 0) {
+        count = unreadMessagesData.unreadCount;
+        if (unreadCountElement) {
+          unreadCountElement.textContent = count;
+          unreadCountElement.classList.remove("hidden");
+        }
+      } else {
+        if (unreadCountElement) unreadCountElement.classList.add("hidden");
+      }
+      
+      document.body.dataset.unreadMessages = count;
+
+    } catch (error) {
+      console.error('Error fetching unread messages count:', error);
+      if (unreadMessageInterval) clearInterval(unreadMessageInterval);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    initializePageContent();
     window.addEventListener('popstate', handlePopState);
+    if (!window.customerLoggedIn) return;
+
+    await fetchAndStoreUnreadCount();
+    unreadMessageInterval = setInterval(fetchAndStoreUnreadCount, 10000);
+
+    // --- WISHLIST LOGIC RESTORED ---
+    const wishlistStorageKey = 'customerWishlist';
+    
+    try {
+      const storedWishlistJSON = localStorage.getItem(wishlistStorageKey);
+      let wishlistData = storedWishlistJSON ? JSON.parse(storedWishlistJSON) : null;
+
+      if (!wishlistData || !wishlistData.wishlist || wishlistData.wishlist.products.length === 0) {
+        const response = await fetch(`/apps/${APP_SUB_PATH}/customer/wishlist/fetch`);
+        if (!response.ok) throw new Error('API response was not ok.');
+        
+        wishlistData = await response.json();
+        localStorage.setItem(wishlistStorageKey, JSON.stringify(wishlistData));
+      }
+
+      const productHandles = wishlistData?.wishlist?.products.map(p => p.productHandle) || [];
+      window.theme.wishlistHandles = new Set(productHandles);
+
+      if (typeof window.initializeWishlistPage === 'function') {
+        window.initializeWishlistPage(Array.from(window.theme.wishlistHandles));
+      } else {
+        console.error('Wishlist display function not found. Check if wishlist.js is loaded.');
+      }
+
+    } catch (error) {
+      console.error('Failed to prepare wishlist on account page:', error);
+      if (typeof window.initializeWishlistPage === 'function') {
+        window.initializeWishlistPage([]);
+      }
+    }
+  });
+
+  window.addEventListener('beforeunload', () => {
+    if (unreadMessageInterval) clearInterval(unreadMessageInterval);
   });
 </script>
 

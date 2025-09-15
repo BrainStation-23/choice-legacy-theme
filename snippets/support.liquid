@@ -1,0 +1,22 @@
+<div class="customer-support-chat flex flex-col gap-24">
+  <h1 class="fw-500 fs-23-lh-24-ls-0 ff-general-sans">{{ 'customer.support.title' | t }}</h1>
+
+  <div class="chat-container border border-solid border-color rounded-6 p-32 h-512 flex flex-col overflow-y-auto scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover">
+    <div id="error-message" class="error-message"></div>
+
+    <div id="loading" class="loading" style="text-align: center; padding: 2.5rem 0; display: none;">
+      <spinner-component size="medium" color="primary"></spinner-component>
+    </div>
+
+    <div id="messages-container" class="messages-container flex flex-col gap-8" data-customer-id="{{ customer.id }}">
+      </div>
+  </div>
+
+  <form id="support-form" class="message-input-container flex gap-24">
+    {% assign button_label = 'customer.support.message.button.label' | t %}
+    {% render "input", name: "message", id: "message-input", label: button_label, class: "w-full" %}
+    <button type="submit" class="send-button button button--solid min-w-123" id="send-button">{{ 'customer.support.message.button.text' | t }}</button>
+  </form>
+</div>
+
+<script src="{{ 'customer-support.js' | asset_url }}" defer></script>

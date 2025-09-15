@@ -217,9 +217,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const mobileView = document.getElementById("history-mobile-view");
 
     if (tbody && mobileView) {
-      const loadingHTML = `<tr><td class="fs-16-lh-24-ls-0" colspan="5" style="text-align:center; padding: 16px;">Loading...</td></tr>`;
-      tbody.innerHTML = loadingHTML;
-      mobileView.innerHTML = `<div class="fs-16-lh-24-ls-0" style="text-align:center; padding: 16px;">Loading...</div>`;
+      const spinnerHTML =
+        '<spinner-component size="medium" color="primary"></spinner-component>';
+      const desktopLoadingHTML = `<tr><td colspan="5" style="text-align:center; padding: 16px;">${spinnerHTML}</td></tr>`;
+      const mobileLoadingHTML = `<div style="text-align:center; padding: 16px;">${spinnerHTML}</div>`;
+
+      tbody.innerHTML = desktopLoadingHTML;
+      mobileView.innerHTML = mobileLoadingHTML;
     }
 
     try {
@@ -589,7 +593,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     button.disabled = true;
-    button.textContent = "Applying...";
+    button.innerHTML =
+      '<spinner-component size="small" color="white"></spinner-component>'; // Changed this line
     toastManager.show("Discount code applied successfully!", "success");
 
     const oldIframe = document.getElementById("discount-iframe");
@@ -609,10 +614,8 @@ document.addEventListener("DOMContentLoaded", () => {
         button.classList.add("disabled");
       }
 
-      // After applying, clear the active redeem state and regenerate cards
       activeRedeemData = null;
 
-      // Re-fetch the latest data to update the UI
       const customerId = window.customerId;
       if (customerId) {
         apiCall(`${API_URLS.HISTORY}?historyType=earning&page=1`)
@@ -631,7 +634,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const customerId = window.customerId;
     if (!customerId) return;
 
-    // Check if user has enough points before proceeding
     const currentPoints = parseInt(currentPointsSpan.textContent) || 0;
     if (currentPoints === 0 || currentPoints < parseInt(pointsToRedeem)) {
       toastManager.show("Insufficient points to redeem this reward.", "error");
@@ -643,7 +645,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       button.disabled = true;
-      button.textContent = window.rewardPointLocalization.redeeming;
+      button.innerHTML =
+        '<spinner-component size="small" color="white"></spinner-component>'; // Changed this line
       const redeemResponse = await apiCall(API_URLS.REDEEM, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -659,7 +662,6 @@ document.addEventListener("DOMContentLoaded", () => {
           "success"
         );
 
-        // Set active redeem data
         activeRedeemData = {
           redeemCardId: redeemCardId,
           code: redeemResponse.discountCode,
@@ -673,20 +675,16 @@ document.addEventListener("DOMContentLoaded", () => {
         button.removeEventListener("click", handleRedeemFromCard);
         button.addEventListener("click", applyHandler);
 
-        // Update button states for all cards
         updateRedeemButtonStates(parseInt(currentPointsSpan.textContent) || 0);
       }
 
-      // Only update current points, don't call updateCustomerData with used tab data
       const latestData = await apiCall(
         `${API_URLS.HISTORY}?historyType=used&page=1`
       );
 
-      // Update the current points display and button states
       const newCurrentPoints = latestData.remainingPoints || 0;
       currentPointsSpan.textContent = newCurrentPoints;
 
-      // If we're currently on the used tab, refresh it
       const activeTab = document.querySelector(".tab-button.active");
       if (activeTab && activeTab.getAttribute("data-tab") === "used") {
         renderHistoryTable(latestData.history, "used");
@@ -698,8 +696,6 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!button.dataset.discountCode) {
         button.disabled = false;
         button.textContent = window.rewardPointLocalization.redeemNow;
-
-        // Re-check button state in case of error
         const currentPoints = parseInt(currentPointsSpan.textContent) || 0;
         updateRedeemButtonStates(currentPoints);
       }
