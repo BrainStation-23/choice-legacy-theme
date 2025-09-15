@@ -125,7 +125,7 @@
         <!-- External Login Button -->
         <button
           id="login-submit-button-external"
-          class="button--solid border-none rounded-6 cursor-pointer pt-18 pb-18 pl-10 pr-10 ff-general-sans fs-14-lh-100pct-ls-0 fw-600"
+          class="button--solid border-none rounded-6 cursor-pointer h-44 pl-10 pr-10 ff-general-sans fs-14-lh-100pct-ls-0 fw-600"
         >
           {{ 'customer.login.sign_in' | t }}
         </button>
@@ -291,7 +291,7 @@
         // Disable button and show loading state
         loginButtonExternal.disabled = true;
         const originalText = loginButtonExternal.textContent;
-        loginButtonExternal.textContent = 'Signing In...';
+        loginButtonExternal.innerHTML = '<spinner-component size="small" color="white"></spinner-component>';
 
         try {
           const response = await fetch(`${API_BASE_URL}/login/${cleanedPhone}`);

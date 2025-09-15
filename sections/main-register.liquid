@@ -257,7 +257,7 @@
       hideFieldMessage(phoneMessage);
       const cleaned = cleanPhoneNumber(phoneNumber);
       sendOtpButton.disabled = true;
-      sendOtpButton.textContent = 'Sending...';
+      sendOtpButton.innerHTML = '<spinner-component size="small" color="white"></spinner-component>';
       clearOtpInputs();
 
       try {
@@ -356,7 +356,7 @@
       if (hasError) return;
 
       registerButton.disabled = true;
-      registerButton.textContent = 'Registering...';
+      registerButton.innerHTML = '<spinner-component size="small" color="white"></spinner-component>';
 
       const formData = {
         first_name: firstNameInput.value.trim(),
