@@ -1,32 +1,11 @@
-
-
-.price-range__currency {
-  padding: 0 2px;
-  font-size: 16px;
-  white-space: nowrap;
-}
-
-.price-range__input-wrapper {
-  border-radius: var(--input-border-radius, 0);
-  background-color: rgb(var(--input-bg-color));
-  box-shadow: inset 0 0 0 var(--input-border-width) rgba(var(--input-text-color) / 0.2);
-  color: rgb(var(--input-text-color));
-}
-.price-range__input-wrapper:focus-within {
-  box-shadow: inset 0 0 0 var(--input-border-width) rgba(var(--input-text-color) / 0.6);
-}
-.price-range__input-wrapper > .input {
-  padding: 0 2px;
-  border: 0;
-  outline: 0;
-  background: none;
-  box-shadow: none;
-}
-
 .price-range__sliders {
   height: 28px;
   background: linear-gradient(to right, #e5e5e5 0%, #e5e5e5 100%) no-repeat center/100% 2px;
   position: relative;
+  border: none;
+}
+.price-range__sliders input {
+  padding: 0 !important;
 }
 
 .price-range__sliders::before {
@@ -64,40 +43,23 @@
   pointer-events: auto;
   z-index: 3;
 }
+
 .price-range__slider-input::-moz-range-thumb {
-  box-sizing: border-box;
-  width: 20px;
-  height: 20px;
-  -moz-transition: 0.3s;
+  width: 16px;
+  height: 16px;
   transition: 0.3s;
-  border: 2px solid #333;
   border-radius: 50%;
-  background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: rgb(var(--color-primary-brand));
   appearance: none;
   cursor: grab;
 }
-.price-range__slider-input::-moz-range-thumb:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  border-color: #000;
-}
+
 .price-range__slider-input::-webkit-slider-thumb {
-  box-sizing: border-box;
-  width: 20px;
-  height: 20px;
-  -webkit-transition: 0.3s;
+  width: 16px;
+  height: 16px;
   transition: 0.3s;
-  border: 2px solid #333;
   border-radius: 50%;
-  background-color: #ffffff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  -webkit-appearance: none;
+  background-color: rgb(var(--color-primary-brand));
   appearance: none;
   cursor: grab;
-}
-.price-range__slider-input::-webkit-slider-thumb:hover {
-  transform: scale(1.1);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  border-color: #000;
 }
