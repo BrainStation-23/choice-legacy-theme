@@ -45,8 +45,17 @@
   background: none;
   -webkit-appearance: none;
   appearance: none;
-  pointer-events: auto;
+  pointer-events: none;
   z-index: 3;
+}
+
+/* Only the thumbs should be clickable */
+.price-range__slider-input::-webkit-slider-thumb {
+  pointer-events: auto;
+}
+
+.price-range__slider-input::-moz-range-thumb {
+  pointer-events: auto;
 }
 
 .price-range__slider-input::-moz-range-thumb {
