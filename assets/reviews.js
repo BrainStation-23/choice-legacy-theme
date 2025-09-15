@@ -1,4 +1,3 @@
-// reviews.js
 document.addEventListener("DOMContentLoaded", function () {
   const mobileCardContainer = document.querySelector(".review-mobile-view");
   const desktopTableBody = document.getElementById(
@@ -38,63 +37,41 @@ document.addEventListener("DOMContentLoaded", function () {
         ? `/products/${item.productHandle}`
         : "#";
 
-      const ratingDisplay = item.rating ? item.rating : "";
+      const ratingDisplay = item.rating ? `${item.rating} star` : "";
       const hasRating = item.rating !== null;
 
-      // Determine content for the middle column based on the active tab
+      const reviewButtonHTML = `<button type="button" class="fw-600 fs-14-lh-16-ls-0 text-center text-brand bg-transparent border-none cursor-pointer p-0"
+        data-write-review-btn
+        data-section-id="customer-review-modal"
+        data-product-id="${item.productId}"
+        data-product-handle="${item.productHandle}">
+        Review
+        </button>`;
+
       const reviewColumnContent =
-        activeTab === "reviewed" ? ratingDisplay : "Review";
+        activeTab === "reviewed" ? ratingDisplay : reviewButtonHTML;
 
       let desktopActionHTML = `<a href="${productUrl}"><svg width="28" height="17" viewBox="0 0 28 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.9785 16.8535C6.08789 16.8535 0.658203 10.418 0.658203 8.44531C0.658203 6.46289 6.09766 0.0273438 13.9785 0.0273438C21.957 0.0273438 27.2891 6.46289 27.2891 8.44531C27.2891 10.418 21.9668 16.8535 13.9785 16.8535ZM13.9785 13.709C16.8984 13.709 19.2715 11.3066 19.2715 8.44531C19.2715 5.50586 16.8984 3.18164 13.9785 3.18164C11.0391 3.18164 8.68555 5.50586 8.68555 8.44531C8.68555 11.3066 11.0391 13.709 13.9785 13.709ZM13.9785 10.4473C12.8652 10.4473 11.957 9.53906 11.957 8.44531C11.957 7.3418 12.8652 6.43359 13.9785 6.43359C15.082 6.43359 16 7.3418 16 8.44531C16 9.53906 15.082 10.4473 13.9785 10.4473Z" fill="#FB6F92"/></svg></a>`;
 
       let mobileActionHTML = "";
       if (hasRating) {
         const viewButtonMobile = `<a href="${productUrl}"><svg width="28" height="17" viewBox="0 0 28 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.9785 16.8535C6.08789 16.8535 0.658203 10.418 0.658203 8.44531C0.658203 6.46289 6.09766 0.0273438 13.9785 0.0273438C21.957 0.0273438 27.2891 6.46289 27.2891 8.44531C27.2891 10.418 21.9668 16.8535 13.9785 16.8535ZM13.9785 13.709C16.8984 13.709 19.2715 11.3066 19.2715 8.44531C19.2715 5.50586 16.8984 3.18164 13.9785 3.18164C11.0391 3.18164 8.68555 5.50586 8.68555 8.44531C8.68555 11.3066 11.0391 13.709 13.9785 13.709ZM13.9785 10.4473C12.8652 10.4473 11.957 9.53906 11.957 8.44531C11.957 7.3418 12.8652 6.43359 13.9785 6.43359C15.082 6.43359 16 7.3418 16 8.44531C16 9.53906 15.082 10.4473 13.9785 10.4473Z" fill="#FB6F92"/></svg></a>`;
-        const ratingTextMobile = `<span class="ff-general-sans fw-600 fs-16-lh-24-ls-0 w-50pct text-center text-brand">${ratingDisplay} star</span>`;
-        mobileActionHTML = `
-          <div class="flex justify-between items-center pt-12 pb-12 pl-24 pr-24">
-            ${ratingTextMobile}
-            ${viewButtonMobile}
-          </div>
-        `;
+        const ratingTextMobile = `<span class="ff-general-sans fw-600 fs-16-lh-24-ls-0 w-50pct text-center text-brand">${ratingDisplay}</span>`;
+        mobileActionHTML = `<div class="flex justify-between items-center pt-12 pb-12 pl-24 pr-24">${ratingTextMobile}${viewButtonMobile}</div>`;
       } else {
         const viewButtonMobile = `<a href="${productUrl}"><svg width="28" height="17" viewBox="0 0 28 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.9785 16.8535C6.08789 16.8535 0.658203 10.418 0.658203 8.44531C0.658203 6.46289 6.09766 0.0273438 13.9785 0.0273438C21.957 0.0273438 27.2891 6.46289 27.2891 8.44531C27.2891 10.418 21.9668 16.8535 13.9785 16.8535ZM13.9785 13.709C16.8984 13.709 19.2715 11.3066 19.2715 8.44531C19.2715 5.50586 16.8984 3.18164 13.9785 3.18164C11.0391 3.18164 8.68555 5.50586 8.68555 8.44531C8.68555 11.3066 11.0391 13.709 13.9785 13.709ZM13.9785 10.4473C12.8652 10.4473 11.957 9.53906 11.957 8.44531C11.957 7.3418 12.8652 6.43359 13.9785 6.43359C15.082 6.43359 16 7.3418 16 8.44531C16 9.53906 15.082 10.4473 13.9785 10.4473Z" fill="#FB6F92"/></svg></a>`;
-        const reviewButtonMobile = `<p class="fw-600 w-50pct fs-14-lh-16-ls-0 text-center text-brand">Review</p>`;
-        mobileActionHTML = `
-          <div class="flex justify-between items-center gap-12 pt-12 pb-12 pl-24 pr-24">
-            ${reviewButtonMobile}
-            ${viewButtonMobile}
-          </div>
-        `;
+        const reviewButtonMobile = `<div class="fw-600 w-50pct fs-14-lh-16-ls-0 text-center text-brand">${reviewButtonHTML}</div>`;
+        mobileActionHTML = `<div class="flex justify-between items-center gap-12 pt-12 pb-12 pl-24 pr-24">${reviewButtonMobile}${viewButtonMobile}</div>`;
       }
 
       const tableRow = document.createElement("tr");
-      tableRow.innerHTML = `
-        <td class="flex items-center gap-38">
-          <img src="${imageUrl}" alt="${productTitle}" class="w-32 h-32 object-contain">
-          <span class="product-name fw-400 fs-16-lh-24-ls-0 text-secondary">${productTitle}</span>
-        </td>
-        <td class="fw-600 fs-14-lh-16-ls-0 text-center text-brand">${reviewColumnContent}</td>
-        <td class="text-right relative">
-          <div class="flex justify-end">
-            ${desktopActionHTML}
-          </div>
-        </td>
-      `;
+      tableRow.innerHTML = `<td class="flex items-center gap-38"><img src="${imageUrl}" alt="${productTitle}" class="w-32 h-32 object-contain"><span class="product-name fw-400 fs-16-lh-24-ls-0 text-secondary">${productTitle}</span></td><td class="fw-600 fs-14-lh-16-ls-0 text-center text-brand">${reviewColumnContent}</td><td class="text-right relative"><div class="flex justify-end">${desktopActionHTML}</div></td>`;
       desktopTableBody.appendChild(tableRow);
 
       const mobileCard = document.createElement("div");
       mobileCard.className =
         "border border-solid border-color rounded-12 flex flex-col";
-      mobileCard.innerHTML = `
-        <div class="items-start flex justify-end items-start pt-10 pl-16 pb-10 pr-16">
-          <div class="flex justify-end border-b border-b-color border-b-solid w-full pb-10">
-            <img src="${imageUrl}" alt="${productTitle}" class="w-32 h-32 object-contain">
-          </div>
-        </div>
-        <div class="product-name ff-general-sans fw-400 fs-16-lh-24-ls-0 pb-8 pl-12 pr-12 border-b border-b-color border-b-solid text-secondary">${productTitle}</div>
-        ${mobileActionHTML}
-      `;
+      mobileCard.innerHTML = `<div class="items-start flex justify-end items-start pt-10 pl-16 pb-10 pr-16"><div class="flex justify-end border-b border-b-color border-b-solid w-full pb-10"><img src="${imageUrl}" alt="${productTitle}" class="w-32 h-32 object-contain"></div></div><div class="product-name ff-general-sans fw-400 fs-16-lh-24-ls-0 pb-8 pl-12 pr-12 border-b border-b-color border-b-solid text-secondary">${productTitle}</div>${mobileActionHTML}`;
       mobileCardContainer.appendChild(mobileCard);
     });
   };
@@ -149,19 +126,40 @@ document.addEventListener("DOMContentLoaded", function () {
     if (tabType === "reviewed") {
       reviewedTab.classList.add("active-tab");
       toReviewTab.classList.remove("active-tab");
-      ratingHeader.textContent = "Rating"; // Change header text
+      ratingHeader.textContent = "Rating";
     } else {
       toReviewTab.classList.add("active-tab");
       reviewedTab.classList.remove("active-tab");
-      ratingHeader.textContent = "Review"; // Change header text
+      ratingHeader.textContent = "Review";
     }
     fetchAndDisplayReviews(activeTab, 1);
   };
 
+  document.addEventListener("review:submitted", () => {
+    fetchAndDisplayReviews(activeTab, 1);
+  });
+
   reviewedTab.addEventListener("click", () => handleTabClick("reviewed"));
   toReviewTab.addEventListener("click", () => handleTabClick("to_review"));
 
-  // Set initial header text
+  document.addEventListener("click", (e) => {
+    const reviewTriggerButton = e.target.closest(
+      '[data-write-review-btn][data-section-id="customer-review-modal"]'
+    );
+    if (!reviewTriggerButton) return;
+
+    const productId = reviewTriggerButton.dataset.productId;
+    const productHandle = reviewTriggerButton.dataset.productHandle;
+
+    const reviewModal = document.getElementById(
+      "review-modal-customer-review-modal"
+    );
+    if (reviewModal) {
+      reviewModal.dataset.productId = productId;
+      reviewModal.dataset.productHandle = productHandle;
+    }
+  });
+
   ratingHeader.textContent = "Review";
   fetchAndDisplayReviews(activeTab, 1);
 });

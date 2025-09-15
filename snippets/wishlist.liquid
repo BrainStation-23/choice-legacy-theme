@@ -1,8 +1,8 @@
 <div class="wishlist-page-container flex flex-col gap-24">
   <h2 class="ff-general-sans fw-500 fs-23-lh-24-ls-0 text-left">{{ 'wishlist.title' | t }}</h2>
 
-  <div id="wishlist-loader">
-    <p class="fw-500 fs-14-lh-16-ls-0">{{ 'wishlist.loading' | t }}</p>
+  <div id="wishlist-loader" class="flex justify-center items-center py-40">
+    <spinner-component size="large" color="primary"></spinner-component>
   </div>
   
   <table class="wishlist-desktop-view table sm:hidden hidden">
@@ -28,5 +28,3 @@
   <div id="wishlist-pagination-controls" class="flex justify-end items-center gap-8" style="display: none;">
   </div>
 </div>
-
-<script src="{{ 'wishlist.js' | asset_url }}" defer></script>

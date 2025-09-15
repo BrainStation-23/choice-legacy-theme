@@ -21,9 +21,9 @@
     <button id="reviewed-tab" class="review-tab cursor-pointer border-top-none border-right-none border-left-none border-bottom-none bg-bg text-label fs-16-lh-20-ls-0_1 fw-500 pt-12 pb-12" data-tab="reviewed">{{ 'review.tabs.reviewed' | t }}</button>
   </div>
 
-  <div id="review-loader">
-    <p class="fw-500 fs-14-lh-16-ls-0">{{ 'review.loading' | t }}</p>
-  </div>
+  <div id="review-loader" style="text-align: center; padding: 2.5rem 0;">
+  <spinner-component size="large" color="primary"></spinner-component>
+</div>
   <table class="review-desktop-view table sm:hidden" style="display: none;">
     <thead>
       <tr class="h-48">
@@ -44,5 +44,7 @@
   <div id="pagination-controls" class="flex justify-end items-center gap-8" style="display: none;">
   </div>
 </div>
+
+{%- render 'product-review-form', section_id: 'customer-review-modal', product: customer.orders.first.line_items.first.product, customer: customer, initial_classes: 'hidden' -%}
 
 <script src="{{ 'reviews.js' | asset_url }}" defer></script>

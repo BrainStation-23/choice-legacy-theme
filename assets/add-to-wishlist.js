@@ -5,6 +5,20 @@ function getProductIdFromHandle(productHandle) {
   return productDetails?.id || null;
 }
 
+window.updateStateFromApiResponse = function (apiResult) {
+  if (!apiResult || !Array.isArray(apiResult.wishlist)) return;
+
+  const productHandles = apiResult.wishlist.map((p) => p.productHandle);
+  window.theme.wishlistHandles = new Set(productHandles);
+
+  const dataToStore = {
+    wishlist: {
+      products: apiResult.wishlist,
+    },
+  };
+  localStorage.setItem("customerWishlist", JSON.stringify(dataToStore));
+};
+
 async function addToWishlist(productHandle, productId) {
   const response = await fetch(`/apps/${APP_SUB_PATH}/customer/wishlist/add`, {
     method: "POST",
@@ -44,18 +58,64 @@ async function removeFromWishlist(productHandle, productId) {
   }
 }
 
+async function removeFromCart(lineIndex) {
+  try {
+    const body = JSON.stringify({
+      line: lineIndex,
+      quantity: 0,
+    });
+    const response = await fetch(window.theme.routes.cartChange, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: body,
+    });
+    const result = await response.json();
+    if (response.ok) {
+      updateCartCount();
+      const cartDrawer = document.querySelector("cart-drawer");
+      if (cartDrawer) {
+        cartDrawer.refresh();
+      }
+      const cartPage = document.querySelector("cart-page");
+      if (cartPage) {
+        window.location.reload();
+      }
+      return { success: true, result };
+    } else {
+      throw new Error("Failed to remove from cart");
+    }
+  } catch (error) {
+    console.error("Remove from cart failed:", error);
+    return { success: false, error };
+  }
+}
+
+function updateCartCount() {
+  fetch("/cart.js")
+    .then((response) => response.json())
+    .then((cart) => {
+      const cartCountElements = document.querySelectorAll("[data-cart-count]");
+      cartCountElements.forEach((element) => {
+        element.textContent = cart.item_count;
+        element.classList.toggle("hidden", cart.item_count === 0);
+      });
+    })
+    .catch((e) => console.error("Error updating cart count:", e));
+}
+
 function updateAllWishlistButtons() {
   const wishlist = window.theme?.wishlistHandles || new Set();
   const allButtons = document.querySelectorAll(
     ".wishlist-btn[data-product-handle]"
   );
-
   allButtons.forEach((button) => {
     const productHandle = button.dataset.productHandle;
     const iconDefault = button.querySelector(".wishlist-icon-default");
     const iconActive = button.querySelector(".wishlist-icon-active");
     if (!iconDefault || !iconActive) return;
-
     if (wishlist.has(productHandle)) {
       iconDefault.classList.add("hidden");
       iconActive.classList.remove("hidden");
@@ -64,6 +124,22 @@ function updateAllWishlistButtons() {
       iconActive.classList.add("hidden");
     }
   });
+}
+
+function getCartItemLineIndex(button) {
+  const cartItem = button.closest(".cart-drawer__item, .cart-page__item");
+  if (!cartItem) return null;
+  const itemId = cartItem.id;
+  const match = itemId.match(/Cart(?:Drawer-)?Item-(\d+)/);
+  return match ? match[1] : null;
+}
+
+function isInCartDrawer(button) {
+  return button.closest("cart-drawer") !== null;
+}
+
+function isInCartPage(button) {
+  return button.closest("cart-page") !== null;
 }
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -87,21 +163,48 @@ document.addEventListener("DOMContentLoaded", function () {
     button.disabled = true;
 
     try {
-      if (window.theme.wishlistHandles.has(productHandle)) {
-        const result = await removeFromWishlist(productHandle, productId);
-        if (result && result.success) {
-          window.theme.wishlistHandles.delete(productHandle);
-          toastManager.show("Product removed from wishlist", "success");
-        }
-      } else {
+      if (isInCartDrawer(button) || isInCartPage(button)) {
         const result = await addToWishlist(productHandle, productId);
         if (result && (result.success || result.alreadyExists)) {
-          window.theme.wishlistHandles.add(productHandle);
+          updateStateFromApiResponse(result);
+          const lineIndex = getCartItemLineIndex(button);
+          if (lineIndex) {
+            const cartRemoveResult = await removeFromCart(lineIndex);
+            if (cartRemoveResult.success) {
+              wishlistToastManager.show("Moved to wishlist", "success");
+            } else {
+              wishlistToastManager.show(
+                "Added to wishlist, but failed to remove from cart",
+                "warning"
+              );
+            }
+          } else {
+            console.warn("Could not find cart line index for item");
+          }
+        }
+      } else {
+        if (window.theme.wishlistHandles.has(productHandle)) {
+          const result = await removeFromWishlist(productHandle, productId);
+          if (result && result.success) {
+            updateStateFromApiResponse(result);
+            wishlistToastManager.show(
+              "Product removed from wishlist",
+              "success"
+            );
+          }
+        } else {
+          const result = await addToWishlist(productHandle, productId);
+          if (result && (result.success || result.alreadyExists)) {
+            updateStateFromApiResponse(result);
+          }
         }
       }
     } catch (error) {
       console.error("Wishlist action failed:", error);
-      toastManager.show("Something went wrong. Please try again.", "error");
+      wishlistToastManager.show(
+        "Something went wrong. Please try again.",
+        "error"
+      );
     } finally {
       updateAllWishlistButtons();
       button.disabled = false;

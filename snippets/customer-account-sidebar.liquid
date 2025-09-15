@@ -12,7 +12,6 @@
     width: 28px !important;
   }
 
-  /* Active tab styling */
   .customer-account__sidebar-item.active {
     border-bottom: 2px solid rgb(var(--color-primary-brand));
     color: rgb(var(--color-primary-brand));
@@ -57,7 +56,6 @@
     </div>
   </div>
 
-  <!-- Dropdown Menu Items -->
   <div
     class="customer-account__sidebar-dropdown box-shadow static max-h-none opacity-1  bg-none border-none box-shadow-none m-0 overflow-visible sm:absolute sm:top-100pct sm:left-0 sm:right-0 sm:bg-bg sm:border-1 sm:border-solid sm:border-color sm:rounded-6 sm:mt-4 sm:z-100 sm:overflow-hidden sm:max-h-0 sm:opacity-0 sm:transition-transform-all"
     id="dropdown-menu"
@@ -74,7 +72,7 @@
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8  flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        class="customer-account__sidebar-item gap-8  flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
         data-tab="my-beauties-profile"
         onclick="selectItem(this, 'brash-icon', '{{ 'customer.account.my_beauties_profile' | t }}', 'my_beauties_profile')"
       >
@@ -95,7 +93,7 @@
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
         data-tab="addresses"
         onclick="selectItem(this, 'address-icon', '{{ 'customer.account.addresses' | t }}', 'addresses')"
       >
@@ -106,7 +104,7 @@
       </div>
 
       <div
-        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
         data-tab="rewards"
         onclick="selectItem(this, 'reward-icon', '{{ 'customer.account.rewards' | t }}', 'rewards')"
       >
@@ -116,7 +114,7 @@
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
         data-tab="wishlist"
         onclick="selectItem(this, 'love-icon', '{{ 'customer.account.wishlist' | t }}', 'wishlist')"
       >
@@ -126,7 +124,20 @@
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        class="customer-account__sidebar-item gap-8 flex items-center justify-between pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
+        data-tab="support"
+        onclick="selectItem(this, 'icon-support', '{{ 'customer.account.support' | t }}', 'support')"
+      >
+        <div class="flex flex-8 items-center">
+          {% render 'icon-chat' %}
+          <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500 text-primary-90pct m-0">
+            {{ 'customer.account.support' | t }}
+          </h2>
+        </div>
+        <span id="unread-messages-count" class="bg-brand hidden text-bg fw-400 fs-14-lh-20-ls-0 w-20 h-20 rounded-full flex justify-center items-center"></span>
+      </div>
+      <div
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
         data-tab="reviews"
         onclick="selectItem(this, 'star-icon', '{{ 'customer.account.reviews' | t }}', 'reviews')"
       >
@@ -136,7 +147,7 @@
         </h2>
       </div>
       <div
-        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointe"
+        class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
         data-tab="logout"
         onclick="selectItem(this, 'logout-icon', '{{ 'customer.account.logout' | t }}', 'logout')"
       >
@@ -150,7 +161,6 @@
 </aside>
 
 <script>
-  // Navigation state management with query parameters and URL path detection
   class SidebarNavigation {
     constructor() {
       this.defaultTab = 'my-profile';
@@ -160,12 +170,10 @@
 
     init() {
       this.setupEventListeners();
-
       this.loadInitialTab();
     }
 
     setupEventListeners() {
-      // Handle browser back/forward buttons
       window.addEventListener('popstate', () => this.loadTabFromURL());
     }
 
@@ -186,7 +194,6 @@
       const urlParams = new URLSearchParams(window.location.search);
       const navParam = urlParams.get('nav');
 
-      // First, check URL path for sub-pages (highest priority)
       if (currentPath.includes('/account/orders')) {
         return 'orders';
       }
@@ -197,76 +204,60 @@
         return 'rewards';
       }
 
-      // Then check query parameter
       if (navParam) {
-        // Convert underscore to hyphen for data-tab matching
         const normalizedParam = navParam.replace(/_/g, '-');
-
-        // Check if the tab exists in DOM
         const tabExists = document.querySelector(`[data-tab="${normalizedParam}"]`);
         return tabExists ? normalizedParam : this.defaultTab;
       }
 
-      // Check for legacy hash-based navigation
       if (window.location.hash === '#orders-section') {
         return 'orders';
       }
 
-      // Check for pagination (legacy orders page detection)
       if (window.location.search.includes('page=')) {
         return 'orders';
       }
 
-      // Default fallback
       return this.defaultTab;
     }
 
     navigateToTab(contentType) {
-      // Handle logout separately
       if (contentType === 'logout') {
+        localStorage.removeItem('customerWishlist');
         window.location.href = '{{ routes.account_logout_url }}';
         return;
       }
 
-      // Handle special redirects for sub-pages
       if (contentType === 'addresses') {
         window.location.href = '/account/addresses';
         return;
       }
 
-      // Convert contentType to match data-tab format
       const tabName = contentType.replace(/_/g, '-');
 
-      // For main account page navigation, update URL with query parameter
       if (window.location.pathname === '/account' || window.location.pathname.endsWith('/account')) {
         const url = new URL(window.location);
-        url.searchParams.set('nav', contentType); // Keep original format for URL
+        url.searchParams.set('nav', contentType);
         history.pushState({ tab: contentType }, '', url);
 
-        // Update UI
         this.setActiveTab(tabName);
         this.updateMobileSelectedItem(tabName);
         this.closeMobileDropdown();
       } else {
-        // If we're on a sub-page, redirect to main account page with nav parameter
         window.location.href = `/account?nav=${contentType}`;
       }
     }
 
     setActiveTab(tabName) {
-      // Remove active class from all items
       const allItems = document.querySelectorAll('.customer-account__sidebar-item[data-tab]');
       allItems.forEach((item) => item.classList.remove('active'));
 
-      // Add active class to selected item
       const activeItem = document.querySelector(`[data-tab="${tabName}"]`);
       if (activeItem) {
         activeItem.classList.add('active');
       }
 
-      // Call external content function if it exists (for integration with main-account.liquid)
       if (window.showAccountContent) {
-        // Convert back to underscore format for showAccountContent
         const contentType = tabName.replace(/-/g, '_');
         window.showAccountContent(contentType);
       }
@@ -301,7 +292,6 @@
     }
   }
 
-  // Initialize navigation when DOM is ready
   document.addEventListener('DOMContentLoaded', () => {
     window.sidebarNavigation = new SidebarNavigation();
   });
@@ -315,7 +305,6 @@
   }
 
   function selectItem(element, iconName, title, contentType) {
-    // Update the selected item display
     const selectedContent = document.getElementById('selected-item-content');
     const iconHtml = element.querySelector('svg') ? element.querySelector('svg').outerHTML : '';
 
@@ -326,24 +315,20 @@
       </h2>
     `;
 
-    // Use the new navigation system
     if (window.sidebarNavigation) {
       window.sidebarNavigation.navigateToTab(contentType);
     } else {
-      // Fallback for immediate execution before DOMContentLoaded
       if (window.showAccountContent) {
         window.showAccountContent(contentType);
       }
     }
 
-    // Close the dropdown
     const dropdown = document.getElementById('dropdown-menu');
     const arrow = document.getElementById('dropdown-arrow');
     dropdown.classList.remove('expanded');
     arrow.classList.remove('expanded');
   }
 
-  // Close dropdown when clicking outside
   document.addEventListener('click', function (event) {
     const sidebar = document.querySelector('.customer-account__sidebar');
     const dropdown = document.getElementById('dropdown-menu');
@@ -354,15 +339,4 @@
       arrow.classList.remove('expanded');
     }
   });
-
-  const rewardPointTab = document.querySelector('.customer-account__sidebar-item[data-tab="rewards"]');
-  if (rewardPointTab) {
-    const isRewardPointEnabled = window.theme.rewardPointEnabled;
-    console.log('Reward Point Enabled in Sidebar:', isRewardPointEnabled);
-    if (!isRewardPointEnabled) {
-      rewardPointTab.style.display = 'none';
-    } else {
-      rewardPointTab.style.display = 'flex';
-    }
-  }
 </script>

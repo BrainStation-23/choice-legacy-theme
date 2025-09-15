@@ -14,7 +14,6 @@
           {{ 'customer.account.edit' | t }}
         </h3>
 
-        <!-- Save and Cancel buttons (hidden by default) -->
         <div id="saveCancel" class="flex gap-8" style="display: none;">
           <h3
             class=" ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer"
@@ -23,11 +22,7 @@
             style="color: green"
           >
             <span id="saveText">{{ 'customer.account.save' | t }}</span>
-            <div id="saveSpinner" style="display: none;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2V6M12 18V22M4.93 4.93L7.76 7.76M16.24 16.24L19.07 19.07M2 12H6M18 12H22M4.93 19.07L7.76 16.24M16.24 7.76L19.07 4.93" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              </svg>
-            </div>
+            <spinner-component id="saveSpinner" style="display: none;"></spinner-component>
           </h3>
           <h3
             class="text-brand ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer"
@@ -42,7 +37,6 @@
     </div>
 
     <div class="grid gap-16 grid-cols-2 flex-wrap sm:grid-cols-1 sm:gap-8">
-      <!-- First Name -->
       <div>
         {%- assign firstNameLabel = 'customer.account.first_name' | t -%}
         {%- assign firstNamePlaceholder = 'customer.account.first_name' | t -%}
@@ -58,8 +52,6 @@
           value: customer.first_name
         %}
       </div>
-
-      <!-- Last Name -->
 
       <div>
         {%- assign lastNameLabel = 'customer.account.last_name' | t -%}
@@ -167,7 +159,6 @@
   <div class="flex flex-1 md:hidden sm:hidden"></div>
 </div>
 
-<!-- Email Change Modal -->
 <div
   id="emailModal"
   class="fixed top-0 left-0 w-full h-full bg-primary-light-50pct flex justify-center items-center z-1000"
@@ -182,7 +173,6 @@
     </div>
 
     <div class="modal-body flex flex-col gap-16">
-      <!-- Step 1: Email Input -->
       <div id="emailStep" class=" flex flex-col gap-16">
         <p class="ff-general-sans fs-23-lh-24-ls-0 fw-500">
           {{ 'customer.account.enter_your_new_email' | t }}
@@ -225,13 +215,10 @@
           <span id="sendOtpText" class="ff-general-sans  fs-14-lh-100pct-ls-0 fw-600">
             {{- 'customer.account.send_otp' | t -}}
           </span>
-          <div id="sendOtpSpinner" style="display: none;">
-            {% render 'icon-spinner' %}
-          </div>
+          <spinner-component id="sendOtpSpinner" style="display: none;"></spinner-component>
         </button>
       </div>
 
-      <!-- Step 2: OTP Input -->
       <div id="otpStep" class=" flex flex-col gap-16" style="display: none;">
         <p class="ff-general-sans fs-23-lh-24-ls-0 fw-500">
           {{ 'customer.account.enter_your_new_email' | t }}
@@ -264,9 +251,7 @@
           <span id="submitText" class="ff-general-sans  fs-16-lh-100pct-ls-0  fw-600">
             {{- 'customer.account.submit' | t -}}
           </span>
-          <div id="submitSpinner" style="display: none;">
-            {% render 'icon-spinner' %}
-          </div>
+          <spinner-component id="submitSpinner" style="display: none;"></spinner-component>
         </button>
       </div>
     </div>
@@ -274,21 +259,6 @@
 </div>
 
 <style>
-  #saveSpinner svg,
-  #sendOtpSpinner svg,
-  #submitSpinner svg {
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
   .otp-container {
     display: flex;
     justify-content: center;
@@ -296,15 +266,11 @@
 </style>
 
 <script>
-  // Initialize toast manager - ensure it's available globally
   let toastManager;
-
-  // Initialize when DOM is loaded
   document.addEventListener('DOMContentLoaded', function () {
     toastManager = new ToastNotificationManager();
   });
 
-  // Fallback initialization function
   function initToastManager() {
     if (!toastManager) {
       toastManager = new ToastNotificationManager();
@@ -313,7 +279,6 @@
   }
 
   function toggleEditMode() {
-    // Hide edit button, show save/cancel buttons
     document.getElementById('editButton').style.display = 'none';
     document.getElementById('saveCancel').style.display = 'flex';
   }
@@ -321,7 +286,6 @@
   async function saveChanges() {
     document.getElementById('saveText').style.display = 'none';
     document.getElementById('saveSpinner').style.display = 'inline-block';
-
     document.getElementById('saveButton').style.pointerEvents = 'none';
     document.getElementById('saveButton').style.opacity = '0.6';
 
@@ -333,9 +297,7 @@
 
       const response = await fetch(`/apps/${APP_SUB_PATH}/customer/account/update`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           customerId: customerId,
           firstName: firstName,
@@ -347,14 +309,10 @@
       const result = await response.json();
 
       if (result.success) {
-        // Success - show edit button, hide save/cancel buttons
         document.getElementById('editButton').style.display = 'flex';
         document.getElementById('saveCancel').style.display = 'none';
-
-        // Show success toast
         initToastManager().show('Account information updated successfully!', 'success');
       } else {
-        // Handle error with toast
         console.error('Error updating customer:', result.message);
         initToastManager().show(result.message || 'Something went wrong. Please try again.', 'error');
       }
@@ -362,11 +320,8 @@
       console.error('Network error:', error);
       initToastManager().show('Network error occurred. Please try again.', 'error');
     } finally {
-      // Hide spinner, show text
       document.getElementById('saveText').style.display = 'inline';
       document.getElementById('saveSpinner').style.display = 'none';
-
-      // Re-enable the save button
       document.getElementById('saveButton').style.pointerEvents = 'auto';
       document.getElementById('saveButton').style.opacity = '1';
     }
@@ -378,7 +333,6 @@
     initToastManager().show('Changes cancelled', 'info');
   }
 
-  // Email Modal Functions
   function openEmailModal() {
     document.getElementById('emailModal').style.display = 'flex';
     document.getElementById('emailStep').style.display = 'flex';
@@ -394,17 +348,13 @@
 
   async function sendOTP() {
     const newEmail = document.getElementById('newEmailInput').value.trim();
-
     if (!newEmail) {
       initToastManager().show('Please enter a valid email address', 'error');
       return;
     }
 
-    // Show spinner, hide text
     document.getElementById('sendOtpText').style.display = 'none';
     document.getElementById('sendOtpSpinner').style.display = 'inline-block';
-
-    // Disable the button
     document.getElementById('sendOtpBtn').style.pointerEvents = 'none';
     document.getElementById('sendOtpBtn').style.opacity = '0.6';
 
@@ -415,24 +365,16 @@
 
       const response = await fetch(`/apps/${APP_SUB_PATH}/customer/account/email-send-otp`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          phone: customerPhone,
-          newEmail: newEmail,
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: customerPhone, newEmail: newEmail }),
       });
 
       const result = await response.json();
 
       if (result.success) {
-        // Show OTP step
         document.getElementById('emailStep').style.display = 'none';
         document.getElementById('otpStep').style.display = 'flex';
         document.getElementById('displayEmailInput').value = newEmail;
-
-        console.log('OTP sent successfully');
         initToastManager().show('OTP sent successfully! Please check your SMS.', 'success');
       } else {
         console.error('Error sending OTP:', result.message);
@@ -444,22 +386,18 @@
     } finally {
       document.getElementById('sendOtpText').style.display = 'inline';
       document.getElementById('sendOtpSpinner').style.display = 'none';
-
-      // Re-enable the button
       document.getElementById('sendOtpBtn').style.pointerEvents = 'auto';
       document.getElementById('sendOtpBtn').style.opacity = '1';
     }
   }
 
   async function resendOTP() {
-    // Reuse the sendOTP function logic
     initToastManager().show('Resending OTP...', 'info');
     await sendOTP();
   }
 
   async function verifyOTPAndSubmit() {
-    // Get OTP value (you'll need to implement this based on your otp-input component)
-    const otpValue = getOTPValue(); // This function needs to be implemented based on your OTP input component
+    const otpValue = getOTPValue();
     const newEmail = document.getElementById('displayEmailInput').value;
 
     if (!otpValue || otpValue.length < 6) {
@@ -467,50 +405,36 @@
       return;
     }
 
-    // Show spinner, hide text
     document.getElementById('submitText').style.display = 'none';
     document.getElementById('submitSpinner').style.display = 'inline-block';
-
-    // Disable the button
     document.getElementById('submitBtn').style.pointerEvents = 'none';
     document.getElementById('submitBtn').style.opacity = '0.6';
 
     try {
-      // Get customer phone from the existing phone field
       const customerPhone = document
         .querySelector('#phone-field .ff-general-sans.fs-14-lh-16-ls-0.fw-500')
         .textContent.trim();
 
-      // Step 1: Confirm OTP
       const otpResponse = await fetch(`/apps/${APP_SUB_PATH}/customer/account/confirm-otp`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          phone: customerPhone,
-          otp: parseInt(otpValue),
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: customerPhone, otp: parseInt(otpValue) }),
       });
 
       const otpResult = await otpResponse.json();
 
       if (!otpResult.success) {
-        console.error('Error confirming OTP:', otpResult.message);
         initToastManager().show(otpResult.message || 'Invalid OTP. Please try again.', 'error');
         return;
       }
 
-      // Step 2: Update customer with new email
       const customerId = document.getElementById('customerId').textContent;
       const firstName = document.getElementById('firstName-input').value;
       const lastName = document.getElementById('lastName-input').value;
 
       const updateResponse = await fetch(`/apps/${APP_SUB_PATH}/customer/account/update`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           customerId: customerId,
           firstName: firstName,
@@ -522,62 +446,38 @@
       const updateResult = await updateResponse.json();
 
       if (updateResult.success) {
-        // Update the email in the main form
         document.getElementById('email-input').value = newEmail;
-
-        // Close the modal
         closeEmailModal();
-
-        console.log('Email updated successfully');
         initToastManager().show('Email updated successfully!', 'success');
       } else {
-        console.error('Error updating customer:', updateResult.message);
         initToastManager().show(updateResult.message || 'Error updating customer. Please try again.', 'error');
       }
     } catch (error) {
       console.error('Network error:', error);
       initToastManager().show('Network error occurred. Please try again.', 'error');
     } finally {
-      // Hide spinner, show text
       document.getElementById('submitText').style.display = 'inline';
       document.getElementById('submitSpinner').style.display = 'none';
-
-      // Re-enable the button
       document.getElementById('submitBtn').style.pointerEvents = 'auto';
       document.getElementById('submitBtn').style.opacity = '1';
     }
   }
 
-  // Helper function to get OTP value - you'll need to implement this based on your otp-input component
   function getOTPValue() {
-    // Check for different possible OTP input structures
-
-    // Method 1: Try to find inputs with otp-related classes or data attributes
     let otpInputs = document.querySelectorAll('.otp-input input, .otp-digit, [data-otp-input], .digit-input');
-
-    // Method 2: If not found, try to find all number inputs within the OTP container
     if (otpInputs.length === 0) {
       const otpContainer = document.querySelector('.otp-container');
       if (otpContainer) {
         otpInputs = otpContainer.querySelectorAll('input[type="text"], input[type="number"], input[maxlength="1"]');
       }
     }
-
-    // Method 3: If still not found, try to find all single-character inputs
     if (otpInputs.length === 0) {
       otpInputs = document.querySelectorAll('input[maxlength="1"]');
     }
-
-    // Method 4: Debug - log what inputs are found
-    console.log('Found OTP inputs:', otpInputs);
-
     let otpValue = '';
-    otpInputs.forEach((input, index) => {
-      console.log(`Input ${index}:`, input.value);
+    otpInputs.forEach((input) => {
       otpValue += input.value || '';
     });
-
-    console.log('Collected OTP value:', otpValue);
     return otpValue;
   }
 </script>

@@ -1,0 +1,42 @@
+<span class="fw-400 fs-12-lh-16-ls-0_072">{{ 'sections.cart.qty' | t }}:</span>
+<div class="quantity h-24 flex gap-6 border-top-none border-right-none border-left-none border-bottom border-solid border-color">
+  {%- assign max_quantity = item.variant.inventory_quantity -%}
+
+  <button
+    class="quantity__button bg-transparent border-none w-24 h-24 cursor-pointer p-0 {% if item.quantity <= 1 %}disabled{% endif %}"
+    name="minus"
+    type="button"
+    {% if item.quantity <= 1 %}disabled{% endif %}
+  >
+    <span class="visually-hidden">
+      {{ 'cart.product.quantity.decrease' | t: product: item.product.title | escape }}
+    </span>
+    {% render 'icon-quantity-minus', cls: "pointer-events-none" %}
+  </button>
+
+  <input
+    class="quantity__input fw-500 fs-14-lh-20-ls-0_1 bg-transparent border-none p-0 h-auto min-w-14 text-center w-3ch"
+    type="number"
+    data-quantity-variant-id="{{ item.variant.id }}"
+    data-index="{{ item.index | plus: 1 }}"
+    name="updates[]"
+    value="{{ item.quantity }}"
+    min="0"
+    max="{{ item.variant.inventory_quantity }}"
+    aria-label="{{ 'cart.product.quantity.input_label' | t: product: item.product.title | escape }}"
+    id="Drawer-quantity-{{ item.index | plus: 1 }}"
+    data-index="{{ item.index | plus: 1 }}"
+  >
+
+  <button
+    class="quantity__button bg-transparent border-none w-24 h-24 cursor-pointer p-0 {% if item.quantity >= item.variant.inventory_quantity %}disabled{% endif %}"
+    name="plus"
+    type="button"
+    {% if item.quantity >= item.variant.inventory_quantity %}disabled{% endif %}
+  >
+    <span class="visually-hidden">
+      {{ 'cart.product.quantity.increase' | t: product: item.product.title | escape }}
+    </span>
+    {% render 'icon-quantity-plus', cls: "pointer-events-none" %}
+  </button>
+</div>

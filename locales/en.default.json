@@ -141,13 +141,17 @@
       "empty": "Your cart is empty",
       "remove": "Remove",
       "subtotal": "Subtotal",
+      "note": "Add a note to your order",
+      "note_label": "Cart note",
       "taxes_included_and_shipping_policy_html": "Taxes included and <a href=\"{{ link }}\">shipping policy</a>",
       "taxes_included_but_shipping_at_checkout": "Taxes included. Shipping calculated at checkout.",
       "taxes_and_shipping_policy_at_checkout_html": "Taxes and shipping calculated at checkout. <a href=\"{{ link }}\">Shipping policy</a>",
       "taxes_and_shipping_at_checkout": "Taxes and shipping calculated at checkout.",
-      "view_cart": "View cart",
+      "view_cart": "View My Cart",
       "checkout": "Checkout",
-      "qty": "Qty"
+      "continue_shopping": "Continue Shopping",
+      "qty": "Qty",
+      "move_to_wishlist": "Move To Wishlist"
     }
   },
   "customer": {
@@ -193,6 +197,7 @@
       "addresses": "Addresses",
       "rewards": "Rewards Points",
       "wishlist": "My Wishlist",
+      "support": "Customer Support",
       "reviews": "Reviews",
       "logout": "Logout",
       "date_of_birth": "Date of Birth",
@@ -268,9 +273,12 @@
       "sku": "SKU",
       "price": "Price",
       "discount": "Discount",
+      "discount_coupon": "Coupon discount",
       "fulfilled_at": "Fulfilled At",
       "track_shipment": "Track Shipment",
       "subtotal": "Subtotal",
+      "summary": "Summary",
+      "grand_total": "Grand Total",
       "shipping": "Shipping",
       "tax": "Tax",
       "total_duties": "Total Duties",
@@ -289,6 +297,15 @@
       "delivered": "Delivered",
       "return-Request": "Return Request",
       "fulfillment-status": "Fulfillment Status"
+    },
+    "support": {
+      "title": "Customer Support",
+      "message": {
+        "button": {
+          "text": "Send",
+          "label": "Write a message"
+        }
+      }
     }
   },
   "general": {
@@ -385,7 +402,33 @@
   },
   "cart": {
     "product": {
-      "quantity": {}
+      "quantity": {
+        "decrease": "Decrease quantity for {{ product }}",
+        "increase": "Increase quantity for {{ product }}",
+        "input_label": "Quantity for {{ product }}"
+      }
+    },
+    "drawer": {
+      "line-item": {
+        "off": "OFF"
+      }
+    },
+    "page": {
+      "items_with_count": {
+        "one": "{{ count }} item in cart",
+        "other": "{{ count }} items in cart"
+      },
+      "login_banner": {
+        "heading": "LOGIN FOR EXTRA OFFERS",
+        "subheading": "Apply a promo code to get discounts",
+        "cta": "Sign in/Register"
+      },
+      "discount": {
+        "input": {
+          "discount_code_label": "Apply Promo Code",
+          "discount_code_placeholder": "Enter Code"
+        }
+      }
     }
   }
 }

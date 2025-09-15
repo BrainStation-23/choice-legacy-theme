@@ -1,4 +1,4 @@
-<div class="product-icon-with-text-block flex items-center gap-8 mb-10" {{ block.shopify_attributes }}>
+<div class="product-icon-with-text-block flex items-center gap-8 mb-10 {{ cls }}" {{ block.shopify_attributes }}>
   {% if block.settings.icon %}
     <div class="w-24 h-24 media block relative">
       {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}

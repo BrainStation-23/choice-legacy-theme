@@ -1,19 +1,5 @@
 {%- assign current_variant = product.selected_or_first_available_variant -%}
 
-{%- form 'product', product -%}
-  <div class="flex gap-8 mb-24" {{ block.shopify_attributes }}>
-    <input type="hidden" name="id" value="{{ current_variant.id }}">
-
-    <product-form class="product-form">
-      {%- form 'product', product -%}
-        <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-        <button type="submit" name="add" class="button button--outline flex items-center justify-center gap-4 fs-16-lh-100pct-ls-0 h-56">
-          {% render "cart-icon" %}
-          {{ 'general.cart.add_to_cart.label' | t }}
-        </button>
-      {%- endform -%}
-    </product-form>
-
-    {{ form | payment_button }}
-  </div>
-{%- endform -%}
+<div {{ block.shopify_attributes }}>
+  {% render "product-form", current_variant: current_variant, show_buy_button: true, show_icon: true, inline_button: true, cls: "flex gap-8 mb-24" %}
+</div>
