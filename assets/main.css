@@ -3502,20 +3502,6 @@ input[type="date"] {
   -webkit-appearance: none;
 }
 
-.input,
-select {
-  max-width: 100%;
-  margin: 0;
-  padding: var(--input-padding-y, 11px) 24px;
-  transition: border-color 0.2s, box-shadow 0.2s, outline 0.2s;
-  border: var(--input-border-width) solid rgba(var(--input-text-color) / 0.2);
-  border-radius: var(--input-border-radius, 0);
-  background-color: rgb(var(--input-bg-color));
-  color: rgb(var(--input-text-color));
-  font-size: 0.88em;
-  line-height: 1.2em;
-}
-
 textarea:focus + label,
 textarea:not(:placeholder-shown) + label {
   top: 16px;
