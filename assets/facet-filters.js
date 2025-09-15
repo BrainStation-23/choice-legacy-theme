@@ -73,7 +73,9 @@ if (!customElements.get("facet-filters")) {
         checkboxes.forEach((checkbox) => {
           checkbox.addEventListener("change", (evt) => {
             console.log("Checkbox changed:", evt.target.name, evt.target.checked);
-            this.handleFilterChange(evt);
+            // Show spinner immediately for checkbox changes
+            this.showSpinner();
+            this.processFilterChange(evt);
           });
         });
       }
@@ -122,29 +124,22 @@ if (!customElements.get("facet-filters")) {
     handleFilterChange(evt) {
       console.log("Filter change event:", evt.type, evt.target);
 
-      // Show spinner immediately for any filter interaction
-      const spinner = document.getElementById("filtering-spinner");
-      if (spinner) {
-        spinner.classList.remove("hidden");
-      }
-
-      // Handle checkbox changes immediately
+      // Skip checkbox events as they're handled by specific listeners
       if (evt.target.type === "checkbox") {
-        console.log("Processing checkbox change immediately");
-        this.processFilterChange(evt);
+        console.log("Skipping checkbox - handled by specific listener");
         return;
       }
+
+      // Show appropriate spinner immediately for any filter interaction
+      this.showSpinner();
 
       // Handle price range changes with delay when it's a change event
       if (evt.target.id?.includes("price-range") && evt.type === "change") {
         console.log("Processing price range change with delay");
         // Continue with delay logic below
-      } else if (evt.type === "change" && !evt.target.id?.includes("sort-by")) {
-        // Hide spinner if we're not processing this event type
-        const spinner = document.getElementById("filtering-spinner");
-        if (spinner) {
-          spinner.classList.add("hidden");
-        }
+      } else if (evt.type === "change" && !evt.target.id?.includes("sort-by") && !evt.target.id?.includes("price-range")) {
+        // Hide spinner if we're not processing this event type (but keep it for price range)
+        this.hideSpinner();
         return;
       }
 
@@ -223,10 +218,7 @@ if (!customElements.get("facet-filters")) {
         evt.preventDefault();
 
         // Show spinner when clearing filters
-        const spinner = document.getElementById("filtering-spinner");
-        if (spinner) {
-          spinner.classList.remove("hidden");
-        }
+        this.showSpinner();
 
         this.applyFilters(new URL(evt.target.href).searchParams.toString(), evt);
       }
@@ -255,10 +247,7 @@ if (!customElements.get("facet-filters")) {
       evt.preventDefault();
 
       // Show spinner when removing active filters
-      const spinner = document.getElementById("filtering-spinner");
-      if (spinner) {
-        spinner.classList.remove("hidden");
-      }
+      this.showSpinner();
 
       this.applyFilters(new URL(evt.target.href).searchParams.toString(), evt);
     }
@@ -449,10 +438,28 @@ if (!customElements.get("facet-filters")) {
         }
 
         // Hide spinner when filtering is complete
-        const spinner = document.getElementById("filtering-spinner");
-        if (spinner) {
-          spinner.classList.add("hidden");
-        }
+        this.hideSpinner();
+      }
+    }
+
+    /**
+     * Shows the filtering spinner over the main product grid
+     */
+    showSpinner() {
+      const filteringSpinner = document.getElementById("filtering-spinner");
+      if (filteringSpinner) {
+        filteringSpinner.classList.remove("hidden");
+        console.log("Filtering spinner shown over product grid");
+      }
+    }
+
+    /**
+     * Hides the filtering spinner
+     */
+    hideSpinner() {
+      const filteringSpinner = document.getElementById("filtering-spinner");
+      if (filteringSpinner) {
+        filteringSpinner.classList.add("hidden");
       }
     }
 

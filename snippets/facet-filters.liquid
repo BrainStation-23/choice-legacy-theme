@@ -10,6 +10,22 @@
   .filter-label {
     font-size: 14px !important;
   }
+  
+  /* Filtering spinner overlay styles */
+  .filtering-spinner {
+    backdrop-filter: blur(3px);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .filtering-spinner.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  
+  .filtering-spinner:not(.hidden) {
+    opacity: 1;
+    pointer-events: all;
+  }
 </style>
 
 {%- liquid

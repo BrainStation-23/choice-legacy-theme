@@ -54,12 +54,12 @@
           {% endif %}
 
           <div class="main-products-grid__results relative flex-auto" id="filter-results">
-            <!-- Spinner overlay for sorting -->
+            <!-- Spinner overlay for filtering and sorting -->
             <div
-              id="sorting-spinner"
-              class="sorting-spinner hidden absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-10"
+              id="filtering-spinner"
+              class="filtering-spinner hidden absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-10"
             >
-              <spinner-component></spinner-component>
+              <spinner-component size="medium" color="primary"></spinner-component>
             </div>
 
             {%- if collection.products.size == 0 -%}

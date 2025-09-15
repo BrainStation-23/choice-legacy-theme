@@ -43,16 +43,21 @@ if (!customElements.get("price-range")) {
       
       console.log("handleInput for:", evt.target.id);
       
+      // Show spinner when price input changes
+      this.showSpinner();
+      
       if (evt.detail !== undefined) {
         clearTimeout(this.timeout);
 
         this.timeout = setTimeout(() => {
           this.updateSliderInputs(evt);
           this.updateNumberInputs();
+          this.triggerFilterChange(evt);
         }, 500);
       } else {
         this.updateSliderInputs(evt);
         this.updateNumberInputs();
+        this.triggerFilterChange(evt);
       }
     }
 
@@ -109,6 +114,9 @@ if (!customElements.get("price-range")) {
         
         evt.stopPropagation();
         
+        // Show spinner when slider changes
+        this.showSpinner();
+        
         if (evt.target === this.minSliderInput) {
           const value = parseInt(evt.target.value, 10);
           const maxValue = parseInt(this.maxSliderInput.value, 10);
@@ -147,6 +155,24 @@ if (!customElements.get("price-range")) {
         
         // Update progress bar after slider input
         this.updateProgressBar();
+        
+        // Trigger filter change after slider input
+        this.triggerFilterChange(evt);
+      }
+      
+      showSpinner() {
+        const spinner = document.getElementById("filtering-spinner");
+        if (spinner) {
+          spinner.classList.remove("hidden");
+          console.log("Filtering spinner shown");
+        }
+      }
+      
+      triggerFilterChange(evt) {
+        console.log("Triggering filter change for:", evt.target.id);
+        // Create a change event to trigger facet-filters processing
+        const changeEvent = new Event('change', { bubbles: true });
+        evt.target.dispatchEvent(changeEvent);
       }
       
       updateProgressBar() {
