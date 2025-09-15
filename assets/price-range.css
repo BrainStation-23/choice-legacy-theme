@@ -1,6 +1,6 @@
 .price-range__sliders {
   height: 28px;
-  background: linear-gradient(to right, #e5e5e5 0%, #e5e5e5 100%) no-repeat center/100% 2px;
+  background: linear-gradient(to right, rgb(var(--color-border)) 0%, rgb(var(--color-border)) 100%) no-repeat center/100% 2px;
   position: relative;
   border: none;
 }
@@ -17,7 +17,7 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: #e5e5e5;
+  background: rgb(var(--color-border));
   transform: translateY(-50%);
   z-index: 1;
 }
@@ -27,7 +27,7 @@
   position: absolute;
   top: 50%;
   height: 2px;
-  background: #333;
+  background: rgb(var(--color-primary-brand));
   transform: translateY(-50%);
   z-index: 2;
   left: var(--range-min, 0%);
