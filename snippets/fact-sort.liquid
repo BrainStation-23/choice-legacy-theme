@@ -111,31 +111,6 @@
       flex: 1;
       overflow-y: auto;
     }
-
-    .sort__footer {
-      padding: 16px;
-      border-top: 1px solid #ddd;
-      background: var(--color-background, #fff);
-      position: sticky;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-    }
-
-    .sort__footer button {
-      width: 100%;
-      padding: 12px;
-      font-size: 16px;
-      border-radius: 8px;
-      background: rgba(var(--color-primary-brand));
-      color: #fff;
-      border: none;
-      cursor: pointer;
-    }
-
-    .sort__footer button:hover {
-      opacity: 0.9;
-    }
   }
 </style>
 
@@ -157,14 +132,14 @@
       </span>
     </summary>
 
-    <div class="disclosure__panel has-motion absolute z-9999 max-w-340 w-full bg-bg rounded-6 pl-0 pr-0 box-shadow">
+    <div class="disclosure__panel has-motion absolute z-9999 max-w-340 w-full bg-bg rounded-6 pl-0 pr-0 box-shadow sm:rounded-0">
       <div class="sort__content flex flex-col gap-8 p-16">
         <div class="flex items-center justify-between">
           <h1 class="p-0 m-0 ff-bebas-neue fw-400 fs-21-lh-24-ls-1_2pct">
             {{- 'products.sorting.sort_by_label' | t -}}
           </h1>
           <span class="cursor-pointer p-0 m-0 close-icon" id="sort-close-btn">
-            {% render 'icon-close', height: 28, width: 28 %}
+            {% render 'close-button', id: 'sort-close-btn' %}
           </span>
         </div>
         <ul class="p-0 flex gap-8 flex-col list-style-none">
@@ -197,9 +172,13 @@
         </ul>
       </div>
 
-      <!-- Sticky footer Apply button -->
-      <div class="sort__footer">
-        <button id="apply-sort-btn">Apply</button>
+      <div class="sort__footer p-16  mt-auto">
+        <button
+          id="apply-sort-btn"
+          class="button--solid button-primary border-none w-full rounded-12 fs-16-lh-20-ls-0_1 fw-600"
+        >
+          {{ 'products.filtering.apply' | t }}
+        </button>
       </div>
     </div>
   </details>

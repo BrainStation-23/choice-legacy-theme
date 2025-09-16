@@ -1701,6 +1701,9 @@ address {
   .sm\:max-w-full {
     max-width: 100%;
   }
+  .sm\:max-w-308 {
+    max-width: 308px;
+  }
 
   .sm\:hidden {
     display: none;
