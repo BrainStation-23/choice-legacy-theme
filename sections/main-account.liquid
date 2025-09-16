@@ -96,6 +96,12 @@
         window.initializeSupportChat();
       }
     }
+
+    if (targetContentType === 'reviews') {
+      if (typeof window.initializeReviewsTab === 'function') {
+        window.initializeReviewsTab();
+      }
+    }
     
     const targetContent = document.getElementById(targetContentType + '-content');
     if (targetContent) {
@@ -165,7 +171,6 @@
     await fetchAndStoreUnreadCount();
     unreadMessageInterval = setInterval(fetchAndStoreUnreadCount, 10000);
 
-    // --- WISHLIST LOGIC RESTORED ---
     const wishlistStorageKey = 'customerWishlist';
     
     try {
