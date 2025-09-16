@@ -1,4 +1,9 @@
-document.addEventListener("DOMContentLoaded", () => {
+let isRewardPointsInitialized = false;
+
+window.initializeRewardPointsTab = function () {
+  if (isRewardPointsInitialized) return;
+  isRewardPointsInitialized = true;
+
   const toastManager = new ToastNotificationManager();
   const currentPointsSpan = document.getElementById("currentPoints");
 
@@ -652,7 +657,6 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           points: Number(pointsToRedeem),
-          customerId,
           redeemCardId: redeemCardId,
         }),
       });
@@ -732,4 +736,4 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("redeemPointsSection").style.display = "none";
       });
   }
-});
+};

@@ -103,6 +103,12 @@
       }
     }
     
+    if (targetContentType === 'rewards') {
+      if (typeof window.initializeRewardPointsTab === 'function') {
+        window.initializeRewardPointsTab();
+      }
+    }
+
     const targetContent = document.getElementById(targetContentType + '-content');
     if (targetContent) {
       targetContent.style.display = 'block';
