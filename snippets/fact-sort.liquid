@@ -146,7 +146,7 @@
                 endif
               -%}
               <li
-                class="flex m-0 cursor-pointer pt-2 pb-2 px-2 rounded-6 list-style-none"
+                class="sort-option-list flex m-0 cursor-pointer pt-2 pb-2 px-2 rounded-6 list-style-none"
                 data-sort-value="{{ option.value }}"
                 data-sort-name="{{ option.name }}"
               >
@@ -165,7 +165,6 @@
           {%- endfor -%}
         </ul>
       </div>
-
     </div>
   </details>
   <div class="sort-overlay"></div>
@@ -193,10 +192,10 @@
           if (this.checked) {
             const sortValue = this.value;
             const sortName = this.closest('li').dataset.sortName;
-            
+
             // Apply sort immediately
             handleSortChange(sortValue, sortName);
-            
+
             // Close modal immediately after selection
             setTimeout(function () {
               sortDetails.removeAttribute('open');
@@ -258,7 +257,7 @@
         currentUrl.searchParams.set('sort_by', value);
         currentUrl.searchParams.delete('page');
         currentUrl.searchParams.delete('phcursor');
-        
+
         // Call the facet filters applyFilters method
         const searchParams = currentUrl.searchParams.toString();
         facetFilters.applyFilters(searchParams, null, true);
@@ -299,7 +298,7 @@
         currentUrl.searchParams.delete('sort_by');
         currentUrl.searchParams.delete('page');
         currentUrl.searchParams.delete('phcursor');
-        
+
         // Call the facet filters applyFilters method
         const searchParams = currentUrl.searchParams.toString();
         facetFilters.applyFilters(searchParams, null, true);

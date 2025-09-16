@@ -3516,7 +3516,6 @@ textarea:focus + label,
 textarea:not(:placeholder-shown) + label {
   top: 8px;
   left: 16px;
-  font-size: 12px;
   transform: translateY(0);
   color: rgb(var(--color-primary-text)) !important;
   font-weight: 500;
