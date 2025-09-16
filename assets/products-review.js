@@ -60,14 +60,6 @@
       });
     }
 
-    function getProductTitle(productId) {
-      if (!window.allShopifyProducts || !productId) return "Product Title";
-      const product = Object.values(window.allShopifyProducts).find(
-        (p) => p.id === productId
-      );
-      return product ? product.title : "Product Title";
-    }
-
     async function fetchReviews(page = 1, append = false) {
       if (!reviewListContainer || !productId) return;
 
@@ -178,13 +170,17 @@
       if (!swiperWrapper) return;
 
       newReviews.forEach((review) => {
-        const productTitle = getProductTitle(review.productId);
         const reviewDate = review.reviewPlacedAt
           ? formatDate(review.reviewPlacedAt)
           : "N/A";
         const ratingStarsHTML = createStarRating(review.rating);
         const imageHtml = review.reviewImage
-          ? `<img src="${review.reviewImage}" class="w-full h-full" alt="${productTitle}" loading="lazy">`
+          ? `<img src="${
+              review.reviewImage
+            }" class="w-full h-full" alt="${review.reviewText?.substring(
+              0,
+              10
+            )}" loading="lazy">`
           : `<div></div>`;
 
         const mobileReviewItem = document.createElement("div");
@@ -244,13 +240,17 @@
         "product-reviews-grid grid sm:hidden grid-cols-5 lg:grid-cols-4 md:grid-cols-3 gap-24 md:gap-16";
 
       reviewsArray.forEach((review) => {
-        const productTitle = getProductTitle(review.productId);
         const reviewDate = review.reviewPlacedAt
           ? formatDate(review.reviewPlacedAt)
           : "N/A";
         const ratingStarsHTML = createStarRating(review.rating);
         const imageHtml = review.reviewImage
-          ? `<img src="${review.reviewImage}" class="w-full h-full" alt="${productTitle}" loading="lazy">`
+          ? `<img src="${
+              review.reviewImage
+            }" class="w-full h-full" alt="${review.reviewText?.substring(
+              0,
+              10
+            )}" loading="lazy">`
           : `<div></div>`;
 
         const desktopReviewItem = document.createElement("div");
