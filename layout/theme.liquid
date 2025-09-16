@@ -104,7 +104,7 @@
         {% endfor %}
       };
     </script>
-    <script src="{{ 'add-to-wishlist.js' | asset_url }}" defer></script>
+    <script src="{{ 'wishlist.js' | asset_url }}" defer></script>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         window.theme = window.theme || {};
@@ -125,7 +125,7 @@
 
         const initializeWishlistFromStorage = () => {
           if (!window.customerLoggedIn) {
-            window.theme.wishlistHandles = new Set();
+            window.theme.wishlistProductIds = new Set();
             return;
           }
 
@@ -137,12 +137,12 @@
             console.error('Could not parse wishlist from local storage.', e);
           }
 
-          const productHandles = wishlistData?.wishlist?.products.map(p => p.productHandle) || [];
-          window.theme.wishlistHandles = new Set(productHandles);
+          const productIds = wishlistData?.wishlist?.products.map(p => p.productId) || [];
+          window.theme.wishlistProductIds = new Set(productIds);
         };
 
         initializeWishlistFromStorage();
-        
+
         if (typeof updateAllWishlistButtons === 'function') {
           updateAllWishlistButtons();
         }

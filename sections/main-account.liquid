@@ -60,7 +60,6 @@
 </div>
 
 <script src="{{ 'pagination.js' | asset_url }}" defer></script>
-<script src="{{ 'wishlist.js' | asset_url }}" defer></script>
 
 <script>
   let loadedSections = [];
@@ -191,11 +190,11 @@
         localStorage.setItem(wishlistStorageKey, JSON.stringify(wishlistData));
       }
 
-      const productHandles = wishlistData?.wishlist?.products.map(p => p.productHandle) || [];
-      window.theme.wishlistHandles = new Set(productHandles);
+      const productIds = wishlistData?.wishlist?.products.map(p => p.productId) || [];
+      window.theme.wishlistProductIds = new Set(productIds);
 
       if (typeof window.initializeWishlistPage === 'function') {
-        window.initializeWishlistPage(Array.from(window.theme.wishlistHandles));
+        window.initializeWishlistPage(Array.from(window.theme.wishlistProductIds));
       } else {
         console.error('Wishlist display function not found. Check if wishlist.js is loaded.');
       }
