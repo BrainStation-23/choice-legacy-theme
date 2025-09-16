@@ -56,7 +56,6 @@
     align-items: center;
   }
 
-  /* Sorting spinner overlay styles */
   .sorting-spinner {
     backdrop-filter: blur(3px);
     transition: all 0.3s ease-in-out;
@@ -65,9 +64,82 @@
     height: 36px !important;
     width: 36px !important;
   }
+
+  .sort__footer {
+    display: none; /* Hide on desktop */
+  }
+
+  /* Mobile sort side modal */
+  @media (max-width: 768px) {
+    .sort__footer {
+      display: block;
+    }
+    .disclosure__panel.has-motion {
+      position: fixed !important;
+      top: 0;
+      right: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgb(var(--color-background));
+      z-index: 9999;
+      transform: translateX(100%);
+      opacity: 1;
+      transition: transform 0.3s ease-in-out;
+      display: flex;
+      flex-direction: column;
+    }
+    .sort-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 9998;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    details[open] ~ .sort-overlay {
+      opacity: 1;
+      pointer-events: all;
+    }
+    details[open] .disclosure__panel.has-motion {
+      transform: translateX(0);
+      right: 0;
+    }
+
+    .sort__content {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .sort__footer {
+      padding: 16px;
+      border-top: 1px solid #ddd;
+      background: var(--color-background, #fff);
+      position: sticky;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+    }
+
+    .sort__footer button {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 8px;
+      background: rgba(var(--color-primary-brand));
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+
+    .sort__footer button:hover {
+      opacity: 0.9;
+    }
+  }
 </style>
 
-<details-disclosure class="md:hidden no-js-visible max-w-180  h-40 m-0  fs-36-lh-40-ls-0 fw-400">
+<details-disclosure class="md:hidden no-js-visible max-w-180 h-40 m-0 fs-36-lh-40-ls-0 fw-400">
   <details
     class="filter disclosure"
     id="filter-sort"
@@ -85,49 +157,53 @@
       </span>
     </summary>
 
-    <div class="disclosure__panel has-motion absolute z-9999  max-w-340 w-full bg-bg rounded-6 pl-0 pr-0 box-shadow">
-      <div>
-        <div class="sort__content flex flex-col gap-8 p-16">
-          <div class="flex items-center justify-between">
-            <h1 class="p-0 m-0 ff-bebas-neue fw-400  fs-21-lh-24-ls-1_2pct">
-              {{- 'products.sorting.sort_by_label' | t -}}
-            </h1>
-            <span class="cursor-pointer p-0 m-0 close-icon" id="sort-close-btn">
-              {% render 'icon-close', height: 28, width: 28 %}
-            </span>
-          </div>
-          <ul class="p-0 flex gap-8 flex-col list-style-none">
-            {%- for option in results.sort_options -%}
-              {%- unless option.value == 'manual' and section.settings.show_feat_sort_opt == false -%}
-                {%- liquid
-                  assign is_checked = false
-                  if sort_by and sort_by != blank and option.value == sort_by
-                    assign is_checked = true
-                  endif
-                -%}
-                <li
-                  class="flex m-0 cursor-pointer pt-2 pb-2 px-2 rounded-6 list-style-none"
-                  data-sort-value="{{ option.value }}"
-                  data-sort-name="{{ option.name }}"
-                >
-                  {%
-                    render 'input-radio',
-                    id: 'filter-sort-' | append: forloop.index,
-                    name: 'sort_by',
-                    value: option.value,
-                    label: option.name,
-                    checked: is_checked,
-                    type: 'radio',
-                    input-class: "radio"
-                  %}
-                </li>
-              {%- endunless -%}
-            {%- endfor -%}
-          </ul>
+    <div class="disclosure__panel has-motion absolute z-9999 max-w-340 w-full bg-bg rounded-6 pl-0 pr-0 box-shadow">
+      <div class="sort__content flex flex-col gap-8 p-16">
+        <div class="flex items-center justify-between">
+          <h1 class="p-0 m-0 ff-bebas-neue fw-400 fs-21-lh-24-ls-1_2pct">
+            {{- 'products.sorting.sort_by_label' | t -}}
+          </h1>
+          <span class="cursor-pointer p-0 m-0 close-icon" id="sort-close-btn">
+            {% render 'icon-close', height: 28, width: 28 %}
+          </span>
         </div>
+        <ul class="p-0 flex gap-8 flex-col list-style-none">
+          {%- for option in results.sort_options -%}
+            {%- unless option.value == 'manual' and section.settings.show_feat_sort_opt == false -%}
+              {%- liquid
+                assign is_checked = false
+                if sort_by and sort_by != blank and option.value == sort_by
+                  assign is_checked = true
+                endif
+              -%}
+              <li
+                class="flex m-0 cursor-pointer pt-2 pb-2 px-2 rounded-6 list-style-none"
+                data-sort-value="{{ option.value }}"
+                data-sort-name="{{ option.name }}"
+              >
+                {%
+                  render 'input-radio',
+                  id: 'filter-sort-' | append: forloop.index,
+                  name: 'sort_by',
+                  value: option.value,
+                  label: option.name,
+                  checked: is_checked,
+                  type: 'radio',
+                  input-class: "radio"
+                %}
+              </li>
+            {%- endunless -%}
+          {%- endfor -%}
+        </ul>
+      </div>
+
+      <!-- Sticky footer Apply button -->
+      <div class="sort__footer">
+        <button id="apply-sort-btn">Apply</button>
       </div>
     </div>
   </details>
+  <div class="sort-overlay"></div>
 </details-disclosure>
 
 <script>
@@ -137,50 +213,73 @@
     const currentSortText = document.getElementById('current-sort-text');
     const closeBtn = document.getElementById('sort-close-btn');
     const sortItems = sortDetails?.querySelectorAll('.sort__content li');
+    const overlay = document.querySelector('.sort-overlay');
+    let selectedSort = null;
+
+    if (overlay) {
+      overlay.addEventListener('click', function () {
+        sortDetails.removeAttribute('open');
+      });
+    }
+
+    // Handle Apply button (mobile only)
+    const applyBtn = document.getElementById('apply-sort-btn');
+    if (applyBtn) {
+      applyBtn.addEventListener('click', function () {
+        if (selectedSort) {
+          handleSortChange(selectedSort.value, selectedSort.name);
+          sortDetails.removeAttribute('open');
+        }
+      });
+    }
 
     // Handle radio button changes
     if (radioInputs) {
       radioInputs.forEach(function (radio) {
         radio.addEventListener('change', function () {
           if (this.checked) {
-            handleSortChange(this.value, this.closest('li').dataset.sortName);
-          }
-        });
-      });
-    }
+            selectedSort = {
+              value: this.value,
+              name: this.closest('li').dataset.sortName,
+            };
 
-    // Handle clicking on list items (makes entire row clickable)
-    if (sortItems) {
-      sortItems.forEach(function (item) {
-        item.addEventListener('click', function (e) {
-          // Don't trigger if clicking directly on radio button (to avoid double trigger)
-          if (e.target.type !== 'radio') {
-            const radio = this.querySelector('input[type="radio"]');
-            if (radio && !radio.checked) {
-              radio.checked = true;
-              handleSortChange(radio.value, this.dataset.sortName);
+            // On desktop: apply immediately
+            if (window.innerWidth > 768) {
+              handleSortChange(selectedSort.value, selectedSort.name);
             }
           }
         });
       });
     }
 
-    // Handle close button click - clear sort (reset to default)
+    // Handle clicking on list items (entire row clickable)
+    if (sortItems) {
+      sortItems.forEach(function (item) {
+        item.addEventListener('click', function (e) {
+          if (e.target.type !== 'radio') {
+            const radio = this.querySelector('input[type="radio"]');
+            if (radio && !radio.checked) {
+              radio.checked = true;
+              radio.dispatchEvent(new Event('change'));
+            }
+          }
+        });
+      });
+    }
+
+    // Handle close button click - reset sort
     if (closeBtn) {
       closeBtn.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
 
-        // Show spinner immediately
         const spinner = document.getElementById('filtering-spinner');
         if (spinner) {
           spinner.classList.remove('hidden');
         }
 
-        // Close dropdown
         sortDetails.removeAttribute('open');
 
-        // Clear sort by removing sort_by parameter and reset to page 1
         const urlObj = new URL(window.location.href);
         urlObj.searchParams.delete('sort_by');
         urlObj.searchParams.delete('page');
@@ -189,37 +288,29 @@
       });
     }
 
-    // Close dropdown when clicking outside
+    // Close dropdown when clicking outside (desktop only)
     document.addEventListener('click', function (e) {
-      if (sortDetails && !sortDetails.contains(e.target) && sortDetails.open) {
+      if (window.innerWidth > 768 && sortDetails && !sortDetails.contains(e.target) && sortDetails.open) {
         sortDetails.removeAttribute('open');
       }
     });
 
     function handleSortChange(value, name) {
-      // Show spinner immediately
       const spinner = document.getElementById('filtering-spinner');
       if (spinner) {
         spinner.classList.remove('hidden');
       }
 
-      // Update display text immediately
       if (currentSortText && name) {
         currentSortText.textContent = name;
       }
 
-      // Close the dropdown after selection
       setTimeout(function () {
         sortDetails.removeAttribute('open');
       }, 150);
 
-      // Apply sort
       setTimeout(function () {
-        const mockEvent = {
-          detail: {
-            selectedValue: value,
-          },
-        };
+        const mockEvent = { detail: { selectedValue: value } };
 
         if (window.customElements && customElements.get('products-toolbar')) {
           const ProductsToolbar = customElements.get('products-toolbar');
@@ -227,7 +318,6 @@
         } else {
           const urlObj = new URL(window.location.href);
           urlObj.searchParams.set('sort_by', value);
-          // Reset to page 1 when sorting
           urlObj.searchParams.delete('page');
           urlObj.searchParams.delete('phcursor');
           urlObj.hash = 'products-toolbar';

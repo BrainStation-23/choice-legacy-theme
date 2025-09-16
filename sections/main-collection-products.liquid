@@ -37,7 +37,7 @@
         <div class="flex flex-col gap-32">
           <div class="flex flex-col gap-24">
             <h1 class="m-0 p-0 ff-bebas-neue fs-36-lh-40-ls-0 fw-400">{{ 'main-category.title' | t }}</h1>
-            <div class="grid grid-cols-4 gap-16">
+            <div class="grid grid-cols-4  sm:grid-cols-2  gap-16">
               {% for item in collection.metafields.custom.featured_collections.value %}
                 {% render 'product-card',
                   product: item,
@@ -48,96 +48,108 @@
               {% endfor %}
             </div>
           </div>
-
-          {% if section.settings.enable_sorting %}
-            {% render 'fact-sort', results: collection, section: section %}
-          {% endif %}
-
-          <div class="main-products-grid__results relative flex-auto" id="filter-results">
-            <!-- Spinner overlay for filtering and sorting -->
-            <div
-              id="filtering-spinner"
-              class="filtering-spinner hidden absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-10"
-            >
-              <spinner-component size="medium" color="primary"></spinner-component>
+          {% if section.settings.enable_sorting or section.settings.enable_filtering %}
+            <div class="flex justify-between gap-8">
+              <div class="w-full">
+                {% if section.settings.enable_sorting %}
+                  {% render 'fact-sort', results: collection, section: section %}
+                {% endif %}
+              </div>
+              <div class="w-full ">
+                {%- if collection.filters != empty and section.settings.enable_filtering -%}
+                  <div class="main-products-grid__filters">
+                    {% render 'facet-filters', results: collection, section: section %}
+                  </div>
+                {%- endif -%}
+              </div>
             </div>
 
-            {%- if collection.products.size == 0 -%}
-              <p>{{ 'sections.collection.empty' | t }}</p>
-            {%- else -%}
-              {%- liquid
-                assign active_filters_count = 0
-                if collection.filters != empty
-                  for filter in collection.filters
-                    if filter.type == 'price_range'
-                      if filter.min_value.value
-                        assign active_filters_count = active_filters_count | plus: 1
-                      endif
-                      if filter.max_value.value
-                        assign active_filters_count = active_filters_count | plus: 1
-                      endif
-                    else
-                      assign active_filters_count = active_filters_count | plus: filter.active_values.size
-                    endif
-                  endfor
-                endif
-              -%}
-
+            <div class="main-products-grid__results relative flex-auto" id="filter-results">
+              <!-- Spinner overlay for filtering and sorting -->
               <div
-                class="grid grid-cols-4 sm:grid-cols-2 gap-16"
-                data-filters-open-classes=""
-                data-filters-closed-classes=""
-                role="list"
+                id="filtering-spinner"
+                class="filtering-spinner hidden absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-10"
               >
-                {%- assign rendered_product_ids = '' -%}
-                {%- for product in collection.products -%}
-                  {%- assign product_index = forloop.index -%}
-                  {%- for block in section.blocks -%}
-                    {%- liquid
-                      unless block.settings.position == 'top' or block.settings.position == 'bottom'
-                        assign is_last_position = false
+                <spinner-component size="medium" color="primary"></spinner-component>
+              </div>
 
-                        if product_index == block.settings.position or is_last_position
-                          if paginate.pages == 0 or paginate.current_page == 1
-                            if active_filters_count == 0 or block.settings.hide_on_filter == false
-                              if product_index == collection.products.size and block.settings.position > product_index
-                                assign is_last_position = true
+              {%- if collection.products.size == 0 -%}
+                <p>{{ 'sections.collection.empty' | t }}</p>
+              {%- else -%}
+                {%- liquid
+                  assign active_filters_count = 0
+                  if collection.filters != empty
+                    for filter in collection.filters
+                      if filter.type == 'price_range'
+                        if filter.min_value.value
+                          assign active_filters_count = active_filters_count | plus: 1
+                        endif
+                        if filter.max_value.value
+                          assign active_filters_count = active_filters_count | plus: 1
+                        endif
+                      else
+                        assign active_filters_count = active_filters_count | plus: filter.active_values.size
+                      endif
+                    endfor
+                  endif
+                -%}
+
+                <div
+                  class="grid grid-cols-4 sm:grid-cols-2 gap-16"
+                  data-filters-open-classes=""
+                  data-filters-closed-classes=""
+                  role="list"
+                >
+                  {%- assign rendered_product_ids = '' -%}
+                  {%- for product in collection.products -%}
+                    {%- assign product_index = forloop.index -%}
+                    {%- for block in section.blocks -%}
+                      {%- liquid
+                        unless block.settings.position == 'top' or block.settings.position == 'bottom'
+                          assign is_last_position = false
+
+                          if product_index == block.settings.position or is_last_position
+                            if paginate.pages == 0 or paginate.current_page == 1
+                              if active_filters_count == 0 or block.settings.hide_on_filter == false
+                                if product_index == collection.products.size and block.settings.position > product_index
+                                  assign is_last_position = true
+                                endif
                               endif
                             endif
                           endif
-                        endif
-                      endunless
-                    -%}
-                    {%- if is_last_position -%}
-                      {%- unless rendered_product_ids contains product.id -%}
-                        {%- assign rendered_product_ids = rendered_product_ids | append: product.id | append: ',' -%}
-                        <div class="js-pagination-result">
-                          {% render 'product-card',
-                            product: product,
-                            collection: collection,
-                            image_ratio: image_ratio,
-                            show_compare: settings.enable_compare
-                          %}
-                        </div>
-                      {%- endunless -%}
-                    {%- endif -%}
-                  {%- endfor -%}
+                        endunless
+                      -%}
+                      {%- if is_last_position -%}
+                        {%- unless rendered_product_ids contains product.id -%}
+                          {%- assign rendered_product_ids = rendered_product_ids | append: product.id | append: ',' -%}
+                          <div class="js-pagination-result">
+                            {% render 'product-card',
+                              product: product,
+                              collection: collection,
+                              image_ratio: image_ratio,
+                              show_compare: settings.enable_compare
+                            %}
+                          </div>
+                        {%- endunless -%}
+                      {%- endif -%}
+                    {%- endfor -%}
 
-                  {%- unless is_last_position and rendered_product_ids contains product.id -%}
-                    {%- assign rendered_product_ids = rendered_product_ids | append: product.id | append: ',' -%}
-                    <div class="js-pagination-result">
-                      {% render 'product-card',
-                        product: product,
-                        collection: collection,
-                        image_ratio: image_ratio,
-                        show_compare: settings.enable_compare
-                      %}
-                    </div>
-                  {%- endunless -%}
-                {%- endfor -%}
-              </div>
-            {%- endif -%}
-          </div>
+                    {%- unless is_last_position and rendered_product_ids contains product.id -%}
+                      {%- assign rendered_product_ids = rendered_product_ids | append: product.id | append: ',' -%}
+                      <div class="js-pagination-result">
+                        {% render 'product-card',
+                          product: product,
+                          collection: collection,
+                          image_ratio: image_ratio,
+                          show_compare: settings.enable_compare
+                        %}
+                      </div>
+                    {%- endunless -%}
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+            </div>
+          {% endif %}
 
           <div class="pagination-container">
             {%- if paginate.pages > 1 -%}
