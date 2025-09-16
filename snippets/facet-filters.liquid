@@ -170,7 +170,7 @@
   <script src="{{ 'price-range.js' | asset_url }}" defer="defer"></script>
 {%- endif -%}
 
-<div class="filter-container flex flex-col gap-8  items-center justify-center ">
+<div class=" flex flex-col gap-8  items-center justify-center ">
   <facet-filters
     class="facets  flex gap-32 flex-col w-full has-motion"
     data-name="facet-filters"
@@ -183,11 +183,16 @@
     aria-hidden="true"
     tabindex="-1"
   >
-    <div class="flex gap-2 flex-col">
-      <h1 class="p-0 m-0 ff-bebas-neue fs-36-lh-40-ls-0 fw-400">{{ results.title }}</h1>
-      <h3 class="p-0 m-0 fw-400 ff-general-sans fs-14-lh-20-ls-0_1 ">
-        {{ 'products.filtering.show_result_count.showing' | t: count: results.products_count }}
-      </h3>
+    <div class="flex justify-between items-center ">
+      <div class="flex gap-2 flex-col">
+        <h1 class="p-0 m-0 ff-bebas-neue fs-36-lh-40-ls-0 fw-400">{{ results.title }}</h1>
+        <h3 class="p-0 m-0 fw-400 ff-general-sans fs-14-lh-20-ls-0_1 ">
+          {{ 'products.filtering.show_result_count.showing' | t: count: results.products_count }}
+        </h3>
+      </div>
+      <div class="hidden sm:block" id="filter-close-button">
+        {% render 'close-button' %}
+      </div>
     </div>
     <div>
       <form id="facets" data-filter-section-id="{{ section.id }}" class="flex flex-col gap-16" novalidate>

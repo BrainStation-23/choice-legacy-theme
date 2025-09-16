@@ -65,15 +65,8 @@
     width: 36px !important;
   }
 
-  .sort__footer {
-    display: none; /* Hide on desktop */
-  }
-
   /* Mobile sort side modal */
   @media (max-width: 768px) {
-    .sort__footer {
-      display: block;
-    }
     .disclosure__panel.has-motion {
       position: fixed !important;
       top: 0;
@@ -125,8 +118,9 @@
   >
     <summary class="filter__toggle list-style-none w-full max-w-200 h-40 border-1 border-solid border-color flex items-center justify-between rounded-6 p-8 cursor-pointer relative ">
       <span class="current-sort-display fw-400 fs-14-lh-16-ls-0 " id="current-sort-text">
-        {{ current_sort_name }}
+        {{- 'products.sorting.sort_by_label' | t -}}
       </span>
+
       <span class="disclosure__toggle">
         {% render 'icon-arrow-down' %}
       </span>
@@ -172,14 +166,6 @@
         </ul>
       </div>
 
-      <div class="sort__footer p-16  mt-auto">
-        <button
-          id="apply-sort-btn"
-          class="button--solid button-primary border-none w-full rounded-12 fs-16-lh-20-ls-0_1 fw-600"
-        >
-          {{ 'products.filtering.apply' | t }}
-        </button>
-      </div>
     </div>
   </details>
   <div class="sort-overlay"></div>
@@ -193,7 +179,6 @@
     const closeBtn = document.getElementById('sort-close-btn');
     const sortItems = sortDetails?.querySelectorAll('.sort__content li');
     const overlay = document.querySelector('.sort-overlay');
-    let selectedSort = null;
 
     if (overlay) {
       overlay.addEventListener('click', function () {
@@ -201,31 +186,21 @@
       });
     }
 
-    // Handle Apply button (mobile only)
-    const applyBtn = document.getElementById('apply-sort-btn');
-    if (applyBtn) {
-      applyBtn.addEventListener('click', function () {
-        if (selectedSort) {
-          handleSortChange(selectedSort.value, selectedSort.name);
-          sortDetails.removeAttribute('open');
-        }
-      });
-    }
-
-    // Handle radio button changes
+    // Handle radio button changes - apply immediately for both desktop and mobile
     if (radioInputs) {
       radioInputs.forEach(function (radio) {
         radio.addEventListener('change', function () {
           if (this.checked) {
-            selectedSort = {
-              value: this.value,
-              name: this.closest('li').dataset.sortName,
-            };
-
-            // On desktop: apply immediately
-            if (window.innerWidth > 768) {
-              handleSortChange(selectedSort.value, selectedSort.name);
-            }
+            const sortValue = this.value;
+            const sortName = this.closest('li').dataset.sortName;
+            
+            // Apply sort immediately
+            handleSortChange(sortValue, sortName);
+            
+            // Close modal immediately after selection
+            setTimeout(function () {
+              sortDetails.removeAttribute('open');
+            }, 150);
           }
         });
       });
@@ -252,18 +227,8 @@
         e.preventDefault();
         e.stopPropagation();
 
-        const spinner = document.getElementById('filtering-spinner');
-        if (spinner) {
-          spinner.classList.remove('hidden');
-        }
-
         sortDetails.removeAttribute('open');
-
-        const urlObj = new URL(window.location.href);
-        urlObj.searchParams.delete('sort_by');
-        urlObj.searchParams.delete('page');
-        urlObj.searchParams.delete('phcursor');
-        window.location.href = urlObj.toString();
+        handleSortReset();
       });
     }
 
@@ -280,15 +245,25 @@
         spinner.classList.remove('hidden');
       }
 
-      if (currentSortText && name) {
-        currentSortText.textContent = name;
-      }
+      // Keep the button text as "Sort by" instead of showing selected option
+      // if (currentSortText && name) {
+      //   currentSortText.textContent = name;
+      // }
 
-      setTimeout(function () {
-        sortDetails.removeAttribute('open');
-      }, 150);
-
-      setTimeout(function () {
+      // Check if facet filters component exists (AJAX filtering enabled)
+      const facetFilters = document.querySelector('facet-filters');
+      if (facetFilters) {
+        // Use AJAX approach through facet filters
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('sort_by', value);
+        currentUrl.searchParams.delete('page');
+        currentUrl.searchParams.delete('phcursor');
+        
+        // Call the facet filters applyFilters method
+        const searchParams = currentUrl.searchParams.toString();
+        facetFilters.applyFilters(searchParams, null, true);
+      } else {
+        // Fallback to products toolbar or page refresh
         const mockEvent = { detail: { selectedValue: value } };
 
         if (window.customElements && customElements.get('products-toolbar')) {
@@ -302,7 +277,40 @@
           urlObj.hash = 'products-toolbar';
           window.location.href = urlObj.toString();
         }
-      }, 200);
+      }
+    }
+
+    function handleSortReset() {
+      const spinner = document.getElementById('filtering-spinner');
+      if (spinner) {
+        spinner.classList.remove('hidden');
+      }
+
+      // Keep the button text as "Sort by" (it's already set in the HTML)
+      // if (currentSortText) {
+      //   currentSortText.textContent = "{{ 'products.sorting.sort_by_label' | t }}";
+      // }
+
+      // Check if facet filters component exists (AJAX filtering enabled)
+      const facetFilters = document.querySelector('facet-filters');
+      if (facetFilters) {
+        // Use AJAX approach through facet filters
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.delete('sort_by');
+        currentUrl.searchParams.delete('page');
+        currentUrl.searchParams.delete('phcursor');
+        
+        // Call the facet filters applyFilters method
+        const searchParams = currentUrl.searchParams.toString();
+        facetFilters.applyFilters(searchParams, null, true);
+      } else {
+        // Fallback to page refresh
+        const urlObj = new URL(window.location.href);
+        urlObj.searchParams.delete('sort_by');
+        urlObj.searchParams.delete('page');
+        urlObj.searchParams.delete('phcursor');
+        window.location.href = urlObj.toString();
+      }
     }
   });
 </script>
