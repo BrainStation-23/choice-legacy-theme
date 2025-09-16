@@ -6,7 +6,7 @@
     {%- assign mobile_image = section.settings.mobile_image -%}
     <div class="w-full">
       {%- if desktop_image != blank or mobile_image != blank -%}
-        <div class="media relative w-full h-254" style="">
+        <div class="media relative w-full h-254">
           {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
           {%- render 'image-desktop-and-mobile',
             class: 'img-fit',
@@ -37,7 +37,7 @@
         <div class="flex flex-col gap-32">
           <div class="flex flex-col gap-24">
             <h1 class="m-0 p-0 ff-bebas-neue fs-36-lh-40-ls-0 fw-400">{{ 'main-category.title' | t }}</h1>
-            <div class="grid grid-cols-4  sm:grid-cols-2  gap-16">
+            <div class="grid grid-cols-4 sm:grid-cols-2 gap-16">
               {% for item in collection.metafields.custom.featured_collections.value %}
                 {% render 'product-card',
                   product: item,
@@ -58,15 +58,43 @@
               </div>
 
               {%- if collection.filters != empty and section.settings.enable_filtering -%}
-                <div class="main-products-grid__filters w-full hidden sm:flex ">
-                  {% render 'facet-filters', results: collection, section: section %}
+                <!-- Filter button -->
+                <div
+                  class="w-full h-40 border-1 border-solid border-color hidden sm:flex items-center justify-between rounded-6 p-8 cursor-pointer relative w-400 fs-14-lh-16-ls-0"
+                  id="filter-button"
+                  data-type="filter"
+                >
+                  <div class="flex items-center gap-6">
+                    {% render 'icon-filter' %}
+                    Filter
+                  </div>
+                  <span class="arrow-icon-filter">
+                    {% render 'icon-arrow-down' %}
+                  </span>
                 </div>
+
+                <!-- Mobile filter modal panel -->
+                <div class="main-products-grid__filters-mobile flex flex-col hidden sm:flex">
+                  <div class="filters-content flex-1 overflow-y-auto">
+                    {% render 'facet-filters', results: collection, section: section %}
+                  </div>
+                  <div class="filters-footer p-16 border-t border-color bg-var(--color-background)">
+                    <button
+                      id="apply-filters-btn"
+                      class="button--solid button-primary border-none w-full rounded-12 fs-16-lh-20-ls-0_1 fw-600"
+                    >
+                      {{ 'products.filtering.apply' | t }}
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Overlay -->
+                <div class="filter-overlay"></div>
               {%- endif -%}
             </div>
           {% endif %}
 
           <div class="main-products-grid__results relative flex-auto" id="filter-results">
-            <!-- Spinner overlay for filtering and sorting -->
             <div
               id="filtering-spinner"
               class="filtering-spinner hidden absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-10"
@@ -77,76 +105,17 @@
             {%- if collection.products.size == 0 -%}
               <p>{{ 'sections.collection.empty' | t }}</p>
             {%- else -%}
-              {%- liquid
-                assign active_filters_count = 0
-                if collection.filters != empty
-                  for filter in collection.filters
-                    if filter.type == 'price_range'
-                      if filter.min_value.value
-                        assign active_filters_count = active_filters_count | plus: 1
-                      endif
-                      if filter.max_value.value
-                        assign active_filters_count = active_filters_count | plus: 1
-                      endif
-                    else
-                      assign active_filters_count = active_filters_count | plus: filter.active_values.size
-                    endif
-                  endfor
-                endif
-              -%}
-
-              <div
-                class="grid grid-cols-4 sm:grid-cols-2 gap-16"
-                data-filters-open-classes=""
-                data-filters-closed-classes=""
-                role="list"
-              >
-                {%- assign rendered_product_ids = '' -%}
-                {%- for product in collection.products -%}
-                  {%- assign product_index = forloop.index -%}
-                  {%- for block in section.blocks -%}
-                    {%- liquid
-                      unless block.settings.position == 'top' or block.settings.position == 'bottom'
-                        assign is_last_position = false
-
-                        if product_index == block.settings.position or is_last_position
-                          if paginate.pages == 0 or paginate.current_page == 1
-                            if active_filters_count == 0 or block.settings.hide_on_filter == false
-                              if product_index == collection.products.size and block.settings.position > product_index
-                                assign is_last_position = true
-                              endif
-                            endif
-                          endif
-                        endif
-                      endunless
-                    -%}
-                    {%- if is_last_position -%}
-                      {%- unless rendered_product_ids contains product.id -%}
-                        {%- assign rendered_product_ids = rendered_product_ids | append: product.id | append: ',' -%}
-                        <div class="js-pagination-result">
-                          {% render 'product-card',
-                            product: product,
-                            collection: collection,
-                            image_ratio: image_ratio,
-                            show_compare: settings.enable_compare
-                          %}
-                        </div>
-                      {%- endunless -%}
-                    {%- endif -%}
-                  {%- endfor -%}
-
-                  {%- unless is_last_position and rendered_product_ids contains product.id -%}
-                    {%- assign rendered_product_ids = rendered_product_ids | append: product.id | append: ',' -%}
-                    <div class="js-pagination-result">
-                      {% render 'product-card',
-                        product: product,
-                        collection: collection,
-                        image_ratio: image_ratio,
-                        show_compare: settings.enable_compare
-                      %}
-                    </div>
-                  {%- endunless -%}
-                {%- endfor -%}
+              <div class="grid grid-cols-4 sm:grid-cols-2 gap-16">
+                {% for product in collection.products %}
+                  <div class="js-pagination-result">
+                    {% render 'product-card',
+                      product: product,
+                      collection: collection,
+                      image_ratio: image_ratio,
+                      show_compare: settings.enable_compare
+                    %}
+                  </div>
+                {% endfor %}
               </div>
             {%- endif -%}
           </div>
@@ -161,6 +130,184 @@
     {%- endpaginate -%}
   </div>
 </div>
+
+<style>
+  /* Filter button - mobile only */
+  #filter-button {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    #filter-button {
+      display: flex;
+    }
+    .arrow-icon-filter svg path {
+      fill: rgb(var(--color-border));
+    }
+
+    /* Overlay */
+    .filter-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 9998;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .filter-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* Mobile filter panel - mobile only */
+    .main-products-grid__filters-mobile {
+      display: none;
+    }
+
+    .filters-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+    .main-products-grid__filters-mobile .disclosure__panel {
+      position: relative !important;
+      z-index: auto !important;
+      transform: none !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      padding: 0 !important;
+      margin-top: 8px !important;
+    }
+
+    .main-products-grid__filters-mobile .filter__toggle {
+      border-bottom: 1px solid #eee !important;
+    }
+
+    .main-products-grid__filters-mobile .filter__toggle-item {
+      border: none !important;
+      padding: 0 !important;
+    }
+
+    .main-products-grid__filters-mobile .disclosure__toggle svg {
+      transform: rotate(0deg) !important;
+    }
+
+    .main-products-grid__filters-mobile details[open] .disclosure__toggle svg {
+      transform: rotate(180deg) !important;
+    }
+    .main-products-grid__filters-mobile {
+      position: fixed !important;
+      top: 0;
+      right: -340px;
+      width: 340px;
+      max-width: 340px;
+      height: 100%;
+      background: rgb(var(--color-background));
+      z-index: 9999;
+      transform: translateX(0);
+      opacity: 1;
+      transition: right 0.3s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .main-products-grid__filters-mobile.open {
+      right: 0;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const filterButton = document.getElementById('filter-button');
+    const filterPanel = document.querySelector('.main-products-grid__filters-mobile');
+    const overlay = document.querySelector('.filter-overlay');
+    const applyBtn = document.getElementById('apply-filters-btn');
+
+    // Debug logging
+    console.log('Filter elements:', { filterButton, filterPanel, overlay, applyBtn });
+
+    // Open panel
+    if (filterButton && filterPanel && overlay) {
+      filterButton.addEventListener('click', function (e) {
+        e.preventDefault();
+        console.log('Filter button clicked');
+        filterPanel.classList.add('open');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+      });
+    }
+
+    // Close panel when clicking overlay
+    if (overlay && filterPanel) {
+      overlay.addEventListener('click', function () {
+        console.log('Overlay clicked');
+        filterPanel.classList.remove('open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scrolling
+      });
+    }
+
+    // Apply filters button
+    if (applyBtn && filterPanel && overlay) {
+      applyBtn.addEventListener('click', function () {
+        console.log('Apply button clicked');
+
+        // Show spinner
+        const spinner = document.getElementById('filtering-spinner');
+        if (spinner) {
+          spinner.classList.remove('hidden');
+        }
+
+        // Close the modal first
+        filterPanel.classList.remove('open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+
+        // Get all checked filters and submit
+        const form = document.querySelector('#facets');
+        if (form) {
+          // Create a FormData object from the form
+          const formData = new FormData(form);
+          const urlObj = new URL(window.location.href);
+
+          // Clear existing filter parameters
+          const paramsToKeep = ['sort_by'];
+          const newUrl = new URL(urlObj.origin + urlObj.pathname);
+
+          // Keep sort_by if it exists
+          const sortBy = urlObj.searchParams.get('sort_by');
+          if (sortBy) {
+            newUrl.searchParams.set('sort_by', sortBy);
+          }
+
+          // Add filter parameters
+          for (const [key, value] of formData.entries()) {
+            if (value && key !== 'sort_by') {
+              newUrl.searchParams.append(key, value);
+            }
+          }
+
+          // Navigate to the new URL
+          window.location.href = newUrl.toString();
+        }
+      });
+    }
+
+    // Close on escape key
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && filterPanel && filterPanel.classList.contains('open')) {
+        filterPanel.classList.remove('open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+    });
+  });
+</script>
 
 {% schema %}
 {

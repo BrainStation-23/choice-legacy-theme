@@ -10,21 +10,104 @@
   .filter-label {
     font-size: 14px !important;
   }
-  
+
   /* Filtering spinner overlay styles */
   .filtering-spinner {
     backdrop-filter: blur(3px);
     transition: all 0.3s ease-in-out;
   }
-  
+
   .filtering-spinner.hidden {
     opacity: 0;
     pointer-events: none;
   }
-  
+
   .filtering-spinner:not(.hidden) {
     opacity: 1;
     pointer-events: all;
+  }
+
+  @media (max-width: 768px) {
+    #filter-button {
+      display: flex;
+    }
+    .arrow-icon-filter svg path {
+      fill: rgb(var(--color-border));
+    }
+
+    /* Overlay */
+    .filter-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 9998;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease-in-out;
+    }
+
+    .filter-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* Mobile filter panel - mobile only */
+    .main-products-grid__filters-mobile {
+      display: none;
+    }
+
+    .filters-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px;
+    }
+    .main-products-grid__filters-mobile .disclosure__panel {
+      position: relative !important;
+      z-index: auto !important;
+      transform: none !important;
+      box-shadow: none !important;
+      border-radius: 0 !important;
+      background: transparent !important;
+      padding: 0 !important;
+      margin-top: 8px !important;
+    }
+
+    .main-products-grid__filters-mobile .filter__toggle {
+      border-bottom: 1px solid #eee !important;
+    }
+
+    .main-products-grid__filters-mobile .filter__toggle-item {
+      border: none !important;
+      padding: 0 !important;
+    }
+
+    .main-products-grid__filters-mobile .disclosure__toggle svg {
+      transform: rotate(0deg) !important;
+    }
+
+    .main-products-grid__filters-mobile details[open] .disclosure__toggle svg {
+      transform: rotate(180deg) !important;
+    }
+    .main-products-grid__filters-mobile {
+      position: fixed !important;
+      top: 0;
+      right: -340px;
+      width: 340px;
+      max-width: 340px;
+      height: 100%;
+      background: rgb(var(--color-background));
+      z-index: 9999;
+      transform: translateX(0);
+      opacity: 1;
+      transition: right 0.3s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .main-products-grid__filters-mobile.open {
+      right: 0;
+    }
   }
 </style>
 
@@ -87,7 +170,7 @@
   <script src="{{ 'price-range.js' | asset_url }}" defer="defer"></script>
 {%- endif -%}
 
-<div class="flex flex-col gap-8  items-center justify-center ">
+<div class="filter-container flex flex-col gap-8  items-center justify-center ">
   <facet-filters
     class="facets  flex gap-32 flex-col w-full has-motion"
     data-name="facet-filters"
