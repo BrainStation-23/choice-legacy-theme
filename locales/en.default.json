@@ -430,5 +430,11 @@
         }
       }
     }
+  },
+  "beauty_profile": {
+    "banner": {
+      "heading": "personalised beauty suggestions",
+      "subheading": "Reduces acne, dark spots & hyperpigmentation, Regulates oil, and Improves uneven texture."
+    }
   }
 }

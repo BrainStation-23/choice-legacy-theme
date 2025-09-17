@@ -1217,6 +1217,9 @@ address {
 .h-220 {
   height: 220px;
 }
+.h-222 {
+  height: 222px;
+}
 .h-228 {
   height: 228px;
 }
@@ -1369,6 +1372,9 @@ address {
 }
 .w-296 {
   width: 296px;
+}
+.w-277 {
+  width: 277px;
 }
 .w-268 {
   width: 268px;
@@ -2300,6 +2306,9 @@ address {
 }
 .p-24 {
   padding: calc(24 * var(--space-unit));
+}
+.p-40 {
+  padding: calc(40 * var(--space-unit));
 }
 .pb-0 {
   padding-bottom: 0;

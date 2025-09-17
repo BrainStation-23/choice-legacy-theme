@@ -1,16 +1,74 @@
-console.log("LOADED", window.APP_SUB_PATH);
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
+  function createProfileTypes(productTypeQuestion) {
+    const container = document.getElementById("beauty-profile-types-container");
+
+    if (!container) return;
+
+    if (productTypeQuestion && productTypeQuestion.options) {
+      const cardsHtml = productTypeQuestion.options
+        .map(
+          (option) => `
+        <div class="profile-type-card flex flex-col items-center gap-12 w-277 pt-12">
+          <div>
+            <div class="relative w-277">
+              <img
+                src="${option.image}"
+                alt="${option.label} profile"
+                loading="lazy"
+                class="relative w-full h-222 object-cover"
+              >
+            </div>
+
+            <div class="w-full">
+              <h3 class="w-full rounded-b-l-32 rounded-b-r-32 text-center uppercase pt-12 pr-8 pb-12 pl-8 bg-brand text-bg fs-26-lh-26-ls-1_2 fw-400">
+                ${option.label}
+              </h3>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            class="setup-now-btn button button--outline w-full flex gap-4 justify-center items-center fs-16-lh-100pct-ls-0"
+            data-profile-type="${option.value}"
+          >
+            <svg width="29" height="28" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6.10352 13.9492C6.10352 13.2559 6.67969 12.6895 7.36328 12.6895H13.1055V6.94727C13.1055 6.26367 13.6719 5.6875 14.3652 5.6875C15.0586 5.6875 15.625 6.26367 15.625 6.94727V12.6895H21.3672C22.0605 12.6895 22.627 13.2559 22.627 13.9492C22.627 14.6426 22.0605 15.209 21.3672 15.209H15.625V20.9512C15.625 21.6445 15.0586 22.2109 14.3652 22.2109C13.6719 22.2109 13.1055 21.6445 13.1055 20.9512V15.209H7.36328C6.67969 15.209 6.10352 14.6426 6.10352 13.9492Z" fill="#FB6F92"/>
+            </svg>
+            <span>Setup Now</span>
+          </button>
+        </div>
+      `
+        )
+        .join("");
+
+      container.innerHTML = `
+        ${cardsHtml}
+      `;
+
+      container.querySelectorAll(".setup-now-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          handleProfileSelection(button.dataset.profileType);
+        });
+      });
+    }
+  }
+
   const apiUrl = `/apps/${window.APP_SUB_PATH}/customer/beauty-profile`;
-  fetch(`${apiUrl}/questions`)
-    .then((response) => {
-      return response.json();
-    })
-    .then((data) => {
-      console.log("Beauty Profile API Response:", data);
-    })
-    .catch((error) => {
-      console.error("There was a problem fetching the beauty profile:", error);
-    });
+
+  try {
+    const response = await fetch(`${apiUrl}/questions`);
+    const { questions } = await response.json();
+
+    if (!questions || questions.length === 0) {
+      return;
+    }
+
+    const productTypeQuestion = questions.find((q) => q.key === "product_type");
+
+    createProfileTypes(productTypeQuestion);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 // document.addEventListener("DOMContentLoaded", async function () {

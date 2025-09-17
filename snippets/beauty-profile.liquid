@@ -61,6 +61,12 @@
   <div id="suggestion-output" style="margin-top: 1rem; font-weight: bold;"></div>
 </div> {% endcomment %}
 
+<div class="page-width">
+  <div class="flex flex-col gap-24">
+    {% render "beauty-profile-banner" %}
 
-<h1>Beauty profile</h1>
+    {% render "beauty-profile-types" %}
+  </div>
+</div>
+
 <script src="{{ 'beauty-profile.js' | asset_url }}" defer></script>
