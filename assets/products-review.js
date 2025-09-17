@@ -6,7 +6,6 @@
   reviewAppContainers.forEach((container) => {
     const sectionId = container.dataset.sectionId;
     const productId = container.dataset.productId;
-    const productHandle = container.dataset.productHandle;
     const shopDomain = container.dataset.shopDomain;
     const starColorFilled = container.dataset.starFilledColor || "#FFD700";
     const starColorEmpty = container.dataset.starEmptyColor || "#CCCCCC";
@@ -352,7 +351,7 @@
         .replace(/'/g, "&#039;");
     }
 
-    if (productId && productHandle && shopDomain) {
+    if (productId && shopDomain) {
       fetchReviews();
       document.addEventListener("review:submitted", () => fetchReviews());
     } else {

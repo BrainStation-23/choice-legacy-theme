@@ -83,7 +83,7 @@
       data-write-review-btn
       data-section-id="customer-review-modal"
       data-product-id="${item.productId}"
-      data-product-handle="${item.productHandle}">
+      >
       Review
       </button>`;
       const reviewColumnContent =
@@ -214,13 +214,11 @@
         );
         if (!reviewTriggerButton) return;
         const productId = reviewTriggerButton.dataset.productId;
-        const productHandle = reviewTriggerButton.dataset.productHandle;
         const reviewModal = document.getElementById(
           "review-modal-customer-review-modal"
         );
         if (reviewModal) {
           reviewModal.dataset.productId = productId;
-          reviewModal.dataset.productHandle = productHandle;
         }
       });
     }
