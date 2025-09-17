@@ -9,11 +9,9 @@
         {% render 'account-information', customer: customer %}
       </div>
 
-      <div id="my_beauties_profile-content" class="account-content-section" style="display: none;">
-        <div id="my_beauties_profile-section">
-          {% comment %} Add your beauties profile content here {% endcomment %}
-          <h2>My Beauties Profile</h2>
-          <p>Customize your beauty preferences and profile.</p>
+      <div id="beauty_profile-content" class="account-content-section" style="display: none;">
+        <div id="beauty_profile-section">
+          {% render "beauty-profile" %}
         </div>
       </div>
 
@@ -125,7 +123,7 @@
     if (contentType === 'coming-soon') contentType = 'my_profile';
 
     const contentMapping = {
-      'my-profile': 'my-profile', my_profile: 'my-profile', my_beauties_profile: 'my_beauties_profile',
+      'my-profile': 'my-profile', my_profile: 'my-profile', beauty_profile: 'beauty_profile',
       orders: 'orders', addresses: 'addresses', rewards: 'rewards',
       wishlist: 'wishlist', support: 'support', reviews: 'reviews',
     };

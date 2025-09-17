@@ -74,11 +74,11 @@
       <div
         class="customer-account__sidebar-item gap-8  flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
         data-tab="my-beauties-profile"
-        onclick="selectItem(this, 'brash-icon', '{{ 'customer.account.my_beauties_profile' | t }}', 'my_beauties_profile')"
+        onclick="selectItem(this, 'brash-icon', '{{ 'customer.account.beauty_profile' | t }}', 'beauty_profile')"
       >
         {% render 'brash-icon' %}
         <h2 class="account-sidebar-item-title ff-general-sans fs-16-lh-16-ls-0 fw-500 text-primary-90pct m-0">
-          {{ 'customer.account.my_beauties_profile' | t }}
+          {{ 'customer.account.beauty_profile' | t }}
         </h2>
       </div>
 
@@ -164,7 +164,7 @@
   class SidebarNavigation {
     constructor() {
       this.defaultTab = 'my-profile';
-      this.validTabs = ['my-profile', 'my_beauties_profile', 'orders', 'addresses', 'rewards', 'wishlist', 'reviews'];
+      this.validTabs = ['my-profile', 'beauty_profile', 'orders', 'addresses', 'rewards', 'wishlist', 'reviews'];
       this.init();
     }
 
