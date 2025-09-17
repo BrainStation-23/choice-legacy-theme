@@ -390,6 +390,7 @@
           "type": "product_video",
           "settings": {
             "product": "facewash-1",
+            "custom_thumbnail": "shopify://shop_images/source_1993_Skincare_Faves_preview.jpg",
             "video_type": "youtube",
             "youtube_url": "https://www.youtube.com/watch?v=_nuUtmhaUEc",
             "video_url": "",
@@ -401,6 +402,7 @@
           "type": "product_video",
           "settings": {
             "product": "facewash-2",
+            "custom_thumbnail": "shopify://shop_images/source_1992_Frudia_Suncreen_preview.jpg",
             "video_type": "youtube",
             "youtube_url": "https://www.youtube.com/watch?v=_nuUtmhaUEc",
             "video_url": "",
@@ -412,6 +414,7 @@
           "type": "product_video",
           "settings": {
             "product": "facewash-4",
+            "custom_thumbnail": "shopify://shop_images/source_1993_Skincare_Faves_preview.jpg",
             "video_type": "youtube",
             "youtube_url": "https://www.youtube.com/watch?v=fPlumnuhTco",
             "video_url": "",
@@ -423,6 +426,7 @@
           "type": "product_video",
           "settings": {
             "product": "lip-makeup",
+            "custom_thumbnail": "shopify://shop_images/source_1992_Frudia_Suncreen_preview.jpg",
             "video_type": "youtube",
             "youtube_url": "https://www.youtube.com/watch?v=fPlumnuhTco",
             "video_url": "",
@@ -434,8 +438,9 @@
           "type": "product_video",
           "settings": {
             "product": "axis-y-dark-spot-correcting-glow-serum-5ml",
+            "custom_thumbnail": "shopify://shop_images/source_1993_Skincare_Faves_preview.jpg",
             "video_type": "youtube",
-            "youtube_url": "",
+            "youtube_url": "https://www.youtube.com/watch?v=fPlumnuhTco",
             "video_url": "",
             "main_text": "Default Main Text",
             "sub_text": "Skincare heroes this summer!"
