@@ -90,49 +90,6 @@
     <script src="{{ 'slideshow.js' | asset_url }}" defer></script>
     <script src="{{ 'spinner-component.js' | asset_url }}" defer></script>
     <script src="{{ 'wishlist.js' | asset_url }}" defer></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        window.theme = window.theme || {};
-
-        {% if customer %}
-          fetch(`/apps/${APP_SUB_PATH}/customer/account/profile`)
-            .then(response => response.json())
-            .then(data => {
-              if (!data) return;
-              window.theme.rewardPointEnabled = data.rewardPointEnabled;
-              const rewardPointTab = document.querySelector('.customer-account__sidebar-item[data-tab="rewards"]');
-              if (rewardPointTab) {
-                rewardPointTab.style.display = data.rewardPointEnabled ? 'flex' : 'none';
-              }
-            })
-            .catch(error => console.error('Failed to fetch profile:', error));
-        {% endif %}
-
-        const initializeWishlistFromStorage = () => {
-          if (!window.customerLoggedIn) {
-            window.theme.wishlistProductIds = new Set();
-            return;
-          }
-
-          let wishlistData = null;
-          try {
-            const storedJSON = localStorage.getItem('customerWishlist');
-            wishlistData = storedJSON ? JSON.parse(storedJSON) : null;
-          } catch (e) {
-            console.error('Could not parse wishlist from local storage.', e);
-          }
-
-          const productIds = wishlistData?.wishlist?.products.map(p => p.productId) || [];
-          window.theme.wishlistProductIds = new Set(productIds);
-        };
-
-        initializeWishlistFromStorage();
-
-        if (typeof updateAllWishlistButtons === 'function') {
-          updateAllWishlistButtons();
-        }
-      });
-    </script>
     {% render 'cart-drawer' %}
     <script src="{{ 'cart.js' | asset_url }}" defer></script>
   </body>
