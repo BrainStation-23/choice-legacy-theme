@@ -79,6 +79,7 @@
         matchedProducts.push({
           ...product,
           id: item.productId,
+          productId: item.productId,
           rating: item.rating,
         });
       }
@@ -147,7 +148,7 @@
     document.querySelector(".review-mobile-view").style.display = "none";
     document.getElementById("empty-review-message").style.display = "none";
     document.getElementById("pagination-controls").style.display = "none";
-    const purchasedProducts = window.customerPurchasedProducts || [];
+    const purchasedProducts = customerPurchasedProducts || [];
     const ITEMS_PER_PAGE = 10;
 
     try {
@@ -231,7 +232,7 @@
         const reviewModal = document.getElementById(
           "review-modal-customer-review-modal"
         );
-        if (reviewModal) {
+        if (reviewModal && productId) {
           reviewModal.dataset.productId = productId;
         }
       });
