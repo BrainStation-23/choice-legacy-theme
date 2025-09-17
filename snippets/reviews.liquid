@@ -62,11 +62,27 @@
     mobileCardContainer.innerHTML = "";
 
     const matchedProducts = [];
+    const allProducts = {
+      {% for product in collections.all.products %}
+        "{{ product.id }}": {
+          "title": "{{ product.title | escape }}",
+          "featured_image": "{{ product.featured_image | image_url: width: 500 }}",
+          "handle": "{{ product.handle }}",
+          "url": "{{ product.url }}"
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    };
 
-    const allProducts = {{ collections.all.products | json }};
     items.forEach(item => {
-      matchedProducts.push(allProducts.find(product => item?.productId == product?.id));
-    })
+      const product = allProducts[String(item.productId)];
+      if (product) {
+        matchedProducts.push({
+          ...product,
+          id: item.productId,
+          rating: item.rating,
+        });
+      }
+    });
 
     matchedProducts.forEach((item) => {
       const productInfo = item;
@@ -74,9 +90,7 @@
       const imageUrl = productInfo?.featured_image
         ? productInfo.featured_image
         : "https://cdn.shopify.com/s/files/1/0533/2089/files/placeholder-images-image_large.png";
-      const productUrl = item.productHandle
-        ? `/products/${item.productHandle}`
-        : "#";
+      const productUrl = productInfo.url;
       const ratingDisplay = item.rating ? `${item.rating} star` : "";
       const hasRating = item.rating !== null;
       const reviewButtonHTML = `<button type="button" class="fw-600 fs-14-lh-16-ls-0 text-center text-brand bg-transparent border-none cursor-pointer p-0"
