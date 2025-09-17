@@ -22,10 +22,6 @@
 -%}
 
 <style>
-  .filter__toggle:hover {
-    border-color: rgba(var(--color-primary-brand));
-  }
-
   .disclosure__panel.has-motion {
     opacity: 0;
     transform: translateY(-16px);
@@ -45,10 +41,6 @@
     transform: rotate(180deg);
   }
 
-  .close-icon:hover {
-    opacity: 0.7;
-  }
-
   .sort__content li label {
     cursor: pointer;
     width: 100%;
@@ -61,7 +53,6 @@
     transition: all 0.3s ease-in-out;
   }
 
-  /* Mobile sort side modal */
   @media (max-width: 768px) {
     .disclosure__panel.has-motion {
       position: fixed !important;
@@ -76,15 +67,6 @@
       transition: transform 0.3s ease-in-out;
       display: flex;
       flex-direction: column;
-    }
-    .sort-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 9998;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease-in-out;
     }
 
     details[open] ~ .sort-overlay {
@@ -122,8 +104,8 @@
       </span>
     </summary>
 
-    <div class="disclosure__panel has-motion absolute z-9999 max-w-340 w-full bg-bg rounded-6 pl-0 pr-0 box-shadow sm:rounded-0">
-      <div class="sort__content flex flex-col gap-8 p-16">
+    <div class="disclosure__panel has-motion absolute z-9999 max-w-308 w-full bg-bg rounded-6 pl-0 pr-0 box-shadow sm:rounded-0">
+      <div class="sort__content flex flex-col gap-16 p-16">
         <div class="flex items-center justify-between">
           <h1 class="p-0 m-0 ff-bebas-neue fw-400 fs-21-lh-24-ls-1_2pct">
             {{- 'products.sorting.sort_by_label' | t -}}
@@ -163,7 +145,7 @@
       </div>
     </div>
   </details>
-  <div class="sort-overlay"></div>
+  <div class="sort-overlay fixed inset-0 z-9998 opacity-0 pointer-events-none bg-overlay transition-opacity-3"></div>
 </details-disclosure>
 
 <script>

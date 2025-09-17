@@ -37,7 +37,7 @@
         <div class="flex flex-col gap-32">
           <div class="flex flex-col gap-24">
             <h1 class="m-0 p-0 ff-bebas-neue fs-36-lh-40-ls-0 fw-400">{{ 'main-category.title' | t }}</h1>
-            <div class="grid grid-cols-4 sm:grid-cols-2 gap-16">
+            <div class="grid grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-16">
               {% for item in collection.metafields.custom.featured_collections.value %}
                 {% render 'product-card',
                   product: item,
@@ -96,7 +96,7 @@
             {%- if collection.products.size == 0 -%}
               <p>{{ 'sections.collection.empty' | t }}</p>
             {%- else -%}
-              <div class="grid grid-cols-4 sm:grid-cols-2 gap-16">
+              <div class="grid grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-16">
                 {% for product in collection.products %}
                   <div class="js-pagination-result">
                     {% render 'product-card',
@@ -136,11 +136,11 @@
 </style>
 
 <script>
-   document.addEventListener('DOMContentLoaded', function () {
-     const filterButton = document.getElementById('filter-button');
-     const filterPanel = document.getElementById('mobile-filter-panel');
-     const filterOverlay = document.querySelector('.filter-overlay');
-     const closeButton = document.getElementById('filter-close-button-mobile');
+  document.addEventListener('DOMContentLoaded', function () {
+    const filterButton = document.getElementById('filter-button');
+    const filterPanel = document.getElementById('mobile-filter-panel');
+    const filterOverlay = document.querySelector('.filter-overlay');
+    const closeButton = document.getElementById('filter-close-button-mobile');
 
     function openMobileFilters() {
       if (filterPanel && filterOverlay) {
@@ -172,7 +172,6 @@
     if (filterOverlay) {
       filterOverlay.addEventListener('click', closeMobileFilters);
     }
-
 
     // Close filters when close button is clicked
     if (closeButton) {

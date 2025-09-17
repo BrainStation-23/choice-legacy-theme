@@ -93,9 +93,9 @@
     .main-products-grid__filters-mobile {
       position: fixed !important;
       top: 0;
-      right: -340px;
-      width: 340px;
-      max-width: 340px;
+      right: -308px;
+      width: 308px;
+      max-width: 308px;
       height: 100%;
       background: rgb(var(--color-background));
       z-index: 9999;
@@ -104,7 +104,6 @@
       transition: right 0.3s ease-in-out;
       display: flex;
       flex-direction: column;
-      box-shadow: -4px 0 20px rgba(0, 0, 0, 0.1);
     }
 
     .main-products-grid__filters-mobile.open {
@@ -179,7 +178,7 @@
 
 <div class=" flex flex-col gap-8  items-center justify-center ">
   <facet-filters
-    class="facets  flex gap-32 flex-col w-full has-motion"
+    class="facets  flex gap-32 sm:gap-16 flex-col w-full has-motion"
     data-name="facet-filters-{{ unique_id }}"
     id="facet-filters-{{ unique_id }}"
     data-filtering="{{ section.settings.enable_filtering }}"
@@ -201,7 +200,7 @@
         {% render 'close-button' %}
       </div>
     </div>
-    <div>
+    <div class="">
       <form
         id="facets-{{ unique_id }}"
         data-filter-section-id="{{ section.id }}"

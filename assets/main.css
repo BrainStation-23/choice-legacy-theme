@@ -837,6 +837,9 @@ address {
 .z-9999 {
   z-index: 9999;
 }
+.z-9998 {
+  z-index: 9998;
+}
 .z-10000 {
   z-index: 10000;
 }
@@ -1573,6 +1576,9 @@ address {
 .max-w-340 {
   max-width: 340px;
 }
+.max-w-308 {
+  max-width: 308px;
+}
 .max-w-180 {
   max-width: 180px;
 }
@@ -2272,6 +2278,9 @@ address {
 }
 .bg-warning-alt {
   background-color: #fef9f3;
+}
+.bg-overlay {
+  background-color: rgba(0, 0, 0, 0.4);
 }
 .object-center {
   object-position: center;
@@ -3897,6 +3906,9 @@ tr:last-child td {
 }
 .transition-all-3 {
   transition: all 0.3s ease;
+}
+.transition-opacity-3 {
+  transition: opacity 0.3s ease-in-out;
 }
 
 .swiper-notification {
