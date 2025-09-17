@@ -30,7 +30,7 @@
       <div class="main-products-grid flex pt-48 pb-88 page-width gap-32">
         {%- if collection.filters != empty and section.settings.enable_filtering -%}
           <div class="main-products-grid__filters block sm:hidden">
-            {% render 'facet-filters', results: collection, section: section %}
+            {% render 'facet-filters', results: collection, section: section, unique_id: 'desktop' %}
           </div>
         {%- endif -%}
 
@@ -69,21 +69,13 @@
                     Filter
                   </div>
                   <span class="arrow-icon-filter">
-                    {% render 'icon-arrow-down' %}
+                    {% render 'icon-arrow-down', height: '32', width: '32' %}
                   </span>
                 </div>
 
-                <div class="flex flex-col hidden sm:flex">
+                <div class="flex flex-col hidden" id="mobile-filter-panel">
                   <div class="filters-content flex-1 overflow-y-auto">
-                    {% render 'facet-filters', results: collection, section: section %}
-                  </div>
-                  <div class="filters-footer p-16 border-t border-color bg-var(--color-background)">
-                    <button
-                      id="apply-filters-btn"
-                      class="button--solid button-primary border-none w-full rounded-12 fs-16-lh-20-ls-0_1 fw-600"
-                    >
-                      {{ 'products.filtering.apply' | t }}
-                    </button>
+                    {% render 'facet-filters', results: collection, section: section, unique_id: 'mobile' %}
                   </div>
                 </div>
 
@@ -142,6 +134,52 @@
     }
   }
 </style>
+
+<script>
+   document.addEventListener('DOMContentLoaded', function () {
+     const filterButton = document.getElementById('filter-button');
+     const filterPanel = document.getElementById('mobile-filter-panel');
+     const filterOverlay = document.querySelector('.filter-overlay');
+     const closeButton = document.getElementById('filter-close-button-mobile');
+
+    function openMobileFilters() {
+      if (filterPanel && filterOverlay) {
+        filterPanel.classList.remove('hidden');
+        filterPanel.classList.add('main-products-grid__filters-mobile', 'open');
+        filterOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeMobileFilters() {
+      if (filterPanel && filterOverlay) {
+        filterPanel.classList.remove('open');
+        filterOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+        setTimeout(() => {
+          filterPanel.classList.add('hidden');
+          filterPanel.classList.remove('main-products-grid__filters-mobile');
+        }, 300);
+      }
+    }
+
+    // Open filters when filter button is clicked
+    if (filterButton) {
+      filterButton.addEventListener('click', openMobileFilters);
+    }
+
+    // Close filters when overlay is clicked
+    if (filterOverlay) {
+      filterOverlay.addEventListener('click', closeMobileFilters);
+    }
+
+
+    // Close filters when close button is clicked
+    if (closeButton) {
+      closeButton.addEventListener('click', closeMobileFilters);
+    }
+  });
+</script>
 
 {% schema %}
 {

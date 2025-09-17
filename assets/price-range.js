@@ -6,10 +6,11 @@ if (!customElements.get("price-range")) {
     }
 
     init() {
-      this.minNumberInput = document.getElementById("price-range-number-min");
-      this.maxNumberInput = document.getElementById("price-range-number-max");
-      this.minSliderInput = document.getElementById("price-range-slider-min");
-      this.maxSliderInput = document.getElementById("price-range-slider-max");
+      // Find elements within this component (works with multiple instances)
+      this.minNumberInput = this.querySelector('[id*="price-range-number-min"]');
+      this.maxNumberInput = this.querySelector('[id*="price-range-number-max"]');
+      this.minSliderInput = this.querySelector('[id*="price-range-slider-min"]');
+      this.maxSliderInput = this.querySelector('[id*="price-range-slider-max"]');
       
       console.log("Elements found:", {
         minNumberInput: !!this.minNumberInput,
@@ -17,6 +18,12 @@ if (!customElements.get("price-range")) {
         minSliderInput: !!this.minSliderInput,
         maxSliderInput: !!this.maxSliderInput
       });
+      
+      // Safety check
+      if (!this.minNumberInput || !this.maxNumberInput) {
+        console.error("Price range inputs not found");
+        return;
+      }
       
       this.minValue = Number(this.minNumberInput.min);
       this.maxValue = Number(this.maxNumberInput.max);

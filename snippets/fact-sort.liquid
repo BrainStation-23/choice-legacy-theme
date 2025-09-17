@@ -60,10 +60,6 @@
     backdrop-filter: blur(3px);
     transition: all 0.3s ease-in-out;
   }
-  .disclosure__toggle svg {
-    height: 36px !important;
-    width: 36px !important;
-  }
 
   /* Mobile sort side modal */
   @media (max-width: 768px) {
@@ -122,7 +118,7 @@
       </span>
 
       <span class="disclosure__toggle">
-        {% render 'icon-arrow-down' %}
+        {% render 'icon-arrow-down', height: '32', width: '32' %}
       </span>
     </summary>
 
@@ -285,12 +281,6 @@
         spinner.classList.remove('hidden');
       }
 
-      // Keep the button text as "Sort by" (it's already set in the HTML)
-      // if (currentSortText) {
-      //   currentSortText.textContent = "{{ 'products.sorting.sort_by_label' | t }}";
-      // }
-
-      // Check if facet filters component exists (AJAX filtering enabled)
       const facetFilters = document.querySelector('facet-filters');
       if (facetFilters) {
         // Use AJAX approach through facet filters

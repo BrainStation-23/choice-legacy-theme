@@ -27,17 +27,15 @@ if (!customElements.get("facet-filters")) {
     init() {
       this.filteringEnabled = this.dataset.filtering === "true";
       this.sortingEnabled = this.dataset.sorting === "true";
-      this.form = document.getElementById("facets");
+      
+      // Get unique ID from the element's ID
+      this.uniqueId = this.id.replace('facet-filters-', '');
+      
+      // Use unique IDs for form and results
+      this.form = document.getElementById(`facets-${this.uniqueId}`);
       this.results = document.getElementById("filter-results");
       this.expanded = [];
       this.filterChangeTimeout = null;
-
-      console.log("FacetFilters init:", {
-        filteringEnabled: this.filteringEnabled,
-        sortingEnabled: this.sortingEnabled,
-        form: this.form,
-        results: this.results,
-      });
 
       this.handleBreakpointChange();
       this.addElements();
@@ -72,7 +70,6 @@ if (!customElements.get("facet-filters")) {
         const checkboxes = this.filters.querySelectorAll('input[type="checkbox"]');
         checkboxes.forEach((checkbox) => {
           checkbox.addEventListener("change", (evt) => {
-            console.log("Checkbox changed:", evt.target.name, evt.target.checked);
             // Show spinner immediately for checkbox changes
             this.showSpinner();
             this.processFilterChange(evt);
@@ -122,11 +119,8 @@ if (!customElements.get("facet-filters")) {
      * @param {Event} evt - Event object.
      */
     handleFilterChange(evt) {
-      console.log("Filter change event:", evt.type, evt.target);
-
       // Skip checkbox events as they're handled by specific listeners
       if (evt.target.type === "checkbox") {
-        console.log("Skipping checkbox - handled by specific listener");
         return;
       }
 
@@ -135,9 +129,12 @@ if (!customElements.get("facet-filters")) {
 
       // Handle price range changes with delay when it's a change event
       if (evt.target.id?.includes("price-range") && evt.type === "change") {
-        console.log("Processing price range change with delay");
         // Continue with delay logic below
-      } else if (evt.type === "change" && !evt.target.id?.includes("sort-by") && !evt.target.id?.includes("price-range")) {
+      } else if (
+        evt.type === "change" &&
+        !evt.target.id?.includes("sort-by") &&
+        !evt.target.id?.includes("price-range")
+      ) {
         // Hide spinner if we're not processing this event type (but keep it for price range)
         this.hideSpinner();
         return;
@@ -168,8 +165,6 @@ if (!customElements.get("facet-filters")) {
       const formData = new FormData(this.form);
       const searchParams = new URLSearchParams(formData);
       const emptyParams = [];
-
-      console.log("Form data:", Array.from(formData.entries()));
 
       if (this.sortingEnabled) {
         let currentSortBy = searchParams.get("sort_by");
@@ -202,7 +197,6 @@ if (!customElements.get("facet-filters")) {
         searchParams.delete(key);
       });
 
-      console.log("Final search params:", searchParams.toString());
       this.applyFilters(searchParams.toString(), evt);
     }
 
@@ -212,6 +206,7 @@ if (!customElements.get("facet-filters")) {
      */
     handleFiltersClick(evt) {
       const { target } = evt;
+      console.log("Filter click event:", target);
 
       // Filter 'clear' button clicked.
       if (target.matches(".js-clear-filter")) {
@@ -275,8 +270,6 @@ if (!customElements.get("facet-filters")) {
      * @param {boolean} [updateUrl=true] - Update url with the selected options.
      */
     async applyFilters(searchParams, evt, updateUrl = true) {
-      console.log("Applying filters with params:", searchParams);
-
       try {
         // Preserve the current element focus
         const activeElementId = document.activeElement.id;
@@ -303,8 +296,6 @@ if (!customElements.get("facet-filters")) {
           fetchUrl += `&section_id=${this.form.dataset.filterSectionId}`;
         }
 
-        console.log("Fetching URL:", fetchUrl);
-
         // Cancel current fetch request.
         if (this.applyFiltersFetchAbortController) {
           this.applyFiltersFetchAbortController.abort("Request changed");
@@ -319,7 +310,6 @@ if (!customElements.get("facet-filters")) {
 
         if (response.ok) {
           const responseText = await response.text();
-          console.log("Response received, length:", responseText.length);
 
           const tmpl = document.createElement("template");
           tmpl.innerHTML = responseText;
@@ -332,7 +322,7 @@ if (!customElements.get("facet-filters")) {
             }
           });
 
-          tmpl.content.querySelectorAll("#facets details-disclosure > details").forEach((newFilter) => {
+          tmpl.content.querySelectorAll(`#facets-${this.uniqueId} details-disclosure > details`).forEach((newFilter) => {
             if (this.expanded.includes(newFilter.id)) {
               const hiddenElements = newFilter.querySelectorAll(".js-hidden");
               hiddenElements.forEach((listItem) => {
@@ -343,7 +333,7 @@ if (!customElements.get("facet-filters")) {
           });
 
           // Update the filters.
-          const newFacetsContent = tmpl.content.getElementById("facets");
+          const newFacetsContent = tmpl.content.getElementById(`facets-${this.uniqueId}`);
           if (newFacetsContent) {
             this.form.innerHTML = newFacetsContent.innerHTML;
           }
@@ -449,7 +439,6 @@ if (!customElements.get("facet-filters")) {
       const filteringSpinner = document.getElementById("filtering-spinner");
       if (filteringSpinner) {
         filteringSpinner.classList.remove("hidden");
-        console.log("Filtering spinner shown over product grid");
       }
     }
 
@@ -480,4 +469,3 @@ if (!customElements.get("facet-filters")) {
 }
 
 // Log when script loads
-console.log("Facet filters script loaded");

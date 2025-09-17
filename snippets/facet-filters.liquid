@@ -1,9 +1,11 @@
 {%- comment -%}
   Parameters:
   - results {Object} - Results object (collection or search).
+  - section {Object} - Section object.
+  - unique_id {String} - Optional unique identifier for multiple instances.
 
   Usage:
-  {% render 'facet-filters', results: collection, section: section %}
+  {% render 'facet-filters', results: collection, section: section, unique_id: 'desktop' %}
 {%- endcomment -%}
 
 <style>
@@ -116,6 +118,11 @@
   assign active_filters_count = 0
   assign sort_by = results.sort_by
 
+  # Set default unique_id if not provided
+  unless unique_id
+    assign unique_id = 'default'
+  endunless
+
   for filter in results.filters
     if filter.type == 'price_range'
       assign has_price_filter = true
@@ -173,8 +180,8 @@
 <div class=" flex flex-col gap-8  items-center justify-center ">
   <facet-filters
     class="facets  flex gap-32 flex-col w-full has-motion"
-    data-name="facet-filters"
-    id="facet-filters"
+    data-name="facet-filters-{{ unique_id }}"
+    id="facet-filters-{{ unique_id }}"
     data-filtering="{{ section.settings.enable_filtering }}"
     data-sorting="{{ section.settings.enable_sorting }}"
     role="dialog"
@@ -190,12 +197,17 @@
           {{ 'products.filtering.show_result_count.showing' | t: count: results.products_count }}
         </h3>
       </div>
-      <div class="hidden sm:block" id="filter-close-button">
+      <div class="hidden sm:block" id="filter-close-button-{{ unique_id }}">
         {% render 'close-button' %}
       </div>
     </div>
     <div>
-      <form id="facets" data-filter-section-id="{{ section.id }}" class="flex flex-col gap-16" novalidate>
+      <form
+        id="facets-{{ unique_id }}"
+        data-filter-section-id="{{ section.id }}"
+        class="flex flex-col gap-16"
+        novalidate
+      >
         {%- if results.current_vendor or results.current_type -%}
           <input type="hidden" name="q" value="{{ results.current_vendor }}{{ results.current_type }}">
         {%- elsif results.terms -%}
@@ -252,14 +264,14 @@
                     <li class="flex m-0 cursor-pointer pt-2 pb-2 px-2 rounded-6 list-style-none">
                       <input type="checkbox"
                               class="checkbox facet-checkbox   {% if value.count == 0 and value.active == false %}filter-disabled{% endif %}"
-                              id="filter-{{ filter.param_name | escape }}-{{ forloop.index }}"
+                              id="filter-{{ filter.param_name | escape }}-{{ forloop.index }}-{{ unique_id }}"
                               name="{{ value.param_name }}"
                               value="{{ value.value | escape }}"
                               {% if value.active %}checked{% endif %}
                               {% if value.count == 0 and value.active == false %}disabled{% endif %}
                               data-filter-type="{{ filter.type }}"
                               data-filter-param="{{ filter.param_name }}">
-                      <label for="filter-{{ filter.param_name | escape }}-{{ forloop.index }}"
+                      <label for="filter-{{ filter.param_name | escape }}-{{ forloop.index }}-{{ unique_id }}"
                               class="filter-label fs-14-lh-20-ls-0_1 ff-general-sans fw-500 cursor-pointer {% if value.count == 0 and value.active == false %}filter-disabled{% endif %}"
                         {%- if swatches and settings.filter_color_style == 'swatches' %}
                             data-swatch="{{ value.label | replace: '"', '' | downcase }}"
@@ -289,7 +301,7 @@
               <details-disclosure>
                 <details
                   class="filter disclosure"
-                  id="filter-{{ filter.param_name | escape }}"
+                  id="filter-{{ filter.param_name | escape }}-{{ unique_id }}"
                   data-type="{{ filter.type }}"
                   {% if section.settings.expand_filters %}
                     open
@@ -304,7 +316,7 @@
                         {%- if settings.disclosure_toggle == 'plus' -%}
                           {% render 'icon-plus' %}
                         {%- else -%}
-                          {% render 'icon-arrow-down' %}
+                          {% render 'icon-arrow-down', height: '32', width: '32' %}
                         {%- endif -%}
                       </span>
                     </div>
