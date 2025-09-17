@@ -424,7 +424,6 @@
           {%- for item in order.line_items -%}
             {
               "productId": {{ item.product_id }},
-              "productHandle": "{{ item.product.handle | escape }}",
               "variantId": {{ item.variant_id }},
               "orderId": {{ order.id }},
               "orderName": {{ order.name | json }},
@@ -477,13 +476,13 @@
 
         if (!customerData.products[productIdStr]) {
           customerData.products[productIdStr] = {
-            productHandle: item.productHandle,
+            productId: item.productId,
           };
         }
 
         // Add mapping for products by product ID
         customerData.productsById[productIdStr] = {
-          productHandle: item.productHandle,
+          productId: item.productId,
         };
       });
 
@@ -579,24 +578,12 @@
               customerPurchasedProducts || []
             ).find((item) => String(item.productId) === referenceIdStr);
 
-            if (
-              purchasedProduct &&
-              purchasedProduct.productHandle &&
-              allShopifyProducts
-            ) {
-              const productInfo =
-                allShopifyProducts[purchasedProduct.productHandle];
-              if (productInfo && productInfo.title) {
-                eventName = productInfo.title;
-              }
-            } else {
-              // Fallback: try to find product directly in allShopifyProducts by ID
-              const productFromAll = Object.values(
-                allShopifyProducts || {}
-              ).find((product) => String(product.id) === referenceIdStr);
-              if (productFromAll && productFromAll.title) {
-                eventName = productFromAll.title;
-              }
+            const productFromAll = Object.values(
+              allShopifyProducts || {}
+            ).find((product) => String(product.id) === referenceIdStr);
+            
+            if (productFromAll && productFromAll.title) {
+              eventName = productFromAll.title;
             }
           }
 
@@ -619,10 +606,12 @@
               transactionAmount = "N/A";
             }
           } else if (record.event === "review") {
-            const product = customerData.products[String(record.referenceId)];
+            const productFromAll = Object.values(
+              allShopifyProducts || {}
+            ).find((product) => String(product.id) === String(record.referenceId));
 
-            if (product && product.productHandle) {
-              actionLink = `/products/${product.productHandle}`;
+            if (productFromAll && productFromAll.handle) {
+              actionLink = `/products/${productFromAll.handle}`;
             }
           }
 
