@@ -1,35 +1,22 @@
 <div class="video video-{{ section.id }} relative pt-0 pb-0">
-  <div class="video-player-wrapper relative h-508 sm:h-180"
-       data-section-id="{{ section.id }}"
-       data-section-type="{{ section.type }}"
-       data-video-type="{% if section.settings.video != blank %}shopify_video{% elsif section.settings.youtube_url != blank %}youtube{% elsif section.settings.video_url != blank %}direct_mp4{% endif %}"
-       {% if section.settings.youtube_url != blank %}
-         {%- liquid
-           assign youtube_id = section.settings.youtube_url | split: 'watch?v=' | last | split: '&' | first
-           if youtube_id == section.settings.youtube_url
-             assign youtube_id = section.settings.youtube_url | split: 'youtu.be/' | last | split: '?' | first
-           endif
-           if youtube_id == section.settings.youtube_url
-             assign youtube_id = section.settings.youtube_url | split: 'embed/' | last | split: '?' | first
-           endif
-         -%}
-         data-youtube-id="{{ youtube_id }}"
-       {% endif %}
-       {% if section.settings.video_url != blank %}data-video-url="{{ section.settings.video_url }}"{% endif %}
-       {% if section.settings.autoplay %}data-autoplay="true"{% endif %}
-       {% if section.settings.loop %}data-loop="true"{% endif %}
-       {% if section.settings.muted %}data-muted="true"{% endif %}
-       {% if section.settings.controls %}data-controls="true"{% endif %}
-       data-description="{{ section.settings.description | escape }}"
-       >
-
-    {% if section.settings.video != blank or section.settings.video_url != blank or section.settings.youtube_url != blank %}
-      {%- assign video_type = 'none' -%}
-      {%- assign youtube_id = '' -%}
-      {%- assign thumbnail_image = section.settings.custom_thumbnail -%}
-
-      {%- if section.settings.youtube_url != blank -%}
-        {%- assign video_type = 'youtube' -%}
+  {% if section.settings.video != blank or section.settings.video_url != blank or section.settings.youtube_url != blank %}
+    <div class="swiper-slide relative transition-transform h-508 sm:h-180" 
+          data-section-id="{{ section.id }}"
+          data-section-type="{{ section.type }}">
+      
+      {% if section.settings.video != blank %}
+        {{
+          section.settings.video
+          | video_tag:
+            image_size: '1100x',
+            autoplay: section.settings.autoplay,
+            loop: section.settings.loop,
+            controls: section.settings.controls,
+            muted: section.settings.muted,
+            class: 'img-fit'
+        }}
+        
+      {% elsif section.settings.youtube_url != blank %}
         {%- liquid
           assign youtube_id = section.settings.youtube_url | split: 'watch?v=' | last | split: '&' | first
           if youtube_id == section.settings.youtube_url
@@ -39,213 +26,41 @@
             assign youtube_id = section.settings.youtube_url | split: 'embed/' | last | split: '?' | first
           endif
         -%}
-        {%- unless thumbnail_image -%}
-          {%- assign thumbnail_url = 'https://img.youtube.com/vi/' | append: youtube_id | append: '/hqdefault.jpg' -%}
-        {%- endunless -%}
-      {%- elsif section.settings.video != blank -%}
-        {%- assign video_type = 'shopify_video' -%}
-        {%- unless thumbnail_image -%}
-          {%- comment -%} Shopify videos typically have a poster image {% endcomment -%}
-          {%- if section.settings.video.preview_image -%}
-            {%- assign thumbnail_image = section.settings.video.preview_image -%}
-          {%- endif -%}
-        {%- endunless -%}
-      {%- elsif section.settings.video_url != blank -%}
-        {%- assign video_type = 'direct_mp4' -%}
-        {%- unless thumbnail_image -%}
-          {%- comment -%} For direct URL, use custom_thumbnail or a placeholder {% endcomment -%}
-          {%- if section.settings.image_poster -%}
-            {%- assign thumbnail_image = section.settings.image_poster -%}
-          {%- endif -%}
-        {%- endunless -%}
-      {%- endif -%}
-
-      {% if thumbnail_image or thumbnail_url %}
-        {% if thumbnail_image %}
-          <div class="relative block media h-full w-full">
-            {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
-
-            {% render 'image',
-              image: thumbnail_image,
-              widths: '268, 268, 268, 268',
-              src_width: 268,
-              sizes: sizes,
-              class: 'img-fit',
-              quality: 1
-            %}
-          </div>
-        {% elsif thumbnail_url %}
-          <img src="{{ thumbnail_url }}" alt="{{ section.settings.description | escape }}" width="auto" height="auto" class="w-full h-full block object-cover" loading="lazy">
-        {% else %}
-          <div class="w-full h-full flex items-center justify-center bg-gray-200">
-            {{ "lifestyle-1" | placeholder_svg_tag: "placeholder-svg" }}
-          </div>
-        {% endif %}
-
-        <button
-          class="video-play-button absolute inset-0 flex items-center justify-center bg-black bg-opacity-20 transition-opacity hover:bg-opacity-40 z-10 cursor-pointer border-none"
-          type="button"
-          aria-label="Play video: {{ section.settings.description | escape }}"
+        
+        <iframe 
+          class="img-fit"
+          src="https://www.youtube.com/embed/{{ youtube_id }}?autoplay=0&mute=1&loop=1&playlist={{ youtube_id }}&controls=1&showinfo=0&rel=0"
+          frameborder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          loading="lazy">
+        </iframe>
+        
+      {% elsif section.settings.video_url != blank %}
+        <video 
+          class="img-fit"
+          {% if section.settings.autoplay %}autoplay{% endif %}
+          {% if section.settings.muted %}muted{% endif %}
+          {% if section.settings.loop %}loop{% endif %}
+          {% if section.settings.controls %}controls{% endif %}
+          preload="metadata"
         >
-          <span class="w-64 h-64 bg-brand rounded-full flex items-center justify-center">
-            {% render 'icon-play', cls: 'block w-24 h-24 svg-bg' %}
-          </span>
-        </button>
-
-      {% else %}
-        {% comment %} Fallback for when no video or thumbnail is provided but section exists {% endcomment %}
-        <div class="w-full h-full flex items-center justify-center bg-gray-200">
-          {{ "lifestyle-1" | placeholder_svg_tag: "placeholder-svg" }}
-        </div>
+          <source src="{{ section.settings.video_url }}" type="video/mp4">
+          <source src="{{ section.settings.video_url }}" type="video/webm">
+          <source src="{{ section.settings.video_url }}" type="video/ogg">
+          Your browser does not support the video tag.
+        </video>
       {% endif %}
-
-    {% else %}
-      {% comment %} No video configured {% endcomment %}
-      <div class="w-full h-full flex items-center justify-center bg-gray-200">
-        {{ "lifestyle-1" | placeholder_svg_tag: "placeholder-svg" }}
-      </div>
-    {% endif %}
-  </div>
+      
+    </div>
+  {% else %}
+    <div class="swiper-slide relative transition-transform h-508 sm:h-180" 
+          data-section-id="{{ section.id }}"
+          data-section-type="{{ section.type }}">
+      {{ "lifestyle-1" | placeholder_svg_tag: "placeholder-svg" }}
+    </div>
+  {% endif %}
 </div>
-
-<script>
-  function loadYouTubeIframeAPI() {
-    if (window.YT && window.YT.Player) {
-      return Promise.resolve();
-    }
-    return new Promise((resolve) => {
-      const tag = document.createElement('script');
-      tag.src = "https://www.youtube.com/iframe_api";
-      const firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-      window.onYouTubeIframeAPIReady = () => resolve();
-    });
-  }
-
-  document.addEventListener('DOMContentLoaded', function () {
-    const videoWrapper = document.querySelector('.video-player-wrapper');
-    if (!videoWrapper) return;
-
-    const playButton = videoWrapper.querySelector('.video-play-button');
-    if (!playButton) return;
-
-    let playerInstance = null;
-    let isVideoLoaded = false;
-
-    const videoType = videoWrapper.dataset.videoType;
-    const youtubeId = videoWrapper.dataset.youtubeId;
-    const videoUrl = videoWrapper.dataset.videoUrl;
-    const autoplay = videoWrapper.dataset.autoplay === 'true';
-    const loop = videoWrapper.dataset.loop === 'true';
-    const muted = videoWrapper.dataset.muted === 'true';
-    const controls = videoWrapper.dataset.controls === 'true';
-    const description = videoWrapper.dataset.description;
-
-    const createAndPlayVideo = () => {
-      if (isVideoLoaded) {
-        // If video is already loaded, just play/pause
-        if (videoType === 'direct_mp4' || videoType === 'shopify_video') {
-          if (playerInstance.paused) {
-            playerInstance.play();
-          } else {
-            playerInstance.pause();
-          }
-        } else if (videoType === 'youtube' && playerInstance) {
-          const state = playerInstance.getPlayerState();
-          if (state === YT.PlayerState.PLAYING || state === YT.PlayerState.BUFFERING) {
-            playerInstance.pauseVideo();
-          } else {
-            playerInstance.playVideo();
-          }
-        }
-        return; // Exit as video is already loaded/managed
-      }
-
-      // Hide play button and thumbnail
-      playButton.style.display = 'none';
-      const thumbnailImg = videoWrapper.querySelector('img:not(.img-fit)'); // Target the thumbnail specifically
-      if(thumbnailImg) thumbnailImg.style.display = 'none';
-      const placeholderDiv = videoWrapper.querySelector('.w-full.h-full.flex.items-center.justify-center.bg-gray-200');
-      if(placeholderDiv) placeholderDiv.style.display = 'none';
-
-
-      if (videoType === 'direct_mp4' || videoType === 'shopify_video') {
-        const videoElement = document.createElement('video');
-        videoElement.className = 'w-full h-full block object-cover';
-        videoElement.setAttribute('aria-label', description);
-        if (muted) videoElement.setAttribute('muted', '');
-        if (loop) videoElement.setAttribute('loop', '');
-        if (controls) videoElement.setAttribute('controls', '');
-        videoElement.setAttribute('playsinline', '');
-        videoElement.setAttribute('preload', 'auto'); // 'auto' for lazy loaded, immediate play
-
-        const sourceElement = document.createElement('source');
-        sourceElement.src = videoUrl || (videoType === 'shopify_video' ? videoWrapper.dataset.shopifyVideoId : ''); // Placeholder, Shopify video asset URL is dynamic
-        sourceElement.type = 'video/mp4'; // Assuming MP4 for simplicity, can be extended
-
-        videoElement.appendChild(sourceElement);
-        videoWrapper.appendChild(videoElement);
-
-        playerInstance = videoElement;
-        isVideoLoaded = true;
-
-        if (autoplay) {
-          playerInstance.play().catch(error => {
-            console.error("Video autoplay failed:", error);
-            // Optionally show play button again if autoplay fails (e.g., due to browser restrictions)
-            playButton.style.display = 'flex';
-          });
-        }
-      } else if (videoType === 'youtube') {
-        loadYouTubeIframeAPI().then(() => {
-          const playerDivId = `youtube-player-${videoWrapper.dataset.sectionId}`;
-          const playerDiv = document.createElement('div');
-          playerDiv.id = playerDivId;
-          playerDiv.className = 'w-full h-full';
-          videoWrapper.appendChild(playerDiv);
-
-          playerInstance = new YT.Player(playerDivId, {
-            height: '100%',
-            width: '100%',
-            videoId: youtubeId,
-            playerVars: {
-              autoplay: 1, // Autoplay on load
-              controls: controls ? 1 : 0,
-              mute: muted ? 1 : 0,
-              loop: loop ? 1 : 0,
-              playlist: loop ? youtubeId : '', // Required for looping
-              rel: 0,
-              showinfo: 0,
-              modestbranding: 1
-            },
-            events: {
-              'onReady': (event) => {
-                // Autoplay is handled by playerVars for YouTube, but can force here too
-                event.target.playVideo();
-                isVideoLoaded = true;
-              },
-              'onError': (event) => {
-                console.error("YouTube Player Error:", event.data);
-                // Handle error, e.g., show fallback image or error message
-              }
-            }
-          });
-        }).catch(error => {
-          console.error("Failed to load YouTube Iframe API:", error);
-          // Show play button again or error state
-          playButton.style.display = 'flex';
-          const thumbnailImg = videoWrapper.querySelector('img:not(.img-fit)');
-          if(thumbnailImg) thumbnailImg.style.display = 'block';
-          const placeholderDiv = videoWrapper.querySelector('.w-full.h-full.flex.items-center.justify-center.bg-gray-200');
-          if(placeholderDiv) placeholderDiv.style.display = 'flex';
-        });
-      }
-    };
-
-    // Attach click listener to the play button
-    playButton.addEventListener('click', createAndPlayVideo);
-  });
-</script>
 
 {% schema %}
 {
@@ -258,19 +73,19 @@
   "settings": [
     {
       "type": "header",
-      "content": "Video Content"
+      "content": "Video Settings"
     },
     {
       "type": "video",
       "id": "video",
       "label": "Upload Video File",
-      "info": "Upload a video file directly to Shopify (max 20MB). This option takes precedence."
+      "info": "Upload a video file directly to Shopify"
     },
     {
       "type": "text",
       "id": "video_url",
       "label": "Direct Video URL",
-      "info": "Enter a direct link to your video file (.mp4, .webm, .ogg). Example: https://yoursite.com/video.mp4. This option takes precedence over YouTube if a Shopify video isn't uploaded."
+      "info": "Enter a direct link to your video file (.mp4, .webm, .ogg). Example: https://yoursite.com/video.mp4"
     },
     {
       "type": "text",
@@ -279,22 +94,9 @@
       "info": "Enter a YouTube video URL. Example: https://www.youtube.com/watch?v=VIDEO_ID"
     },
     {
-      "type": "image_picker",
-      "id": "custom_thumbnail",
-      "label": "Custom Video Thumbnail",
-      "info": "Optional. Image displayed before video loads. If left blank, we'll try to use a default (YouTube thumbnail, Shopify video poster, or a placeholder)."
-    },
-    {
-      "type": "image_picker",
-      "id": "image_poster",
-      "label": "Direct Video Poster Image",
-      "info": "Optional. Image for Direct Video URLs only. Used if no Custom Video Thumbnail is provided."
-    },
-    {
       "type": "text",
       "id": "description",
       "label": "Video description",
-      "default": "A video showcasing our products.",
       "info": "Describe the video for screen readers and other assistive technologies"
     },
     {
@@ -304,28 +106,28 @@
     {
       "type": "checkbox",
       "id": "autoplay",
-      "label": "Autoplay video on load",
-      "default": true,
-      "info": "Video will attempt to play automatically after the play button is clicked. Note: Most browsers require muted autoplay."
+      "label": "Autoplay video (Uploaded and Direct videos only)",
+      "default": false,
+      "info": "Note: Most browsers require muted autoplay"
     },
     {
       "type": "checkbox",
       "id": "muted",
-      "label": "Mute video",
+      "label": "Mute video (Uploaded and Direct videos only)",
       "default": true,
-      "info": "Required for autoplay in most browsers."
+      "info": "Required for autoplay in most browsers"
     },
     {
       "type": "checkbox",
       "id": "loop",
-      "label": "Loop video",
-      "default": true
+      "label": "Loop video (Uploaded and Direct videos only)",
+      "default": false
     },
     {
       "type": "checkbox",
       "id": "controls",
-      "label": "Show video controls",
-      "default": false
+      "label": "Show video controls (Uploaded and Direct videos only)",
+      "default": true
     }
   ],
   "blocks": [],
