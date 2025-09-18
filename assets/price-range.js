@@ -12,12 +12,6 @@ if (!customElements.get("price-range")) {
       this.minSliderInput = this.querySelector('[id*="price-range-slider-min"]');
       this.maxSliderInput = this.querySelector('[id*="price-range-slider-max"]');
       
-      console.log("Elements found:", {
-        minNumberInput: !!this.minNumberInput,
-        maxNumberInput: !!this.maxNumberInput,
-        minSliderInput: !!this.minSliderInput,
-        maxSliderInput: !!this.maxSliderInput
-      });
       
       // Safety check
       if (!this.minNumberInput || !this.maxNumberInput) {
@@ -44,11 +38,9 @@ if (!customElements.get("price-range")) {
 
     handleInput(evt) {
       if (evt.target === this.minSliderInput || evt.target === this.maxSliderInput) {
-        console.log("Skipping slider event in handleInput");
         return;
       }
       
-      console.log("handleInput for:", evt.target.id);
       
       // Show spinner when price input changes
       this.showSpinner();
@@ -83,18 +75,12 @@ if (!customElements.get("price-range")) {
         const minValue = parseInt(this.minNumberInput.value, 10) || parseInt(this.minNumberInput.min, 10);
         const maxValue = parseInt(this.maxNumberInput.value, 10) || parseInt(this.maxNumberInput.max, 10);
 
-        console.log("updateSliderInputs called:", {
-          target: evt.target.id,
-          minValue: minValue,
-          maxValue: maxValue
-        });
 
         if (evt.target === this.minNumberInput) {
           const currentMaxValue = parseInt(this.maxSliderInput.value, 10);
           if (minValue >= currentMaxValue) {
             const correctedMin = Math.max(parseInt(this.minNumberInput.min, 10), currentMaxValue - 1);
             this.minSliderInput.value = correctedMin;
-            console.log("Min input corrected to prevent crossing max:", correctedMin);
           } else {
             this.minSliderInput.value = minValue;
           }
@@ -105,7 +91,6 @@ if (!customElements.get("price-range")) {
           if (maxValue <= currentMinValue) {
             const correctedMax = Math.min(parseInt(this.maxNumberInput.max, 10), currentMinValue + 1);
             this.maxSliderInput.value = correctedMax;
-            console.log("Max input corrected to prevent crossing min:", correctedMax);
           } else {
             this.maxSliderInput.value = maxValue;
           }
@@ -116,9 +101,6 @@ if (!customElements.get("price-range")) {
       }
 
       handleSliderInput(evt) {
-        console.log("=== SLIDER INPUT EVENT ===");
-        console.log("Target:", evt.target.id, "Value:", evt.target.value);
-        
         evt.stopPropagation();
         
         // Show spinner when slider changes
@@ -133,13 +115,11 @@ if (!customElements.get("price-range")) {
           if (value >= maxValue) {
             const correctedValue = Math.max(minBoundary, maxValue - 1);
             this.minSliderInput.value = correctedValue;
-            console.log("Min slider corrected to prevent crossing max:", correctedValue);
           }
           
           const finalValue = parseInt(this.minSliderInput.value, 10);
 
           this.minNumberInput.value = finalValue !== minBoundary ? finalValue : '';
-          console.log("Updated min number input to:", this.minNumberInput.value);
           
         } else if (evt.target === this.maxSliderInput) {
           const value = parseInt(evt.target.value, 10);
@@ -150,14 +130,12 @@ if (!customElements.get("price-range")) {
           if (value <= minValue) {
             const correctedValue = Math.min(maxBoundary, minValue + 1);
             this.maxSliderInput.value = correctedValue;
-            console.log("Max slider corrected to prevent crossing min:", correctedValue);
           }
           
           const finalValue = parseInt(this.maxSliderInput.value, 10);
           
     
           this.maxNumberInput.value = finalValue !== maxBoundary ? finalValue : '';
-          console.log("Updated max number input to:", this.maxNumberInput.value);
         }
         
         // Update progress bar after slider input
@@ -171,12 +149,10 @@ if (!customElements.get("price-range")) {
         const spinner = document.getElementById("filtering-spinner");
         if (spinner) {
           spinner.classList.remove("hidden");
-          console.log("Filtering spinner shown");
         }
       }
       
       triggerFilterChange(evt) {
-        console.log("Triggering filter change for:", evt.target.id);
         // Create a change event to trigger facet-filters processing
         const changeEvent = new Event('change', { bubbles: true });
         evt.target.dispatchEvent(changeEvent);
@@ -196,12 +172,7 @@ if (!customElements.get("price-range")) {
         
         slidersContainer.style.setProperty("--range-min", `${minPercent}%`);
         slidersContainer.style.setProperty("--range-max", `${100 - maxPercent}%`);
-        
-        console.log("Progress bar updated:", {
-          minVal, maxVal, rangeMin, rangeMax,
-          minPercent: minPercent.toFixed(1),
-          maxPercent: maxPercent.toFixed(1)
-        });
+
       }
     }
 

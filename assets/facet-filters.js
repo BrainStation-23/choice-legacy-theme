@@ -206,7 +206,6 @@ if (!customElements.get("facet-filters")) {
      */
     handleFiltersClick(evt) {
       const { target } = evt;
-      console.log("Filter click event:", target);
 
       // Filter 'clear' button clicked.
       if (target.matches(".js-clear-filter")) {

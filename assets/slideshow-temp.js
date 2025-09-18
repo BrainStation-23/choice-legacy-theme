@@ -226,10 +226,7 @@ if (!customElements.get("slideshow-component")) {
     }
     // Add theme editor block selection event listeners
     addThemeEditorEvents() {
-      console.log(
-        "🚀 ~ SlideshowComponent ~ addThemeEditorEvents ~ addThemeEditorEvents:",
-        addThemeEditorEvents
-      );
+
       this.sliderItems.forEach((slide) => {
         slide.addEventListener(
           "shopify:block:select",
@@ -247,10 +244,6 @@ if (!customElements.get("slideshow-component")) {
     handelThemeEditorBlockSelectEvent(event) {
       const target = event.target;
       const itemIndex = +target?.dataset?.index + 1;
-      console.log(
-        "🚀 ~ SlideshowComponent ~ handelThemeEditorBlockSelectEvent ~ itemIndex:",
-        itemIndex
-      );
 
       if (this.swiper) {
         // Scroll to the selected slide
