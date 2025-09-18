@@ -296,7 +296,6 @@
         try {
           const response = await fetch(`${API_BASE_URL}/login/${cleanedPhone}`);
           const data = await response.json();
-          console.log('data', data);
           if (data.success && data.email) {
             emailInput.value = data.email;
             loginSubmitForm.submit();
@@ -305,7 +304,6 @@
             toastManager.show(data.message, 'error');
           }
         } catch (error) {
-          console.log('Login error:', error);
 
           // Only show generic error if no specific error was already shown
           if (

@@ -1,6 +1,49 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
-    "main": { "type": "main-cart", "settings": {} },
+    "main": {
+      "type": "main-cart",
+      "blocks": {
+        "icon_with_text_MxJFfV": {
+          "type": "icon_with_text",
+          "settings": {
+            "icon": "shopify://shop_images/delivery.svg",
+            "text": "Fastest Delivery"
+          }
+        },
+        "icon_with_text_P7GGEH": {
+          "type": "icon_with_text",
+          "settings": {
+            "icon": "shopify://shop_images/checkmark.svg",
+            "text": "100% Authenticate"
+          }
+        },
+        "icon_with_text_aMktQa": {
+          "type": "icon_with_text",
+          "settings": {
+            "icon": "shopify://shop_images/beauty.svg",
+            "text": "Certified Beauty Advisor"
+          }
+        }
+      },
+      "block_order": [
+        "icon_with_text_MxJFfV",
+        "icon_with_text_P7GGEH",
+        "icon_with_text_aMktQa"
+      ],
+      "settings": {
+        "delivery_icon": "shopify://shop_images/f3f8e0f7f129d082c32e4886ea6f694c.svg",
+        "delivery_text": "Delivery charge will add"
+      }
+    },
     "related-products": {
       "type": "related-products",
       "settings": {

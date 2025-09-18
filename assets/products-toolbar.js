@@ -132,6 +132,9 @@ if (!customElements.get("products-toolbar")) {
     static handleSortByChange(evt) {
       const urlObj = new URL(window.location.href);
       urlObj.searchParams.set("sort_by", evt.detail.selectedValue);
+      // Reset to page 1 when sorting
+      urlObj.searchParams.delete("page");
+      urlObj.searchParams.delete("phcursor");
       urlObj.hash = "products-toolbar";
       window.location.href = urlObj.toString();
     }

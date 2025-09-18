@@ -838,6 +838,9 @@ address {
 .z-9999 {
   z-index: 9999;
 }
+.z-9998 {
+  z-index: 9998;
+}
 .z-10000 {
   z-index: 10000;
 }
@@ -928,6 +931,9 @@ address {
 }
 .ml-2 {
   margin-left: calc(2 * var(--space-unit));
+}
+.ml-8 {
+  margin-left: calc(8 * var(--space-unit));
 }
 .ml-auto {
   margin-left: auto;
@@ -1589,6 +1595,15 @@ address {
 .max-w-400 {
   max-width: 400px;
 }
+.max-w-340 {
+  max-width: 340px;
+}
+.max-w-308 {
+  max-width: 308px;
+}
+.max-w-180 {
+  max-width: 180px;
+}
 .max-w-screen-lg {
   max-width: 1024px;
 }
@@ -1713,6 +1728,9 @@ address {
   }
   .sm\:max-w-full {
     max-width: 100%;
+  }
+  .sm\:max-w-308 {
+    max-width: 308px;
   }
 
   .sm\:hidden {
@@ -1935,6 +1953,9 @@ address {
 }
 .gap-20 {
   gap: calc(20 * var(--space-unit));
+}
+.gap-2 {
+  gap: calc(2 * var(--space-unit));
 }
 .gap-24 {
   gap: calc(24 * var(--space-unit));
@@ -2279,6 +2300,9 @@ address {
 }
 .bg-warning-alt {
   background-color: #fef9f3;
+}
+.bg-overlay {
+  background-color: rgba(0, 0, 0, 0.4);
 }
 .object-center {
   object-position: center;
@@ -3552,7 +3576,6 @@ select:focus + label,
 select:not(:placeholder-shown) + label {
   top: 8px;
   left: 16px;
-  font-size: 12px;
   transform: translateY(0);
   color: rgb(var(--color-primary-text)) !important;
   font-weight: 500;
@@ -3929,6 +3952,9 @@ tr:last-child td {
 }
 .transition-all-3 {
   transition: all 0.3s ease;
+}
+.transition-opacity-3 {
+  transition: opacity 0.3s ease-in-out;
 }
 
 .swiper-notification {
