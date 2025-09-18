@@ -19,11 +19,32 @@
   }
   .radio-option input[type="radio"]:checked + .radio-option-label .radio-custom {
     border-color: rgb(var(--color-primary-brand));
-    background-color: rgb(var(--color-primary-brand));
     border-width: 2px;
   }
   .radio-option input[type="radio"]:checked + .radio-option-label .radio-option-text {
     color: rgb(var(--color-primary-brand));
+  }
+
+  .radio-custom::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: background-color 0.2s ease-in-out;
+  }
+
+  .radio-option input[type="radio"]:checked + .radio-option-label .radio-custom {
+    border-color: rgb(var(--color-primary-brand));
+    border-width: 2px;
+  }
+
+  .radio-option input[type="radio"]:checked + .radio-option-label .radio-custom::after {
+    background-color: rgb(var(--color-primary-brand));
   }
 </style>
 

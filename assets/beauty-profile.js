@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="radio-option">
           <input type="radio" class="hidden" id="${option.value}" name="${question.q_key}" value="${option.value}">
           <label for="${option.value}" class="radio-option-label flex gap-10 items-center rounded-100 border border-solid border-color cursor-pointer transition-transform pt-18 pr-16 pb-18 pl-16">
-            <span class="radio-custom w-20 h-20 inline-block border border-solid border-1 rounded-full"></span>
+            <span class="radio-custom relative w-20 h-20 inline-block border border-solid border-1 rounded-full"></span>
             <span class="radio-option-text transition-transform fw-500 fs-13-lh-16-ls-0_2">${option.label}</span>
           </label>
         </div>
@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const innerHtml = `
     <h2 class="beauty-profile-modal-body-title">${question.title}</h2>
     ${optionsHtml}
-    <div class="error-container"></div>
+    <div class="error-container flex"></div>
   `;
 
     renderModalContent(createModalLayout(innerHtml));
