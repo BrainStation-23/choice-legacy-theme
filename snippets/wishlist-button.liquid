@@ -1,7 +1,6 @@
 {% if customer %}
   <button
     class="wishlist-btn cursor-pointer {% if button_text != blank %}bg-transparent border-none p-0 fs-12-lh-16-ls-0_6 fw-400{% else %}bg-bg border-0_727 border-solid border-color rounded-full{% endif %} flex justify-center items-center {{ cls }}"
-    data-product-handle="{{ product.handle }}"
     data-product-id="{{ product.id }}"
     aria-label="Add to Wishlist"
   >

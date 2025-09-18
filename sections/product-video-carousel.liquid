@@ -33,55 +33,53 @@
                   data-block-id="{{ block.id }}"
                 >
                   <div class="product-video-container relative w-full h-340">
-                    {% if block.settings.video_type == 'youtube' and block.settings.youtube_url != blank %}
-                      {% assign youtube_id = block.settings.youtube_url | split: 'v=' | last | split: '&' | first %}
-                      {% if youtube_id == blank %}
-                        {% assign youtube_id = block.settings.youtube_url
-                          | split: 'youtu.be/'
-                          | last
-                          | split: '?'
-                          | first
-                        %}
-                      {% endif %}
-                      {% if youtube_id != blank %}
-                        <iframe
-                          class="w-full h-340 border-none block"
-                          src="https://www.youtube.com/embed/{{ youtube_id }}?autoplay=0&mute=1&loop=1&playlist={{ youtube_id }}&controls=0&showinfo=0&rel=0&modestbranding=1&enablejsapi=1"
-                          loading="lazy"
-                          allow="autoplay; encrypted-media"
-                          data-video-type="youtube"
-                          data-youtube-id="{{ youtube_id }}"
-                        >
-                        </iframe>
-                      {% endif %}
-                    {% elsif block.settings.video_type == 'url' and block.settings.video_url != blank %}
-                      <video
-                        style="width: 100%; height: 100%; object-fit: cover;"
-                        class="w-full h-full block object-cover"
-                        muted
-                        loop
-                        playsinline
-                        preload="metadata"
-                        data-video-type="mp4"
-                      >
-                        <source src="{{ block.settings.video_url }}" type="video/mp4">
-                      </video>
-                    {% endif %}
+                    {%- assign youtube_id = '' -%}
+                    {%- if block.settings.video_type == 'youtube' and block.settings.youtube_url != blank -%}
+                      {%- assign temp_id = block.settings.youtube_url | split: 'v=' | last | split: '&' | first -%}
+                      {%- if temp_id == blank or temp_id == block.settings.youtube_url -%}
+                        {%- assign temp_id = block.settings.youtube_url | split: 'youtu.be/' | last | split: '?' | first -%}
+                      {%- endif -%}
+                      {%- assign youtube_id = temp_id -%}
+                    {%- endif -%}
 
-                    {% unless has_video %}
-                      {% if product.featured_image %}
-                        {% render 'image',
-                          image: product.featured_image,
-                          width: 268,
-                          height_attr: 340,
-                          alt_text: product.title,
-                          css_classes: 'w-full h-full block object-cover hidden h-340 object-cover',
-                          loading: 'lazy',
-                          width_attr: 268
-                        %}
-                      {% endif %}
-                    {% endunless %}
+                    <div class="video-player-container absolute inset-0">
+                      {% if has_video %}
+                        {%- assign thumbnail_image = block.settings.custom_thumbnail | default: product.featured_image -%}
+                        {% if thumbnail_image %}
+                          <div class="relative block media h-full w-full">
+                            {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
 
+                            {% render 'image',
+                              image: thumbnail_image,
+                              widths: '268, 268, 268, 268',
+                              src_width: 268,
+                              sizes: sizes,
+                              class: 'img-fit',
+                              quality: 1
+                            %}
+                          </div>
+                        {% elsif youtube_id != blank %}
+                          <img src="https://img.youtube.com/vi/{{ youtube_id }}/hqdefault.jpg" alt="{{ product.title | escape }}" class="w-full h-full block object-cover" loading="lazy" width="auto" height="auto" />
+                        {% else %}
+                          <div class="w-full h-full flex items-center justify-center bg-gray-200">
+                            {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
+                          </div>
+                        {% endif %}
+                      {% else %}
+                         {% if product.featured_image %}
+                          {% render 'image',
+                            image: product.featured_image,
+                            width: 268,
+                            height_attr: 340,
+                            alt_text: product.title,
+                            css_classes: 'w-full h-full block object-cover',
+                            loading: 'lazy',
+                            width_attr: 268
+                          %}
+                        {% endif %}
+                      {% endif %}
+                    </div>
+                    
                     {% if has_video %}
                       <div class="absolute bottom-0 left-0 right-0 flex justify-between items-end z-3 p-16">
                         <div class="flex flex-col gap-9 flex-1">
@@ -113,6 +111,9 @@
                           class="product-video-item__small-play w-32 h-32 bg-brand rounded-full flex items-center justify-center shrink-0 cursor-pointer border-none"
                           type="button"
                           aria-label="Play video"
+                          data-video-type="{{ block.settings.video_type }}"
+                          {% if youtube_id != blank %}data-youtube-id="{{ youtube_id }}"{% endif %}
+                          {% if block.settings.video_type == 'url' and block.settings.video_url != blank %}data-video-url="{{ block.settings.video_url }}"{% endif %}
                         >
                           {% render 'icon-play', cls: 'block w-14 h-14 svg-bg' %}
                           {% render 'icon-pause', cls: 'hidden w-14 h-14 svg-bg' %}
@@ -161,7 +162,6 @@
                       {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
                     </div>
                   </div>
-
                   <div class="flex items-center gap-12 p-8">
                     <div class="w-56 h-56 object-cover shrink-0">
                       {{ 'product-1' | placeholder_svg_tag: 'placeholder-svg' }}
@@ -188,98 +188,118 @@
 </div>
 
 <script>
+  function loadYouTubeApi() {
+    if (window.YT && window.YT.Player) {
+      return;
+    }
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
-    const videoItems = document.querySelectorAll('.product-video-item');
+    const videoItems = document.querySelectorAll('.product-video-item.has-video');
+    let youtubeApiReady = false;
 
-    videoItems.forEach((item) => {
-      const video = item.querySelector('video[data-video-type="mp4"]');
-      const iframe = item.querySelector('iframe[data-video-type="youtube"]');
-      const smallPlayButton = item.querySelector('.product-video-item__small-play');
+    const hasYoutubeVideo = Array.from(videoItems).some(item =>
+      item.querySelector('.product-video-item__small-play[data-video-type="youtube"]')
+    );
 
-      function updateIcons(isPlaying) {
-        const playIcon = item.querySelector('.icon-play');
-        const pauseIcon = item.querySelector('.icon-pause');
+    function initializePlayers() {
+      videoItems.forEach((item) => {
+        const smallPlayButton = item.querySelector('.product-video-item__small-play');
+        if (!smallPlayButton) return;
 
-        if (!playIcon || !pauseIcon) return;
+        let isLoaded = false;
+        let player;
 
-        if (isPlaying) {
-          playIcon.classList.add('hidden');
-          playIcon.classList.remove('block');
-          pauseIcon.classList.remove('hidden');
-          pauseIcon.classList.add('block');
-        } else {
-          playIcon.classList.remove('hidden');
-          playIcon.classList.add('block');
-          pauseIcon.classList.add('hidden');
-          pauseIcon.classList.remove('block');
-        }
-      }
+        const updateIcons = (isPlaying) => {
+          const playIcon = item.querySelector('.icon-play');
+          const pauseIcon = item.querySelector('.icon-pause');
+          if (!playIcon || !pauseIcon) return;
+          playIcon.style.display = isPlaying ? 'none' : 'block';
+          pauseIcon.style.display = isPlaying ? 'block' : 'none';
+        };
 
-      if (video && smallPlayButton) {
-        const toggleVideo = () => {
-          if (video.paused) {
-            const playPromise = video.play();
-            if (playPromise !== undefined) {
-              playPromise
-                .then(() => {
-                  item.classList.add('playing');
-                  updateIcons(true);
-                })
-                .catch((error) => {
-                  console.error('Video play failed:', error);
-                });
+        smallPlayButton.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const videoType = smallPlayButton.dataset.videoType;
+
+          if (!isLoaded) {
+            const playerContainer = item.querySelector('.video-player-container');
+            if (!playerContainer) return;
+
+            if (videoType === 'mp4') {
+              const videoUrl = smallPlayButton.dataset.videoUrl;
+              const video = document.createElement('video');
+              video.style.width = '100%';
+              video.style.height = '100%';
+              video.style.objectFit = 'cover';
+              video.muted = true;
+              video.loop = true;
+              video.playsInline = true;
+              video.autoplay = true;
+              video.src = videoUrl;
+
+              playerContainer.innerHTML = '';
+              playerContainer.appendChild(video);
+              video.play().catch(error => console.error("Video play failed:", error));
+              player = video;
+              isLoaded = true;
+              updateIcons(true);
+            } else if (videoType === 'youtube') {
+              if (!youtubeApiReady) return;
+              const youtubeId = smallPlayButton.dataset.youtubeId;
+              const playerId = `Youtubeer-${item.dataset.blockId}`;
+              
+              const playerDiv = document.createElement('div');
+              playerDiv.id = playerId;
+              playerContainer.innerHTML = '';
+              playerContainer.appendChild(playerDiv);
+
+              player = new YT.Player(playerId, {
+                height: '100%',
+                width: '100%',
+                videoId: youtubeId,
+                playerVars: { 'autoplay': 1, 'controls': 0, 'mute': 1, 'loop': 1, 'playlist': youtubeId, 'rel': 0, 'showinfo': 0, 'modestbranding': 1 },
+                events: {
+                  'onReady': (event) => {
+                    event.target.playVideo();
+                    isLoaded = true;
+                  },
+                  'onStateChange': (event) => {
+                     if (event.data === YT.PlayerState.PLAYING) updateIcons(true);
+                     else updateIcons(false);
+                  }
+                }
+              });
             }
           } else {
-            video.pause();
-            item.classList.remove('playing');
-            updateIcons(false);
+            if (videoType === 'mp4') {
+              if (player.paused) { player.play(); updateIcons(true); } 
+              else { player.pause(); updateIcons(false); }
+            } else if (videoType === 'youtube' && player) {
+              const state = player.getPlayerState();
+              if (state === YT.PlayerState.PLAYING) player.pauseVideo();
+              else player.playVideo();
+            }
           }
-        };
-
-        smallPlayButton.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          toggleVideo();
         });
+      });
+    }
 
-        video.addEventListener('play', () => {
-          item.classList.add('playing');
-          updateIcons(true);
-        });
-
-        video.addEventListener('pause', () => {
-          item.classList.remove('playing');
-          updateIcons(false);
-        });
-
-        video.addEventListener('ended', () => {
-          item.classList.remove('playing');
-          updateIcons(false);
-        });
-      }
-
-      if (iframe && smallPlayButton) {
-        const toggleYouTube = () => {
-          const currentSrc = iframe.src;
-
-          if (item.classList.contains('playing')) {
-            iframe.src = currentSrc.replace('autoplay=1', 'autoplay=0');
-            item.classList.remove('playing');
-            updateIcons(false);
-          } else {
-            iframe.src = currentSrc.replace('autoplay=0', 'autoplay=1');
-            item.classList.add('playing');
-            updateIcons(true);
-          }
-        };
-
-        smallPlayButton.addEventListener('click', (e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          toggleYouTube();
-        });
-      }
-    });
+    if (hasYoutubeVideo) {
+      loadYouTubeApi();
+      window.onYouTubeIframeAPIReady = function() {
+        youtubeApiReady = true;
+        initializePlayers();
+      };
+    } else {
+      initializePlayers();
+    }
   });
 </script>
 
@@ -332,6 +352,12 @@
           "type": "product",
           "id": "product",
           "label": "Product"
+        },
+        {
+          "type": "image_picker",
+          "id": "custom_thumbnail",
+          "label": "Custom Video Thumbnail",
+          "info": "Optional. If not set, the product's featured image will be used."
         },
         {
           "type": "select",

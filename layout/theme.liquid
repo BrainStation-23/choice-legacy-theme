@@ -67,7 +67,7 @@
     {%- sections 'footer-group' -%}
 
     <script>
-      window.APP_SUB_PATH = "generic-name";
+      window.APP_SUB_PATH = "choice_legacy_staging";
       window.theme = {
         routes: {
           cart: '{{ routes.cart_url }}',
@@ -89,65 +89,7 @@
 
     <script src="{{ 'slideshow.js' | asset_url }}" defer></script>
     <script src="{{ 'spinner-component.js' | asset_url }}" defer></script>
-    <script>
-      window.allShopifyProducts = {
-        {% for product in collections.all.products %}
-          "{{ product.handle }}": {
-            "title": "{{ product.title | escape }}",
-            "price": "{{ product.price | money }}",
-            "imageUrl": "{{ product.featured_image | image_url: width: 200 }}",
-            "id": "{{ product.id }}",
-            "handle": "{{ product.handle }}",
-            "url": "{{ product.url }}",
-            "variantId": "{{ product.selected_or_first_available_variant.id }}"
-          }{% unless forloop.last %},{% endunless %}
-        {% endfor %}
-      };
-    </script>
-    <script src="{{ 'add-to-wishlist.js' | asset_url }}" defer></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        window.theme = window.theme || {};
-
-        {% if customer %}
-          fetch(`/apps/${APP_SUB_PATH}/customer/account/profile`)
-            .then(response => response.json())
-            .then(data => {
-              if (!data) return;
-              window.theme.rewardPointEnabled = data.rewardPointEnabled;
-              const rewardPointTab = document.querySelector('.customer-account__sidebar-item[data-tab="rewards"]');
-              if (rewardPointTab) {
-                rewardPointTab.style.display = data.rewardPointEnabled ? 'flex' : 'none';
-              }
-            })
-            .catch(error => console.error('Failed to fetch profile:', error));
-        {% endif %}
-
-        const initializeWishlistFromStorage = () => {
-          if (!window.customerLoggedIn) {
-            window.theme.wishlistHandles = new Set();
-            return;
-          }
-
-          let wishlistData = null;
-          try {
-            const storedJSON = localStorage.getItem('customerWishlist');
-            wishlistData = storedJSON ? JSON.parse(storedJSON) : null;
-          } catch (e) {
-            console.error('Could not parse wishlist from local storage.', e);
-          }
-
-          const productHandles = wishlistData?.wishlist?.products.map(p => p.productHandle) || [];
-          window.theme.wishlistHandles = new Set(productHandles);
-        };
-
-        initializeWishlistFromStorage();
-        
-        if (typeof updateAllWishlistButtons === 'function') {
-          updateAllWishlistButtons();
-        }
-      });
-    </script>
+    <script src="{{ 'wishlist.js' | asset_url }}" defer></script>
     {% render 'cart-drawer' %}
     <script src="{{ 'cart.js' | asset_url }}" defer></script>
   </body>
