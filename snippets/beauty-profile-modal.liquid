@@ -1,3 +1,14 @@
+<style>
+  #beauty-profile-modal-body {
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+  }
+
+  .is-transitioning {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+</style>
+
 <div id="beauty-profile-modal" class="beauty-profile-modal-overlay overlay inset-0 hidden fixed z-9999 items-center justify-center">
   <div class="beauty-profile-modal-content pt-40 pr-32 pb-40 pl-32 relative w-full rounded-16 bg-bg">
     <button id="beauty-profile-modal-close-btn" class="beauty-profile-modal-close-btn absolute top-24 right-24 bg-transparent border-none cursor-pointer w-28 h-28">{% render "icon-close", cls: "w-28 h-28 svg-primary-optional" %}</button>

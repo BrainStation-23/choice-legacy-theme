@@ -5,16 +5,94 @@ document.addEventListener("DOMContentLoaded", async () => {
     "beauty-profile-modal-close-btn"
   );
 
-  function openModal() {
-    if (modal) modal.style.display = "flex";
+  let allQuestions = [];
+  let currentProfileQuestions = [];
+  let currentStep = 0;
+
+  const delay = (ms) => new Promise((res) => setTimeout(res, ms));
+
+  async function openModal() {
+  if (modal && modalBody) {
+    modalBody.classList.add("is-transitioning");
+    modal.style.display = "flex";
+    await delay(20);
+    modalBody.classList.remove("is-transitioning");
+  }
+}
+
+  async function closeModal() {
+    if (modal && modalBody) {
+      const animationDuration = 200;
+      modalBody.classList.add("is-transitioning");
+      await delay(animationDuration);
+      modal.style.display = "none";
+      modalBody.classList.remove("is-transitioning");
+    }
   }
 
-  function closeModal() {
-    if (modal) modal.style.display = "none";
+  async function renderModalContent(html, newClasses = "w-full") {
+    if (!modal || !modalBody) return;
+
+    const modalContent = modal.querySelector(".beauty-profile-modal-content");
+    const animationDuration = 200;
+
+    modalBody.classList.add("is-transitioning");
+    await delay(animationDuration);
+
+    modalContent.className =
+      "beauty-profile-modal-content pt-40 pr-32 pb-40 pl-32 relative rounded-16 bg-bg";
+    if (newClasses) {
+      modalContent.classList.add(...newClasses.split(" "));
+    }
+
+    modalBody.innerHTML = html;
+
+    modalBody.classList.remove("is-transitioning");
+
+    modal
+      .querySelector(".beauty-profile-modal-back-btn")
+      ?.addEventListener("click", closeModal);
+    modal
+      .querySelector(".beauty-profile-modal-continue-btn")
+      ?.addEventListener("click", handleContinue);
+
+    openModal();
+  }
+
+  function renderCurrentQuestion() {
+    if (currentStep >= currentProfileQuestions.length) {
+      const thankYouHtml = `<h2 class="beauty-profile-modal-body-title">Thank you! Your profile is complete.</h2>`;
+      renderModalContent(thankYouHtml);
+      return;
+    }
+
+    const question = currentProfileQuestions[currentStep];
+    let questionHtml = `<h2 class="beauty-profile-modal-body-title">${question.title}</h2>`;
+
+    if (question.type === "single_choice" && question.options) {
+      questionHtml += `<div class="flex flex-col gap-10">`;
+      question.options.forEach((option) => {
+        questionHtml += `<button class="text-left p-4 border rounded-md">${option.label}</button>`;
+      });
+      questionHtml += `</div>`;
+    }
+
+    questionHtml += `
+        <div class="beauty-profile-modal-footer flex justify-between mt-16">
+          <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
+          <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">Continue</button>
+        </div>`;
+
+    renderModalContent(questionHtml);
+  }
+
+  function handleContinue() {
+    currentStep++;
+    renderCurrentQuestion();
   }
 
   function showDobAndGenderModal() {
-    return `
+    const html = `
         <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">What's your birthday? We've got personalized tips waiting for you.</h2>
         <div class="beauty-profile-modal-form-field flex flex-col gap-10">
           <label for="dob-dd" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Date of Birth</label>
@@ -24,7 +102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               <label for="dob-dd" class="fw-500 fs-14-lh-20-ls-0_1">DD</label>
             </div>
             <div class="relative w-63 h-56">
-              <input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-mm" placeholder="MM" maxlength="2" inputmode="numeric">
+              <input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-mm" maxlength="2" inputmode="numeric">
               <label for="dob-mm" class="fw-500 fs-14-lh-20-ls-0_1">MM</label>
             </div>
             <div class="relative w-100 h-56">
@@ -49,6 +127,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">Continue</button>
         </div>
       `;
+    renderModalContent(html, "w-700");
   }
 
   if (modal && modalBody && closeModalBtn) {
@@ -66,17 +145,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    let contentHtml = "";
+    currentProfileQuestions = allQuestions.filter((q) => q.key === profileType);
+    currentStep = 0;
 
     if (!window.theme.customer_dob || !window.theme.customer_gender) {
-      contentHtml = showDobAndGenderModal();
+      showDobAndGenderModal();
+    } else {
+      renderCurrentQuestion();
     }
-
-    modalBody.innerHTML = contentHtml;
-    modal
-      .querySelector(".beauty-profile-modal-back-btn")
-      ?.addEventListener("click", closeModal);
-    openModal();
   }
 
   function createProfileTypes(productTypeQuestion) {
@@ -107,7 +183,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             class="setup-now-btn button button--outline w-full flex gap-4 justify-center items-center fs-16-lh-100pct-ls-0"
             data-profile-type="${option.value}"
           >
-            <svg width="29" height="28" viewBox="0 0 29 28" fill="none" xmlns="http://www.w.org/2000/svg">
+            <svg width="29" height="28" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M6.10352 13.9492C6.10352 13.2559 6.67969 12.6895 7.36328 12.6895H13.1055V6.94727C13.1055 6.26367 13.6719 5.6875 14.3652 5.6875C15.0586 5.6875 15.625 6.26367 15.625 6.94727V12.6895H21.3672C22.0605 12.6895 22.627 13.2559 22.627 13.9492C22.627 14.6426 22.0605 15.209 21.3672 15.209H15.625V20.9512C15.625 21.6445 15.0586 22.2109 14.3652 22.2109C13.6719 22.2109 13.1055 21.6445 13.1055 20.9512V15.209H7.36328C6.67969 15.209 6.10352 14.6426 6.10352 13.9492Z" fill="#FB6F92"/>
             </svg>
             <span>Setup Now</span>
@@ -134,6 +210,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (!questions || questions.length === 0) {
         return;
       }
+      allQuestions = questions;
       const productTypeQuestion = questions.find(
         (q) => q.key === "product_type"
       );
@@ -143,7 +220,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // This function will now always run, ensuring the profile cards are rendered.
   initializeProfile();
 });
 
