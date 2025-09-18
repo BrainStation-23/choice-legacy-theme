@@ -52,7 +52,7 @@
       class="dropdown-arrow hidden sm:block sm:transition-transform-2s sm:w-20 sm:h-20 sm:text-primary-60pct"
       id="dropdown-arrow"
     >
-      {% render 'icon-arrow-down' %}
+      {% render 'icon-arrow-down', height: '32', width: '32' %}
     </div>
   </div>
 
@@ -134,7 +134,10 @@
             {{ 'customer.account.support' | t }}
           </h2>
         </div>
-        <span id="unread-messages-count" class="bg-brand hidden text-bg fw-400 fs-14-lh-20-ls-0 w-20 h-20 rounded-full flex justify-center items-center"></span>
+        <span
+          id="unread-messages-count"
+          class="bg-brand hidden text-bg fw-400 fs-14-lh-20-ls-0 w-20 h-20 rounded-full flex justify-center items-center"
+        ></span>
       </div>
       <div
         class="customer-account__sidebar-item gap-8 flex items-center pt-12 pb-12 pl-0 pr-0 text-primary-90pct border-b-2 border-b-solid border-color-transparent sm:p-16 sm:border-b sm:border-b-color sm:border-b-solid sm:transition-transform-2s cursor-pointer"
