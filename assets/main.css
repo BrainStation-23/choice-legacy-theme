@@ -1367,6 +1367,9 @@ address {
 .w-293 {
   width: 293px;
 }
+.w-256 {
+  width: 256px;
+}
 .w-220 {
   width: 220px;
 }
@@ -1396,6 +1399,9 @@ address {
 }
 .w-70 {
   width: 70px;
+}
+.w-63 {
+  width: 63px;
 }
 .w-56 {
   width: 56px;
@@ -1495,6 +1501,9 @@ address {
 }
 .border-color-brand {
   border-color: rgba(var(--color-primary-brand));
+}
+.border-primary {
+  border-color: rgba(var(--color-primary-text));
 }
 .max-w-637 {
   max-width: 637px;
@@ -3484,7 +3493,8 @@ select {
 }
 
 input + label,
-textarea + label {
+textarea + label,
+select + label {
   position: absolute;
   top: 50%;
   left: 16px;
@@ -3494,7 +3504,8 @@ textarea + label {
   transition: 0.2s ease all;
 }
 
-textarea + label {
+textarea + label,
+select + label {
   top: 32px;
 }
 
@@ -3511,8 +3522,6 @@ select {
   margin: 0;
   padding: var(--input-padding-y, 11px) 24px;
   transition: border-color 0.2s, box-shadow 0.2s, outline 0.2s;
-  border: var(--input-border-width) solid rgba(var(--input-text-color) / 0.2);
-  border-radius: var(--input-border-radius, 0);
   background-color: rgb(var(--input-bg-color));
   color: rgb(var(--input-text-color));
   font-size: 0.88em;
@@ -3524,10 +3533,17 @@ textarea:not(:placeholder-shown) + label {
   top: 16px;
 }
 
+select:focus + label,
+select:not(:placeholder-shown) + label {
+  top: 16px;
+}
+
 input:focus + label,
 input:not(:placeholder-shown) + label,
 textarea:focus + label,
-textarea:not(:placeholder-shown) + label {
+textarea:not(:placeholder-shown) + label,
+select:focus + label,
+select:not(:placeholder-shown) + label {
   top: 8px;
   left: 16px;
   font-size: 12px;
@@ -3537,7 +3553,8 @@ textarea:not(:placeholder-shown) + label {
 }
 
 input:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
   outline: none;
   border-color: rgba(var(--color-primary-text), 0.2);
   border: 1px solid rgba(var(--color-secondary-text), 0.2);
@@ -3569,7 +3586,8 @@ select:-webkit-autofill:focus {
 }
 
 input:-webkit-autofill + label,
-textarea:-webkit-autofill + label {
+textarea:-webkit-autofill + label,
+select:-webkit-autofill + label {
   top: 4px;
   left: 16px;
   font-size: 12px;
@@ -3599,13 +3617,6 @@ textarea:-webkit-autofill + label {
 [type="search"]::-webkit-search-decoration {
   margin: 0;
   -webkit-appearance: none;
-}
-
-select {
-  padding-inline-end: 48px;
-  font-weight: 700;
-  -webkit-appearance: none;
-  appearance: none;
 }
 
 .select::after {

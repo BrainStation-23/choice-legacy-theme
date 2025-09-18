@@ -69,6 +69,8 @@
         .then(data => {
           if (!data) return;
           window.theme.rewardPointEnabled = data.rewardPointEnabled;
+          window.theme.customer_dob = data.dob;
+          window.theme.customer_gender = data.gender;
           const rewardPointTab = document.querySelector('.customer-account__sidebar-item[data-tab="rewards"]');
           if (rewardPointTab) {
             rewardPointTab.style.display = data.rewardPointEnabled ? 'flex' : 'none';

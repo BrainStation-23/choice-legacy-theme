@@ -1,0 +1,27 @@
+<div id="beauty-profile-modal" class="beauty-profile-modal-overlay overlay hidden fixed z-9999 items-center justify-center">
+  <div class="beauty-profile-modal-content pt-40 pr-32 pb-40 pl-32 relative w-full rounded-16 bg-bg">
+    <button id="beauty-profile-modal-close-btn" class="beauty-profile-modal-close-btn bg-transparent">{% render "icon-close", cls: "w-28 h-28 svg-primary-optional" %}</button>
+    <div id="beauty-profile-modal-body" class="flex flex-col gap-16">
+    </div>
+  </div>
+</div>
+
+<style>
+  .beauty-profile-modal-overlay {
+    inset: 0;
+  }
+  .beauty-profile-modal-content {
+    max-width: 450px;
+  }
+  .beauty-profile-modal-close-btn {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    font-size: 1.75rem;
+    line-height: 1;
+    cursor: pointer;
+    color: #888;
+  }
+</style>

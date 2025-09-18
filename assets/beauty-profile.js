@@ -1,9 +1,83 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  const modal = document.getElementById("beauty-profile-modal");
+  const modalBody = document.getElementById("beauty-profile-modal-body");
+  const closeModalBtn = document.getElementById(
+    "beauty-profile-modal-close-btn"
+  );
+
+  function openModal() {
+    if (modal) modal.style.display = "flex";
+  }
+
+  function closeModal() {
+    if (modal) modal.style.display = "none";
+  }
+
+  if (modal && modalBody && closeModalBtn) {
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        closeModal();
+      }
+    });
+    closeModalBtn.addEventListener("click", closeModal);
+  }
+
+  function handleProfileSelection(profileType) {
+    if (!modal || !modalBody) {
+      console.error("Cannot open profile setup: Modal HTML not found.");
+      return;
+    }
+
+    let contentHtml = "";
+
+    if (!window.theme.customer_dob || !window.theme.customer_gender) {
+      contentHtml = `
+        <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">What's your birthday? We've got personalized tips waiting for you.</h2>
+        <div class="beauty-profile-modal-form-field flex flex-col gap-10">
+          <label for="dob-dd" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Date of Birth</label>
+          <div class="beauty-profile-modal-input-group flex gap-16">
+            <div class="relative w-63 h-56">
+              <input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-dd" maxlength="2" inputmode="numeric" />
+              <label for="dob-dd" class="fw-500 fs-14-lh-20-ls-0_1">DD</label>
+            </div>
+            <div class="relative w-63 h-56">
+              <input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-mm" placeholder="MM" maxlength="2" inputmode="numeric">
+              <label for="dob-mm" class="fw-500 fs-14-lh-20-ls-0_1">MM</label>
+            </div>
+            <div class="relative w-100 h-56">
+              <input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-yyyy" maxlength="4" inputmode="numeric">
+              <label for="dob-yyyy" class="fw-500 fs-14-lh-20-ls-0_1">YYYY</label>
+            </div>
+          </div>
+        </div>
+        <div class="beauty-profile-modal-form-field flex flex-col gap-10">
+          <div class="relative w-256 h-56">
+            <select id="gender" class="w-full fs-500 fs-14-lh-20-ls-0_1 pl-12 h-full">
+              <option class="fw-500 fs-14-lh-20-ls-0_1" value="male">Male</option>
+              <option class="fw-500 fs-14-lh-20-ls-0_1" value="female">Female</option>
+              <option class="fw-500 fs-14-lh-20-ls-0_1" value="other">Other</option>
+              <option class="fw-500 fs-14-lh-20-ls-0_1" value="prefer_not_to_say">Prefer not to say</option>
+            </select>
+            <label for="gender" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Gender</label>
+          </div>
+        </div>
+        <div class="beauty-profile-modal-footer flex justify-between">
+          <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
+          <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">Continue</button>
+        </div>
+      `;
+    }
+
+    modalBody.innerHTML = contentHtml;
+    modal
+      .querySelector(".beauty-profile-modal-back-btn")
+      ?.addEventListener("click", closeModal);
+    openModal();
+  }
+
   function createProfileTypes(productTypeQuestion) {
     const container = document.getElementById("beauty-profile-types-container");
-
     if (!container) return;
-
     if (productTypeQuestion && productTypeQuestion.options) {
       const cardsHtml = productTypeQuestion.options
         .map(
@@ -18,20 +92,18 @@ document.addEventListener("DOMContentLoaded", async () => {
                 class="relative w-full h-222 object-cover"
               >
             </div>
-
             <div class="w-full">
               <h3 class="w-full rounded-b-l-32 rounded-b-r-32 text-center uppercase pt-12 pr-8 pb-12 pl-8 bg-brand text-bg fs-26-lh-26-ls-1_2 fw-400">
                 ${option.label}
               </h3>
             </div>
           </div>
-
           <button
             type="button"
             class="setup-now-btn button button--outline w-full flex gap-4 justify-center items-center fs-16-lh-100pct-ls-0"
             data-profile-type="${option.value}"
           >
-            <svg width="29" height="28" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="29" height="28" viewBox="0 0 29 28" fill="none" xmlns="http://www.w.org/2000/svg">
             <path d="M6.10352 13.9492C6.10352 13.2559 6.67969 12.6895 7.36328 12.6895H13.1055V6.94727C13.1055 6.26367 13.6719 5.6875 14.3652 5.6875C15.0586 5.6875 15.625 6.26367 15.625 6.94727V12.6895H21.3672C22.0605 12.6895 22.627 13.2559 22.627 13.9492C22.627 14.6426 22.0605 15.209 21.3672 15.209H15.625V20.9512C15.625 21.6445 15.0586 22.2109 14.3652 22.2109C13.6719 22.2109 13.1055 21.6445 13.1055 20.9512V15.209H7.36328C6.67969 15.209 6.10352 14.6426 6.10352 13.9492Z" fill="#FB6F92"/>
             </svg>
             <span>Setup Now</span>
@@ -40,11 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       `
         )
         .join("");
-
-      container.innerHTML = `
-        ${cardsHtml}
-      `;
-
+      container.innerHTML = `${cardsHtml}`;
       container.querySelectorAll(".setup-now-btn").forEach((button) => {
         button.addEventListener("click", () => {
           handleProfileSelection(button.dataset.profileType);
@@ -55,20 +123,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const apiUrl = `/apps/${window.APP_SUB_PATH}/customer/beauty-profile`;
 
-  try {
-    const response = await fetch(`${apiUrl}/questions`);
-    const { questions } = await response.json();
-
-    if (!questions || questions.length === 0) {
-      return;
+  async function initializeProfile() {
+    try {
+      const response = await fetch(`${apiUrl}/questions`);
+      const { questions } = await response.json();
+      if (!questions || questions.length === 0) {
+        return;
+      }
+      const productTypeQuestion = questions.find(
+        (q) => q.key === "product_type"
+      );
+      createProfileTypes(productTypeQuestion);
+    } catch (error) {
+      console.log(error);
     }
-
-    const productTypeQuestion = questions.find((q) => q.key === "product_type");
-
-    createProfileTypes(productTypeQuestion);
-  } catch (error) {
-    console.log(error);
   }
+
+  // This function will now always run, ensuring the profile cards are rendered.
+  initializeProfile();
 });
 
 // document.addEventListener("DOMContentLoaded", async function () {
