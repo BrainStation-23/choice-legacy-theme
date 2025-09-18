@@ -6,7 +6,7 @@
     {%- assign mobile_image = section.settings.mobile_image -%}
     <div class="w-full">
       {%- if desktop_image != blank or mobile_image != blank -%}
-        <div class="media relative w-full h-254" style="">
+        <div class="media relative w-full h-254">
           {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
           {%- render 'image-desktop-and-mobile',
             class: 'img-fit',
@@ -29,15 +29,15 @@
     {%- paginate collection.products by section.settings.products_per_page -%}
       <div class="main-products-grid flex pt-48 pb-88 page-width gap-32">
         {%- if collection.filters != empty and section.settings.enable_filtering -%}
-          <div class="main-products-grid__filters">
-            {% render 'facet-filters', results: collection, section: section %}
+          <div class="main-products-grid__filters block sm:hidden">
+            {% render 'facet-filters', results: collection, section: section, unique_id: 'desktop' %}
           </div>
         {%- endif -%}
 
         <div class="flex flex-col gap-32">
           <div class="flex flex-col gap-24">
             <h1 class="m-0 p-0 ff-bebas-neue fs-36-lh-40-ls-0 fw-400">{{ 'main-category.title' | t }}</h1>
-            <div class="grid grid-cols-4 gap-16">
+            <div class="grid grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-16">
               {% for item in collection.metafields.custom.featured_collections.value %}
                 {% render 'product-card',
                   product: item,
@@ -49,104 +49,136 @@
             </div>
           </div>
 
-          {% if section.settings.enable_sorting %}
-            {% render 'fact-sort', results: collection, section: section %}
+          {% if section.settings.enable_sorting or section.settings.enable_filtering %}
+            <div class="flex justify-between gap-8 ">
+              <div class="w-full max-w-180 sm:max-w-full">
+                {% if section.settings.enable_sorting %}
+                  {% render 'fact-sort', results: collection, section: section %}
+                {% endif %}
+              </div>
+
+              {%- if collection.filters != empty and section.settings.enable_filtering -%}
+                <!-- Filter button -->
+                <div
+                  class="w-full h-40 border-1 border-solid border-color hidden sm:flex items-center justify-between rounded-6 p-8 cursor-pointer relative w-400 fs-14-lh-16-ls-0"
+                  id="filter-button"
+                  data-type="filter"
+                >
+                  <div class="flex items-center gap-6">
+                    {% render 'icon-filter' %}
+                    Filter
+                  </div>
+                  <span class="arrow-icon-filter">
+                    {% render 'icon-arrow-down', height: '32', width: '32' %}
+                  </span>
+                </div>
+
+                <div class="flex flex-col hidden" id="mobile-filter-panel">
+                  <div class="filters-content flex-1 sm:p-16 overflow-y-auto scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover">
+                    {% render 'facet-filters', results: collection, section: section, unique_id: 'mobile' %}
+                  </div>
+                </div>
+
+                <!-- Overlay -->
+                <div class="filter-overlay"></div>
+              {%- endif -%}
+            </div>
           {% endif %}
 
           <div class="main-products-grid__results relative flex-auto" id="filter-results">
-            <!-- Spinner overlay for sorting -->
             <div
-              id="sorting-spinner"
-              class="sorting-spinner hidden absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-10"
+              id="filtering-spinner"
+              class="filtering-spinner hidden absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-10"
             >
-              <spinner-component></spinner-component>
+              <spinner-component size="medium" color="primary"></spinner-component>
             </div>
 
             {%- if collection.products.size == 0 -%}
               <p>{{ 'sections.collection.empty' | t }}</p>
             {%- else -%}
-              {%- liquid
-                assign active_filters_count = 0
-                if collection.filters != empty
-                  for filter in collection.filters
-                    if filter.type == 'price_range'
-                      if filter.min_value.value
-                        assign active_filters_count = active_filters_count | plus: 1
-                      endif
-                      if filter.max_value.value
-                        assign active_filters_count = active_filters_count | plus: 1
-                      endif
-                    else
-                      assign active_filters_count = active_filters_count | plus: filter.active_values.size
-                    endif
-                  endfor
-                endif
-              -%}
-
-              <div
-                class="grid grid-cols-4 sm:grid-cols-2 gap-16"
-                data-filters-open-classes=""
-                data-filters-closed-classes=""
-                role="list"
-              >
-                {%- assign rendered_product_ids = '' -%}
-                {%- for product in collection.products -%}
-                  {%- assign product_index = forloop.index -%}
-                  {%- for block in section.blocks -%}
-                    {%- liquid
-                      unless block.settings.position == 'top' or block.settings.position == 'bottom'
-                        assign is_last_position = false
-
-                        if product_index == block.settings.position or is_last_position
-                          if paginate.pages == 0 or paginate.current_page == 1
-                            if active_filters_count == 0 or block.settings.hide_on_filter == false
-                              if product_index == collection.products.size and block.settings.position > product_index
-                                assign is_last_position = true
-                              endif
-                            endif
-                          endif
-                        endif
-                      endunless
-                    -%}
-                    {%- if is_last_position -%}
-                      {%- unless rendered_product_ids contains product.id -%}
-                        {%- assign rendered_product_ids = rendered_product_ids | append: product.id | append: ',' -%}
-                        <div class="js-pagination-result">
-                          {% render 'product-card',
-                            product: product,
-                            collection: collection,
-                            image_ratio: image_ratio,
-                            show_compare: settings.enable_compare
-                          %}
-                        </div>
-                      {%- endunless -%}
-                    {%- endif -%}
-                  {%- endfor -%}
-
-                  {%- unless is_last_position and rendered_product_ids contains product.id -%}
-                    {%- assign rendered_product_ids = rendered_product_ids | append: product.id | append: ',' -%}
-                    <div class="js-pagination-result">
-                      {% render 'product-card',
-                        product: product,
-                        collection: collection,
-                        image_ratio: image_ratio,
-                        show_compare: settings.enable_compare
-                      %}
-                    </div>
-                  {%- endunless -%}
-                {%- endfor -%}
+              <div class="grid grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-16">
+                {% for product in collection.products %}
+                  <div class="js-pagination-result">
+                    {% render 'product-card',
+                      product: product,
+                      collection: collection,
+                      image_ratio: image_ratio,
+                      show_compare: settings.enable_compare
+                    %}
+                  </div>
+                {% endfor %}
               </div>
             {%- endif -%}
           </div>
 
-          {%- if paginate.pages > 1 -%}
-            {% render 'pagination', paginate: paginate, class: 'pt-0 justify-end' %}
-          {%- endif -%}
+          <div class="pagination-container">
+            {%- if paginate.pages > 1 -%}
+              {% render 'pagination', paginate: paginate, class: 'pt-0 justify-end' %}
+            {%- endif -%}
+          </div>
         </div>
       </div>
     {%- endpaginate -%}
   </div>
 </div>
+
+<style>
+  /* Filter button - mobile only */
+  #filter-button {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    #filter-button {
+      display: flex;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const filterButton = document.getElementById('filter-button');
+    const filterPanel = document.getElementById('mobile-filter-panel');
+    const filterOverlay = document.querySelector('.filter-overlay');
+    const closeButton = document.getElementById('filter-close-button-mobile');
+
+    function openMobileFilters() {
+      if (filterPanel && filterOverlay) {
+        filterPanel.classList.remove('hidden');
+        filterPanel.classList.add('main-products-grid__filters-mobile', 'open');
+        filterOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeMobileFilters() {
+      if (filterPanel && filterOverlay) {
+        filterPanel.classList.remove('open');
+        filterOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+        setTimeout(() => {
+          filterPanel.classList.add('hidden');
+          filterPanel.classList.remove('main-products-grid__filters-mobile');
+        }, 300);
+      }
+    }
+
+    // Open filters when filter button is clicked
+    if (filterButton) {
+      filterButton.addEventListener('click', openMobileFilters);
+    }
+
+    // Close filters when overlay is clicked
+    if (filterOverlay) {
+      filterOverlay.addEventListener('click', closeMobileFilters);
+    }
+
+    // Close filters when close button is clicked
+    if (closeButton) {
+      closeButton.addEventListener('click', closeMobileFilters);
+    }
+  });
+</script>
 
 {% schema %}
 {

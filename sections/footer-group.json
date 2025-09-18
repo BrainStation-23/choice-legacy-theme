@@ -38,17 +38,11 @@
         "link-list-2",
         "link-list-3"
       ],
-      "settings": {
-        "padding_top": 36,
-        "padding_bottom": 36
-      }
+      "settings": {}
     },
     "copyright-content": {
       "type": "copyright-content",
-      "settings": {
-        "padding_top": 32,
-        "padding_bottom": 32
-      }
+      "settings": {}
     }
   },
   "order": [
