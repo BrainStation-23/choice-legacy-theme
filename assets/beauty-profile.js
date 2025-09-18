@@ -12,13 +12,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
   async function openModal() {
-  if (modal && modalBody) {
-    modalBody.classList.add("is-transitioning");
-    modal.style.display = "flex";
-    await delay(20);
-    modalBody.classList.remove("is-transitioning");
+    if (modal && modalBody) {
+      modalBody.classList.add("is-transitioning");
+      modal.style.display = "flex";
+      await delay(20);
+      modalBody.classList.remove("is-transitioning");
+    }
   }
-}
 
   async function closeModal() {
     if (modal && modalBody) {
@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     await delay(animationDuration);
 
     modalContent.className =
-      "beauty-profile-modal-content pt-40 pr-32 pb-40 pl-32 relative rounded-16 bg-bg";
+      "beauty-profile-modal-content relative rounded-16 bg-bg";
     if (newClasses) {
       modalContent.classList.add(...newClasses.split(" "));
     }
@@ -93,36 +93,38 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function showDobAndGenderModal() {
     const html = `
-        <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">What's your birthday? We've got personalized tips waiting for you.</h2>
-        <div class="beauty-profile-modal-form-field flex flex-col gap-10">
-          <label for="dob-dd" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Date of Birth</label>
-          <div class="beauty-profile-modal-input-group flex gap-16">
-            <div class="relative w-63 h-56">
-              <input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-dd" maxlength="2" inputmode="numeric" />
-              <label for="dob-dd" class="fw-500 fs-14-lh-20-ls-0_1">DD</label>
+        <div class="flex flex-col gap-16 pr-32 pl-32 pt-40 pb-40">
+          <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">What's your birthday? We've got personalized tips waiting for you.</h2>
+          <div class="beauty-profile-modal-form-field flex flex-col gap-10">
+            <label for="dob-dd" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Date of Birth</label>
+            <div class="beauty-profile-modal-input-group flex gap-16">
+              <div class="relative w-63 h-56">
+                <input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-dd" maxlength="2" inputmode="numeric" />
+                <label for="dob-dd" class="fw-500 fs-14-lh-20-ls-0_1">DD</label>
+              </div>
+              <div class="relative w-63 h-56">
+                <input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-mm" maxlength="2" inputmode="numeric">
+                <label for="dob-mm" class="fw-500 fs-14-lh-20-ls-0_1">MM</label>
+              </div>
+              <div class="relative w-100 h-56">
+                <input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-yyyy" maxlength="4" inputmode="numeric">
+                <label for="dob-yyyy" class="fw-500 fs-14-lh-20-ls-0_1">YYYY</label>
+              </div>
             </div>
-            <div class="relative w-63 h-56">
-              <input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-mm" maxlength="2" inputmode="numeric">
-              <label for="dob-mm" class="fw-500 fs-14-lh-20-ls-0_1">MM</label>
-            </div>
-            <div class="relative w-100 h-56">
-              <input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-yyyy" maxlength="4" inputmode="numeric">
-              <label for="dob-yyyy" class="fw-500 fs-14-lh-20-ls-0_1">YYYY</label>
+          </div>
+          <div class="beauty-profile-modal-form-field flex flex-col gap-10">
+            <div class="relative w-256 h-56">
+              <select id="gender" class="w-full fs-500 fs-14-lh-20-ls-0_1 pl-12 h-full">
+                <option class="fw-500 fs-14-lh-20-ls-0_1" value="male">Male</option>
+                <option class="fw-500 fs-14-lh-20-ls-0_1" value="female">Female</option>
+                <option class="fw-500 fs-14-lh-20-ls-0_1" value="other">Other</option>
+                <option class="fw-500 fs-14-lh-20-ls-0_1" value="prefer_not_to_say">Prefer not to say</option>
+              </select>
+              <label for="gender" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Gender</label>
             </div>
           </div>
         </div>
-        <div class="beauty-profile-modal-form-field flex flex-col gap-10">
-          <div class="relative w-256 h-56">
-            <select id="gender" class="w-full fs-500 fs-14-lh-20-ls-0_1 pl-12 h-full">
-              <option class="fw-500 fs-14-lh-20-ls-0_1" value="male">Male</option>
-              <option class="fw-500 fs-14-lh-20-ls-0_1" value="female">Female</option>
-              <option class="fw-500 fs-14-lh-20-ls-0_1" value="other">Other</option>
-              <option class="fw-500 fs-14-lh-20-ls-0_1" value="prefer_not_to_say">Prefer not to say</option>
-            </select>
-            <label for="gender" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Gender</label>
-          </div>
-        </div>
-        <div class="beauty-profile-modal-footer flex justify-between">
+        <div class="beauty-profile-modal-footer flex justify-between p-16 box-shadow">
           <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
           <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">Continue</button>
         </div>
