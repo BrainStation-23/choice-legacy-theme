@@ -13,25 +13,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (modal) modal.style.display = "none";
   }
 
-  if (modal && modalBody && closeModalBtn) {
-    modal.addEventListener("click", (event) => {
-      if (event.target === modal) {
-        closeModal();
-      }
-    });
-    closeModalBtn.addEventListener("click", closeModal);
-  }
-
-  function handleProfileSelection(profileType) {
-    if (!modal || !modalBody) {
-      console.error("Cannot open profile setup: Modal HTML not found.");
-      return;
-    }
-
-    let contentHtml = "";
-
-    if (!window.theme.customer_dob || !window.theme.customer_gender) {
-      contentHtml = `
+  function showDobAndGenderModal() {
+    return `
         <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">What's your birthday? We've got personalized tips waiting for you.</h2>
         <div class="beauty-profile-modal-form-field flex flex-col gap-10">
           <label for="dob-dd" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Date of Birth</label>
@@ -66,6 +49,27 @@ document.addEventListener("DOMContentLoaded", async () => {
           <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">Continue</button>
         </div>
       `;
+  }
+
+  if (modal && modalBody && closeModalBtn) {
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        closeModal();
+      }
+    });
+    closeModalBtn.addEventListener("click", closeModal);
+  }
+
+  function handleProfileSelection(profileType) {
+    if (!modal || !modalBody) {
+      console.error("Cannot open profile setup: Modal HTML not found.");
+      return;
+    }
+
+    let contentHtml = "";
+
+    if (!window.theme.customer_dob || !window.theme.customer_gender) {
+      contentHtml = showDobAndGenderModal();
     }
 
     modalBody.innerHTML = contentHtml;
