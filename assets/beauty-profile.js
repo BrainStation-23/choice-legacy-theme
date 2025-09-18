@@ -7,7 +7,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let allQuestions = [];
   let currentProfileQuestions = [];
-  let currentStep = 0;
+  let currentStep = -1;
+  let userAnswers = {};
+  let currentProfileType = "";
+  let currentAnswer = null;
 
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -46,7 +49,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     modalBody.innerHTML = html;
-
     modalBody.classList.remove("is-transitioning");
 
     modal
@@ -56,85 +58,235 @@ document.addEventListener("DOMContentLoaded", async () => {
       .querySelector(".beauty-profile-modal-continue-btn")
       ?.addEventListener("click", handleContinue);
 
+    // Add a single event listener to the container for better performance
+    const optionsContainer = modalBody.querySelector(".options-container");
+    if (optionsContainer) {
+      optionsContainer.addEventListener("change", (e) => {
+        if (e.target.type === "radio") {
+          currentAnswer = e.target.value;
+        }
+      });
+      // Listener for multi-choice buttons
+      optionsContainer.addEventListener("click", (e) => {
+        const button = e.target.closest(".option-btn");
+        if (button && button.parentElement.classList.contains("multi-choice")) {
+          button.classList.toggle("is-selected");
+        }
+      });
+    }
+
     openModal();
   }
 
+  function generateSingleChoiceMarkup(question) {
+    let optionsHtml = `<div class="options-container flex flex-wrap gap-8">`;
+    question.options.forEach((option) => {
+      // Create a proper label and hidden radio input for styling
+      optionsHtml += `
+        <div class="radio-option">
+          <input type="radio" id="${option.value}" name="${question.q_key}" value="${option.value}">
+          <label for="${option.value}" class="radio-option-label">
+            <span class="radio-custom"></span>
+            <span class="radio-option-text">${option.label}</span>
+          </label>
+        </div>
+      `;
+    });
+    optionsHtml += `</div>`;
+    return optionsHtml;
+  }
+
   function renderCurrentQuestion() {
+    currentAnswer = null; // Reset answer for the new step
     if (currentStep >= currentProfileQuestions.length) {
-      const thankYouHtml = `<h2 class="beauty-profile-modal-body-title">Thank you! Your profile is complete.</h2>`;
+      const thankYouHtml = `<h2 class="beauty-profile-modal-body-title">Thank you! Your profile is complete.</h2><p class="text-sm">Here are your answers:</p><pre class="text-xs bg-gray-100 p-2 rounded">${JSON.stringify(
+        userAnswers,
+        null,
+        2
+      )}</pre>`;
       renderModalContent(thankYouHtml);
       return;
     }
 
     const question = currentProfileQuestions[currentStep];
-    let questionHtml = `<h2 class="beauty-profile-modal-body-title">${question.title}</h2>`;
+    let optionsHtml = "";
 
-    if (question.type === "single_choice" && question.options) {
-      questionHtml += `<div class="flex flex-col gap-10">`;
-      question.options.forEach((option) => {
-        questionHtml += `<button class="text-left p-4 border rounded-md">${option.label}</button>`;
-      });
-      questionHtml += `</div>`;
+    switch (question.type) {
+      case "single_choice":
+        optionsHtml = generateSingleChoiceMarkup(question);
+        break;
+      case "multi_choice":
+        optionsHtml = `<div class="options-container multi-choice grid grid-cols-2 gap-10">`;
+        question.options.forEach((option) => {
+          optionsHtml += `<button type="button" class="option-btn text-left p-4 border rounded-md" data-value="${option.value}">${option.label}</button>`;
+        });
+        optionsHtml += `</div>`;
+        break;
+      case "picture_choice": // Handled like a single choice
+        optionsHtml = generateSingleChoiceMarkup(question);
+        break;
+      default:
+        optionsHtml = `<p>This question type is not supported yet.</p>`;
     }
 
-    questionHtml += `
-        <div class="beauty-profile-modal-footer flex justify-between mt-16">
-          <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
-          <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">Continue</button>
-        </div>`;
+    const questionHtml = `
+      <h2 class="beauty-profile-modal-body-title">${question.title}</h2>
+      ${optionsHtml}
+      <div class="error-container"></div>
+      <div class="beauty-profile-modal-footer flex justify-between mt-16">
+        <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
+        <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">Continue</button>
+      </div>`;
 
     renderModalContent(questionHtml);
   }
 
+  function clearErrors() {
+    modalBody
+      .querySelectorAll(".error-container")
+      .forEach((el) => (el.innerHTML = ""));
+    modalBody
+      .querySelectorAll(".border-red-500")
+      .forEach((el) => el.classList.remove("border-red-500"));
+  }
+
+  function displayError(container, message) {
+    if (!container) return;
+    container.innerHTML = `<p class="error-text">${message}</p>`;
+  }
+
+  function validateAndSaveAnswers() {
+    clearErrors();
+    if (currentStep === -1) {
+      const dd = modalBody.querySelector("#dob-dd");
+      const mm = modalBody.querySelector("#dob-mm");
+      const yyyy = modalBody.querySelector("#dob-yyyy");
+      const gender = modalBody.querySelector("#gender");
+      const errorContainer = modalBody.querySelector(".error-container");
+      if (
+        !dd.value ||
+        !mm.value ||
+        !yyyy.value ||
+        isNaN(dd.value) ||
+        isNaN(mm.value) ||
+        isNaN(yyyy.value) ||
+        yyyy.value.length < 4
+      ) {
+        [dd, mm, yyyy].forEach((el) => {
+          if (!el.value) el.classList.add("border-red-500");
+        });
+        displayError(errorContainer, "Please enter a valid date of birth.");
+        return false;
+      }
+      userAnswers.dob = `${yyyy.value}-${mm.value.padStart(
+        2,
+        "0"
+      )}-${dd.value.padStart(2, "0")}`;
+      userAnswers.gender = gender.value;
+      return true;
+    }
+
+    const isSpecialQuestion = currentStep === "routine_or_product";
+    const question = isSpecialQuestion
+      ? allQuestions.find((q) => q.q_key === "skinCare_routine_or_product")
+      : currentProfileQuestions[currentStep];
+
+    const errorContainer = modalBody.querySelector(".error-container");
+    let answers = [];
+
+    if (question.type === "multi_choice") {
+      const selectedOptions = modalBody.querySelectorAll(".is-selected");
+      answers = Array.from(selectedOptions).map((el) => el.dataset.value);
+    } else {
+      if (currentAnswer) {
+        answers.push(currentAnswer);
+      }
+    }
+
+    if (question.isRequired && answers.length === 0) {
+      displayError(errorContainer, "Please select an option to continue.");
+      return false;
+    }
+
+    const groupKey = question.key;
+    const answerKey = question.q_key.replace(`${groupKey}_`, "");
+    if (!userAnswers[groupKey]) userAnswers[groupKey] = {};
+    if (answers.length > 0) {
+      userAnswers[groupKey][answerKey] =
+        question.type === "multi_choice" ? answers : answers[0];
+    }
+    return true;
+  }
+
   function handleContinue() {
-    currentStep++;
-    renderCurrentQuestion();
+    if (!validateAndSaveAnswers()) {
+      return;
+    }
+    if (currentStep === -1) {
+      if (currentProfileType === "skincare") {
+        showSkincareRoutineQuestion();
+      } else {
+        currentStep = 0;
+        renderCurrentQuestion();
+      }
+    } else if (currentStep === "routine_or_product") {
+      currentStep = 0;
+      renderCurrentQuestion();
+    } else {
+      currentStep++;
+      renderCurrentQuestion();
+    }
   }
 
   function showDobAndGenderModal() {
+    currentStep = -1;
     const html = `
-        <div class="flex flex-col gap-16 pr-32 pl-32 pt-40 pb-40">
-          <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">What's your birthday? We've got personalized tips waiting for you.</h2>
-          <div class="beauty-profile-modal-form-field flex flex-col gap-10">
-            <label for="dob-dd" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Date of Birth</label>
-            <div class="beauty-profile-modal-input-group flex gap-16">
-              <div class="relative w-63 h-56">
-                <input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-dd" maxlength="2" inputmode="numeric" />
-                <label for="dob-dd" class="fw-500 fs-14-lh-20-ls-0_1">DD</label>
-              </div>
-              <div class="relative w-63 h-56">
-                <input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-mm" maxlength="2" inputmode="numeric">
-                <label for="dob-mm" class="fw-500 fs-14-lh-20-ls-0_1">MM</label>
-              </div>
-              <div class="relative w-100 h-56">
-                <input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-yyyy" maxlength="4" inputmode="numeric">
-                <label for="dob-yyyy" class="fw-500 fs-14-lh-20-ls-0_1">YYYY</label>
-              </div>
-            </div>
+      <div class="flex flex-col gap-16 pr-32 pl-32 pt-40 pb-40">
+        <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">What's your birthday? We've got personalized tips waiting for you.</h2>
+        <div class="beauty-profile-modal-form-field flex flex-col gap-10">
+          <label for="dob-dd" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Date of Birth</label>
+          <div class="beauty-profile-modal-input-group flex gap-16">
+            <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-dd" maxlength="2" inputmode="numeric" /><label for="dob-dd" class="fw-500 fs-14-lh-20-ls-0_1">DD</label></div>
+            <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-mm" maxlength="2" inputmode="numeric"><label for="dob-mm" class="fw-500 fs-14-lh-20-ls-0_1">MM</label></div>
+            <div class="relative w-100 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-yyyy" maxlength="4" inputmode="numeric"><label for="dob-yyyy" class="fw-500 fs-14-lh-20-ls-0_1">YYYY</label></div>
           </div>
-          <div class="beauty-profile-modal-form-field flex flex-col gap-10">
-            <div class="relative w-256 h-56">
-              <select id="gender" class="w-full fs-500 fs-14-lh-20-ls-0_1 pl-12 h-full">
-                <option class="fw-500 fs-14-lh-20-ls-0_1" value="male">Male</option>
-                <option class="fw-500 fs-14-lh-20-ls-0_1" value="female">Female</option>
-                <option class="fw-500 fs-14-lh-20-ls-0_1" value="other">Other</option>
-                <option class="fw-500 fs-14-lh-20-ls-0_1" value="prefer_not_to_say">Prefer not to say</option>
-              </select>
-              <label for="gender" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Gender</label>
-            </div>
+          <div class="error-container"></div>
+        </div>
+        <div class="beauty-profile-modal-form-field flex flex-col gap-10">
+          <div class="relative w-256 h-56">
+            <select id="gender" class="w-full fs-500 fs-14-lh-20-ls-0_1 pl-12 h-full"><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option><option value="prefer_not_to_say">Prefer not to say</option></select>
+            <label for="gender" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Gender</label>
           </div>
         </div>
-        <div class="beauty-profile-modal-footer flex justify-between p-16 box-shadow">
-          <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
-          <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">Continue</button>
-        </div>
-      `;
+      </div>
+      <div class="beauty-profile-modal-footer flex justify-between p-16 box-shadow">
+        <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
+        <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">Continue</button>
+      </div>`;
     renderModalContent(html, "w-700");
+  }
+
+  function showSkincareRoutineQuestion() {
+    currentStep = "routine_or_product";
+    const question = allQuestions.find(
+      (q) => q.q_key === "skinCare_routine_or_product"
+    );
+    if (!question) return;
+    const optionsHtml = generateSingleChoiceMarkup(question);
+    const questionHtml = `
+      <h2 class="beauty-profile-modal-body-title">${question.title}</h2>
+      ${optionsHtml}
+      <div class="error-container"></div>
+      <div class="beauty-profile-modal-footer flex justify-between mt-16">
+        <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
+        <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">Continue</button>
+      </div>`;
+    renderModalContent(questionHtml);
   }
 
   if (modal && modalBody && closeModalBtn) {
     modal.addEventListener("click", (event) => {
-      if (event.target === modal) {
+      if (event.target === event.currentTarget) {
         closeModal();
       }
     });
@@ -146,14 +298,22 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.error("Cannot open profile setup: Modal HTML not found.");
       return;
     }
-
-    currentProfileQuestions = allQuestions.filter((q) => q.key === profileType);
-    currentStep = 0;
-
+    currentProfileType = profileType;
+    userAnswers = {};
+    currentProfileQuestions = allQuestions.filter(
+      (q) => q.key === profileType && q.q_key !== "skinCare_routine_or_product"
+    );
     if (!window.theme.customer_dob || !window.theme.customer_gender) {
       showDobAndGenderModal();
     } else {
-      renderCurrentQuestion();
+      userAnswers.dob = window.theme.customer_dob;
+      userAnswers.gender = window.theme.customer_gender;
+      if (currentProfileType === "skincare") {
+        showSkincareRoutineQuestion();
+      } else {
+        currentStep = 0;
+        renderCurrentQuestion();
+      }
     }
   }
 
@@ -164,41 +324,23 @@ document.addEventListener("DOMContentLoaded", async () => {
       const cardsHtml = productTypeQuestion.options
         .map(
           (option) => `
-        <div class="profile-type-card flex flex-col items-center gap-12 w-277 pt-12">
-          <div>
-            <div class="relative w-277">
-              <img
-                src="${option.image}"
-                alt="${option.label} profile"
-                loading="lazy"
-                class="relative w-full h-222 object-cover"
-              >
+          <div class="profile-type-card flex flex-col items-center gap-12 w-277 pt-12">
+            <div>
+              <div class="relative w-277"><img src="${option.image}" alt="${option.label} profile" loading="lazy" class="relative w-full h-222 object-cover"></div>
+              <div class="w-full"><h3 class="w-full rounded-b-l-32 rounded-b-r-32 text-center uppercase pt-12 pr-8 pb-12 pl-8 bg-brand text-bg fs-26-lh-26-ls-1_2 fw-400">${option.label}</h3></div>
             </div>
-            <div class="w-full">
-              <h3 class="w-full rounded-b-l-32 rounded-b-r-32 text-center uppercase pt-12 pr-8 pb-12 pl-8 bg-brand text-bg fs-26-lh-26-ls-1_2 fw-400">
-                ${option.label}
-              </h3>
-            </div>
-          </div>
-          <button
-            type="button"
-            class="setup-now-btn button button--outline w-full flex gap-4 justify-center items-center fs-16-lh-100pct-ls-0"
-            data-profile-type="${option.value}"
-          >
-            <svg width="29" height="28" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M6.10352 13.9492C6.10352 13.2559 6.67969 12.6895 7.36328 12.6895H13.1055V6.94727C13.1055 6.26367 13.6719 5.6875 14.3652 5.6875C15.0586 5.6875 15.625 6.26367 15.625 6.94727V12.6895H21.3672C22.0605 12.6895 22.627 13.2559 22.627 13.9492C22.627 14.6426 22.0605 15.209 21.3672 15.209H15.625V20.9512C15.625 21.6445 15.0586 22.2109 14.3652 22.2109C13.6719 22.2109 13.1055 21.6445 13.1055 20.9512V15.209H7.36328C6.67969 15.209 6.10352 14.6426 6.10352 13.9492Z" fill="#FB6F92"/>
-            </svg>
-            <span>Setup Now</span>
-          </button>
-        </div>
-      `
+            <button type="button" class="setup-now-btn button button--outline w-full flex gap-4 justify-center items-center fs-16-lh-100pct-ls-0" data-profile-type="${option.value}">
+              <svg width="29" height="28" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.10352 13.9492C6.10352 13.2559 6.67969 12.6895 7.36328 12.6895H13.1055V6.94727C13.1055 6.26367 13.6719 5.6875 14.3652 5.6875C15.0586 5.6875 15.625 6.26367 15.625 6.94727V12.6895H21.3672C22.0605 12.6895 22.627 13.2559 22.627 13.9492C22.627 14.6426 22.0605 15.209 21.3672 15.209H15.625V20.9512C15.625 21.6445 15.0586 22.2109 14.3652 22.2109C13.6719 22.2109 13.1055 21.6445 13.1055 20.9512V15.209H7.36328C6.67969 15.209 6.10352 14.6426 6.10352 13.9492Z" fill="#FB6F92"/></svg>
+              <span>Setup Now</span>
+            </button>
+          </div>`
         )
         .join("");
-      container.innerHTML = `${cardsHtml}`;
+      container.innerHTML = cardsHtml;
       container.querySelectorAll(".setup-now-btn").forEach((button) => {
-        button.addEventListener("click", () => {
-          handleProfileSelection(button.dataset.profileType);
-        });
+        button.addEventListener("click", () =>
+          handleProfileSelection(button.dataset.profileType)
+        );
       });
     }
   }
@@ -209,9 +351,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     try {
       const response = await fetch(`${apiUrl}/questions`);
       const { questions } = await response.json();
-      if (!questions || questions.length === 0) {
-        return;
-      }
+      if (!questions || questions.length === 0) return;
       allQuestions = questions;
       const productTypeQuestion = questions.find(
         (q) => q.key === "product_type"
