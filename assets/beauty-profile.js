@@ -81,13 +81,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   function generateSingleChoiceMarkup(question) {
     let optionsHtml = `<div class="options-container flex flex-wrap gap-8">`;
     question.options.forEach((option) => {
-      // Create a proper label and hidden radio input for styling
       optionsHtml += `
         <div class="radio-option">
-          <input type="radio" id="${option.value}" name="${question.q_key}" value="${option.value}">
-          <label for="${option.value}" class="radio-option-label">
-            <span class="radio-custom"></span>
-            <span class="radio-option-text">${option.label}</span>
+          <input type="radio" class="hidden" id="${option.value}" name="${question.q_key}" value="${option.value}">
+          <label for="${option.value}" class="radio-option-label flex gap-10 items-center rounded-100 border border-solid border-color cursor-pointer transition-transform pt-18 pr-16 pb-18 pl-16">
+            <span class="radio-custom w-20 h-20 inline-block border border-solid border-1 rounded-full"></span>
+            <span class="radio-option-text transition-transform fw-500 fs-13-lh-16-ls-0_2">${option.label}</span>
           </label>
         </div>
       `;
@@ -130,12 +129,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const questionHtml = `
-      <h2 class="beauty-profile-modal-body-title">${question.title}</h2>
-      ${optionsHtml}
-      <div class="error-container"></div>
-      <div class="beauty-profile-modal-footer flex justify-between mt-16">
-        <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
-        <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">Continue</button>
+      <div>
+        <h2 class="beauty-profile-modal-body-title">${question.title}</h2>
+        ${optionsHtml}
+        <div class="error-container"></div>
+        <div class="beauty-profile-modal-footer flex justify-between mt-16">
+          <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
+          <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">Continue</button>
+        </div>
       </div>`;
 
     renderModalContent(questionHtml);
@@ -274,14 +275,18 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!question) return;
     const optionsHtml = generateSingleChoiceMarkup(question);
     const questionHtml = `
-      <h2 class="beauty-profile-modal-body-title">${question.title}</h2>
-      ${optionsHtml}
-      <div class="error-container"></div>
-      <div class="beauty-profile-modal-footer flex justify-between mt-16">
+      <div class="pt-40 pr-32 pb-40 pl-32 flex flex-col gap-16">
+        <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">${question.title}</h2>
+        ${optionsHtml}
+        <div class="error-container"></div>
+        
+      </div>
+      <div class="beauty-profile-modal-footer flex justify-between p-16 box-shadow">
         <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
         <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">Continue</button>
-      </div>`;
-    renderModalContent(questionHtml);
+      </div>
+      `;
+    renderModalContent(questionHtml, "w-760");
   }
 
   if (modal && modalBody && closeModalBtn) {
