@@ -33,6 +33,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  function createModalLayout(innerHtml) {
+    const footerHtml = `
+    <div class="beauty-profile-modal-footer flex justify-between p-16 box-shadow">
+      <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
+      <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">Continue</button>
+    </div>
+  `;
+
+    return `
+    <div class="pt-40 pr-32 pb-40 pl-32 flex flex-col gap-16">
+      ${innerHtml}
+    </div>
+    ${footerHtml}
+  `;
+  }
+
   async function renderModalContent(html, newClasses = "w-full") {
     if (!modal || !modalBody) return;
 
@@ -96,7 +112,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function renderCurrentQuestion() {
-    currentAnswer = null; // Reset answer for the new step
+    currentAnswer = null;
     if (currentStep >= currentProfileQuestions.length) {
       const thankYouHtml = `<h2 class="beauty-profile-modal-body-title">Thank you! Your profile is complete.</h2><p class="text-sm">Here are your answers:</p><pre class="text-xs bg-gray-100 p-2 rounded">${JSON.stringify(
         userAnswers,
@@ -121,25 +137,20 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
         optionsHtml += `</div>`;
         break;
-      case "picture_choice": // Handled like a single choice
-        optionsHtml = generateSingleChoiceMarkup(question);
+      case "picture_choice":
+        optionsHtml = generateSingleChoiceMarkup(question); // Assuming it uses the same markup structure
         break;
       default:
         optionsHtml = `<p>This question type is not supported yet.</p>`;
     }
 
-    const questionHtml = `
-      <div>
-        <h2 class="beauty-profile-modal-body-title">${question.title}</h2>
-        ${optionsHtml}
-        <div class="error-container"></div>
-        <div class="beauty-profile-modal-footer flex justify-between mt-16">
-          <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
-          <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">Continue</button>
-        </div>
-      </div>`;
+    const innerHtml = `
+    <h2 class="beauty-profile-modal-body-title">${question.title}</h2>
+    ${optionsHtml}
+    <div class="error-container"></div>
+  `;
 
-    renderModalContent(questionHtml);
+    renderModalContent(createModalLayout(innerHtml));
   }
 
   function clearErrors() {
@@ -241,30 +252,25 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function showDobAndGenderModal() {
     currentStep = -1;
-    const html = `
-      <div class="flex flex-col gap-16 pr-32 pl-32 pt-40 pb-40">
-        <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">What's your birthday? We've got personalized tips waiting for you.</h2>
-        <div class="beauty-profile-modal-form-field flex flex-col gap-10">
-          <label for="dob-dd" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Date of Birth</label>
-          <div class="beauty-profile-modal-input-group flex gap-16">
-            <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-dd" maxlength="2" inputmode="numeric" /><label for="dob-dd" class="fw-500 fs-14-lh-20-ls-0_1">DD</label></div>
-            <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-mm" maxlength="2" inputmode="numeric"><label for="dob-mm" class="fw-500 fs-14-lh-20-ls-0_1">MM</label></div>
-            <div class="relative w-100 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-yyyy" maxlength="4" inputmode="numeric"><label for="dob-yyyy" class="fw-500 fs-14-lh-20-ls-0_1">YYYY</label></div>
-          </div>
-          <div class="error-container"></div>
-        </div>
-        <div class="beauty-profile-modal-form-field flex flex-col gap-10">
-          <div class="relative w-256 h-56">
-            <select id="gender" class="w-full fs-500 fs-14-lh-20-ls-0_1 pl-12 h-full"><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option><option value="prefer_not_to_say">Prefer not to say</option></select>
-            <label for="gender" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Gender</label>
-          </div>
-        </div>
+    const innerHtml = `
+    <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">What's your birthday? We've got personalized tips waiting for you.</h2>
+    <div class="beauty-profile-modal-form-field flex flex-col gap-10">
+      <label for="dob-dd" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Date of Birth</label>
+      <div class="beauty-profile-modal-input-group flex gap-16">
+        <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-dd" maxlength="2" inputmode="numeric" /><label for="dob-dd" class="fw-500 fs-14-lh-20-ls-0_1">DD</label></div>
+        <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-mm" maxlength="2" inputmode="numeric"><label for="dob-mm" class="fw-500 fs-14-lh-20-ls-0_1">MM</label></div>
+        <div class="relative w-100 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16" placeholder=" " id="dob-yyyy" maxlength="4" inputmode="numeric"><label for="dob-yyyy" class="fw-500 fs-14-lh-20-ls-0_1">YYYY</label></div>
       </div>
-      <div class="beauty-profile-modal-footer flex justify-between p-16 box-shadow">
-        <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
-        <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">Continue</button>
-      </div>`;
-    renderModalContent(html, "w-700");
+      <div class="error-container"></div>
+    </div>
+    <div class="beauty-profile-modal-form-field flex flex-col gap-10">
+      <div class="relative w-256 h-56">
+        <select id="gender" class="w-full fs-500 fs-14-lh-20-ls-0_1 pl-12 h-full"><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option><option value="prefer_not_to_say">Prefer not to say</option></select>
+        <label for="gender" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Gender</label>
+      </div>
+    </div>
+  `;
+    renderModalContent(createModalLayout(innerHtml), "w-700");
   }
 
   function showSkincareRoutineQuestion() {
@@ -274,19 +280,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
     if (!question) return;
     const optionsHtml = generateSingleChoiceMarkup(question);
-    const questionHtml = `
-      <div class="pt-40 pr-32 pb-40 pl-32 flex flex-col gap-16">
-        <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">${question.title}</h2>
-        ${optionsHtml}
-        <div class="error-container"></div>
-        
-      </div>
-      <div class="beauty-profile-modal-footer flex justify-between p-16 box-shadow">
-        <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
-        <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">Continue</button>
-      </div>
-      `;
-    renderModalContent(questionHtml, "w-760");
+
+    const innerHtml = `
+    <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">${question.title}</h2>
+    ${optionsHtml}
+    <div class="error-container"></div>
+  `;
+
+    renderModalContent(createModalLayout(innerHtml), "w-760");
   }
 
   if (modal && modalBody && closeModalBtn) {
