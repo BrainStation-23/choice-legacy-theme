@@ -107,15 +107,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const optionsContainer = modalBody.querySelector(".options-container");
     if (optionsContainer) {
+      // This listener correctly captures selections from radio buttons
       optionsContainer.addEventListener("change", (e) => {
         if (e.target.type === "radio") {
           currentAnswer = e.target.value;
         }
       });
 
+      // This listener correctly handles clicks on picture choices and multi-choice buttons
       optionsContainer.addEventListener("click", (e) => {
         const option = e.target.closest(".option-btn");
-        if (!option) return; // Exit if the click wasn't on a selectable option
+        if (!option) return;
 
         const isMultiChoice =
           optionsContainer.classList.contains("multi-choice");
@@ -174,6 +176,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     return optionsHtml;
   }
 
+  function generateMultiChoiceMarkup(question) {
+    const groupKey = question.key;
+    const answerKey = question.q_key.replace(`${groupKey}_`, "");
+    const savedAnswers = userAnswers[groupKey]?.[answerKey] || [];
+    let optionsHtml = `<div class="options-container multi-choice grid grid-cols-2 gap-10">`;
+    question.options.forEach((option) => {
+      const isSelected = savedAnswers.includes(option.value)
+        ? "is-selected"
+        : "";
+      optionsHtml += `<button type="button" class="option-btn text-left p-4 border rounded-md ${isSelected}" data-value="${option.value}">${option.label}</button>`;
+    });
+    optionsHtml += `</div>`;
+    return optionsHtml;
+  }
+
   function renderCurrentQuestion() {
     currentAnswer = null;
     if (currentStep >= currentProfileQuestions.length) {
@@ -184,8 +201,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         userAnswers,
         null,
         2
-      )}</pre>
-    `;
+      )}</pre>`;
       renderModalContent(thankYouHtml);
       return;
     }
@@ -193,15 +209,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     let optionsHtml = "";
     switch (question.type) {
       case "single_choice":
-      case "picture_choice":
         optionsHtml = generateSingleChoiceMarkup(question);
         break;
+      case "picture_choice":
+        optionsHtml = generatePictureChoiceMarkup(question);
+        break;
       case "multi_choice":
-        optionsHtml = `<div class="options-container multi-choice grid grid-cols-2 gap-10">`;
-        question.options.forEach((option) => {
-          optionsHtml += `<button type="button" class="option-btn text-left p-4 border rounded-md" data-value="${option.value}">${option.label}</button>`;
-        });
-        optionsHtml += `</div>`;
+        optionsHtml = generateMultiChoiceMarkup(question);
         break;
       default:
         optionsHtml = `<p>This question type is not supported yet.</p>`;
@@ -263,6 +277,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const q_key_map = {
       routine_or_product: "skinCare_routine_or_product",
       skin_type: "skinCare_skinConcerns",
+      skin_issues: "skinCare_ageRange",
     };
     const question = isSpecialQuestion
       ? allQuestions.find((q) => q.q_key === q_key_map[currentStep])
@@ -271,14 +286,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     const errorContainer = modalBody.querySelector(".error-container");
     let answers = [];
 
+    // THIS IS THE FIX: This logic directly checks the screen for a selection.
     if (question.type === "multi_choice") {
       const selectedOptions = modalBody.querySelectorAll(".is-selected");
       answers = Array.from(selectedOptions).map((el) => el.dataset.value);
     } else {
+      // For single_choice and picture_choice
       const checkedRadio = modalBody.querySelector(
         "input[type='radio']:checked"
       );
-      const selectedButton = modalBody.querySelector(".is-selected");
+      const selectedButton = modalBody.querySelector(".is-selected"); // For picture_choice
 
       if (checkedRadio) {
         answers.push(checkedRadio.value);
@@ -310,7 +327,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
     stepHistory.push(currentStep);
-    console.log(currentStep, userAnswers.skincare);
+
     if (currentStep === -1) {
       if (currentProfileType === "skincare") {
         showSkincareRoutineQuestion();
@@ -319,17 +336,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderCurrentQuestion();
       }
     } else if (currentStep === "routine_or_product") {
-      const routineAnswer = userAnswers.skincare?.skinCare_routine_or_product;
-      if (
-        routineAnswer === "one_single_product" ||
-        routineAnswer === "basic_routine"
-      ) {
-        showSkinTypeQuestion();
+      const routineAnswer = userAnswers.skincare?.routine_or_product;
+      if (routineAnswer === "proper_routine_based_on_concerns") {
+        showSkinIssuesQuestion();
       } else {
-        currentStep = 0;
-        renderCurrentQuestion();
+        showSkinTypeQuestion();
       }
     } else if (currentStep === "skin_type") {
+      closeModal();
+      window.location.href = "/";
+    } else if (currentStep === "skin_issues") {
       currentStep = 0;
       renderCurrentQuestion();
     } else {
@@ -352,6 +368,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       showSkincareRoutineQuestion();
     } else if (previousStep === "skin_type") {
       showSkinTypeQuestion();
+    } else if (previousStep === "skin_issues") {
+      showSkinIssuesQuestion();
     } else {
       renderCurrentQuestion();
     }
@@ -426,6 +444,19 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderModalContent(createModalLayout(innerHtml), "w-760");
   }
 
+  function showSkinIssuesQuestion() {
+    currentStep = "skin_issues";
+    const question = allQuestions.find((q) => q.q_key === "skinCare_ageRange");
+    if (!question) return;
+    const optionsHtml = generateMultiChoiceMarkup(question);
+    const innerHtml = `
+    ${generateTitleMarkup(question.title)}
+    ${optionsHtml}
+    ${generateErrorContainerMarkup()}
+  `;
+    renderModalContent(createModalLayout(innerHtml), "w-760");
+  }
+
   if (modal && modalBody && closeModalBtn) {
     modal.addEventListener("click", (event) => {
       if (event.target === event.currentTarget) closeModal();
@@ -439,13 +470,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     userAnswers = {};
     stepHistory = [];
 
-    // Correctly filter out BOTH special questions and sort the rest
     currentProfileQuestions = allQuestions
       .filter(
         (q) =>
           q.key === profileType &&
           q.q_key !== "skinCare_routine_or_product" &&
-          q.q_key !== "skinCare_skinConcerns"
+          q.q_key !== "skinCare_skinConcerns" &&
+          q.q_key !== "skinCare_ageRange"
       )
       .sort((a, b) => a.order - b.order);
 
