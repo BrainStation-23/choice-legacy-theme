@@ -131,6 +131,15 @@ document.addEventListener("DOMContentLoaded", async () => {
           option.classList.add("is-selected");
         }
       });
+
+      const multiSelectDisplay =
+        optionsContainer.querySelector(".select-display");
+      if (multiSelectDisplay) {
+        multiSelectDisplay.addEventListener("click", () => {
+          const panel = optionsContainer.querySelector(".dropdown-panel");
+          panel.classList.toggle("is-open");
+        });
+      }
     }
 
     openModal();
@@ -180,15 +189,29 @@ document.addEventListener("DOMContentLoaded", async () => {
     const groupKey = question.key;
     const answerKey = question.q_key.replace(`${groupKey}_`, "");
     const savedAnswers = userAnswers[groupKey]?.[answerKey] || [];
-    let optionsHtml = `<div class="options-container multi-choice grid grid-cols-2 gap-10">`;
-    question.options.forEach((option) => {
-      const isSelected = savedAnswers.includes(option.value)
-        ? "is-selected"
-        : "";
-      optionsHtml += `<button type="button" class="option-btn text-left p-4 border rounded-md ${isSelected}" data-value="${option.value}">${option.label}</button>`;
-    });
-    optionsHtml += `</div>`;
-    return optionsHtml;
+
+    let optionsHtml = question.options
+      .map((option) => {
+        const isSelected = savedAnswers.includes(option.value)
+          ? "is-selected"
+          : "";
+        return `<button type="button" class="option-btn w-full text-left bg-bg p-16 border-none border-bottom fw-500 fs-14-lh-20-ls-0_1 ${isSelected}" data-value="${option.value}">${option.label}</button>`;
+      })
+      .join("");
+
+    return `
+    <div class="options-container multi-choice multi-select-container relative w-full">
+      <div class="select-display flex justify-between items-center pt-14 pr-18 pb-14 pl-18 border-1 border-solid border-color rounded-12 cursor-pointer bg-bg fw-500 fs-14-lh-20-ls-0_1">
+        <span class="placeholder">you can choose multiple</span>
+        <svg width="18" height="11" viewBox="0 0 18 11" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8.6543 10.3008C8.32227 10.3008 8.0293 10.1738 7.77539 9.91016L0.333984 2.30273C0.119141 2.08789 0.00195312 1.81445 0.00195312 1.50195C0.00195312 0.867188 0.5 0.369141 1.13477 0.369141C1.44727 0.369141 1.73047 0.496094 1.95508 0.710938L8.6543 7.57617L15.3535 0.710938C15.5684 0.496094 15.8613 0.369141 16.1738 0.369141C16.7988 0.369141 17.2969 0.867188 17.2969 1.50195C17.2969 1.82422 17.1895 2.08789 16.9746 2.30273L9.5332 9.91016C9.28906 10.1738 8.98633 10.3008 8.6543 10.3008Z" fill="#90989C"/>
+        </svg>
+      </div>
+      <div class="dropdown-panel hidden absolute left-0 right-0 bg-bg rounded-12 overflow-y-auto z-10 border-1 border-solid border-color scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover">
+        ${optionsHtml}
+      </div>
+    </div>
+  `;
   }
 
   function renderCurrentQuestion() {

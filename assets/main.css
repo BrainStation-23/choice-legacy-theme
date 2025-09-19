@@ -2382,6 +2382,9 @@ address {
 .pb-12 {
   padding-bottom: calc(12 * var(--space-unit));
 }
+.pb-14 {
+  padding-bottom: calc(14 * var(--space-unit));
+}
 .pb-16 {
   padding-bottom: calc(16 * var(--space-unit));
 }
@@ -2458,6 +2461,9 @@ address {
 .pl-16 {
   padding-left: calc(16 * var(--space-unit));
 }
+.pl-18 {
+  padding-left: calc(18 * var(--space-unit));
+}
 .pl-20 {
   padding-left: calc(20 * var(--space-unit));
 }
@@ -2511,6 +2517,9 @@ address {
 }
 .pr-16 {
   padding-right: calc(16 * var(--space-unit));
+}
+.pr-18 {
+  padding-right: calc(18 * var(--space-unit));
 }
 .pr-20 {
   padding-right: calc(20 * var(--space-unit));
