@@ -1,165 +1,60 @@
 {% comment %}
-  Renders breadcrumbs for navigation
+  Renders breadcrumbs for product pages only
   
   Usage:
   {% render 'breadcrumbs' %}
   
-  Accepts:
-  - show_home: {Boolean} Whether to show home link (default: true)
-  - separator: {String} Separator between breadcrumb items (default: '/')
+  Format: icon -> collection name -> product name
 {% endcomment %}
 
-{% assign show_home = show_home | default: true %}
-{% assign separator = separator | default: '>' %}
-
-{% unless template == 'index' %}
+{% if template == 'product' %}
   <nav class="breadcrumbs pt-16 pb-16" role="navigation" aria-label="breadcrumbs">
-    
-    <ol class="breadcrumbs__list flex items-center gap-12 p-0">
+    <ol class="breadcrumbs__list flex flex-wrap items-center gap-12 p-0">
+      
+      {% comment %} Home icon {% endcomment %}
       <div class="flex gap-10 items-center">
         {% render "icon-home", cls: "w-28 h-28" %}
-      
-        {% comment %} Home link {% endcomment %}
-        {% if show_home %}
-          <li class="breadcrumbs__item list-style-none flex items-center gap-12">
-            <a href="{{ routes.root_url }}" class="breadcrumbs__link fw-500 fs-14-lh-20-ls-0_1 text-secondary ff-general-sans">
-              {{ 'general.breadcrumbs.home' | t | default: 'Home' }}
-            </a>
-          </li>
-        {% endif %}
       </div>
 
-      {% comment %} Handle different page types {% endcomment %}
-      {% case template %}
+      {% comment %} Collection name {% endcomment %}
+      {% if collection %}
+        <li class="breadcrumbs__item list-style-none flex items-center gap-12">
+          {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
+          <a href="{{ collection.url }}" class="breadcrumbs__link fw-500 fs-14-lh-20-ls-0_1 text-primary-optional">
+            {{ collection.title }}
+          </a>
+        </li>
+      {% elsif product.collections.size > 0 %}
+        <li class="breadcrumbs__item list-style-none flex items-center gap-12">
+          {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
+          <a href="{{ product.collections.first.url }}" class="breadcrumbs__link fw-500 fs-14-lh-20-ls-0_1 text-primary-optional">
+            {{ product.collections.first.title }}
+          </a>
+        </li>
+      {% endif %}
+      
+      {% comment %} Product name - only show arrow if product has collections {% endcomment %}
+      <li class="breadcrumbs__item list-style-none flex items-center gap-12">
+        {% if product.collections.size > 0 %}
+          {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
+        {% endif %}
         
-        {% comment %} Product pages {% endcomment %}
-        {% when 'product' %}
-          {% if collection %}
-            <li class="breadcrumbs__item list-style-none flex items-center gap-12">
-              {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
-              <a href="{{ collection.url }}" class="breadcrumbs__link fw-500 fs-14-lh-20-ls-0_1 text-primary-optional">{{ collection.title }}</a>
-            </li>
-          {% elsif collections.all.products contains product %}
-            <li class="breadcrumbs__item list-style-none flex items-center gap-12">
-              {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
-              <a href="{{ routes.all_products_collection_url }}" class="breadcrumbs__link fw-500 fs-14-lh-20-ls-0_1 text-primary-optional">
-                {{ 'general.breadcrumbs.products' | t | default: 'Products' }}
-              </a>
-            </li>
+        {% comment %} Full product title for desktop {% endcomment %}
+        <span class="breadcrumbs__text fw-500 fs-14-lh-20-ls-0_1 text-primary-optional block sm:hidden" aria-current="page">
+          {{ product.title }}
+        </span>
+        
+        {% comment %} Truncated product title for mobile {% endcomment %}
+        <span class="breadcrumbs__text fw-500 fs-14-lh-20-ls-0_1 text-primary-optional hidden sm:block" aria-current="page">
+          {% assign words = product.title | split: ' ' %}
+          {% if words.size > 4 %}
+            {{ words.first }}... {{ words[-3] }} {{ words[-2] }} {{ words[-1] }}
+          {% else %}
+            {{ product.title }}
           {% endif %}
-          
-          <li class="breadcrumbs__item list-style-none flex sm:hidden items-center gap-12">
-            {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
-            <span class="breadcrumbs__text fw-500 fs-14-lh-20-ls-0_1 text-primary-optional" aria-current="page">{{ product.title }}</span>
-          </li>
+        </span>
+      </li>
 
-          <li class="breadcrumbs__item list-style-none flex items-center gap-12">
-            {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
-            <span class="breadcrumbs__text fw-500 fs-14-lh-20-ls-0_1 text-primary-optional" aria-current="page">
-              {% assign words = product.title | split: ' ' %}
-              {% if words.size > 4 %}
-                {{ words.first }}... {{ words[-3] }} {{ words[-2] }} {{ words[-1] }}
-              {% else %}
-                {{ product.title }}
-              {% endif %}
-            </span>
-          </li>
-
-        {% comment %} Collection pages {% endcomment %}
-        {% when 'collection' %}
-          <li class="breadcrumbs__item list-style-none hidden sm:flex items-center gap-12">
-            {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
-            <span class="breadcrumbs__text fw-500 fs-14-lh-20-ls-0_1 text-primary-optional" aria-current="page">{{ collection.title }}</span>
-          </li>
-
-        {% comment %} Blog pages {% endcomment %}
-        {% when 'blog' %}
-          <li class="breadcrumbs__item list-style-none flex items-center gap-12">
-            {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
-            <span class="breadcrumbs__text fw-500 fs-14-lh-20-ls-0_1 text-primary-optional" aria-current="page">{{ blog.title }}</span>
-          </li>
-
-        {% comment %} Article pages {% endcomment %}
-        {% when 'article' %}
-          <li class="breadcrumbs__item list-style-none flex items-center gap-12">
-            {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
-            <a href="{{ blog.url }}" class="breadcrumbs__link">{{ blog.title }}</a>
-          </li>
-          <li class="breadcrumbs__item list-style-none flex items-center gap-12">
-            {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
-            <span class="breadcrumbs__text fw-500 fs-14-lh-20-ls-0_1 text-primary-optional" aria-current="page">{{ article.title }}</span>
-          </li>
-
-        {% comment %} Page templates {% endcomment %}
-        {% when 'page' %}
-          <li class="breadcrumbs__item list-style-none flex items-center gap-12">
-            {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
-            <span class="breadcrumbs__text fw-500 fs-14-lh-20-ls-0_1 text-primary-optional" aria-current="page">{{ page.title }}</span>
-          </li>
-
-        {% comment %} Search pages {% endcomment %}
-        {% when 'search' %}
-          <li class="breadcrumbs__item list-style-none flex items-center gap-12">
-            {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
-            <span class="breadcrumbs__text fw-500 fs-14-lh-20-ls-0_1 text-primary-optional" aria-current="page">
-              {{ 'general.search.title' | t | default: 'Search' }}
-              {% if search.terms != blank %}
-                : "{{ search.terms }}"
-              {% endif %}
-            </span>
-          </li>
-
-        {% comment %} Account pages {% endcomment %}
-        {% when 'customers/account' %}
-          <li class="breadcrumbs__item list-style-none flex items-center gap-12">
-            {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
-            <span class="breadcrumbs__text fw-500 fs-14-lh-20-ls-0_1 text-primary-optional" aria-current="page">
-              {{ 'customer.account.title' | t | default: 'Account' }}
-            </span>
-          </li>
-
-        {% when 'customers/order' %}
-          <li class="breadcrumbs__item list-style-none flex items-center gap-12">
-            {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
-            <a href="{{ routes.account_url }}" class="breadcrumbs__link">
-              {{ 'customer.account.title' | t | default: 'Account' }}
-            </a>
-          </li>
-          <li class="breadcrumbs__item list-style-none flex items-center gap-12">
-            {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
-            <span class="breadcrumbs__text fw-500 fs-14-lh-20-ls-0_1 text-primary-optional" aria-current="page">
-              {{ 'customer.order.title' | t | default: 'Order' }} {{ order.name }}
-            </span>
-          </li>
-
-        {% comment %} Cart page {% endcomment %}
-        {% when 'cart' %}
-          <li class="breadcrumbs__item list-style-none flex items-center gap-12">
-            {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
-            <span class="breadcrumbs__text fw-500 fs-14-lh-20-ls-0_1 text-primary-optional" aria-current="page">
-              {{ 'sections.cart.title' | t | default: 'Cart' }}
-            </span>
-          </li>
-
-        {% comment %} 404 pages {% endcomment %}
-        {% when '404' %}
-          <li class="breadcrumbs__item list-style-none flex items-center gap-12">
-            {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
-            <span class="breadcrumbs__text fw-500 fs-14-lh-20-ls-0_1 text-primary-optional" aria-current="page">
-              {{ 'general.404.title' | t | default: 'Page not found' }}
-            </span>
-          </li>
-
-        {% comment %} List collections {% endcomment %}
-        {% when 'list-collections' %}
-          <li class="breadcrumbs__item list-style-none flex items-center gap-12">
-            {% render "icon-arrow-thin", cls: "svg-primary-optional" %}
-            <span class="breadcrumbs__text fw-500 fs-14-lh-20-ls-0_1 text-primary-optional" aria-current="page">
-              {{ 'general.breadcrumbs.collections' | t | default: 'Collections' }}
-            </span>
-          </li>
-
-      {% endcase %}
     </ol>
   </nav>
-{% endunless %}
+{% endif %}
