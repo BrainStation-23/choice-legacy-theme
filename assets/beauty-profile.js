@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   `;
 
     return `
-    <div class="pt-40 pr-32 pb-40 pl-32 flex flex-col gap-16">
+    <div class="pt-40 pr-32 pb-40 pl-32 flex flex-col gap-16 max-h-500 overflow-y-auto scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover">
       ${innerHtml}
     </div>
     ${footerHtml}
@@ -107,14 +107,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const optionsContainer = modalBody.querySelector(".options-container");
     if (optionsContainer) {
-      // This listener correctly captures selections from radio buttons
       optionsContainer.addEventListener("change", (e) => {
         if (e.target.type === "radio") {
           currentAnswer = e.target.value;
         }
       });
 
-      // This listener correctly handles clicks on picture choices and multi-choice buttons
       optionsContainer.addEventListener("click", (e) => {
         const option = e.target.closest(".option-btn");
         if (!option) return;
@@ -145,7 +143,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     openModal();
   }
 
-  function generateSingleChoiceMarkup(question) {
+  function generateSingleChoiceMarkup(question, flexCol = false) {
     const groupKey = question.key;
     const answerKey = question.q_key.replace(
       new RegExp(`^${question.key}_`, "i"),
@@ -153,17 +151,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
     const savedAnswer = userAnswers[groupKey]?.[answerKey];
 
-    let optionsHtml = `<div class="options-container flex flex-wrap gap-8">`;
+    let optionsHtml = `<div class="options-container flex gap-8 ${
+      flexCol ? "flex-col" : "flex-wrap"
+    }">`;
     question.options.forEach((option) => {
       const isChecked = savedAnswer === option.value ? "checked" : "";
       if (isChecked) currentAnswer = option.value;
       optionsHtml += `
         <div class="radio-option">
-          <input type="radio" class="hidden" id="${option.value}" name="${question.q_key}" value="${option.value}" ${isChecked}>
+          ${
+            flexCol
+              ? `<div class="flex"><input type="radio" class="hidden" id="${option.value}" name="${question.q_key}" value="${option.value}" ${isChecked}>
           <label for="${option.value}" class="radio-option-label flex gap-10 items-center rounded-100 border border-solid border-color cursor-pointer transition-transform pt-18 pr-16 pb-18 pl-16">
-            <span class="radio-custom relative w-20 h-20 inline-block border border-solid border-1 rounded-full"></span>
+            <span class="radio-custom relative w-20 h-20 inline-block border border-solid border-2 rounded-full"></span>
             <span class="radio-option-text transition-transform fw-500 fs-13-lh-16-ls-0_2">${option.label}</span>
-          </label>
+          </label></div>`
+              : `<input type="radio" class="hidden" id="${option.value}" name="${question.q_key}" value="${option.value}" ${isChecked}>
+          <label for="${option.value}" class="radio-option-label flex gap-10 items-center rounded-100 border border-solid border-color cursor-pointer transition-transform pt-18 pr-16 pb-18 pl-16">
+            <span class="radio-custom relative w-20 h-20 inline-block border border-solid border-2 rounded-full"></span>
+            <span class="radio-option-text transition-transform fw-500 fs-13-lh-16-ls-0_2">${option.label}</span>
+          </label>`
+          }
         </div>
       `;
     });
@@ -178,7 +186,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       ""
     );
     const savedAnswer = userAnswers[groupKey]?.[answerKey];
-    let optionsHtml = `<div class="options-container picture-options-container flex gap-16 flex-wrap">`;
+    let optionsHtml = `<div class="options-container picture-options-container flex gap-16">`;
     question.options.forEach((option) => {
       const isSelected = savedAnswer === option.value ? "is-selected" : "";
       optionsHtml += `
@@ -319,21 +327,107 @@ document.addEventListener("DOMContentLoaded", async () => {
     const errorContainer = modalBody.querySelector(".error-container");
     let answers = [];
 
-    // THIS IS THE FIX: This logic directly checks the screen for a selection.
-    if (question.type === "multi_choice") {
-      const selectedOptions = modalBody.querySelectorAll(".is-selected");
-      answers = Array.from(selectedOptions).map((el) => el.dataset.value);
-    } else {
-      // For single_choice and picture_choice
-      const checkedRadio = modalBody.querySelector(
-        "input[type='radio']:checked"
-      );
-      const selectedButton = modalBody.querySelector(".is-selected"); // For picture_choice
+    // Handle multiple questions on skin_issues screen
+    if (currentStep === "skin_issues") {
+      const questionsToValidate = [
+        { q_key: "skinCare_ageRange", type: "multi_choice", isRequired: true },
+        {
+          q_key: "skinCare_skinConcerns",
+          type: "picture_choice",
+          isRequired: true,
+        },
+        {
+          q_key: "skinCare_skinIssueCondition",
+          type: "single_choice",
+          isRequired: false,
+        },
+        {
+          q_key: "skinCare_is_pregnant",
+          type: "single_choice",
+          isRequired: false,
+        },
+        {
+          q_key: "skinCare_acneIrritation",
+          type: "single_choice",
+          isRequired: false,
+        },
+      ];
 
-      if (checkedRadio) {
-        answers.push(checkedRadio.value);
-      } else if (selectedButton) {
-        answers.push(selectedButton.dataset.value);
+      let hasError = false;
+
+      questionsToValidate.forEach((questionInfo) => {
+        const questionObj = allQuestions.find(
+          (q) => q.q_key === questionInfo.q_key
+        );
+        if (!questionObj) return;
+
+        const groupKey = questionObj.key;
+        const answerKey = questionObj.q_key.replace(
+          new RegExp(`^${questionObj.key}_`, "i"),
+          ""
+        );
+
+        let questionAnswers = [];
+
+        if (questionInfo.type === "multi_choice") {
+          const selectedOptions = modalBody.querySelectorAll(
+            `.multi-choice .is-selected`
+          );
+          questionAnswers = Array.from(selectedOptions).map(
+            (el) => el.dataset.value
+          );
+        } else if (questionInfo.type === "picture_choice") {
+          const selectedButton = modalBody.querySelector(
+            `.picture-options-container .is-selected`
+          );
+          if (selectedButton)
+            questionAnswers.push(selectedButton.dataset.value);
+        } else {
+          const checkedRadio = modalBody.querySelector(
+            `input[name="${questionObj.q_key}"]:checked`
+          );
+          if (checkedRadio) questionAnswers.push(checkedRadio.value);
+        }
+
+        if (questionInfo.isRequired && questionAnswers.length === 0) {
+          hasError = true;
+        }
+
+        if (!userAnswers[groupKey]) userAnswers[groupKey] = {};
+        if (questionAnswers.length > 0) {
+          userAnswers[groupKey][answerKey] =
+            questionInfo.type === "multi_choice"
+              ? questionAnswers
+              : questionAnswers[0];
+        }
+      });
+
+      if (hasError) {
+        displayError(
+          errorContainer,
+          "Please answer all required questions to continue."
+        );
+        return false;
+      }
+
+      return true;
+    } else {
+      // Original logic for other questions
+      if (question.type === "multi_choice") {
+        const selectedOptions = modalBody.querySelectorAll(".is-selected");
+        answers = Array.from(selectedOptions).map((el) => el.dataset.value);
+      } else {
+        // For single_choice and picture_choice
+        const checkedRadio = modalBody.querySelector(
+          "input[type='radio']:checked"
+        );
+        const selectedButton = modalBody.querySelector(".is-selected"); // For picture_choice
+
+        if (checkedRadio) {
+          answers.push(checkedRadio.value);
+        } else if (selectedButton) {
+          answers.push(selectedButton.dataset.value);
+        }
       }
     }
 
@@ -359,7 +453,63 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function saveCurrentAnswer() {
-    if (currentStep === -1) return; // Don't save for the initial DOB screen on back
+    if (currentStep === -1) return;
+
+    if (currentStep === "skin_issues") {
+      // Handle saving multiple questions on skin_issues screen
+      const questionsToSave = [
+        { q_key: "skinCare_ageRange", type: "multi_choice" },
+        { q_key: "skinCare_skinConcerns", type: "picture_choice" },
+        { q_key: "skinCare_skinIssueCondition", type: "single_choice" },
+        { q_key: "skinCare_is_pregnant", type: "single_choice" },
+        { q_key: "skinCare_acneIrritation", type: "single_choice" },
+      ];
+
+      questionsToSave.forEach((questionInfo) => {
+        const questionObj = allQuestions.find(
+          (q) => q.q_key === questionInfo.q_key
+        );
+        if (!questionObj) return;
+
+        const groupKey = questionObj.key;
+        const answerKey = questionObj.q_key.replace(
+          new RegExp(`^${questionObj.key}_`, "i"),
+          ""
+        );
+
+        let questionAnswers = [];
+
+        if (questionInfo.type === "multi_choice") {
+          const selectedOptions = modalBody.querySelectorAll(
+            `.multi-choice .is-selected`
+          );
+          questionAnswers = Array.from(selectedOptions).map(
+            (el) => el.dataset.value
+          );
+        } else if (questionInfo.type === "picture_choice") {
+          const selectedButton = modalBody.querySelector(
+            `.picture-options-container .is-selected`
+          );
+          if (selectedButton)
+            questionAnswers.push(selectedButton.dataset.value);
+        } else {
+          const checkedRadio = modalBody.querySelector(
+            `input[name="${questionObj.q_key}"]:checked`
+          );
+          if (checkedRadio) questionAnswers.push(checkedRadio.value);
+        }
+
+        if (!userAnswers[groupKey]) userAnswers[groupKey] = {};
+        if (questionAnswers.length > 0) {
+          userAnswers[groupKey][answerKey] =
+            questionInfo.type === "multi_choice"
+              ? questionAnswers
+              : questionAnswers[0];
+        }
+      });
+
+      return;
+    }
 
     const isSpecialQuestion = typeof currentStep === "string";
     const q_key_map = {
@@ -422,7 +572,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else if (currentStep === "routine_or_product") {
       const routineAnswer = userAnswers.skincare?.routine_or_product;
       if (routineAnswer === "proper_routine_based_on_concerns") {
-        showSkinIssuesQuestion();
+        showProperRoutineBasedOnConcernScreen();
       } else {
         showSkinTypeQuestion();
       }
@@ -455,7 +605,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else if (previousStep === "skin_type") {
       showSkinTypeQuestion();
     } else if (previousStep === "skin_issues") {
-      showSkinIssuesQuestion();
+      showProperRoutineBasedOnConcernScreen();
     } else {
       renderCurrentQuestion();
     }
@@ -530,16 +680,71 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderModalContent(createModalLayout(innerHtml), "w-760");
   }
 
-  function showSkinIssuesQuestion() {
+  function showProperRoutineBasedOnConcernScreen() {
     currentStep = "skin_issues";
-    const question = allQuestions.find((q) => q.q_key === "skinCare_ageRange");
-    if (!question) return;
-    const optionsHtml = generateMultiChoiceMarkup(question);
+
+    // Get all the questions we want to display
+    const skinIssuesQuestion = allQuestions.find(
+      (q) => q.q_key === "skinCare_ageRange"
+    );
+    const skinTypeQuestion = allQuestions.find(
+      (q) => q.q_key === "skinCare_skinConcerns"
+    );
+    const acneAllergyQuestion = allQuestions.find(
+      (q) => q.q_key === "skinCare_skinIssueCondition"
+    );
+    const pregnantQuestion = allQuestions.find(
+      (q) => q.q_key === "skinCare_is_pregnant"
+    );
+    const reactionQuestion = allQuestions.find(
+      (q) => q.q_key === "skinCare_acneIrritation"
+    );
+
+    if (
+      !skinIssuesQuestion ||
+      !skinTypeQuestion ||
+      !acneAllergyQuestion ||
+      !pregnantQuestion ||
+      !reactionQuestion
+    )
+      return;
+
+    // Generate HTML for each question
+    const skinIssuesHtml = generateMultiChoiceMarkup(skinIssuesQuestion);
+    const skinTypeHtml = generatePictureChoiceMarkup(skinTypeQuestion);
+    const acneAllergyHtml = generateSingleChoiceMarkup(acneAllergyQuestion);
+    const pregnantHtml = generateSingleChoiceMarkup(pregnantQuestion);
+    const reactionHtml = generateSingleChoiceMarkup(reactionQuestion, true);
+
     const innerHtml = `
-    ${generateTitleMarkup(question.title)}
-    ${optionsHtml}
+    <div class="question-section flex flex-col gap-16">
+      ${generateTitleMarkup(skinIssuesQuestion.title)}
+      ${skinIssuesHtml}
+    </div>
+    
+    <div class="question-section flex flex-col gap-16">
+      ${generateTitleMarkup(skinTypeQuestion.title)}
+      ${skinTypeHtml}
+    </div>
+    
+    <div class="question-section flex flex-col gap-16">
+      ${generateTitleMarkup(acneAllergyQuestion.title)}
+      ${acneAllergyHtml}
+    </div>
+    
+    <div class="question-section flex flex-col gap-16">
+      ${generateTitleMarkup(pregnantQuestion.title)}
+      ${pregnantHtml}
+    </div>
+    
+    <div class="question-section flex flex-col gap-16">
+      ${generateTitleMarkup(reactionQuestion.title)}
+      ${reactionHtml}
+    </div>
+    
     ${generateErrorContainerMarkup()}
   `;
+
     renderModalContent(createModalLayout(innerHtml), "w-760");
   }
 
