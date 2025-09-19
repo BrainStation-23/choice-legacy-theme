@@ -1447,6 +1447,9 @@ address {
 .w-165 {
   width: 165px;
 }
+.w-165-priority {
+  width: 165px !important;
+}
 .w-164 {
   width: 164px;
 }
