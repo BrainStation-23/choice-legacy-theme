@@ -50,6 +50,28 @@ document.addEventListener("DOMContentLoaded", async () => {
   `;
   }
 
+  function setupDobFields() {
+    const dd = modalBody.querySelector("#dob-dd");
+    const mm = modalBody.querySelector("#dob-mm");
+    const yyyy = modalBody.querySelector("#dob-yyyy");
+
+    if (!dd || !mm || !yyyy) return;
+
+    const fields = [dd, mm, yyyy];
+    fields.forEach((field, index) => {
+      field.addEventListener("input", () => {
+        field.value = field.value.replace(/[^0-g]/g, "");
+
+        if (
+          field.value.length === field.maxLength &&
+          index < fields.length - 1
+        ) {
+          fields[index + 1].focus();
+        }
+      });
+    });
+  }
+
   function generateTitleMarkup(title) {
     return `<h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">${title}</h2>`;
   }
@@ -338,23 +360,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function showDobAndGenderModal() {
     currentStep = -1;
     const innerHtml = `
-      <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">What's your birthday? We've got personalized tips waiting for you.</h2>
-      <div class="beauty-profile-modal-form-field flex flex-col gap-10">
-        <label for="dob-dd" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Date of Birth</label>
-        <div class="beauty-profile-modal-input-group flex gap-16">
-          <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-dd" maxlength="2" inputmode="numeric" /><label for="dob-dd" class="fw-500 fs-14-lh-20-ls-0_1">DD</label></div>
-          <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-mm" maxlength="2" inputmode="numeric"><label for="dob-mm" class="fw-500 fs-14-lh-20-ls-0_1">MM</label></div>
-          <div class="relative w-100 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-yyyy" maxlength="4" inputmode="numeric"><label for="dob-yyyy" class="fw-500 fs-14-lh-20-ls-0_1">YYYY</label></div>
-        </div>
-        ${generateErrorContainerMarkup()}
+    ${generateTitleMarkup(
+      "What's your birthday? We've got personalized tips waiting for you."
+    )}
+    <div class="beauty-profile-modal-form-field flex flex-col gap-10">
+      <label for="dob-dd" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Date of Birth</label>
+      <div class="beauty-profile-modal-input-group flex gap-16">
+        <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-dd" maxlength="2" inputmode="numeric" /><label for="dob-dd" class="fw-500 fs-14-lh-20-ls-0_1">DD</label></div>
+        <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-mm" maxlength="2" inputmode="numeric"><label for="dob-mm" class="fw-500 fs-14-lh-20-ls-0_1">MM</label></div>
+        <div class="relative w-100 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-yyyy" maxlength="4" inputmode="numeric"><label for="dob-yyyy" class="fw-500 fs-14-lh-20-ls-0_1">YYYY</label></div>
       </div>
-      <div class="beauty-profile-modal-form-field flex flex-col gap-10">
-        <div class="relative w-256 h-56">
-          <select id="gender" class="w-full fs-500 fs-14-lh-20-ls-0_1 pl-12 h-full"><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option><option value="prefer_not_to_say">Prefer not to say</option></select>
-          <label for="gender" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Gender</label>
-        </div>
+      ${generateErrorContainerMarkup()}
+    </div>
+    <div class="beauty-profile-modal-form-field flex flex-col gap-10">
+      <div class="relative w-256 h-56">
+        <select id="gender" class="w-full fs-500 fs-14-lh-20-ls-0_1 pl-12 h-full"><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option><option value="prefer_not_to_say">Prefer not to say</option></select>
+        <label for="gender" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Gender</label>
       </div>
-    `;
+    </div>
+  `;
     await renderModalContent(createModalLayout(innerHtml), "w-700");
 
     if (userAnswers.dob) {
@@ -366,6 +390,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (userAnswers.gender) {
       modalBody.querySelector("#gender").value = userAnswers.gender;
     }
+
+    setupDobFields();
   }
 
   function showSkincareRoutineQuestion() {
