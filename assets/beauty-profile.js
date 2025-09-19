@@ -105,8 +105,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       .querySelector(".beauty-profile-modal-continue-btn")
       ?.addEventListener("click", handleContinue);
 
-    const optionsContainer = modalBody.querySelector(".options-container");
-    if (optionsContainer) {
+    const optionsContainers = modalBody.querySelectorAll(".options-container");
+    optionsContainers.forEach((optionsContainer) => {
       optionsContainer.addEventListener("change", (e) => {
         if (e.target.type === "radio") {
           currentAnswer = e.target.value;
@@ -138,7 +138,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           panel.classList.toggle("is-open");
         });
       }
-    }
+    });
 
     openModal();
   }
