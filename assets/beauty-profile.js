@@ -70,18 +70,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     modal
       .querySelector(".beauty-profile-modal-back-btn")
-      ?.addEventListener("click", handleBack); // Use the new handleBack function
+      ?.addEventListener("click", handleBack);
     modal
       .querySelector(".beauty-profile-modal-continue-btn")
       ?.addEventListener("click", handleContinue);
 
     const optionsContainer = modalBody.querySelector(".options-container");
     if (optionsContainer) {
-      optionsContainer.addEventListener("change", (e) => {
-        if (e.target.type === "radio") {
-          currentAnswer = e.target.value;
-        }
-      });
       optionsContainer.addEventListener("click", (e) => {
         const button = e.target.closest(".option-btn");
         if (button && button.parentElement.classList.contains("multi-choice")) {
@@ -101,7 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let optionsHtml = `<div class="options-container flex flex-wrap gap-8">`;
     question.options.forEach((option) => {
       const isChecked = savedAnswer === option.value ? "checked" : "";
-      if (isChecked) currentAnswer = option.value; // Preserve answer state for validation
+      if (isChecked) currentAnswer = option.value;
       optionsHtml += `
         <div class="radio-option">
           <input type="radio" class="hidden" id="${option.value}" name="${question.q_key}" value="${option.value}" ${isChecked}>
@@ -111,6 +106,23 @@ document.addEventListener("DOMContentLoaded", async () => {
           </label>
         </div>
       `;
+    });
+    optionsHtml += `</div>`;
+    return optionsHtml;
+  }
+
+  function generatePictureChoiceMarkup(question) {
+    const groupKey = question.key;
+    const answerKey = question.q_key.replace(`${groupKey}_`, "");
+    const savedAnswer = userAnswers[groupKey]?.[answerKey];
+    let optionsHtml = `<div class="options-container picture-options-container">`;
+    question.options.forEach((option) => {
+      const isSelected = savedAnswer === option.value ? "is-selected" : "";
+      optionsHtml += `
+      <button type="button" class="option-btn picture-option-card ${isSelected}" data-value="${option.value}">
+        <img src="${option.imageUrl}" alt="${option.label}" class="pointer-events-none">
+      </button>
+    `;
     });
     optionsHtml += `</div>`;
     return optionsHtml;
@@ -131,8 +143,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     let optionsHtml = "";
     switch (question.type) {
       case "single_choice":
-      case "picture_choice":
         optionsHtml = generateSingleChoiceMarkup(question);
+        break;
+      case "picture_choice":
+        optionsHtml = generatePictureChoiceMarkup(question);
         break;
       case "multi_choice":
         optionsHtml = `<div class="options-container multi-choice grid grid-cols-2 gap-10">`;
@@ -197,19 +211,33 @@ document.addEventListener("DOMContentLoaded", async () => {
       return true;
     }
 
-    const isSpecialQuestion = currentStep === "routine_or_product";
+    const isSpecialQuestion = typeof currentStep === "string";
+    const q_key_map = {
+      routine_or_product: "skinCare_routine_or_product",
+      skin_type: "skinCare_skinConcerns",
+    };
     const question = isSpecialQuestion
-      ? allQuestions.find((q) => q.q_key === "skinCare_routine_or_product")
+      ? allQuestions.find((q) => q.q_key === q_key_map[currentStep])
       : currentProfileQuestions[currentStep];
+
     const errorContainer = modalBody.querySelector(".error-container");
     let answers = [];
 
+    // THIS IS THE FIX: Read the selection directly from the screen for validation
     if (question.type === "multi_choice") {
       const selectedOptions = modalBody.querySelectorAll(".is-selected");
       answers = Array.from(selectedOptions).map((el) => el.dataset.value);
     } else {
-      if (currentAnswer) {
-        answers.push(currentAnswer);
+      // For single_choice and picture_choice
+      const checkedRadio = modalBody.querySelector(
+        "input[type='radio']:checked"
+      );
+      const selectedButton = modalBody.querySelector(".is-selected"); // For picture_choice
+
+      if (checkedRadio) {
+        answers.push(checkedRadio.value);
+      } else if (selectedButton) {
+        answers.push(selectedButton.dataset.value);
       }
     }
 
@@ -224,7 +252,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (answers.length > 0) {
       userAnswers[groupKey][answerKey] =
         question.type === "multi_choice" ? answers : answers[0];
+    } else {
+      if (userAnswers[groupKey]) delete userAnswers[groupKey][answerKey];
     }
+
     return true;
   }
 
@@ -232,7 +263,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!validateAndSaveAnswers()) {
       return;
     }
-    stepHistory.push(currentStep); // Add the current step to history before moving on
+    stepHistory.push(currentStep);
 
     if (currentStep === -1) {
       if (currentProfileType === "skincare") {
@@ -316,6 +347,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     renderModalContent(createModalLayout(innerHtml), "w-760");
   }
 
+  function showSkinTypeQuestion() {
+    currentStep = "skin_type";
+    const question = allQuestions.find(
+      (q) => q.q_key === "skinCare_skinConcerns"
+    );
+    if (!question) return;
+    const optionsHtml = generatePictureChoiceMarkup(question);
+    const innerHtml = `
+    <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">${question.title}</h2>
+    ${optionsHtml}
+    <div class="error-container"></div>
+  `;
+    renderModalContent(createModalLayout(innerHtml), "w-760");
+  }
+
   if (modal && modalBody && closeModalBtn) {
     modal.addEventListener("click", (event) => {
       if (event.target === event.currentTarget) closeModal();
@@ -327,10 +373,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!modal || !modalBody) return;
     currentProfileType = profileType;
     userAnswers = {};
-    stepHistory = []; // Reset history for a new quiz
-    currentProfileQuestions = allQuestions.filter(
-      (q) => q.key === profileType && q.q_key !== "skinCare_routine_or_product"
-    );
+    stepHistory = [];
+
+    currentProfileQuestions = allQuestions
+      .filter(
+        (q) =>
+          q.key === profileType && q.q_key !== "skinCare_routine_or_product"
+      )
+      .sort((a, b) => a.order - b.order);
+
     if (!window.theme.customer_dob || !window.theme.customer_gender) {
       showDobAndGenderModal();
     } else {
