@@ -147,7 +147,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function generateSingleChoiceMarkup(question) {
     const groupKey = question.key;
-    const answerKey = question.q_key.replace(`${groupKey}_`, "");
+    const answerKey = question.q_key.replace(
+      new RegExp(`^${question.key}_`, "i"),
+      ""
+    );
     const savedAnswer = userAnswers[groupKey]?.[answerKey];
 
     let optionsHtml = `<div class="options-container flex flex-wrap gap-8">`;
@@ -170,7 +173,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function generatePictureChoiceMarkup(question) {
     const groupKey = question.key;
-    const answerKey = question.q_key.replace(`${groupKey}_`, "");
+    const answerKey = question.q_key.replace(
+      new RegExp(`^${question.key}_`, "i"),
+      ""
+    );
     const savedAnswer = userAnswers[groupKey]?.[answerKey];
     let optionsHtml = `<div class="options-container picture-options-container flex gap-16 flex-wrap">`;
     question.options.forEach((option) => {
@@ -187,7 +193,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function generateMultiChoiceMarkup(question) {
     const groupKey = question.key;
-    const answerKey = question.q_key.replace(`${groupKey}_`, "");
+    const answerKey = question.q_key.replace(
+      new RegExp(`^${question.key}_`, "i"),
+      ""
+    );
     const savedAnswers = userAnswers[groupKey]?.[answerKey] || [];
 
     let optionsHtml = question.options
@@ -349,6 +358,54 @@ document.addEventListener("DOMContentLoaded", async () => {
     return true;
   }
 
+  function saveCurrentAnswer() {
+    if (currentStep === -1) return; // Don't save for the initial DOB screen on back
+
+    const isSpecialQuestion = typeof currentStep === "string";
+    const q_key_map = {
+      routine_or_product: "skinCare_routine_or_product",
+      skin_type: "skinCare_skinConcerns",
+      skin_issues: "skinCare_ageRange",
+    };
+    const question = isSpecialQuestion
+      ? allQuestions.find((q) => q.q_key === q_key_map[currentStep])
+      : currentProfileQuestions[currentStep];
+
+    if (!question) return;
+
+    const answers = [];
+    if (question.type === "multi_choice") {
+      const selectedOptions = modalBody.querySelectorAll(".is-selected");
+      answers.push(
+        ...Array.from(selectedOptions).map((el) => el.dataset.value)
+      );
+    } else {
+      const checkedRadio = modalBody.querySelector(
+        "input[type='radio']:checked"
+      );
+      const selectedButton = modalBody.querySelector(".is-selected");
+      if (checkedRadio) {
+        answers.push(checkedRadio.value);
+      } else if (selectedButton) {
+        answers.push(selectedButton.dataset.value);
+      }
+    }
+
+    const groupKey = question.key;
+    const answerKey = question.q_key.replace(
+      new RegExp(`^${question.key}_`, "i"),
+      ""
+    );
+    if (!userAnswers[groupKey]) userAnswers[groupKey] = {};
+
+    if (answers.length > 0) {
+      userAnswers[groupKey][answerKey] =
+        question.type === "multi_choice" ? answers : answers[0];
+    } else {
+      delete userAnswers[groupKey][answerKey];
+    }
+  }
+
   function handleContinue() {
     if (!validateAndSaveAnswers()) {
       return;
@@ -382,6 +439,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function handleBack() {
+    saveCurrentAnswer();
+
     if (stepHistory.length === 0) {
       closeModal();
       return;
