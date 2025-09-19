@@ -278,6 +278,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       routine_or_product: "skinCare_routine_or_product",
       skin_type: "skinCare_skinConcerns",
       skin_issues: "skinCare_ageRange",
+      skin_issues: "skinCare_ageRange",
     };
     const question = isSpecialQuestion
       ? allQuestions.find((q) => q.q_key === q_key_map[currentStep])
@@ -310,7 +311,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const groupKey = question.key;
-    const answerKey = question.q_key.replace(`${groupKey}_`, "");
+    const answerKey = question.q_key.replace(
+      new RegExp(`^${question.key}_`, "i"),
+      ""
+    );
     if (!userAnswers[groupKey]) userAnswers[groupKey] = {};
     if (answers.length > 0) {
       userAnswers[groupKey][answerKey] =
@@ -332,7 +336,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (currentProfileType === "skincare") {
         showSkincareRoutineQuestion();
       } else {
-        currentStep = 0;
+        // currentStep = 0;
         renderCurrentQuestion();
       }
     } else if (currentStep === "routine_or_product") {
