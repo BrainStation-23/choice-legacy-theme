@@ -50,6 +50,14 @@ document.addEventListener("DOMContentLoaded", async () => {
   `;
   }
 
+  function generateTitleMarkup(title) {
+    return `<h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">${title}</h2>`;
+  }
+
+  function generateErrorContainerMarkup() {
+    return `<div class="error-container flex"></div>`;
+  }
+
   async function renderModalContent(html, newClasses = "w-full") {
     if (!modal || !modalBody) return;
 
@@ -77,10 +85,26 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const optionsContainer = modalBody.querySelector(".options-container");
     if (optionsContainer) {
+      optionsContainer.addEventListener("change", (e) => {
+        if (e.target.type === "radio") {
+          currentAnswer = e.target.value;
+        }
+      });
+
       optionsContainer.addEventListener("click", (e) => {
-        const button = e.target.closest(".option-btn");
-        if (button && button.parentElement.classList.contains("multi-choice")) {
-          button.classList.toggle("is-selected");
+        const option = e.target.closest(".option-btn");
+        if (!option) return; // Exit if the click wasn't on a selectable option
+
+        const isMultiChoice =
+          optionsContainer.classList.contains("multi-choice");
+
+        if (isMultiChoice) {
+          option.classList.toggle("is-selected");
+        } else {
+          optionsContainer
+            .querySelectorAll(".option-btn")
+            .forEach((el) => el.classList.remove("is-selected"));
+          option.classList.add("is-selected");
         }
       });
     }
@@ -115,12 +139,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const groupKey = question.key;
     const answerKey = question.q_key.replace(`${groupKey}_`, "");
     const savedAnswer = userAnswers[groupKey]?.[answerKey];
-    let optionsHtml = `<div class="options-container picture-options-container">`;
+    let optionsHtml = `<div class="options-container picture-options-container flex gap-16 flex-wrap">`;
     question.options.forEach((option) => {
       const isSelected = savedAnswer === option.value ? "is-selected" : "";
       optionsHtml += `
-      <button type="button" class="option-btn picture-option-card ${isSelected}" data-value="${option.value}">
-        <img src="${option.imageUrl}" alt="${option.label}" class="pointer-events-none">
+      <button type="button" class="option-btn picture-option-card bg-transparent transition-transform border-2 border-solid border-color-transparent cursor-pointer w-221_3333 h-216 border-none rounded-6 ${isSelected}" data-value="${option.value}">
+        <img src="${option.imageUrl}" alt="${option.label}" loading="lazy" class="rounded-6">
       </button>
     `;
     });
@@ -131,11 +155,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   function renderCurrentQuestion() {
     currentAnswer = null;
     if (currentStep >= currentProfileQuestions.length) {
-      const thankYouHtml = `<h2 class="beauty-profile-modal-body-title">Thank you! Your profile is complete.</h2><p class="text-sm">Here are your answers:</p><pre class="text-xs bg-gray-100 p-2 rounded">${JSON.stringify(
+      const thankYouHtml = `
+      ${generateTitleMarkup("Thank you! Your profile is complete.")}
+      <p class="text-sm">Here are your answers:</p>
+      <pre class="text-xs bg-gray-100 p-2 rounded">${JSON.stringify(
         userAnswers,
         null,
         2
-      )}</pre>`;
+      )}</pre>
+    `;
       renderModalContent(thankYouHtml);
       return;
     }
@@ -143,10 +171,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     let optionsHtml = "";
     switch (question.type) {
       case "single_choice":
-        optionsHtml = generateSingleChoiceMarkup(question);
-        break;
       case "picture_choice":
-        optionsHtml = generatePictureChoiceMarkup(question);
+        optionsHtml = generateSingleChoiceMarkup(question);
         break;
       case "multi_choice":
         optionsHtml = `<div class="options-container multi-choice grid grid-cols-2 gap-10">`;
@@ -159,9 +185,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         optionsHtml = `<p>This question type is not supported yet.</p>`;
     }
     const innerHtml = `
-    <h2 class="beauty-profile-modal-body-title">${question.title}</h2>
+    ${generateTitleMarkup(question.title)}
     ${optionsHtml}
-    <div class="error-container flex"></div>
+    ${generateErrorContainerMarkup()}
   `;
     renderModalContent(createModalLayout(innerHtml));
   }
@@ -223,16 +249,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const errorContainer = modalBody.querySelector(".error-container");
     let answers = [];
 
-    // THIS IS THE FIX: Read the selection directly from the screen for validation
     if (question.type === "multi_choice") {
       const selectedOptions = modalBody.querySelectorAll(".is-selected");
       answers = Array.from(selectedOptions).map((el) => el.dataset.value);
     } else {
-      // For single_choice and picture_choice
       const checkedRadio = modalBody.querySelector(
         "input[type='radio']:checked"
       );
-      const selectedButton = modalBody.querySelector(".is-selected"); // For picture_choice
+      const selectedButton = modalBody.querySelector(".is-selected");
 
       if (checkedRadio) {
         answers.push(checkedRadio.value);
@@ -264,7 +288,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
     stepHistory.push(currentStep);
-
+    console.log(currentStep, userAnswers.skincare);
     if (currentStep === -1) {
       if (currentProfileType === "skincare") {
         showSkincareRoutineQuestion();
@@ -273,6 +297,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderCurrentQuestion();
       }
     } else if (currentStep === "routine_or_product") {
+      const routineAnswer = userAnswers.skincare?.skinCare_routine_or_product;
+      if (
+        routineAnswer === "one_single_product" ||
+        routineAnswer === "basic_routine"
+      ) {
+        showSkinTypeQuestion();
+      } else {
+        currentStep = 0;
+        renderCurrentQuestion();
+      }
+    } else if (currentStep === "skin_type") {
       currentStep = 0;
       renderCurrentQuestion();
     } else {
@@ -293,6 +328,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       showDobAndGenderModal();
     } else if (previousStep === "routine_or_product") {
       showSkincareRoutineQuestion();
+    } else if (previousStep === "skin_type") {
+      showSkinTypeQuestion();
     } else {
       renderCurrentQuestion();
     }
@@ -309,7 +346,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-mm" maxlength="2" inputmode="numeric"><label for="dob-mm" class="fw-500 fs-14-lh-20-ls-0_1">MM</label></div>
           <div class="relative w-100 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-yyyy" maxlength="4" inputmode="numeric"><label for="dob-yyyy" class="fw-500 fs-14-lh-20-ls-0_1">YYYY</label></div>
         </div>
-        <div class="error-container"></div>
+        ${generateErrorContainerMarkup()}
       </div>
       <div class="beauty-profile-modal-form-field flex flex-col gap-10">
         <div class="relative w-256 h-56">
@@ -320,7 +357,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     `;
     await renderModalContent(createModalLayout(innerHtml), "w-700");
 
-    // Repopulate fields if they exist in answers
     if (userAnswers.dob) {
       const [yyyy, mm, dd] = userAnswers.dob.split("-");
       modalBody.querySelector("#dob-dd").value = dd;
@@ -340,10 +376,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!question) return;
     const optionsHtml = generateSingleChoiceMarkup(question);
     const innerHtml = `
-      <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">${question.title}</h2>
-      ${optionsHtml}
-      <div class="error-container"></div>
-    `;
+    ${generateTitleMarkup(question.title)}
+    ${optionsHtml}
+    ${generateErrorContainerMarkup()}
+  `;
     renderModalContent(createModalLayout(innerHtml), "w-760");
   }
 
@@ -355,9 +391,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!question) return;
     const optionsHtml = generatePictureChoiceMarkup(question);
     const innerHtml = `
-    <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">${question.title}</h2>
+    <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">${
+      question.title
+    }</h2>
     ${optionsHtml}
-    <div class="error-container"></div>
+    ${generateErrorContainerMarkup()}
   `;
     renderModalContent(createModalLayout(innerHtml), "w-760");
   }
@@ -375,10 +413,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     userAnswers = {};
     stepHistory = [];
 
+    // Correctly filter out BOTH special questions and sort the rest
     currentProfileQuestions = allQuestions
       .filter(
         (q) =>
-          q.key === profileType && q.q_key !== "skinCare_routine_or_product"
+          q.key === profileType &&
+          q.q_key !== "skinCare_routine_or_product" &&
+          q.q_key !== "skinCare_skinConcerns"
       )
       .sort((a, b) => a.order - b.order);
 
