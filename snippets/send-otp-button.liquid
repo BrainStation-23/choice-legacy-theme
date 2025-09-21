@@ -1,0 +1,24 @@
+<style>
+  #send-otp-button:disabled {
+    width: 146px !important;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  #send-otp-button:disabled {
+    background-color: #9ca3af !important;
+    color: #464c4f !important;
+    cursor: not-allowed !important;
+    border-color: #9ca3af !important;
+    width: 146px !important;
+    font-weight: 600 !important;
+  }
+</style>
+
+<button
+  type="button"
+  id="send-otp-button"
+  class="button--solid border-none rounded-6 cursor-pointer ff-general-sans fs-14-lh-100pct-ls-0 fw-600 h-56  m-0 pl-16 pr-16  {{ class }}"
+>
+  {{ 'customer.register.send_otp' | t }}
+</button>
