@@ -161,23 +161,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     question.options.forEach((option) => {
       const isChecked = savedAnswer === option.value ? "checked" : "";
       if (isChecked) currentAnswer = option.value;
+
+      // Create unique IDs using question key and option value
+      const uniqueId = `${question.q_key}_${option.value}`;
+
       optionsHtml += `
-        <div class="radio-option">
-          ${
-            flexCol
-              ? `<div class="flex"><input type="radio" class="hidden" id="${option.value}" name="${question.q_key}" value="${option.value}" ${isChecked}>
-          <label for="${option.value}" class="radio-option-label flex gap-10 items-center rounded-100 border border-solid border-color cursor-pointer transition-transform pt-18 pr-16 pb-18 pl-16">
-            <span class="radio-custom relative w-20 h-20 inline-block border border-solid border-2 rounded-full"></span>
-            <span class="radio-option-text transition-transform fw-500 fs-13-lh-16-ls-0_2">${option.label}</span>
-          </label></div>`
-              : `<input type="radio" class="hidden" id="${option.value}" name="${question.q_key}" value="${option.value}" ${isChecked}>
-          <label for="${option.value}" class="radio-option-label flex gap-10 items-center rounded-100 border border-solid border-color cursor-pointer transition-transform pt-18 pr-16 pb-18 pl-16">
-            <span class="radio-custom relative w-20 h-20 inline-block border border-solid border-2 rounded-full"></span>
-            <span class="radio-option-text transition-transform fw-500 fs-13-lh-16-ls-0_2">${option.label}</span>
-          </label>`
-          }
-        </div>
-      `;
+      <div class="radio-option">
+        ${
+          flexCol
+            ? `<div class="flex"><input type="radio" class="hidden" id="${uniqueId}" name="${question.q_key}" value="${option.value}" ${isChecked}>
+        <label for="${uniqueId}" class="radio-option-label flex gap-10 items-center rounded-100 border border-solid border-color cursor-pointer transition-transform pt-18 pr-16 pb-18 pl-16">
+          <span class="radio-custom relative w-20 h-20 inline-block border border-solid border-2 rounded-full"></span>
+          <span class="radio-option-text transition-transform fw-500 fs-13-lh-16-ls-0_2">${option.label}</span>
+        </label></div>`
+            : `<input type="radio" class="hidden" id="${uniqueId}" name="${question.q_key}" value="${option.value}" ${isChecked}>
+        <label for="${uniqueId}" class="radio-option-label flex gap-10 items-center rounded-100 border border-solid border-color cursor-pointer transition-transform pt-18 pr-16 pb-18 pl-16">
+          <span class="radio-custom relative w-20 h-20 inline-block border border-solid border-2 rounded-full"></span>
+          <span class="radio-option-text transition-transform fw-500 fs-13-lh-16-ls-0_2">${option.label}</span>
+        </label>`
+        }
+      </div>
+    `;
     });
     optionsHtml += `</div>`;
     return optionsHtml;
@@ -873,10 +877,14 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (additionalQuestions) {
             if (e.target.value === "no_itch_pain") {
               additionalQuestions.classList.remove("hidden");
-              additionalQuestions.classList.add("block");
+              additionalQuestions.classList.add("flex", "flex-col", "gap-16");
             } else {
               additionalQuestions.classList.add("hidden");
-              additionalQuestions.classList.remove("block");
+              additionalQuestions.classList.remove(
+                "flex",
+                "flex-col",
+                "gap-16"
+              );
             }
           }
         });
@@ -890,7 +898,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         );
         if (additionalQuestions) {
           additionalQuestions.classList.remove("hidden");
-          additionalQuestions.classList.add("block");
+          additionalQuestions.classList.add("flex", "flex-col", "gap-16");
         }
       }
     });
