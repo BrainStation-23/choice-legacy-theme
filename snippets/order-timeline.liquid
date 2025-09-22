@@ -28,6 +28,9 @@
           class="step-circle bg-bg w-32 h-32 rounded-full  border-2 border-color border-solid flex items-center justify-center relative z-2"
         >
           <span class="tick-icon" style="display: none;">{% render 'icon-tick' %}</span>
+          <span class="cross-icon" style="display: none;">
+            {%- render 'icon-close', height: '12px', width: '12px' -%}
+          </span>
           <span
             class="dot-icon w-8 h-8 rounded-full text-primary-optional inline-block  "
           ></span>
@@ -47,6 +50,9 @@
           class="step-circle bg-bg w-32 h-32 rounded-full  border-2 border-color border-solid flex items-center justify-center relative z-2"
         >
           <span class="tick-icon" style="display: none;">{% render 'icon-tick' %}</span>
+          <span class="cross-icon" style="display: none;">
+            {%- render 'icon-close', height: '12px', width: '12px' -%}
+          </span>
           <span
             class="dot-icon w-8 h-8 rounded-full text-primary-optional inline-block"
           ></span>
@@ -66,6 +72,9 @@
           class="step-circle bg-bg w-32 h-32 rounded-full  border-2 border-color border-solid flex items-center justify-center relative z-2"
         >
           <span class="tick-icon" style="display: none;">{% render 'icon-tick' %}</span>
+          <span class="cross-icon" style="display: none;">
+            {%- render 'icon-close', height: '12px', width: '12px' -%}
+          </span>
           <span
             class="dot-icon w-8 h-8 rounded-full text-primary-optional inline-block"
           ></span>
@@ -85,6 +94,9 @@
           class="step-circle bg-bg w-32 h-32 rounded-full  border-2 border-color border-solid flex items-center justify-center relative z-2"
         >
           <span class="tick-icon" style="display: none;">{% render 'icon-tick' %}</span>
+          <span class="cross-icon" style="display: none;">
+            {%- render 'icon-close', height: '12px', width: '12px' -%}
+          </span>
           <span
             class="dot-icon w-8 h-8 rounded-full text-primary-optional inline-block"
           ></span>
@@ -105,7 +117,7 @@
         >
           <span class="tick-icon" style="display: none;">{% render 'icon-tick' %}</span>
           <span class="cross-icon" style="display: none;">
-            {%- render 'icon-close', height: '22px', width: '22px' -%}
+            {%- render 'icon-close', height: '12px', width: '12px' -%}
           </span>
           <span
             class="dot-icon w-8 h-8 rounded-full text-primary-optional inline-block"
@@ -115,7 +127,7 @@
           class="step-label m-0 ff-general-sans fs-16-lh-20-ls-0_1  fw-500 text-primary-optional"
         >
           <span class="delivered-text">{{ 'customer.order.delivered' | t }}</span>
-          <span class="cancelled-text" style="display: none;">Cancelled</span>
+          {% comment %} <span class="cancelled-text" style="display: none;">Cancelled</span> {% endcomment %}
         </h2>
       </div>
     </div>
@@ -145,6 +157,33 @@
 
   .timeline-step.completed:not(:last-child)::after {
     background-color: #28a745;
+  }
+
+  /* Gray line before cancelled step */
+  .timeline-step.completed + .timeline-step.cancelled::before {
+    content: '';
+    position: absolute;
+    top: calc(50% + 10px);
+    left: calc(-50% + 10px);
+    right: calc(50% + 10px);
+    height: 3px;
+    background-color: rgba(var(--color-primary-text), 0.3) !important;
+    z-index: 1;
+  }
+
+  /* Override green line when next step is cancelled */
+  .timeline-step.completed:has(+ .timeline-step.cancelled)::after {
+    background-color: rgba(var(--color-primary-text), 0.3) !important;
+  }
+
+  /* Gray line for steps completed before cancellation */
+  .timeline-step.completed-before-cancel:not(:last-child)::after {
+    background-color: rgba(var(--color-primary-text), 0.3) !important;
+  }
+
+  /* No green line after current step in normal flow */
+  .timeline-step.current-step:not(:last-child)::after {
+    background-color: rgba(var(--color-primary-text), 0.3) !important;
   }
 
   .step-circle.completed {
@@ -190,9 +229,6 @@
     display: none !important;
   }
 
-  .timeline-step.cancelled .step-label {
-    color: #dc3545 !important;
-  }
   .timeline-step.cancelled .step-circle {
     border-color: #dc3545 !important;
   }
@@ -210,6 +246,11 @@
     fill: red;
   }
 
+  .cross-icon svg path {
+    color: red;
+    fill: red;
+    stroke: red;
+  }
   /* Icon styling */
   .tick-icon svg {
     color: rgb(var(--color-background));
@@ -231,6 +272,16 @@
 
     .timeline-step.completed:not(:last-child)::after {
       background-color: #28a745;
+    }
+
+    /* Gray line for steps completed before cancellation (mobile) */
+    .timeline-step.completed-before-cancel:not(:last-child)::after {
+      background-color: rgba(var(--color-primary-text), 0.3) !important;
+    }
+
+    /* No green line after current step in normal flow (mobile) */
+    .timeline-step.current-step:not(:last-child)::after {
+      background-color: rgba(var(--color-primary-text), 0.3) !important;
     }
   }
 
@@ -290,13 +341,10 @@
   }
 
   // Function to update visual timeline
-  function updateVisualTimeline(currentStatus) {
+  function updateVisualTimeline(currentStatus, isCancelled = false) {
     const timelineSteps = document.querySelectorAll('.timeline-step');
     const normalizedStatus = currentStatus.toLowerCase().replace(/\s+/g, '-');
     const currentStatusIndex = statusOrder.indexOf(normalizedStatus);
-
-    // Check if status is cancelled
-    const isCancelled = normalizedStatus === 'cancelled';
 
     timelineSteps.forEach((step, index) => {
       const circle = step.querySelector('.step-circle');
@@ -304,18 +352,17 @@
       const tickIcon = circle.querySelector('.tick-icon');
       const dotIcon = circle.querySelector('.dot-icon');
       const crossIcon = circle.querySelector('.cross-icon');
-      const deliveredText = label.querySelector('.delivered-text');
-      const cancelledText = label.querySelector('.cancelled-text');
 
       // Reset classes
       circle.classList.remove('completed', 'current', 'cancelled');
       label.classList.remove('completed', 'current');
-      step.classList.remove('completed', 'cancelled');
+      step.classList.remove('completed', 'cancelled', 'completed-before-cancel', 'current-step');
 
       if (isCancelled) {
-        // Handle cancelled status - make all previous 4 steps green, last step red
-        if (index < timelineSteps.length - 1) {
-          // First 4 steps (accepted, picked, in-transit, out-for-delivery) - show as completed/green
+        // For cancelled orders: show steps up to currentStatus as completed,
+        // then show cancellation at the next step
+        if (index < currentStatusIndex) {
+          // Steps before the last completed step - show as completed with green lines
           circle.classList.add('completed');
           label.classList.add('completed');
           step.classList.add('completed');
@@ -328,8 +375,22 @@
           if (crossIcon) {
             crossIcon.style.display = 'none';
           }
-        } else {
-          // Last step (delivered/cancelled) - show as cancelled with red circle and cross
+        } else if (index === currentStatusIndex) {
+          // Last completed step before cancellation - show as completed but gray line after
+          circle.classList.add('completed');
+          label.classList.add('completed');
+          step.classList.add('completed', 'completed-before-cancel');
+          if (tickIcon) {
+            tickIcon.style.display = 'inline';
+          }
+          if (dotIcon) {
+            dotIcon.style.display = 'none';
+          }
+          if (crossIcon) {
+            crossIcon.style.display = 'none';
+          }
+        } else if (index === currentStatusIndex + 1) {
+          // Next step after currentStatus - show as cancelled with red circle and cross
           circle.classList.add('cancelled');
           step.classList.add('cancelled');
           if (crossIcon) {
@@ -341,31 +402,40 @@
           if (dotIcon) {
             dotIcon.style.display = 'none';
           }
-          // Show cancelled text instead of delivered
-          if (deliveredText) {
-            deliveredText.style.display = 'none';
+        } else {
+          // Steps after cancellation - show as pending/gray
+          if (crossIcon) {
+            crossIcon.style.display = 'none';
           }
-          if (cancelledText) {
-            cancelledText.style.display = 'inline';
+          if (tickIcon) {
+            tickIcon.style.display = 'none';
+          }
+          if (dotIcon) {
+            dotIcon.style.display = 'inline-block';
           }
         }
       } else {
-        // Handle normal statuses
-        if (deliveredText) {
-          deliveredText.style.display = 'inline';
-        }
-        if (cancelledText) {
-          cancelledText.style.display = 'none';
-        }
+        // Normal flow (not cancelled)
         if (crossIcon) {
           crossIcon.style.display = 'none';
         }
 
-        if (index <= currentStatusIndex) {
-          // Completed and current steps (green background with tick icon)
+        if (index < currentStatusIndex) {
+          // Completed steps (green background with tick icon and green line)
           circle.classList.add('completed');
           label.classList.add('completed');
           step.classList.add('completed');
+          if (tickIcon) {
+            tickIcon.style.display = 'inline';
+          }
+          if (dotIcon) {
+            dotIcon.style.display = 'none';
+          }
+        } else if (index === currentStatusIndex) {
+          // Current step (green background with tick icon but no green line after)
+          circle.classList.add('completed');
+          label.classList.add('completed');
+          step.classList.add('completed', 'current-step');
           if (tickIcon) {
             tickIcon.style.display = 'inline';
           }
@@ -424,13 +494,14 @@
         toggleTimeline(true);
 
         // Update visual timeline based on API response
-        updateVisualTimeline(orderData.deliveryStatus);
+        updateVisualTimeline(orderData.deliveryStatus, orderData.isCancelled);
 
         // Dispatch event to notify main page about delivery status
         const deliveryStatusEvent = new CustomEvent('deliveryStatusUpdated', {
-          detail: { 
+          detail: {
             status: orderData.deliveryStatus,
-            returnStatus: orderData.returnStatus || null
+            returnStatus: orderData.returnStatus || null,
+            isCancelled: orderData.isCancelled || false,
           },
         });
         document.dispatchEvent(deliveryStatusEvent);
@@ -446,13 +517,13 @@
         toggleTimeline(true);
 
         // Update visual timeline to default state
-        updateVisualTimeline('Accepted');
+        updateVisualTimeline('Accepted', false);
 
         // Dispatch event with default status
         const deliveryStatusEvent = new CustomEvent('deliveryStatusUpdated', {
-          detail: { 
+          detail: {
             status: 'Accepted',
-            returnStatus: null
+            returnStatus: null,
           },
         });
         document.dispatchEvent(deliveryStatusEvent);
