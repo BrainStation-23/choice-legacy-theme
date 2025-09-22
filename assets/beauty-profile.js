@@ -910,7 +910,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const consultationSection = document.getElementById("consultation-section");
     if (consultationSection) {
       consultationSection.classList.remove("hidden");
-      consultationSection.classList.add("block");
+      consultationSection.classList.add("flex", "flex-col", "gap-24");
 
       // Set active tab based on profile type
       setActiveTab(currentProfileType);
@@ -925,7 +925,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (consultationContent) {
         consultationContent.classList.remove("hidden");
-        consultationContent.classList.add("block");
+        consultationContent.classList.add("flex", "flex-col", "gap-24");
       }
       if (suggestionsContent) {
         suggestionsContent.classList.add("hidden");
@@ -949,7 +949,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const consultationSection = document.getElementById("consultation-section");
     if (consultationSection) {
       consultationSection.classList.remove("hidden");
-      consultationSection.classList.add("block");
+      consultationContent.classList.add("flex", "flex-col", "gap-24");
 
       // Set active tab based on profile type
       setActiveTab(currentProfileType);
@@ -967,7 +967,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
       if (suggestionsContent) {
         suggestionsContent.classList.remove("hidden");
-        suggestionsContent.classList.add("block");
+        suggestionsContent.classList.add("flex", "flex-col", "gap-24");
       }
     }
   }

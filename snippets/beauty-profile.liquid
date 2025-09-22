@@ -75,7 +75,7 @@
   </div>
 </div>
 
-<div id="consultation-section" class="mt-24 flex flex-col gap-24">
+<div id="consultation-section" class="mt-24 hidden">
   <div class="flex flex-col gap-16">
     <h2 class="fw-400 fs-36-lh-40-ls-0 uppercase">{{ 'beauty_profile.routine.heading' | t }}</h2>
     <div class="tab-buttons flex gap-8">
@@ -85,7 +85,7 @@
     </div>
   </div>
   
-  <div data-content="consultation" class="">
+  <div data-content="consultation" class="hidden">
     {% render "beauty-profile-consultation" %}
   </div>
   
