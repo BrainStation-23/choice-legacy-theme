@@ -107,6 +107,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const optionsContainers = modalBody.querySelectorAll(".options-container");
     optionsContainers.forEach((optionsContainer) => {
+      // ... existing event listener code remains the same
       optionsContainer.addEventListener("change", (e) => {
         if (e.target.type === "radio") {
           currentAnswer = e.target.value;
@@ -140,7 +141,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
 
-    openModal();
+    await openModal();
+
+    // Add a small delay to ensure DOM is fully rendered
+    await delay(50);
   }
 
   function generateSingleChoiceMarkup(question, flexCol = false) {
@@ -234,17 +238,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   function renderCurrentQuestion() {
     currentAnswer = null;
     if (currentStep >= currentProfileQuestions.length) {
+      // Show completion message
       const thankYouHtml = `
       ${generateTitleMarkup("Thank you! Your profile is complete.")}
-      <p class="text-sm">Here are your answers:</p>
-      <pre class="text-xs bg-gray-100 p-2 rounded">${JSON.stringify(
-        userAnswers,
-        null,
-        2
-      )}</pre>`;
-      renderModalContent(thankYouHtml);
+      <p class="text-sm mb-16">We'll use your answers to recommend the best products for you.</p>
+      <div class="flex justify-center">
+        <button type="button" class="button button--solid" onclick="closeModal(); window.location.href='/'">
+          View Recommendations
+        </button>
+      </div>
+    `;
+      renderModalContent(createModalLayout(thankYouHtml));
       return;
     }
+
     const question = currentProfileQuestions[currentStep];
     let optionsHtml = "";
     switch (question.type) {
@@ -349,9 +356,38 @@ document.addEventListener("DOMContentLoaded", async () => {
         {
           q_key: "skinCare_acneIrritation",
           type: "single_choice",
-          isRequired: false,
+          isRequired: true,
         },
       ];
+
+      // Check if additional questions are visible (not hidden)
+      const additionalQuestions = document.getElementById(
+        "additional-questions"
+      );
+      const areAdditionalQuestionsVisible =
+        additionalQuestions &&
+        !additionalQuestions.classList.contains("hidden");
+
+      // Only add additional questions to validation if they are visible
+      if (areAdditionalQuestionsVisible) {
+        questionsToValidate.push(
+          {
+            q_key: "skinCare_acneType",
+            type: "single_choice",
+            isRequired: true,
+          },
+          {
+            q_key: "skinCare_usedWhiteningProduct",
+            type: "single_choice",
+            isRequired: true,
+          },
+          {
+            q_key: "skinCare_faceImageUploaded",
+            type: "single_choice",
+            isRequired: true,
+          }
+        );
+      }
 
       let hasError = false;
 
@@ -411,6 +447,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       return true;
+    } else if (currentStep === "reaction_check") {
+      const reactionAnswer = userAnswers.skincare?.acneIrritation;
+      if (
+        ["itch_red_burn", "itch_sometimes", "painful"].includes(reactionAnswer)
+      ) {
+        closeModal();
+        window.location.href = "/pages/beauty-profile-consultation";
+        return true;
+      }
+      // For "no_itch_pain" option, continue to next step (implement later)
+      return true;
     } else {
       // Original logic for other questions
       if (question.type === "multi_choice") {
@@ -464,6 +511,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         { q_key: "skinCare_is_pregnant", type: "single_choice" },
         { q_key: "skinCare_acneIrritation", type: "single_choice" },
       ];
+
+      const reactionAnswer = modalBody.querySelector(
+        'input[name="skinCare_acneIrritation"]:checked'
+      )?.value;
+      if (reactionAnswer === "no_itch_pain") {
+        questionsToSave.push(
+          { q_key: "skinCare_acneType", type: "single_choice" },
+          { q_key: "skinCare_usedWhiteningProduct", type: "single_choice" },
+          { q_key: "skinCare_faceImageUploaded", type: "single_choice" }
+        );
+      }
 
       questionsToSave.forEach((questionInfo) => {
         const questionObj = allQuestions.find(
@@ -566,7 +624,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (currentProfileType === "skincare") {
         showSkincareRoutineQuestion();
       } else {
-        // currentStep = 0;
         renderCurrentQuestion();
       }
     } else if (currentStep === "routine_or_product") {
@@ -580,8 +637,24 @@ document.addEventListener("DOMContentLoaded", async () => {
       closeModal();
       window.location.href = "/";
     } else if (currentStep === "skin_issues") {
-      currentStep = 0;
-      renderCurrentQuestion();
+      const reactionAnswer = userAnswers.skincare?.acneIrritation;
+      if (
+        ["itch_red_burn", "itch_sometimes", "painful"].includes(reactionAnswer)
+      ) {
+        showConsultationScreen();
+      } else if (reactionAnswer === "no_itch_pain") {
+        // Show completion message for the no_itch_pain flow
+        const thankYouHtml = `
+        ${generateTitleMarkup("Thank you! Your profile is complete.")}
+        <p class="text-sm mb-16">We'll use your answers to recommend the best products for you.</p>
+        <div class="flex justify-center">
+          <button type="button" class="button button--solid" onclick="closeModal(); window.location.href='/'">
+            View Recommendations
+          </button>
+        </div>
+      `;
+        renderModalContent(createModalLayout(thankYouHtml));
+      }
     } else {
       currentStep++;
       renderCurrentQuestion();
@@ -592,6 +665,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     saveCurrentAnswer();
 
     if (stepHistory.length === 0) {
+      if (currentStep >= 0 && currentProfileQuestions.length > 0) {
+        showProperRoutineBasedOnConcernScreen();
+        return;
+      }
+
       closeModal();
       return;
     }
@@ -700,12 +778,25 @@ document.addEventListener("DOMContentLoaded", async () => {
       (q) => q.q_key === "skinCare_acneIrritation"
     );
 
+    const breakoutTypeQuestion = allQuestions.find(
+      (q) => q.q_key === "skinCare_acneType"
+    );
+    const whiteningProductQuestion = allQuestions.find(
+      (q) => q.q_key === "skinCare_usedWhiteningProduct"
+    );
+    const facePhotoQuestion = allQuestions.find(
+      (q) => q.q_key === "skinCare_faceImageUploaded"
+    );
+
     if (
       !skinIssuesQuestion ||
       !skinTypeQuestion ||
       !acneAllergyQuestion ||
       !pregnantQuestion ||
-      !reactionQuestion
+      !reactionQuestion ||
+      !breakoutTypeQuestion ||
+      !whiteningProductQuestion ||
+      !facePhotoQuestion
     )
       return;
 
@@ -715,6 +806,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     const acneAllergyHtml = generateSingleChoiceMarkup(acneAllergyQuestion);
     const pregnantHtml = generateSingleChoiceMarkup(pregnantQuestion);
     const reactionHtml = generateSingleChoiceMarkup(reactionQuestion, true);
+    const breakoutTypeHtml = generateSingleChoiceMarkup(breakoutTypeQuestion);
+    const whiteningProductHtml = generateSingleChoiceMarkup(
+      whiteningProductQuestion
+    );
+    const facePhotoHtml = generateSingleChoiceMarkup(facePhotoQuestion);
 
     const innerHtml = `
     <div class="question-section flex flex-col gap-16">
@@ -741,11 +837,83 @@ document.addEventListener("DOMContentLoaded", async () => {
       ${generateTitleMarkup(reactionQuestion.title)}
       ${reactionHtml}
     </div>
+
+    <div id="additional-questions" class="hidden">
+      <div class="question-section flex flex-col gap-16">
+        ${generateTitleMarkup(breakoutTypeQuestion.title)}
+        ${breakoutTypeHtml}
+      </div>
+      
+      <div class="question-section flex flex-col gap-16">
+        ${generateTitleMarkup(whiteningProductQuestion.title)}
+        ${whiteningProductHtml}
+      </div>
+      
+      <div class="question-section flex flex-col gap-16">
+        ${generateTitleMarkup(facePhotoQuestion.title)}
+        ${facePhotoHtml}
+      </div>
+    </div>
     
     ${generateErrorContainerMarkup()}
   `;
 
-    renderModalContent(createModalLayout(innerHtml), "w-760");
+    // Move the setTimeout logic inside renderModalContent callback
+    renderModalContent(createModalLayout(innerHtml), "w-760").then(() => {
+      // Now the DOM is updated, we can safely access the elements
+      const reactionInputs = modalBody.querySelectorAll(
+        'input[name="skinCare_acneIrritation"]'
+      );
+
+      reactionInputs.forEach((input) => {
+        input.addEventListener("change", (e) => {
+          const additionalQuestions = modalBody.querySelector(
+            "#additional-questions"
+          );
+          if (additionalQuestions) {
+            if (e.target.value === "no_itch_pain") {
+              additionalQuestions.classList.remove("hidden");
+              additionalQuestions.classList.add("block");
+            } else {
+              additionalQuestions.classList.add("hidden");
+              additionalQuestions.classList.remove("block");
+            }
+          }
+        });
+      });
+
+      // Check if reaction answer is already saved and show questions accordingly
+      const savedReactionAnswer = userAnswers.skincare?.acneIrritation;
+      if (savedReactionAnswer === "no_itch_pain") {
+        const additionalQuestions = modalBody.querySelector(
+          "#additional-questions"
+        );
+        if (additionalQuestions) {
+          additionalQuestions.classList.remove("hidden");
+          additionalQuestions.classList.add("block");
+        }
+      }
+    });
+  }
+
+  function showConsultationScreen() {
+    currentStep = "consultation";
+
+    // Hide modal and main content
+    closeModal();
+
+    // Hide main profile content
+    const mainContent = document.querySelector(".page-width .flex");
+    if (mainContent) {
+      mainContent.classList.add("hidden");
+    }
+
+    // Show consultation section
+    const consultationSection = document.getElementById("consultation-section");
+    if (consultationSection) {
+      consultationSection.classList.remove("hidden");
+      consultationSection.classList.add("block");
+    }
   }
 
   if (modal && modalBody && closeModalBtn) {
@@ -767,7 +935,13 @@ document.addEventListener("DOMContentLoaded", async () => {
           q.key === profileType &&
           q.q_key !== "skinCare_routine_or_product" &&
           q.q_key !== "skinCare_skinConcerns" &&
-          q.q_key !== "skinCare_ageRange"
+          q.q_key !== "skinCare_ageRange" &&
+          q.q_key !== "skinCare_skinIssueCondition" &&
+          q.q_key !== "skinCare_is_pregnant" &&
+          q.q_key !== "skinCare_acneIrritation" &&
+          q.q_key !== "skinCare_acneType" &&
+          q.q_key !== "skinCare_usedWhiteningProduct" &&
+          q.q_key !== "skinCare_faceImageUploaded"
       )
       .sort((a, b) => a.order - b.order);
 
@@ -843,7 +1017,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 //     skincare: {},
 //     haircare: {},
 //     makeup: {},
-//   };
+//   };saveCurrentAnswer
 //   let preloadedProfile = null;
 //   const skippedOrders = [6, 7, 8, 9, 10, 11];
 //   let allQuestions = [];
