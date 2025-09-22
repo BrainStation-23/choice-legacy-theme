@@ -361,7 +361,7 @@ h6,
 }
 
 .rte h3 {
-  font-size: calc(26 * var(--font-unit));
+  font-size: calc(23 * var(--font-unit));
 }
 
 .rte h4 {
@@ -386,6 +386,20 @@ h6,
   line-height: calc(20 * var(--font-unit));
   letter-spacing: 0;
   color: rgb(var(--color-secondary-text));
+}
+
+.rte h1 strong,
+.rte h2 strong,
+.rte h3 strong,
+.rte h4 strong,
+.rte h5 strong,
+.rte h6 strong {
+  font-weight: 500;
+}
+
+.rte *:empty {
+  display: block;
+  height: calc(8 * var(--space-unit));
 }
 
 /* Desktop Typography */
@@ -587,6 +601,12 @@ h6,
   .sm\:fs-14-lh-20-ls-0 {
     font-size: calc(14 * var(--font-unit));
     line-height: calc(20 * var(--font-unit));
+    letter-spacing: 0;
+  }
+
+  .sm\:fs-14-lh-100pct-ls-0 {
+    font-size: calc(14 * var(--font-unit));
+    line-height: 100%;
     letter-spacing: 0;
   }
 
@@ -1642,7 +1662,9 @@ address {
   .lg\:w-50pct {
     width: 50%;
   }
-
+  .lg\:h-200 {
+    height: 200px;
+  }
   .lg\:h-500 {
     height: 500px;
   }
@@ -1686,6 +1708,9 @@ address {
 
   .md\:h-300 {
     height: 300px;
+  }
+  .md\:h-150 {
+    height: 150px;
   }
 
   .md\:hidden {
@@ -1762,6 +1787,9 @@ address {
   }
   .sm\:h-149 {
     height: 149px;
+  }
+  .sm\:h-98 {
+    height: 98px;
   }
   .sm\:h-32 {
     height: 32px;
@@ -2061,6 +2089,9 @@ address {
   .lg\:gap-10 {
     gap: calc(10 * var(--space-unit));
   }
+  .lg\:gap-16 {
+    gap: calc(16 * var(--space-unit));
+  }
   .lg\:gap-20 {
     gap: calc(20 * var(--space-unit));
   }
@@ -2077,7 +2108,7 @@ address {
   }
 
   .md\:gap-16 {
-    gap: 16px;
+    gap: calc(16 * var(--space-unit));
   }
 
   .md\:gap-32 {
@@ -2345,6 +2376,9 @@ address {
 }
 .p-14 {
   padding: calc(14 * var(--space-unit));
+}
+.p-18 {
+  padding: calc(18 * var(--space-unit));
 }
 .p-20 {
   padding: calc(20 * var(--space-unit));
@@ -2742,6 +2776,15 @@ address {
   }
   .sm\:p-4 {
     padding: calc(4 * var(--space-unit));
+  }
+  .sm\:p-5 {
+    padding: calc(5 * var(--space-unit));
+  }
+  .sm\:p-6 {
+    padding: calc(6 * var(--space-unit));
+  }
+  .sm\:p-8 {
+    padding: calc(8 * var(--space-unit));
   }
   .sm\:p-16 {
     padding: calc(16 * var(--space-unit));

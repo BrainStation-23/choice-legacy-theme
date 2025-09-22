@@ -435,6 +435,17 @@
     "banner": {
       "heading": "personalised beauty suggestions",
       "subheading": "Reduces acne, dark spots & hyperpigmentation, Regulates oil, and Improves uneven texture."
+    },
+    "routine": {
+      "heading": "My Routine",
+      "tabs": {
+        "skincare": "Skin Care",
+        "haircare": "Hair Care",
+        "makeup": "Makeup"
+      }
+    },
+    "consultation": {
+      "heading": "Please contact with our doctor"
     }
   }
 }

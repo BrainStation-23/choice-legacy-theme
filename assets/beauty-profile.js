@@ -647,17 +647,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       ) {
         showConsultationScreen();
       } else if (reactionAnswer === "no_itch_pain") {
-        // Show completion message for the no_itch_pain flow
-        const thankYouHtml = `
-        ${generateTitleMarkup("Thank you! Your profile is complete.")}
-        <p class="text-sm mb-16">We'll use your answers to recommend the best products for you.</p>
-        <div class="flex justify-center">
-          <button type="button" class="button button--solid" onclick="closeModal(); window.location.href='/'">
-            View Recommendations
-          </button>
-        </div>
-      `;
-        renderModalContent(createModalLayout(thankYouHtml));
+        showSuggestionsScreen();
       }
     } else {
       currentStep++;
@@ -921,6 +911,80 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (consultationSection) {
       consultationSection.classList.remove("hidden");
       consultationSection.classList.add("block");
+
+      // Set active tab based on profile type
+      setActiveTab(currentProfileType);
+
+      // Show consultation content and hide suggestions
+      const consultationContent = consultationSection.querySelector(
+        '[data-content="consultation"]'
+      );
+      const suggestionsContent = consultationSection.querySelector(
+        '[data-content="suggestions"]'
+      );
+
+      if (consultationContent) {
+        consultationContent.classList.remove("hidden");
+        consultationContent.classList.add("block");
+      }
+      if (suggestionsContent) {
+        suggestionsContent.classList.add("hidden");
+      }
+    }
+  }
+
+  function showSuggestionsScreen() {
+    currentStep = "suggestions";
+
+    // Hide modal and main content
+    closeModal();
+
+    // Hide main profile content
+    const mainContent = document.querySelector(".page-width .flex");
+    if (mainContent) {
+      mainContent.classList.add("hidden");
+    }
+
+    // Show consultation section with suggestions
+    const consultationSection = document.getElementById("consultation-section");
+    if (consultationSection) {
+      consultationSection.classList.remove("hidden");
+      consultationSection.classList.add("block");
+
+      // Set active tab based on profile type
+      setActiveTab(currentProfileType);
+
+      // Hide consultation content and show suggestions
+      const consultationContent = consultationSection.querySelector(
+        '[data-content="consultation"]'
+      );
+      const suggestionsContent = consultationSection.querySelector(
+        '[data-content="suggestions"]'
+      );
+
+      if (consultationContent) {
+        consultationContent.classList.add("hidden");
+      }
+      if (suggestionsContent) {
+        suggestionsContent.classList.remove("hidden");
+        suggestionsContent.classList.add("block");
+      }
+    }
+  }
+
+  function setActiveTab(profileType) {
+    // Remove active class from all tab buttons
+    const tabButtons = document.querySelectorAll(
+      "#consultation-section .tab-button"
+    );
+    tabButtons.forEach((button) => button.classList.remove("active"));
+
+    // Add active class to the matching profile type button
+    const activeButton = document.querySelector(
+      `#consultation-section .tab-button[data-profile="${profileType}"]`
+    );
+    if (activeButton) {
+      activeButton.classList.add("active");
     }
   }
 
@@ -974,13 +1038,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       container.innerHTML = productTypeQuestion.options
         .map(
           (option) => `
-          <div class="profile-type-card flex flex-col items-center gap-12 w-277 pt-12">
-            <div>
-              <div class="relative w-277"><img src="${option.image}" alt="${option.label} profile" loading="lazy" class="relative w-full h-222 object-cover"></div>
-              <div class="w-full"><h3 class="w-full rounded-b-l-32 rounded-b-r-32 text-center uppercase pt-12 pr-8 pb-12 pl-8 bg-brand text-bg fs-26-lh-26-ls-1_2 fw-400">${option.label}</h3></div>
+          <div class="profile-type-card flex flex-col items-center gap-12 w-277 lg:w-full md:w-full sm:w-full pt-12 sm:pt-0">
+            <div class="w-full">
+              <div class="relative w-full lg:w-full h-222 lg:h-200 md:h-150 sm:h-98"><img src="${option.image}" alt="${option.label} profile" loading="lazy" class="relative w-full h-full"></div>
+              <div class="w-full"><h3 class="w-full rounded-b-l-32 rounded-b-r-32 sm:rounded-b-l-13 sm:rounded-b-r-13 text-center uppercase pt-12 pr-8 pb-12 pl-8 sm:p-5 bg-brand text-bg fs-26-lh-26-ls-1_2 sm:fs-15-lh-16-ls--1_2pct fw-400">${option.label}</h3></div>
             </div>
-            <button type="button" class="setup-now-btn button button--outline w-full flex gap-4 justify-center items-center fs-16-lh-100pct-ls-0" data-profile-type="${option.value}">
-              <svg width="29" height="28" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.10352 13.9492C6.10352 13.2559 6.67969 12.6895 7.36328 12.6895H13.1055V6.94727C13.1055 6.26367 13.6719 5.6875 14.3652 5.6875C15.0586 5.6875 15.625 6.26367 15.625 6.94727V12.6895H21.3672C22.0605 12.6895 22.627 13.2559 22.627 13.9492C22.627 14.6426 22.0605 15.209 21.3672 15.209H15.625V20.9512C15.625 21.6445 15.0586 22.2109 14.3652 22.2109C13.6719 22.2109 13.1055 21.6445 13.1055 20.9512V15.209H7.36328C6.67969 15.209 6.10352 14.6426 6.10352 13.9492Z" fill="#FB6F92"/></svg>
+            <button type="button" class="setup-now-btn button button--outline w-full flex gap-4 justify-center items-center fs-16-lh-100pct-ls-0 sm:fs-14-lh-100pct-ls-0 sm:p-8" data-profile-type="${option.value}">
+              <svg width="28" height="28" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.10352 13.9492C6.10352 13.2559 6.67969 12.6895 7.36328 12.6895H13.1055V6.94727C13.1055 6.26367 13.6719 5.6875 14.3652 5.6875C15.0586 5.6875 15.625 6.26367 15.625 6.94727V12.6895H21.3672C22.0605 12.6895 22.627 13.2559 22.627 13.9492C22.627 14.6426 22.0605 15.209 21.3672 15.209H15.625V20.9512C15.625 21.6445 15.0586 22.2109 14.3652 22.2109C13.6719 22.2109 13.1055 21.6445 13.1055 20.9512V15.209H7.36328C6.67969 15.209 6.10352 14.6426 6.10352 13.9492Z" fill="#FB6F92"/></svg>
               <span>Setup Now</span>
             </button>
           </div>`
