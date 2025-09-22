@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   let currentStep = -1;
   let userAnswers = {};
   let currentProfileType = "";
-  let currentAnswer = null;
   let stepHistory = [];
 
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
@@ -149,10 +148,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function generateSingleChoiceMarkup(question, flexCol = false) {
     const groupKey = question.key;
-    const answerKey = question.q_key.replace(
-      new RegExp(`^${question.key}_`, "i"),
-      ""
-    );
+    const answerKey = question.q_key
+      .replace(new RegExp(`^${question.key}_`, "i"), "")
+      .replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
     const savedAnswer = userAnswers[groupKey]?.[answerKey];
 
     let optionsHtml = `<div class="options-container flex gap-8 ${
@@ -189,10 +187,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function generatePictureChoiceMarkup(question) {
     const groupKey = question.key;
-    const answerKey = question.q_key.replace(
-      new RegExp(`^${question.key}_`, "i"),
-      ""
-    );
+    const answerKey = question.q_key
+      .replace(new RegExp(`^${question.key}_`, "i"), "")
+      .replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
     const savedAnswer = userAnswers[groupKey]?.[answerKey];
     let optionsHtml = `<div class="options-container picture-options-container flex gap-16">`;
     question.options.forEach((option) => {
@@ -242,17 +239,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   function renderCurrentQuestion() {
     currentAnswer = null;
     if (currentStep >= currentProfileQuestions.length) {
-      // Show completion message
-      const thankYouHtml = `
-      ${generateTitleMarkup("Thank you! Your profile is complete.")}
-      <p class="text-sm mb-16">We'll use your answers to recommend the best products for you.</p>
-      <div class="flex justify-center">
-        <button type="button" class="button button--solid" onclick="closeModal(); window.location.href='/'">
-          View Recommendations
-        </button>
-      </div>
-    `;
-      renderModalContent(createModalLayout(thankYouHtml));
+      showSuggestionsScreen();
       return;
     }
 
@@ -327,9 +314,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const isSpecialQuestion = typeof currentStep === "string";
     const q_key_map = {
       routine_or_product: "skinCare_routine_or_product",
-      skin_type: "skinCare_skinConcerns",
-      skin_issues: "skinCare_ageRange",
-      skin_issues: "skinCare_ageRange",
+      skin_type: "skinCare_skinType",
+      skin_issues: "skinCare_skin_issues_products",
     };
     const question = isSpecialQuestion
       ? allQuestions.find((q) => q.q_key === q_key_map[currentStep])
@@ -341,9 +327,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     // Handle multiple questions on skin_issues screen
     if (currentStep === "skin_issues") {
       const questionsToValidate = [
-        { q_key: "skinCare_ageRange", type: "multi_choice", isRequired: true },
         {
-          q_key: "skinCare_skinConcerns",
+          q_key: "skinCare_skin_issues_products",
+          type: "multi_choice",
+          isRequired: true,
+        },
+        {
+          q_key: "skinCare_skinType",
           type: "picture_choice",
           isRequired: true,
         },
@@ -402,10 +392,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!questionObj) return;
 
         const groupKey = questionObj.key;
-        const answerKey = questionObj.q_key.replace(
-          new RegExp(`^${questionObj.key}_`, "i"),
-          ""
-        );
+        const answerKey = questionObj.q_key
+          .replace(new RegExp(`^${questionObj.key}_`, "i"), "")
+          .replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
 
         let questionAnswers = [];
 
@@ -488,10 +477,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const groupKey = question.key;
-    const answerKey = question.q_key.replace(
-      new RegExp(`^${question.key}_`, "i"),
-      ""
-    );
+    const answerKey = question.q_key
+      .replace(new RegExp(`^${question.key}_`, "i"), "")
+      .replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
     if (!userAnswers[groupKey]) userAnswers[groupKey] = {};
     if (answers.length > 0) {
       userAnswers[groupKey][answerKey] =
@@ -509,8 +497,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (currentStep === "skin_issues") {
       // Handle saving multiple questions on skin_issues screen
       const questionsToSave = [
-        { q_key: "skinCare_ageRange", type: "multi_choice" },
-        { q_key: "skinCare_skinConcerns", type: "picture_choice" },
+        { q_key: "skinCare_skin_issues_products", type: "multi_choice" },
+        { q_key: "skinCare_skinType", type: "picture_choice" },
         { q_key: "skinCare_skinIssueCondition", type: "single_choice" },
         { q_key: "skinCare_is_pregnant", type: "single_choice" },
         { q_key: "skinCare_acneIrritation", type: "single_choice" },
@@ -534,10 +522,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!questionObj) return;
 
         const groupKey = questionObj.key;
-        const answerKey = questionObj.q_key.replace(
-          new RegExp(`^${questionObj.key}_`, "i"),
-          ""
-        );
+        const answerKey = questionObj.q_key
+          .replace(new RegExp(`^${questionObj.key}_`, "i"), "")
+          .replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
 
         let questionAnswers = [];
 
@@ -576,8 +563,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const isSpecialQuestion = typeof currentStep === "string";
     const q_key_map = {
       routine_or_product: "skinCare_routine_or_product",
-      skin_type: "skinCare_skinConcerns",
-      skin_issues: "skinCare_ageRange",
+      skin_type: "skinCare_skinType",
+      skin_issues: "skinCare_skin_issues_products",
     };
     const question = isSpecialQuestion
       ? allQuestions.find((q) => q.q_key === q_key_map[currentStep])
@@ -604,10 +591,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const groupKey = question.key;
-    const answerKey = question.q_key.replace(
-      new RegExp(`^${question.key}_`, "i"),
-      ""
-    );
+    const answerKey = question.q_key
+      .replace(new RegExp(`^${question.key}_`, "i"), "")
+      .replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
     if (!userAnswers[groupKey]) userAnswers[groupKey] = {};
 
     if (answers.length > 0) {
@@ -631,15 +617,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderCurrentQuestion();
       }
     } else if (currentStep === "routine_or_product") {
-      const routineAnswer = userAnswers.skincare?.routine_or_product;
+      const routineAnswer = userAnswers.skincare?.routineOrProduct;
       if (routineAnswer === "proper_routine_based_on_concerns") {
         showProperRoutineBasedOnConcernScreen();
       } else {
         showSkinTypeQuestion();
       }
     } else if (currentStep === "skin_type") {
-      closeModal();
-      window.location.href = "/";
+      showSuggestionsScreen();
     } else if (currentStep === "skin_issues") {
       const reactionAnswer = userAnswers.skincare?.acneIrritation;
       if (
@@ -680,6 +665,22 @@ document.addEventListener("DOMContentLoaded", async () => {
       showProperRoutineBasedOnConcernScreen();
     } else {
       renderCurrentQuestion();
+    }
+  }
+
+  async function saveUserProfile() {
+    try {
+      const response = await fetch(`${apiUrl}/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userAnswers),
+      });
+
+      await response.json();
+    } catch (error) {
+      console.error("Error saving profile:", error);
     }
   }
 
@@ -737,9 +738,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function showSkinTypeQuestion() {
     currentStep = "skin_type";
-    const question = allQuestions.find(
-      (q) => q.q_key === "skinCare_skinConcerns"
-    );
+    const question = allQuestions.find((q) => q.q_key === "skinCare_skinType");
     if (!question) return;
     const optionsHtml = generatePictureChoiceMarkup(question);
     const innerHtml = `
@@ -757,10 +756,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     // Get all the questions we want to display
     const skinIssuesQuestion = allQuestions.find(
-      (q) => q.q_key === "skinCare_ageRange"
+      (q) => q.q_key === "skinCare_skin_issues_products"
     );
     const skinTypeQuestion = allQuestions.find(
-      (q) => q.q_key === "skinCare_skinConcerns"
+      (q) => q.q_key === "skinCare_skinType"
     );
     const acneAllergyQuestion = allQuestions.find(
       (q) => q.q_key === "skinCare_skinIssueCondition"
@@ -931,6 +930,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         suggestionsContent.classList.add("hidden");
       }
     }
+
+    saveUserProfile();
   }
 
   function showSuggestionsScreen() {
@@ -949,7 +950,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const consultationSection = document.getElementById("consultation-section");
     if (consultationSection) {
       consultationSection.classList.remove("hidden");
-      consultationContent.classList.add("flex", "flex-col", "gap-24");
+      consultationSection.classList.add("flex", "flex-col", "gap-24");
 
       // Set active tab based on profile type
       setActiveTab(currentProfileType);
@@ -970,6 +971,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         suggestionsContent.classList.add("flex", "flex-col", "gap-24");
       }
     }
+
+    saveUserProfile();
   }
 
   function setActiveTab(profileType) {
@@ -1006,8 +1009,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         (q) =>
           q.key === profileType &&
           q.q_key !== "skinCare_routine_or_product" &&
-          q.q_key !== "skinCare_skinConcerns" &&
-          q.q_key !== "skinCare_ageRange" &&
+          q.q_key !== "skinCare_skinType" &&
+          q.q_key !== "skinCare_skin_issues_products" &&
           q.q_key !== "skinCare_skinIssueCondition" &&
           q.q_key !== "skinCare_is_pregnant" &&
           q.q_key !== "skinCare_acneIrritation" &&
@@ -1079,7 +1082,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 // document.addEventListener("DOMContentLoaded", async function () {
-//   console.log("LOADED...");
 //   const apiURL = `/apps/${APP_SUB_PATH}/customer/beauty-profile`;
 //   const container = document.getElementById("questions-container");
 //   const tabsWrapper = document.getElementById("beauty-tabs");
