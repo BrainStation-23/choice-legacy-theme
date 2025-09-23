@@ -715,7 +715,7 @@
       const timeDiff = currentDate - happenedDate;
       const dayDiff = timeDiff / (1000 * 3600 * 24);
 
-      if (normalizedStatus === 'delivered' && dayDiff <= 100) {
+      if (normalizedStatus === 'delivered' && dayDiff <= 3) {
         returnOrderButton.style.display = 'inline-flex';
 
         if (returnStatus) {
@@ -808,35 +808,35 @@
           if (response.ok) {
             // Success toast
             toastManager.show('Return request submitted successfully', 'success');
-            
+
             // Update return status display if currentStatus is provided
             if (data.currentStatus) {
               const returnStatusDisplay = document.getElementById('return-status-display');
-              
+
               if (returnStatusDisplay) {
                 // Remove existing status classes
                 returnStatusDisplay.classList.remove(
                   'return-status-approved',
-                  'return-status-declined', 
+                  'return-status-declined',
                   'return-status-requested'
                 );
-                
+
                 // Add the appropriate status class
                 const statusClass = getReturnStatusClass(data.currentStatus);
                 if (statusClass) {
                   returnStatusDisplay.classList.add(statusClass);
                 }
-                
+
                 // Update the status message
                 const statusMessageElement = returnStatusDisplay.querySelector('.return-status-message');
                 if (statusMessageElement) {
                   statusMessageElement.textContent = ` ${data.currentStatus}`;
                 }
-                
+
                 // Show the return status display
                 returnStatusDisplay.style.display = 'flex';
               }
-              
+
               // Disable the return button since request has been submitted
               returnOrderButton.classList.add('return-button-disabled');
               returnOrderButton.disabled = true;
