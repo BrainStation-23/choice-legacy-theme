@@ -57,15 +57,56 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!dd || !mm || !yyyy) return;
 
     const fields = [dd, mm, yyyy];
+
     fields.forEach((field, index) => {
-      field.addEventListener("input", () => {
-        field.value = field.value.replace(/[^0-g]/g, "");
+      field.addEventListener("input", (e) => {
+        field.value = field.value.replace(/[^0-9]/g, "");
+
+        if (field === dd) {
+          if (field.value.length === 1 && parseInt(field.value) > 3) {
+            field.value = "0" + field.value;
+          }
+          if (parseInt(field.value) > 31) {
+            field.value = "31";
+          }
+        } else if (field === mm) {
+          if (field.value.length === 1 && parseInt(field.value) > 1) {
+            field.value = "0" + field.value;
+          }
+          if (parseInt(field.value) > 12) {
+            field.value = "12";
+          }
+        } else if (field === yyyy) {
+          if (field.value.length === 4) {
+            const year = parseInt(field.value);
+            const currentYear = new Date().getFullYear();
+            const minYear = currentYear - 120;
+
+            if (year > currentYear) {
+              field.value = currentYear.toString();
+            } else if (year < minYear) {
+              field.value = minYear.toString();
+            }
+          }
+        }
 
         if (
           field.value.length === field.maxLength &&
           index < fields.length - 1
         ) {
           fields[index + 1].focus();
+        }
+      });
+
+      field.addEventListener("blur", () => {
+        if (field === dd && field.value) {
+          const day = parseInt(field.value);
+          if (day < 1) field.value = "01";
+          else if (day < 10) field.value = field.value.padStart(2, "0");
+        } else if (field === mm && field.value) {
+          const month = parseInt(field.value);
+          if (month < 1) field.value = "01";
+          else if (month < 10) field.value = field.value.padStart(2, "0");
         }
       });
     });
@@ -449,19 +490,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         window.location.href = "/pages/beauty-profile-consultation";
         return true;
       }
-      // For "no_itch_pain" option, continue to next step (implement later)
       return true;
     } else {
-      // Original logic for other questions
       if (question.type === "multi_choice") {
         const selectedOptions = modalBody.querySelectorAll(".is-selected");
         answers = Array.from(selectedOptions).map((el) => el.dataset.value);
       } else {
-        // For single_choice and picture_choice
         const checkedRadio = modalBody.querySelector(
           "input[type='radio']:checked"
         );
-        const selectedButton = modalBody.querySelector(".is-selected"); // For picture_choice
+        const selectedButton = modalBody.querySelector(".is-selected");
 
         if (checkedRadio) {
           answers.push(checkedRadio.value);
@@ -495,7 +533,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (currentStep === -1) return;
 
     if (currentStep === "skin_issues") {
-      // Handle saving multiple questions on skin_issues screen
       const questionsToSave = [
         { q_key: "skinCare_skin_issues_products", type: "multi_choice" },
         { q_key: "skinCare_skinType", type: "picture_choice" },
