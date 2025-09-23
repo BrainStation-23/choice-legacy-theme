@@ -1120,6 +1120,9 @@ address {
     width: calc(33% - 16px);
   }
 
+  .md\:flex-col {
+    flex-direction: column;
+  }
   .md\:flex-wrap {
     flex-wrap: wrap;
   }
@@ -1658,9 +1661,6 @@ address {
   .lg\:max-w-250 {
     max-width: 250px;
   }
-  .lg\:flex-auto {
-    flex: auto !important;
-  }
 
   .lg\:w-800 {
     width: 800px;
@@ -1924,7 +1924,6 @@ address {
   .sm\:justify-center {
     justify-content: center;
   }
-
   .sm\:flex-col {
     flex-direction: column;
   }
@@ -2106,6 +2105,13 @@ address {
   }
   .lg\:gap-32 {
     gap: calc(32 * var(--space-unit));
+  }
+
+  .lg\:flex-col {
+    flex-direction: column;
+  }
+  .lg\:flex-auto {
+    flex: auto !important;
   }
 }
 @media screen and (min-width: 769px) and (max-width: 1023px) {
@@ -2661,12 +2667,27 @@ address {
   padding: 30px;
 }
 
+@media screen and (min-width: 1024px) and (max-width: 1439px) {
+  .lg\:pt-19 {
+    padding-top: calc(19 * var(--space-unit));
+  }
+  .lg\:pb-19 {
+    padding-bottom: calc(19 * var(--space-unit));
+  }
+}
+
 @media screen and (min-width: 769px) and (max-width: 1023px) {
   .md\:p-16 {
     padding: 16px;
   }
+  .md\:pt-19 {
+    padding-top: calc(19 * var(--space-unit));
+  }
   .md\:pl-8 {
     padding-left: calc(8 * var(--space-unit));
+  }
+  .md\:pb-19 {
+    padding-bottom: calc(19 * var(--space-unit));
   }
 }
 
@@ -2734,6 +2755,9 @@ address {
   .sm\:pt-16 {
     padding-top: calc(16 * var(--space-unit));
   }
+  .sm\:pt-19 {
+    padding-top: calc(19 * var(--space-unit));
+  }
   .sm\:pt-20 {
     padding-top: calc(20 * var(--space-unit));
   }
@@ -2770,6 +2794,9 @@ address {
   }
   .sm\:pb-16 {
     padding-bottom: calc(16 * var(--space-unit));
+  }
+  .sm\:pb-19 {
+    padding-bottom: calc(19 * var(--space-unit));
   }
   .sm\:pb-20 {
     padding-bottom: calc(20 * var(--space-unit));

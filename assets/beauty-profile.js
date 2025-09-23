@@ -1256,10 +1256,10 @@ document.addEventListener("DOMContentLoaded", async () => {
               ${
                 isCompleted
                   ? `
-                   <div class="flex justify-between items-center w-full">
+                   <div class="flex justify-between items-center gap-6 w-full lg:flex-col md:flex-col sm:flex-col">
                      <button
                       type="button"
-                      class="setup-now-btn button button--outline w-auto flex gap-4 justify-center items-center pt-1 pb-1 fs-16-lh-100pct-ls-0 sm:fs-14-lh-100pct-ls-0 sm:p-8"
+                      class="setup-now-btn button button--outline w-auto lg:w-full md:w-full sm:w-full flex gap-4 justify-center items-center pt-1 pb-1 fs-16-lh-100pct-ls-0 sm:fs-14-lh-100pct-ls-0"
                       data-profile-type="${option.value}"
                     >
                       <svg
@@ -1276,7 +1276,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                       </svg>
                       <span>${buttonText}</span>
                     </button>
-                    <div class="flex justify-center gap-4 items-center min-w-118 bg-success text-bg rounded-100 pt-2 pr-4 pb-2 pl-12">
+                    <div class="flex justify-center gap-4 items-center min-w-118 lg:w-full md:w-full sm:w-full bg-success text-bg rounded-100 pt-2 pr-4 pb-2 pl-12">
                       <span class="fw-500 fs-14-lh-20-ls-0_1">Completed</span>
                       <svg width="29" height="28" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M14.4531 19.8809C11.0781 19.8809 8.3418 17.1445 8.3418 13.7695C8.3418 10.3945 11.0781 7.6582 14.4531 7.6582C17.8281 7.6582 20.5645 10.3945 20.5645 13.7695C20.5645 17.1445 17.8281 19.8809 14.4531 19.8809ZM14.4531 18.5391C17.0898 18.5391 19.2227 16.4062 19.2227 13.7695C19.2227 11.1328 17.0898 9 14.4531 9C11.8164 9 9.68359 11.1328 9.68359 13.7695C9.68359 16.4062 11.8164 18.5391 14.4531 18.5391ZM13.8262 16.5586C13.5977 16.5586 13.416 16.4531 13.252 16.248L11.8984 14.6133C11.793 14.4785 11.7344 14.3438 11.7344 14.1973C11.7344 13.8809 11.9863 13.6348 12.2969 13.6348C12.4785 13.6348 12.625 13.7051 12.7656 13.8867L13.8086 15.1934L16.0352 11.6191C16.1641 11.4082 16.334 11.3027 16.5273 11.3027C16.8262 11.3027 17.1016 11.5137 17.1016 11.8301C17.1016 11.9648 17.0371 12.1113 16.9551 12.2402L14.377 16.2422C14.248 16.4414 14.0488 16.5586 13.8262 16.5586Z" fill="white"/>
@@ -1287,7 +1287,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                   : `
                     <button
                       type="button"
-                      class="setup-now-btn button button--outline w-full pt-1 pb-1 flex gap-4 justify-center items-center fs-16-lh-100pct-ls-0 sm:fs-14-lh-100pct-ls-0 sm:p-8"
+                      class="setup-now-btn button button--outline w-full pt-1 pb-1 lg:pt-19 md:pt-19 sm:pt-19 lg:pb-19 md:pb-19 sm:pb-19 sm:pl-0 sm:pr-0 flex gap-4 justify-center items-center fs-16-lh-100pct-ls-0 sm:fs-14-lh-100pct-ls-0"
                       data-profile-type="${option.value}"
                     >
                       <svg
