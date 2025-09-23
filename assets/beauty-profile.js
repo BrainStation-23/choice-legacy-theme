@@ -300,6 +300,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (question.q_key === "skinCare_faceImageUploaded") {
       const isChecked = savedAnswer === true;
+      const existingImageUrl = userAnswers.skincare?.faceImageUrl || "";
+
       return `
     <div class="face-upload-container flex flex-col gap-16">
       <div class="toggle-container flex items-center gap-12">
@@ -324,8 +326,10 @@ document.addEventListener("DOMContentLoaded", async () => {
             </div>
             <p class="text-brand fw-500 fs-11-lh-11-ls--2_5">Add</p>
           </div>
-          <div class="image-preview w-60 h-60 rounded-6 hidden">
-            <img src="" alt="Preview" class="rounded-6 h-60 w-60">
+          <div class="image-preview w-60 h-60 rounded-6 ${
+            existingImageUrl ? "" : "hidden"
+          }">
+            <img src="${existingImageUrl}" alt="Preview" class="rounded-6 h-60 w-60">
           </div>
         </div>
       </div>
@@ -1289,7 +1293,14 @@ document.addEventListener("DOMContentLoaded", async () => {
           userAnswers.skincare = {};
           Object.keys(existingProfileData.skincare).forEach((key) => {
             const value = existingProfileData.skincare[key];
-            const formattedKey = key.charAt(0).toLowerCase() + key.slice(1);
+            let formattedKey;
+            if (key === "faceImageUrl") {
+              formattedKey = "faceImageUrl";
+            } else if (key === "faceImageUploaded") {
+              formattedKey = "faceImageUploaded";
+            } else {
+              formattedKey = key.charAt(0).toLowerCase() + key.slice(1);
+            }
             userAnswers.skincare[formattedKey] = value;
           });
         }
