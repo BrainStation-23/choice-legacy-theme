@@ -166,7 +166,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (isMultiChoice) {
           option.classList.toggle("is-selected");
 
-          // Update the placeholder text for multi-choice
           const selectedCount =
             optionsContainer.querySelectorAll(".is-selected").length;
           const placeholder = optionsContainer.querySelector(".placeholder");
@@ -195,8 +194,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
     await openModal();
-
-    // Add a small delay to ensure DOM is fully rendered
     await delay(50);
   }
 
@@ -214,7 +211,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       const isChecked = savedAnswer === option.value ? "checked" : "";
       if (isChecked) currentAnswer = option.value;
 
-      // Create unique IDs using question key and option value
       const uniqueId = `${question.q_key}_${option.value}`;
 
       optionsHtml += `
@@ -382,7 +378,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const errorContainer = modalBody.querySelector(".error-container");
     let answers = [];
 
-    // Handle multiple questions on skin_issues screen
     if (currentStep === "skin_issues") {
       const questionsToValidate = [
         {
@@ -412,7 +407,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         },
       ];
 
-      // Check if additional questions are visible (not hidden)
       const additionalQuestions = document.getElementById(
         "additional-questions"
       );
@@ -420,7 +414,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         additionalQuestions &&
         !additionalQuestions.classList.contains("hidden");
 
-      // Only add additional questions to validation if they are visible
       if (areAdditionalQuestionsVisible) {
         questionsToValidate.push(
           {
@@ -762,14 +755,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 `;
     await renderModalContent(createModalLayout(innerHtml), "w-700");
 
-    // Check userAnswers first (for back navigation), then API data
     if (userAnswers.dob) {
       const [yyyy, mm, dd] = userAnswers.dob.split("-");
       modalBody.querySelector("#dob-dd").value = dd;
       modalBody.querySelector("#dob-mm").value = mm;
       modalBody.querySelector("#dob-yyyy").value = yyyy;
     } else if (existingProfileData?.dob) {
-      // Parse the ISO date from API
       const dobDate = new Date(existingProfileData.dob);
       modalBody.querySelector("#dob-dd").value = String(
         dobDate.getDate()
@@ -824,7 +815,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   function showProperRoutineBasedOnConcernScreen() {
     currentStep = "skin_issues";
 
-    // Get all the questions we want to display
     const skinIssuesQuestion = allQuestions.find(
       (q) => q.q_key === "skinCare_skin_issues_products"
     );
@@ -863,7 +853,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     )
       return;
 
-    // Generate HTML for each question
     const skinIssuesHtml = generateMultiChoiceMarkup(skinIssuesQuestion);
     const skinTypeHtml = generatePictureChoiceMarkup(skinTypeQuestion);
     const acneAllergyHtml = generateSingleChoiceMarkup(acneAllergyQuestion);
@@ -921,9 +910,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     ${generateErrorContainerMarkup()}
   `;
 
-    // Move the setTimeout logic inside renderModalContent callback
     renderModalContent(createModalLayout(innerHtml), "w-760").then(() => {
-      // Now the DOM is updated, we can safely access the elements
       const reactionInputs = modalBody.querySelectorAll(
         'input[name="skinCare_acneIrritation"]'
       );
@@ -949,7 +936,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
       });
 
-      // Check if reaction answer is already saved and show questions accordingly
       const savedReactionAnswer = userAnswers.skincare?.acneIrritation;
       if (savedReactionAnswer === "no_itch_pain") {
         const additionalQuestions = modalBody.querySelector(
@@ -966,25 +952,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   function showConsultationScreen() {
     currentStep = "consultation";
 
-    // Hide modal and main content
     closeModal();
 
-    // Hide main profile content
     const mainContent = document.querySelector(".page-width .flex");
     if (mainContent) {
       mainContent.classList.add("hidden");
     }
 
-    // Show consultation section
     const consultationSection = document.getElementById("consultation-section");
     if (consultationSection) {
       consultationSection.classList.remove("hidden");
       consultationSection.classList.add("flex", "flex-col", "gap-24");
 
-      // Set active tab based on profile type
       setActiveTab(currentProfileType);
 
-      // Show consultation content and hide suggestions
       const consultationContent = consultationSection.querySelector(
         '[data-content="consultation"]'
       );
@@ -1007,25 +988,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   function showSuggestionsScreen() {
     currentStep = "suggestions";
 
-    // Hide modal and main content
     closeModal();
 
-    // Hide main profile content
     const mainContent = document.querySelector(".page-width .flex");
     if (mainContent) {
       mainContent.classList.add("hidden");
     }
 
-    // Show consultation section with suggestions
     const consultationSection = document.getElementById("consultation-section");
     if (consultationSection) {
       consultationSection.classList.remove("hidden");
       consultationSection.classList.add("flex", "flex-col", "gap-24");
 
-      // Set active tab based on profile type
       setActiveTab(currentProfileType);
 
-      // Hide consultation content and show suggestions
       const consultationContent = consultationSection.querySelector(
         '[data-content="consultation"]'
       );
@@ -1046,13 +1022,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function setActiveTab(profileType) {
-    // Remove active class from all tab buttons
     const tabButtons = document.querySelectorAll(
       "#consultation-section .tab-button"
     );
     tabButtons.forEach((button) => button.classList.remove("active"));
 
-    // Add active class to the matching profile type button
     const activeButton = document.querySelector(
       `#consultation-section .tab-button[data-profile="${profileType}"]`
     );
@@ -1075,7 +1049,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const hasExistingData = existingProfileData?.[profileType];
     if (hasExistingData) {
       userAnswers[profileType] = {};
-      // Properly map the existing data to match the expected structure
       Object.keys(existingProfileData[profileType]).forEach((key) => {
         if (key !== "isCompleted") {
           userAnswers[profileType][key] = existingProfileData[profileType][key];
@@ -1133,7 +1106,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (productTypeQuestion && productTypeQuestion.options) {
       container.innerHTML = productTypeQuestion.options
         .map((option) => {
-          // Check if this profile type is completed
           const isCompleted = existingProfileData?.[option.value]?.isCompleted;
           const buttonText = isCompleted ? "Edit Profile" : "Setup Now";
 
@@ -1179,13 +1151,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (result.success && result.data) {
         existingProfileData = result.data;
 
-        // Map existing data to userAnswers with proper structure
         if (existingProfileData.skincare) {
           userAnswers.skincare = {};
-          // Handle multi-choice arrays properly
           Object.keys(existingProfileData.skincare).forEach((key) => {
             const value = existingProfileData.skincare[key];
-            // Convert camelCase back to the format expected by the form
             const formattedKey = key.charAt(0).toLowerCase() + key.slice(1);
             userAnswers.skincare[formattedKey] = value;
           });
