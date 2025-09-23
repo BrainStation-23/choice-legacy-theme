@@ -496,10 +496,10 @@
         // Update visual timeline based on API response
         updateVisualTimeline(orderData.deliveryStatus, orderData.isCancelled);
 
-        // Dispatch event to notify main page about delivery status
         const deliveryStatusEvent = new CustomEvent('deliveryStatusUpdated', {
           detail: {
             status: orderData.deliveryStatus,
+            happenedAt: orderData.lastEventDate,
             returnStatus: orderData.returnStatus || null,
             isCancelled: orderData.isCancelled || false,
           },
