@@ -157,6 +157,9 @@ mark {
 .text-success {
   color: #3fb135;
 }
+.bg-success {
+  background-color: #3fb135;
+}
 .svg-brand path {
   stroke: rgb(var(--color-primary-brand));
   fill: rgb(var(--color-primary-brand));
@@ -1585,6 +1588,9 @@ address {
 .min-w-123 {
   min-width: 123px;
 }
+.min-w-118 {
+  min-width: 118px;
+}
 .min-w-116 {
   min-width: 116px;
 }
@@ -2581,6 +2587,9 @@ address {
 }
 .pt-0 {
   padding-top: 0;
+}
+.pt-1 {
+  padding-top: calc(1 * var(--space-unit));
 }
 .pt-2 {
   padding-top: calc(2 * var(--space-unit));

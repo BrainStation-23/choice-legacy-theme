@@ -855,7 +855,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   async function saveUserProfile() {
     try {
+      console.log(userAnswers);
       const profileData = { ...userAnswers };
+      if (currentProfileType && profileData[currentProfileType]) {
+        profileData[currentProfileType].isCompleted = true;
+      }
       const response = await fetch(`${apiUrl}/create`, {
         method: "POST",
         headers: {
@@ -1245,32 +1249,78 @@ document.addEventListener("DOMContentLoaded", async () => {
       container.innerHTML = productTypeQuestion.options
         .map((option) => {
           const isCompleted = existingProfileData?.[option.value]?.isCompleted;
-          const buttonText = isCompleted ? "Edit Profile" : "Setup Now";
+          const buttonText = isCompleted ? "Edit" : "Setup Now";
 
           return `
-        <div class="profile-type-card flex flex-col items-center gap-12 w-277 lg:w-full md:w-full sm:w-full pt-12 sm:pt-0">
-          <div class="w-full">
-            <div class="relative w-full lg:w-full h-222 lg:h-200 md:h-150 sm:h-98">
-              <img src="${option.image}" alt="${
-            option.label
-          } profile" loading="lazy" class="relative w-full h-full">
+            <div class="profile-type-card flex flex-col items-center gap-12 w-277 lg:w-full md:w-full sm:w-full pt-12 sm:pt-0">
               ${
                 isCompleted
-                  ? '<div class="absolute top-10 right-10 bg-green-500 text-white px-8 py-4 rounded-full text-xs">Completed</div>'
-                  : ""
+                  ? `
+                   <div class="flex justify-between items-center w-full">
+                     <button
+                      type="button"
+                      class="setup-now-btn button button--outline w-auto flex gap-4 justify-center items-center pt-1 pb-1 fs-16-lh-100pct-ls-0 sm:fs-14-lh-100pct-ls-0 sm:p-8"
+                      data-profile-type="${option.value}"
+                    >
+                      <svg
+                        width="29"
+                        height="28"
+                        viewBox="0 0 29 28"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M22.7969 8.09375L21.5156 6.8125L22.0469 6.28906C22.3594 5.97656 22.8438 5.92969 23.125 6.21094L23.3516 6.42969C23.6719 6.75 23.6562 7.21875 23.3281 7.55469L22.7969 8.09375ZM13.5391 16.3906C13.3438 16.4688 13.1094 16.2422 13.1953 16.0312L13.9062 14.4375L20.8984 7.42969L22.1875 8.70312L15.1875 15.7109L13.5391 16.3906ZM10.5078 21.7266C8.78125 21.7266 7.85938 20.8125 7.85938 19.1016V10.1719C7.85938 8.45312 8.78125 7.54688 10.5078 7.54688H19.0938L17.3594 9.28125H10.6562C9.96875 9.28125 9.60156 9.63281 9.60156 10.3516V18.9141C9.60156 19.6328 9.96875 19.9844 10.6562 19.9844H19.4141C19.9297 19.9844 20.2969 19.6328 20.2969 18.9141V12.2812L22.0391 10.5391V19.1016C22.0391 20.8125 21.125 21.7266 19.5625 21.7266H10.5078Z"
+                          fill="#FB6F92"
+                        />
+                      </svg>
+                      <span>${buttonText}</span>
+                    </button>
+                    <div class="flex justify-center gap-4 items-center min-w-118 bg-success text-bg rounded-100 pt-2 pr-4 pb-2 pl-12">
+                      <span class="fw-500 fs-14-lh-20-ls-0_1">Completed</span>
+                      <svg width="29" height="28" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14.4531 19.8809C11.0781 19.8809 8.3418 17.1445 8.3418 13.7695C8.3418 10.3945 11.0781 7.6582 14.4531 7.6582C17.8281 7.6582 20.5645 10.3945 20.5645 13.7695C20.5645 17.1445 17.8281 19.8809 14.4531 19.8809ZM14.4531 18.5391C17.0898 18.5391 19.2227 16.4062 19.2227 13.7695C19.2227 11.1328 17.0898 9 14.4531 9C11.8164 9 9.68359 11.1328 9.68359 13.7695C9.68359 16.4062 11.8164 18.5391 14.4531 18.5391ZM13.8262 16.5586C13.5977 16.5586 13.416 16.4531 13.252 16.248L11.8984 14.6133C11.793 14.4785 11.7344 14.3438 11.7344 14.1973C11.7344 13.8809 11.9863 13.6348 12.2969 13.6348C12.4785 13.6348 12.625 13.7051 12.7656 13.8867L13.8086 15.1934L16.0352 11.6191C16.1641 11.4082 16.334 11.3027 16.5273 11.3027C16.8262 11.3027 17.1016 11.5137 17.1016 11.8301C17.1016 11.9648 17.0371 12.1113 16.9551 12.2402L14.377 16.2422C14.248 16.4414 14.0488 16.5586 13.8262 16.5586Z" fill="white"/>
+                      </svg>
+                    </div>
+                   </div>
+                  `
+                  : `
+                    <button
+                      type="button"
+                      class="setup-now-btn button button--outline w-full pt-1 pb-1 flex gap-4 justify-center items-center fs-16-lh-100pct-ls-0 sm:fs-14-lh-100pct-ls-0 sm:p-8"
+                      data-profile-type="${option.value}"
+                    >
+                      <svg
+                        width="28"
+                        height="28"
+                        viewBox="0 0 29 28"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M6.10352 13.9492C6.10352 13.2559 6.67969 12.6895 7.36328 12.6895H13.1055V6.94727C13.1055 6.26367 13.6719 5.6875 14.3652 5.6875C15.0586 5.6875 15.625 6.26367 15.625 6.94727V12.6895H21.3672C22.0605 12.6895 22.627 13.2559 22.627 13.9492C22.627 14.6426 22.0605 15.209 21.3672 15.209H15.625V20.9512C15.625 21.6445 15.0586 22.2109 14.3652 22.2109C13.6719 22.2109 13.1055 21.6445 13.1055 20.9512V15.209H7.36328C6.67969 15.209 6.10352 14.6426 6.10352 13.9492Z"
+                          fill="#FB6F92"
+                        />
+                      </svg>
+                    <span>${buttonText}</span>
+                </button>
+              `
               }
-            </div>
-            <div class="w-full"><h3 class="w-full rounded-b-l-32 rounded-b-r-32 sm:rounded-b-l-13 sm:rounded-b-r-13 text-center uppercase pt-12 pr-8 pb-12 pl-8 sm:p-5 bg-brand text-bg fs-26-lh-26-ls-1_2 sm:fs-15-lh-16-ls--1_2pct fw-400">${
-              option.label
-            }</h3></div>
-          </div>
-          <button type="button" class="setup-now-btn button button--outline w-full flex gap-4 justify-center items-center fs-16-lh-100pct-ls-0 sm:fs-14-lh-100pct-ls-0 sm:p-8" data-profile-type="${
-            option.value
-          }">
-            <svg width="28" height="28" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.10352 13.9492C6.10352 13.2559 6.67969 12.6895 7.36328 12.6895H13.1055V6.94727C13.1055 6.26367 13.6719 5.6875 14.3652 5.6875C15.0586 5.6875 15.625 6.26367 15.625 6.94727V12.6895H21.3672C22.0605 12.6895 22.627 13.2559 22.627 13.9492C22.627 14.6426 22.0605 15.209 21.3672 15.209H15.625V20.9512C15.625 21.6445 15.0586 22.2109 14.3652 22.2109C13.6719 22.2109 13.1055 21.6445 13.1055 20.9512V15.209H7.36328C6.67969 15.209 6.10352 14.6426 6.10352 13.9492Z" fill="#FB6F92"/></svg>
-            <span>${buttonText}</span>
-          </button>
-        </div>`;
+
+    <div class="w-full">
+      <div class="relative w-full lg:w-full h-222 lg:h-200 md:h-150 sm:h-98">
+        <img src="${option.image}" alt="${
+            option.label
+          } profile" loading="lazy" class="relative w-full h-full">
+      </div>
+      <div class="w-full">
+        <h3 class="w-full rounded-b-l-32 rounded-b-r-32 sm:rounded-b-l-13 sm:rounded-b-r-13 text-center uppercase pt-12 pr-8 pb-12 pl-8 sm:p-5 bg-brand text-bg fs-26-lh-26-ls-1_2 sm:fs-15-lh-16-ls--1_2pct fw-400">
+          ${option.label}
+        </h3>
+      </div>
+    </div>
+  </div>
+`;
         })
         .join("");
       container.querySelectorAll(".setup-now-btn").forEach((button) => {
