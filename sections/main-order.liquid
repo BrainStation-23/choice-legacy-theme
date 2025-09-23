@@ -683,7 +683,7 @@
   function getReturnStatusClass(returnStatus) {
     if (!returnStatus) return '';
 
-    const normalizedStatus = returnStatus.toLowerCase().replace(/\s+/g, '-');
+    const normalizedStatus = returnStatus?.toLowerCase().replace(/\s+/g, '-');
 
     switch (normalizedStatus) {
       case 'approved':
@@ -708,7 +708,7 @@
     const returnStatusDisplay = document.getElementById('return-status-display');
 
     if (returnOrderButton) {
-      const normalizedStatus = deliveryStatus.toLowerCase().replace(/\s+/g, '-');
+      const normalizedStatus = deliveryStatus?.toLowerCase().replace(/\s+/g, '-');
       // return is possible only if happenedAt 3 days or less
       const happenedDate = new Date(happenedAt);
       const currentDate = new Date();
@@ -800,6 +800,7 @@
             },
             body: JSON.stringify({
               orderId: orderId,
+              customerNote: 'Return from website',
             }),
           });
 

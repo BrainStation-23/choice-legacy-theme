@@ -343,7 +343,7 @@
   // Function to update visual timeline
   function updateVisualTimeline(currentStatus, isCancelled = false) {
     const timelineSteps = document.querySelectorAll('.timeline-step');
-    const normalizedStatus = currentStatus.toLowerCase().replace(/\s+/g, '-');
+    const normalizedStatus = currentStatus?.toLowerCase().replace(/\s+/g, '-');
     const currentStatusIndex = statusOrder.indexOf(normalizedStatus);
 
     timelineSteps.forEach((step, index) => {
