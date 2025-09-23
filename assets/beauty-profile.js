@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const closeModalBtn = document.getElementById(
     "beauty-profile-modal-close-btn"
   );
+  const apiUrl = `/apps/${window.APP_SUB_PATH}/customer/beauty-profile`;
 
   let allQuestions = [];
   let currentProfileQuestions = [];
@@ -11,6 +12,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   let userAnswers = {};
   let currentProfileType = "";
   let stepHistory = [];
+  let currentAnswer = null;
+  let existingProfileData = null;
 
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
@@ -1057,10 +1060,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       )
       .sort((a, b) => a.order - b.order);
 
-    if (!window.theme.customer_dob || !window.theme.customer_gender) {
+    const hasDob = existingProfileData?.dob && existingProfileData.dob !== null;
+    const hasGender =
+      existingProfileData?.gender && existingProfileData.gender !== null;
+
+    if (!hasDob || !hasGender) {
       showDobAndGenderModal();
     } else {
-      userAnswers.dob = window.theme.customer_dob;
+      if (existingProfileData.dob) {
+        const dobDate = new Date(existingProfileData.dob);
+        const yyyy = dobDate.getFullYear();
+        const mm = String(dobDate.getMonth() + 1).padStart(2, "0");
+        const dd = String(dobDate.getDate()).padStart(2, "0");
+        userAnswers.dob = `${yyyy}-${mm}-${dd}`;
+      }
       userAnswers.gender = window.theme.customer_gender;
       if (currentProfileType === "skincare") {
         showSkincareRoutineQuestion();
@@ -1098,10 +1111,26 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  const apiUrl = `/apps/${window.APP_SUB_PATH}/customer/beauty-profile`;
+  async function fetchExistingProfile() {
+    try {
+      const response = await fetch(`${apiUrl}`);
+      const result = await response.json();
+
+      if (result.success && result.data) {
+        existingProfileData = result.data;
+      }
+
+      return result;
+    } catch (error) {
+      console.error("Error fetching existing profile:", error);
+      return null;
+    }
+  }
 
   async function initializeProfile() {
     try {
+      await fetchExistingProfile();
+
       const response = await fetch(`${apiUrl}/questions`);
       const { questions } = await response.json();
       if (!questions || questions.length === 0) return;
