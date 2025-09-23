@@ -3356,6 +3356,9 @@ input[type="checkbox"]:checked::after {
 .rounded-100 {
   border-radius: 100px;
 }
+.rounded-77 {
+  border-radius: 77px;
+}
 .rounded-20 {
   border-radius: 20px;
 }
