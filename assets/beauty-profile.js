@@ -150,7 +150,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const optionsContainers = modalBody.querySelectorAll(".options-container");
     optionsContainers.forEach((optionsContainer) => {
-      // ... existing event listener code remains the same
       optionsContainer.addEventListener("change", (e) => {
         if (e.target.type === "radio") {
           currentAnswer = e.target.value;
@@ -166,6 +165,17 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (isMultiChoice) {
           option.classList.toggle("is-selected");
+
+          // Update the placeholder text for multi-choice
+          const selectedCount =
+            optionsContainer.querySelectorAll(".is-selected").length;
+          const placeholder = optionsContainer.querySelector(".placeholder");
+          if (placeholder) {
+            placeholder.textContent =
+              selectedCount > 0
+                ? `${selectedCount} selected`
+                : "you can choose multiple";
+          }
         } else {
           optionsContainer
             .querySelectorAll(".option-btn")
@@ -250,10 +260,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function generateMultiChoiceMarkup(question) {
     const groupKey = question.key;
-    const answerKey = question.q_key.replace(
-      new RegExp(`^${question.key}_`, "i"),
-      ""
-    );
+    const answerKey = question.q_key
+      .replace(new RegExp(`^${question.key}_`, "i"), "")
+      .replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
     const savedAnswers = userAnswers[groupKey]?.[answerKey] || [];
 
     let optionsHtml = question.options
@@ -265,10 +274,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       })
       .join("");
 
+    const placeholderText =
+      savedAnswers.length > 0
+        ? `${savedAnswers.length} selected`
+        : "you can choose multiple";
+
     return `
     <div class="options-container multi-choice multi-select-container relative w-full">
       <div class="select-display flex justify-between items-center pt-14 pr-18 pb-14 pl-18 border-1 border-solid border-color rounded-12 cursor-pointer bg-bg fw-500 fs-14-lh-20-ls-0_1">
-        <span class="placeholder">you can choose multiple</span>
+        <span class="placeholder">${placeholderText}</span>
         <svg width="18" height="11" viewBox="0 0 18 11" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M8.6543 10.3008C8.32227 10.3008 8.0293 10.1738 7.77539 9.91016L0.333984 2.30273C0.119141 2.08789 0.00195312 1.81445 0.00195312 1.50195C0.00195312 0.867188 0.5 0.369141 1.13477 0.369141C1.44727 0.369141 1.73047 0.496094 1.95508 0.710938L8.6543 7.57617L15.3535 0.710938C15.5684 0.496094 15.8613 0.369141 16.1738 0.369141C16.7988 0.369141 17.2969 0.867188 17.2969 1.50195C17.2969 1.82422 17.1895 2.08789 16.9746 2.30273L9.5332 9.91016C9.28906 10.1738 8.98633 10.3008 8.6543 10.3008Z" fill="#90989C"/>
         </svg>
@@ -727,35 +741,51 @@ document.addEventListener("DOMContentLoaded", async () => {
   async function showDobAndGenderModal() {
     currentStep = -1;
     const innerHtml = `
-    ${generateTitleMarkup(
-      "What's your birthday? We've got personalized tips waiting for you."
-    )}
-    <div class="beauty-profile-modal-form-field flex flex-col gap-10">
-      <label for="dob-dd" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Date of Birth</label>
-      <div class="beauty-profile-modal-input-group flex gap-16">
-        <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-dd" maxlength="2" inputmode="numeric" /><label for="dob-dd" class="fw-500 fs-14-lh-20-ls-0_1">DD</label></div>
-        <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-mm" maxlength="2" inputmode="numeric"><label for="dob-mm" class="fw-500 fs-14-lh-20-ls-0_1">MM</label></div>
-        <div class="relative w-100 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-yyyy" maxlength="4" inputmode="numeric"><label for="dob-yyyy" class="fw-500 fs-14-lh-20-ls-0_1">YYYY</label></div>
-      </div>
-      ${generateErrorContainerMarkup()}
+  ${generateTitleMarkup(
+    "What's your birthday? We've got personalized tips waiting for you."
+  )}
+  <div class="beauty-profile-modal-form-field flex flex-col gap-10">
+    <label for="dob-dd" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Date of Birth</label>
+    <div class="beauty-profile-modal-input-group flex gap-16">
+      <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-dd" maxlength="2" inputmode="numeric" /><label for="dob-dd" class="fw-500 fs-14-lh-20-ls-0_1">DD</label></div>
+      <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-mm" maxlength="2" inputmode="numeric"><label for="dob-mm" class="fw-500 fs-14-lh-20-ls-0_1">MM</label></div>
+      <div class="relative w-100 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-yyyy" maxlength="4" inputmode="numeric"><label for="dob-yyyy" class="fw-500 fs-14-lh-20-ls-0_1">YYYY</label></div>
     </div>
-    <div class="beauty-profile-modal-form-field flex flex-col gap-10">
-      <div class="relative w-256 h-56">
-        <select id="gender" class="w-full fs-500 fs-14-lh-20-ls-0_1 pl-12 h-full"><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option><option value="prefer_not_to_say">Prefer not to say</option></select>
-        <label for="gender" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Gender</label>
-      </div>
+    ${generateErrorContainerMarkup()}
+  </div>
+  <div class="beauty-profile-modal-form-field flex flex-col gap-10">
+    <div class="relative w-256 h-56">
+      <select id="gender" class="w-full fs-500 fs-14-lh-20-ls-0_1 pl-12 h-full"><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option><option value="prefer_not_to_say">Prefer not to say</option></select>
+      <label for="gender" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Gender</label>
     </div>
-  `;
+  </div>
+`;
     await renderModalContent(createModalLayout(innerHtml), "w-700");
 
+    // Check userAnswers first (for back navigation), then API data
     if (userAnswers.dob) {
       const [yyyy, mm, dd] = userAnswers.dob.split("-");
       modalBody.querySelector("#dob-dd").value = dd;
       modalBody.querySelector("#dob-mm").value = mm;
       modalBody.querySelector("#dob-yyyy").value = yyyy;
+    } else if (existingProfileData?.dob) {
+      // Parse the ISO date from API
+      const dobDate = new Date(existingProfileData.dob);
+      modalBody.querySelector("#dob-dd").value = String(
+        dobDate.getDate()
+      ).padStart(2, "0");
+      modalBody.querySelector("#dob-mm").value = String(
+        dobDate.getMonth() + 1
+      ).padStart(2, "0");
+      modalBody.querySelector("#dob-yyyy").value = String(
+        dobDate.getFullYear()
+      );
     }
+
     if (userAnswers.gender) {
       modalBody.querySelector("#gender").value = userAnswers.gender;
+    } else if (existingProfileData?.gender) {
+      modalBody.querySelector("#gender").value = existingProfileData.gender;
     }
 
     setupDobFields();
@@ -1041,7 +1071,20 @@ document.addEventListener("DOMContentLoaded", async () => {
   function handleProfileSelection(profileType) {
     if (!modal || !modalBody) return;
     currentProfileType = profileType;
-    userAnswers = {};
+
+    const hasExistingData = existingProfileData?.[profileType];
+    if (hasExistingData) {
+      userAnswers[profileType] = {};
+      // Properly map the existing data to match the expected structure
+      Object.keys(existingProfileData[profileType]).forEach((key) => {
+        if (key !== "isCompleted") {
+          userAnswers[profileType][key] = existingProfileData[profileType][key];
+        }
+      });
+    } else {
+      userAnswers = {};
+    }
+
     stepHistory = [];
 
     currentProfileQuestions = allQuestions
@@ -1074,7 +1117,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const dd = String(dobDate.getDate()).padStart(2, "0");
         userAnswers.dob = `${yyyy}-${mm}-${dd}`;
       }
-      userAnswers.gender = window.theme.customer_gender;
+      userAnswers.gender = existingProfileData.gender;
       if (currentProfileType === "skincare") {
         showSkincareRoutineQuestion();
       } else {
@@ -1089,19 +1132,36 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!container) return;
     if (productTypeQuestion && productTypeQuestion.options) {
       container.innerHTML = productTypeQuestion.options
-        .map(
-          (option) => `
-          <div class="profile-type-card flex flex-col items-center gap-12 w-277 lg:w-full md:w-full sm:w-full pt-12 sm:pt-0">
-            <div class="w-full">
-              <div class="relative w-full lg:w-full h-222 lg:h-200 md:h-150 sm:h-98"><img src="${option.image}" alt="${option.label} profile" loading="lazy" class="relative w-full h-full"></div>
-              <div class="w-full"><h3 class="w-full rounded-b-l-32 rounded-b-r-32 sm:rounded-b-l-13 sm:rounded-b-r-13 text-center uppercase pt-12 pr-8 pb-12 pl-8 sm:p-5 bg-brand text-bg fs-26-lh-26-ls-1_2 sm:fs-15-lh-16-ls--1_2pct fw-400">${option.label}</h3></div>
+        .map((option) => {
+          // Check if this profile type is completed
+          const isCompleted = existingProfileData?.[option.value]?.isCompleted;
+          const buttonText = isCompleted ? "Edit Profile" : "Setup Now";
+
+          return `
+        <div class="profile-type-card flex flex-col items-center gap-12 w-277 lg:w-full md:w-full sm:w-full pt-12 sm:pt-0">
+          <div class="w-full">
+            <div class="relative w-full lg:w-full h-222 lg:h-200 md:h-150 sm:h-98">
+              <img src="${option.image}" alt="${
+            option.label
+          } profile" loading="lazy" class="relative w-full h-full">
+              ${
+                isCompleted
+                  ? '<div class="absolute top-10 right-10 bg-green-500 text-white px-8 py-4 rounded-full text-xs">Completed</div>'
+                  : ""
+              }
             </div>
-            <button type="button" class="setup-now-btn button button--outline w-full flex gap-4 justify-center items-center fs-16-lh-100pct-ls-0 sm:fs-14-lh-100pct-ls-0 sm:p-8" data-profile-type="${option.value}">
-              <svg width="28" height="28" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.10352 13.9492C6.10352 13.2559 6.67969 12.6895 7.36328 12.6895H13.1055V6.94727C13.1055 6.26367 13.6719 5.6875 14.3652 5.6875C15.0586 5.6875 15.625 6.26367 15.625 6.94727V12.6895H21.3672C22.0605 12.6895 22.627 13.2559 22.627 13.9492C22.627 14.6426 22.0605 15.209 21.3672 15.209H15.625V20.9512C15.625 21.6445 15.0586 22.2109 14.3652 22.2109C13.6719 22.2109 13.1055 21.6445 13.1055 20.9512V15.209H7.36328C6.67969 15.209 6.10352 14.6426 6.10352 13.9492Z" fill="#FB6F92"/></svg>
-              <span>Setup Now</span>
-            </button>
-          </div>`
-        )
+            <div class="w-full"><h3 class="w-full rounded-b-l-32 rounded-b-r-32 sm:rounded-b-l-13 sm:rounded-b-r-13 text-center uppercase pt-12 pr-8 pb-12 pl-8 sm:p-5 bg-brand text-bg fs-26-lh-26-ls-1_2 sm:fs-15-lh-16-ls--1_2pct fw-400">${
+              option.label
+            }</h3></div>
+          </div>
+          <button type="button" class="setup-now-btn button button--outline w-full flex gap-4 justify-center items-center fs-16-lh-100pct-ls-0 sm:fs-14-lh-100pct-ls-0 sm:p-8" data-profile-type="${
+            option.value
+          }">
+            <svg width="28" height="28" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.10352 13.9492C6.10352 13.2559 6.67969 12.6895 7.36328 12.6895H13.1055V6.94727C13.1055 6.26367 13.6719 5.6875 14.3652 5.6875C15.0586 5.6875 15.625 6.26367 15.625 6.94727V12.6895H21.3672C22.0605 12.6895 22.627 13.2559 22.627 13.9492C22.627 14.6426 22.0605 15.209 21.3672 15.209H15.625V20.9512C15.625 21.6445 15.0586 22.2109 14.3652 22.2109C13.6719 22.2109 13.1055 21.6445 13.1055 20.9512V15.209H7.36328C6.67969 15.209 6.10352 14.6426 6.10352 13.9492Z" fill="#FB6F92"/></svg>
+            <span>${buttonText}</span>
+          </button>
+        </div>`;
+        })
         .join("");
       container.querySelectorAll(".setup-now-btn").forEach((button) => {
         button.addEventListener("click", () =>
@@ -1118,6 +1178,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (result.success && result.data) {
         existingProfileData = result.data;
+
+        // Map existing data to userAnswers with proper structure
+        if (existingProfileData.skincare) {
+          userAnswers.skincare = {};
+          // Handle multi-choice arrays properly
+          Object.keys(existingProfileData.skincare).forEach((key) => {
+            const value = existingProfileData.skincare[key];
+            // Convert camelCase back to the format expected by the form
+            const formattedKey = key.charAt(0).toLowerCase() + key.slice(1);
+            userAnswers.skincare[formattedKey] = value;
+          });
+        }
+        if (existingProfileData.haircare) {
+          userAnswers.haircare = { ...existingProfileData.haircare };
+        }
+        if (existingProfileData.makeup) {
+          userAnswers.makeup = { ...existingProfileData.makeup };
+        }
       }
 
       return result;
