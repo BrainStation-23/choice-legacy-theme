@@ -152,6 +152,12 @@
       }
     }
 
+    if (targetContentType === 'beauty_profile') {
+      if (typeof window.initializeBeautyProfile === 'function') {
+        window.initializeBeautyProfile();
+      }
+    }
+
     const targetContent = document.getElementById(targetContentType + '-content');
     if (targetContent) {
       targetContent.style.display = 'block';
