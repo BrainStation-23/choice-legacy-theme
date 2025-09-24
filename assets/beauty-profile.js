@@ -17,6 +17,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const delay = (ms) => new Promise((res) => setTimeout(res, ms));
 
+  function toggleSpinner(spinnerId, contentId, showContent = false) {
+    const spinner = document.getElementById(spinnerId);
+    const content = document.getElementById(contentId);
+
+    if (spinner && content) {
+      if (showContent) {
+        spinner.style.display = "none";
+        content.style.display = "block";
+      } else {
+        spinner.style.display = "flex";
+        content.style.display = "none";
+      }
+    }
+  }
+
   async function uploadImageFile(file, type = "face") {
     const formData = new FormData();
     formData.append("image", file);
@@ -1093,7 +1108,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function showConsultationScreen() {
     currentStep = "consultation";
-
     closeModal();
 
     const mainContent = document.querySelector(".page-width .flex");
@@ -1118,7 +1132,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (consultationContent) {
         consultationContent.classList.remove("hidden");
         consultationContent.classList.add("flex", "flex-col", "gap-24");
+
+        // Show consultation spinner, then hide it after loading
+        toggleSpinner("consultation-spinner", "consultation-content", false);
+
+        setTimeout(() => {
+          toggleSpinner("consultation-spinner", "consultation-content", true);
+        }, 1000); // Simulate loading time
       }
+
       if (suggestionsContent) {
         suggestionsContent.classList.add("hidden");
       }
@@ -1129,7 +1151,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function showSuggestionsScreen() {
     currentStep = "suggestions";
-
     closeModal();
 
     const mainContent = document.querySelector(".page-width .flex");
@@ -1154,9 +1175,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (consultationContent) {
         consultationContent.classList.add("hidden");
       }
+
       if (suggestionsContent) {
         suggestionsContent.classList.remove("hidden");
         suggestionsContent.classList.add("flex", "flex-col", "gap-24");
+
+        // Show suggestions spinner, then hide it after loading
+        toggleSpinner("suggestions-spinner", "suggestions-content", false);
+
+        setTimeout(() => {
+          toggleSpinner("suggestions-spinner", "suggestions-content", true);
+        }, 1000); // Simulate loading time
       }
     }
 
@@ -1245,6 +1274,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   function createProfileTypes(productTypeQuestion) {
     const container = document.getElementById("beauty-profile-types-container");
     if (!container) return;
+
+    container.innerHTML = `
+    <div class="spinner-container flex justify-center items-center w-full h-200">
+      <spinner-component size="large" color="primary"></spinner-component>
+    </div>
+  `;
+
     if (productTypeQuestion && productTypeQuestion.options) {
       container.innerHTML = productTypeQuestion.options
         .map((option) => {
@@ -1376,13 +1412,22 @@ document.addEventListener("DOMContentLoaded", async () => {
       const response = await fetch(`${apiUrl}/questions`);
       const { questions } = await response.json();
       if (!questions || questions.length === 0) return;
+
       allQuestions = questions;
       const productTypeQuestion = questions.find(
         (q) => q.key === "product_type"
       );
+
+      toggleSpinner("profile-types-spinner", "profile-types-content", true);
+
       createProfileTypes(productTypeQuestion);
     } catch (error) {
       console.log(error);
+      const spinner = document.getElementById("profile-types-spinner");
+      if (spinner) {
+        spinner.innerHTML =
+          '<p class="error-text">Failed to load profile options. Please try again.</p>';
+      }
     }
   }
 
