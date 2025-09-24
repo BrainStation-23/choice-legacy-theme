@@ -1940,6 +1940,9 @@ address {
   .sm\:flex-col {
     flex-direction: column;
   }
+  .sm\:flex-col-reverse {
+    flex-direction: column-reverse;
+  }
 
   .sm\:flex-1_0_0 {
     flex: 1 0 0;

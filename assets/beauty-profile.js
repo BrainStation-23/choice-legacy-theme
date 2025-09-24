@@ -147,7 +147,7 @@ function createModalLayout(innerHtml, removeOverflow = false) {
      </div>`
     : "";
   const footerHtml = `
-    <div class="beauty-profile-modal-footer flex justify-between gap-16 p-16 box-shadow sm:box-shadow-none sm:pt-0 sm:flex-col">
+    <div class="beauty-profile-modal-footer flex justify-between gap-16 p-16 box-shadow sm:box-shadow-none sm:pt-0 sm:flex-col-reverse">
       <button type="button" class="beauty-profile-modal-back-btn button button--outline sm:w-full h-44 text-primary border-color">Back</button>
       <button type="button" class="beauty-profile-modal-continue-btn button button--solid sm:w-full h-44">${buttonText}</button>
     </div>
