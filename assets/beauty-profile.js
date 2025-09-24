@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  function createModalLayout(innerHtml) {
+  function createModalLayout(innerHtml, removeOverflow = false) {
     const footerHtml = `
     <div class="beauty-profile-modal-footer flex justify-between p-16 box-shadow">
       <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
@@ -92,8 +92,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     </div>
   `;
 
+    const scrollClasses = removeOverflow
+      ? "pt-40 pr-32 pb-40 pl-32 flex flex-col gap-16"
+      : "pt-40 pr-32 pb-40 pl-32 flex flex-col gap-16 max-h-500 overflow-y-auto scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover";
+
     return `
-    <div class="pt-40 pr-32 pb-40 pl-32 flex flex-col gap-16 max-h-500 overflow-y-auto scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover">
+    <div class="${scrollClasses}">
       ${innerHtml}
     </div>
     ${footerHtml}
@@ -187,6 +191,22 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     modalBody.innerHTML = html;
+    if (currentStep === -1) {
+      // This is DOB and gender screen - remove overflow
+      const scrollContainer = modalBody.querySelector(
+        ".pt-40.pr-32.pb-40.pl-32"
+      );
+      if (scrollContainer) {
+        scrollContainer.classList.remove(
+          "overflow-y-auto",
+          "max-h-500",
+          "scrollbar-w-8",
+          "scrollbar-track-none",
+          "scrollbar-thumb-brand",
+          "scrollbar-thumb-brand-hover"
+        );
+      }
+    }
     modalBody.classList.remove("is-transitioning");
 
     modal
@@ -889,30 +909,126 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  function setupCustomDropdown() {
+    const dropdown = modalBody.querySelector("#gender-dropdown");
+    const options = modalBody.querySelector("#gender-options");
+    const arrow = modalBody.querySelector(".dropdown-arrow");
+
+    if (!dropdown || !options || !arrow) return;
+
+    dropdown.addEventListener("click", () => {
+      const isOpen = !options.classList.contains("hidden");
+      if (isOpen) {
+        options.classList.add("hidden");
+        arrow.style.transform = "rotate(0deg)";
+      } else {
+        // Calculate if dropdown should open upwards
+        const dropdownRect = dropdown.getBoundingClientRect();
+        const modalBody = dropdown.closest(".beauty-profile-modal-content");
+        const modalRect = modalBody.getBoundingClientRect();
+
+        const spaceBelow = modalRect.bottom - dropdownRect.bottom;
+        const spaceAbove = dropdownRect.top - modalRect.top;
+        const dropdownHeight = 200; // Approximate height of dropdown
+
+        if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
+          // Open upwards
+          options.classList.remove("top-full", "mt-4");
+          options.classList.add("bottom-full", "mb-4");
+        } else {
+          // Open downwards (default)
+          options.classList.remove("bottom-full", "mb-4");
+          options.classList.add("top-full", "mt-4");
+        }
+
+        options.classList.remove("hidden");
+        arrow.style.transform = "rotate(180deg)";
+      }
+    });
+
+    // Handle option selection
+    options.addEventListener("click", (e) => {
+      const option = e.target.closest(".dropdown-option");
+      if (!option) return;
+
+      const value = option.dataset.value;
+      const text = option.textContent;
+
+      setGenderValue(value, text);
+
+      options.classList.add("hidden");
+      arrow.style.transform = "rotate(0deg)";
+    });
+
+    // Close dropdown when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!dropdown.contains(e.target) && !options.contains(e.target)) {
+        options.classList.add("hidden");
+        arrow.style.transform = "rotate(0deg)";
+      }
+    });
+  }
+
+  function setGenderValue(value, displayText = null) {
+    const hiddenInput = modalBody.querySelector("#gender");
+    const selectedValue = modalBody.querySelector("#gender-selected-value");
+
+    if (hiddenInput) hiddenInput.value = value;
+
+    if (selectedValue) {
+      const displayMap = {
+        male: "Male",
+        female: "Female",
+        other: "Other",
+        prefer_not_to_say: "Prefer not to say",
+      };
+      selectedValue.textContent = displayText || displayMap[value] || value;
+    }
+  }
+
   async function showDobAndGenderModal() {
     currentStep = -1;
     const innerHtml = `
-  ${generateTitleMarkup(
-    "What's your birthday? We've got personalized tips waiting for you."
-  )}
-  <div class="beauty-profile-modal-form-field flex flex-col gap-10">
-    <label for="dob-dd" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Date of Birth</label>
-    <div class="beauty-profile-modal-input-group flex gap-16">
-      <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-dd" maxlength="2" inputmode="numeric" /><label for="dob-dd" class="fw-500 fs-14-lh-20-ls-0_1">DD</label></div>
-      <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-mm" maxlength="2" inputmode="numeric"><label for="dob-mm" class="fw-500 fs-14-lh-20-ls-0_1">MM</label></div>
-      <div class="relative w-100 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-yyyy" maxlength="4" inputmode="numeric"><label for="dob-yyyy" class="fw-500 fs-14-lh-20-ls-0_1">YYYY</label></div>
-    </div>
-    ${generateErrorContainerMarkup()}
-  </div>
-  <div class="beauty-profile-modal-form-field flex flex-col gap-10">
-    <div class="relative w-256 h-56">
-      <select id="gender" class="w-full fs-500 fs-14-lh-20-ls-0_1 pl-12 h-full"><option value="male">Male</option><option value="female">Female</option><option value="other">Other</option><option value="prefer_not_to_say">Prefer not to say</option></select>
-      <label for="gender" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Gender</label>
-    </div>
-  </div>
-`;
-    await renderModalContent(createModalLayout(innerHtml), "w-700");
+      ${generateTitleMarkup(
+        "What's your birthday? We've got personalized tips waiting for you."
+      )}
+      <div class="beauty-profile-modal-form-field flex flex-col gap-10">
+        <label for="dob-dd" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Date of Birth</label>
+        <div class="beauty-profile-modal-input-group flex gap-16">
+          <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-dd" maxlength="2" inputmode="numeric" /><label for="dob-dd" class="fw-500 fs-14-lh-20-ls-0_1">DD</label></div>
+          <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-mm" maxlength="2" inputmode="numeric"><label for="dob-mm" class="fw-500 fs-14-lh-20-ls-0_1">MM</label></div>
+          <div class="relative w-100 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-yyyy" maxlength="4" inputmode="numeric"><label for="dob-yyyy" class="fw-500 fs-14-lh-20-ls-0_1">YYYY</label></div>
+        </div>
+        ${generateErrorContainerMarkup()}
+      </div>
+      <div class="beauty-profile-modal-form-field flex flex-col gap-10">
+        <div class="custom-dropdown relative w-256 h-56">
+          <div class="dropdown-selected flex justify-between items-center w-full h-full pl-16 pr-16 pt-10 pb-10 border-1 border-solid border-color rounded-12 cursor-pointer bg-bg" id="gender-dropdown">
+            <div class="selected-content flex flex-col">
+              <span class="selected-label fw-400 fs-12-lh-16-ls-0_6 text-primary-label">Gender</span>
+              <span class="selected-value fw-500 fs-14-lh-20-ls-0_1" id="gender-selected-value">Male</span>
+            </div>
+            <svg width="29" height="28" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg" class="dropdown-arrow transition-transform">
+              <path d="M14.6543 19.3008C14.3223 19.3008 14.0293 19.1738 13.7754 18.9102L6.33398 11.3027C6.11914 11.0879 6.00195 10.8145 6.00195 10.502C6.00195 9.86719 6.5 9.36914 7.13477 9.36914C7.44727 9.36914 7.73047 9.49609 7.95508 9.71094L14.6543 16.5762L21.3535 9.71094C21.5684 9.49609 21.8613 9.36914 22.1738 9.36914C22.7988 9.36914 23.2969 9.86719 23.2969 10.502C23.2969 10.8242 23.1895 11.0879 22.9746 11.3027L15.5332 18.9102C15.2891 19.1738 14.9863 19.3008 14.6543 19.3008Z" fill="#90989C"/>
+            </svg>
+          </div>
+          <div class="dropdown-options absolute left-0 w-full bg-bg border-1 border-solid border-color rounded-12 mt-4 hidden z-10 overflow-hidden top-full" id="gender-options">
+            <div class="dropdown-option pt-10 pr-16 pb-10 pl-16 cursor-pointer hover:bg-secondary transition-colors fw-500 fs-14-lh-20-ls-0_1" data-value="male">Male</div>
+            <div class="dropdown-option pt-10 pr-16 pb-10 pl-16 cursor-pointer hover:bg-secondary transition-colors fw-500 fs-14-lh-20-ls-0_1" data-value="female">Female</div>
+            <div class="dropdown-option pt-10 pr-16 pb-10 pl-16 cursor-pointer hover:bg-secondary transition-colors fw-500 fs-14-lh-20-ls-0_1" data-value="other">Other</div>
+            <div class="dropdown-option pt-10 pr-16 pb-10 pl-16 cursor-pointer hover:bg-secondary transition-colors fw-500 fs-14-lh-20-ls-0_1" data-value="prefer_not_to_say">Prefer not to say</div>
+          </div>
+          <input type="hidden" id="gender" value="male">
+        </div>
+      </div>
+    `;
 
+    await renderModalContent(createModalLayout(innerHtml, true), "w-700");
+
+    // Set up custom dropdown functionality
+    setupCustomDropdown();
+
+    // Rest of your existing code for DOB fields and setting values...
     if (userAnswers.dob) {
       const [yyyy, mm, dd] = userAnswers.dob.split("-");
       modalBody.querySelector("#dob-dd").value = dd;
@@ -932,9 +1048,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (userAnswers.gender) {
-      modalBody.querySelector("#gender").value = userAnswers.gender;
+      setGenderValue(userAnswers.gender);
     } else if (existingProfileData?.gender) {
-      modalBody.querySelector("#gender").value = existingProfileData.gender;
+      setGenderValue(existingProfileData.gender);
     }
 
     setupDobFields();
