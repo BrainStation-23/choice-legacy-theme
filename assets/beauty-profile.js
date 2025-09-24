@@ -906,7 +906,6 @@ function handleBack() {
 
 async function saveUserProfile() {
   try {
-    console.log(userAnswers);
     const profileData = { ...userAnswers };
     if (currentProfileType && profileData[currentProfileType]) {
       profileData[currentProfileType].isCompleted = true;
@@ -920,6 +919,15 @@ async function saveUserProfile() {
     });
 
     await response.json();
+
+    // Add these lines to refresh the profile data and UI
+    await fetchExistingProfile();
+    const productTypeQuestion = allQuestions.find(
+      (q) => q.key === "product_type"
+    );
+    if (productTypeQuestion) {
+      createProfileTypes(productTypeQuestion);
+    }
   } catch (error) {
     console.error("Error saving profile:", error);
   }
