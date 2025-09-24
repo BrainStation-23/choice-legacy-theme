@@ -254,14 +254,21 @@ document.addEventListener("DOMContentLoaded", async () => {
       const multiSelectDisplay =
         optionsContainer.querySelector(".select-display");
       if (multiSelectDisplay) {
-        multiSelectDisplay.addEventListener("click", () => {
+        multiSelectDisplay.addEventListener("click", (e) => {
+          e.stopPropagation();
           const panel = optionsContainer.querySelector(".dropdown-panel");
           panel.classList.toggle("is-open");
+        });
+
+        document.addEventListener("click", (e) => {
+          const panel = optionsContainer.querySelector(".dropdown-panel");
+          if (panel && !optionsContainer.contains(e.target)) {
+            panel.classList.remove("is-open");
+          }
         });
       }
     });
 
-    // Handle face upload toggle and file input
     const faceUploadToggle = modalBody.querySelector("#face-upload-toggle");
     const fileInput = modalBody.querySelector("#face-image-upload");
     const uploadPlaceholder = modalBody.querySelector(".upload-placeholder");
