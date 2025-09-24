@@ -687,17 +687,21 @@ h6,
   font-weight: 900;
 }
 
-@media screen and (max-width: 768px) {
-  .sm\:fw-400 {
-    font-weight: 400;
-  }
-}
-
 .box-shadow {
   box-shadow: 0 2px 14px 0 rgba(3, 11, 26, 0.1);
 }
 .box-shadow-none {
   box-shadow: none;
+}
+
+@media screen and (max-width: 768px) {
+  .sm\:fw-400 {
+    font-weight: 400;
+  }
+
+  .sm\:box-shadow-none {
+    box-shadow: none;
+  }
 }
 
 /* icon arrow */
@@ -2723,6 +2727,9 @@ address {
   .sm\:pl-16 {
     padding-left: calc(16 * var(--space-unit));
   }
+  .sm\:pl-24 {
+    padding-left: calc(24 * var(--space-unit));
+  }
   .sm\:pl-3_9_8 {
     padding-left: 3.98%;
   }
@@ -2735,6 +2742,9 @@ address {
   }
   .sm\:pr-8 {
     padding-right: calc(8 * var(--space-unit));
+  }
+  .sm\:pr-24 {
+    padding-right: calc(24 * var(--space-unit));
   }
   .sm\:pr-3_9_8 {
     padding-right: 3.98%;

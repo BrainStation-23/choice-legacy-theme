@@ -142,14 +142,14 @@ function createModalLayout(innerHtml, removeOverflow = false) {
   const shouldShowHeading =
     currentProfileType === "skincare" && currentStep !== -1;
   const headingHtml = shouldShowHeading
-    ? `<div class="profile-heading pt-40 pr-24 pl-24 pb-24">
-       <h1 class="fw-400 fs-36-lh-40-ls-0 uppercase">Tell us about beauty skin</h1>
+    ? `<div class="profile-heading pt-40 pr-24 pl-24 pb-24 sm:pb-0 sm:pt-24">
+       <h1 class="fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct uppercase">Tell us about beauty skin</h1>
      </div>`
     : "";
   const footerHtml = `
-    <div class="beauty-profile-modal-footer flex justify-between p-16 box-shadow">
-      <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
-      <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">${buttonText}</button>
+    <div class="beauty-profile-modal-footer flex justify-between gap-16 p-16 box-shadow sm:box-shadow-none sm:pt-0 sm:flex-col">
+      <button type="button" class="beauty-profile-modal-back-btn button button--outline sm:w-full h-44 text-primary border-color">Back</button>
+      <button type="button" class="beauty-profile-modal-continue-btn button button--solid sm:w-full h-44">${buttonText}</button>
     </div>
   `;
 
@@ -159,7 +159,7 @@ function createModalLayout(innerHtml, removeOverflow = false) {
       } pr-32 pb-40 pl-32 flex flex-col gap-16`
     : `${
         shouldShowHeading ? "" : "pt-40"
-      } pr-32 pb-40 pl-32 sm:p-24 flex flex-col gap-16 max-h-500 overflow-y-auto scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover`;
+      } pr-32 pb-40 pl-32 sm:pl-24 sm:pr-24 sm:pt-0 sm:pt-0 sm:pb-0 flex flex-col gap-16 max-h-500 overflow-y-auto scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover`;
 
   return `
     ${headingHtml}
