@@ -139,6 +139,13 @@ async function closeModal() {
 
 function createModalLayout(innerHtml, removeOverflow = false) {
   const buttonText = isFinalStep() ? "Save" : "Continue";
+  const shouldShowHeading =
+    currentProfileType === "skincare" && currentStep !== -1;
+  const headingHtml = shouldShowHeading
+    ? `<div class="profile-heading pt-40 pr-24 pl-24 pb-24">
+       <h1 class="fw-400 fs-36-lh-40-ls-0 uppercase">Tell us about beauty skin</h1>
+     </div>`
+    : "";
   const footerHtml = `
     <div class="beauty-profile-modal-footer flex justify-between p-16 box-shadow">
       <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
@@ -147,10 +154,15 @@ function createModalLayout(innerHtml, removeOverflow = false) {
   `;
 
   const scrollClasses = removeOverflow
-    ? "pt-40 pr-32 pb-40 pl-32 flex flex-col gap-16"
-    : "pt-40 pr-32 pb-40 pl-32 sm:p-24 flex flex-col gap-16 max-h-500 overflow-y-auto scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover";
+    ? `${
+        shouldShowHeading ? "" : "pt-40"
+      } pr-32 pb-40 pl-32 flex flex-col gap-16`
+    : `${
+        shouldShowHeading ? "" : "pt-40"
+      } pr-32 pb-40 pl-32 sm:p-24 flex flex-col gap-16 max-h-500 overflow-y-auto scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover`;
 
   return `
+    ${headingHtml}
     <div class="${scrollClasses}">
       ${innerHtml}
     </div>
