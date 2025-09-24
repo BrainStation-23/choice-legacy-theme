@@ -22,6 +22,35 @@ async function initializeProfile() {
   }
 }
 
+function isFinalStep() {
+  // DOB and gender screen - not final
+  if (currentStep === -1) return false;
+
+  // Special string steps that lead to completion
+  if (currentStep === "skin_issues") {
+    const reactionAnswer = userAnswers.skincare?.acneIrritation;
+    // If it's a reaction that leads to consultation, it's final
+    if (
+      ["itch_red_burn", "itch_sometimes", "painful"].includes(reactionAnswer)
+    ) {
+      return true;
+    }
+    // If no reaction issues, this leads to suggestions (final)
+    if (reactionAnswer === "no_itch_pain") {
+      return true;
+    }
+  }
+
+  if (currentStep === "skin_type") return true; // leads to suggestions
+
+  // For regular question flow
+  if (typeof currentStep === "number" && currentStep >= 0) {
+    return currentStep === currentProfileQuestions.length - 1;
+  }
+
+  return false;
+}
+
 let isBeautyProfileInitialized = false;
 
 // document.addEventListener("DOMContentLoaded", async () => {
@@ -109,10 +138,11 @@ async function closeModal() {
 }
 
 function createModalLayout(innerHtml, removeOverflow = false) {
+  const buttonText = isFinalStep() ? "Save" : "Continue";
   const footerHtml = `
     <div class="beauty-profile-modal-footer flex justify-between p-16 box-shadow">
       <button type="button" class="beauty-profile-modal-back-btn button button--outline h-44 text-primary border-color">Back</button>
-      <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">Continue</button>
+      <button type="button" class="beauty-profile-modal-continue-btn button button--solid h-44">${buttonText}</button>
     </div>
   `;
 
@@ -491,6 +521,7 @@ function renderCurrentQuestion() {
   }
 
   const question = currentProfileQuestions[currentStep];
+  const isLastQuestion = currentStep === currentProfileQuestions.length - 1;
   let optionsHtml = "";
   switch (question.type) {
     case "single_choice":
