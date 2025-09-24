@@ -118,7 +118,7 @@ function createModalLayout(innerHtml, removeOverflow = false) {
 
   const scrollClasses = removeOverflow
     ? "pt-40 pr-32 pb-40 pl-32 flex flex-col gap-16"
-    : "pt-40 pr-32 pb-40 pl-32 flex flex-col gap-16 max-h-500 overflow-y-auto scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover";
+    : "pt-40 pr-32 pb-40 pl-32 sm:p-24 flex flex-col gap-16 max-h-500 overflow-y-auto scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover";
 
   return `
     <div class="${scrollClasses}">
@@ -189,7 +189,7 @@ function setupDobFields() {
 }
 
 function generateTitleMarkup(title) {
-  return `<h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">${title}</h2>`;
+  return `<h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans max-w-80pct">${title}</h2>`;
 }
 
 function generateErrorContainerMarkup() {
@@ -369,7 +369,7 @@ function generateSingleChoiceMarkup(question, flexCol = false) {
           <input type="checkbox" class="hidden" id="face-upload-toggle" ${
             isChecked ? "checked" : ""
           }>
-          <span class="toggle-slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-secondary rounded-77 transition-all duration-300 before:content-[''] before:absolute before:h-18 before:w-18 before:left-3 before:bottom-3 before:bg-white before:transition-all before:duration-300 before:rounded-full"></span>
+          <span class="toggle-slider absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-secondary rounded-77 w-44 transition-transform"></span>
         </label>
         <span class="toggle-label fw-400 fs-16-lh-22-ls-0">${
           question.title
@@ -438,7 +438,7 @@ function generatePictureChoiceMarkup(question) {
   question.options.forEach((option) => {
     const isSelected = savedAnswer === option.value ? "is-selected" : "";
     optionsHtml += `
-      <button type="button" class="option-btn picture-option-card bg-transparent transition-transform border-2 border-solid border-color-transparent cursor-pointer w-221_3333 h-216 border-none rounded-6 ${isSelected}" data-value="${option.value}">
+      <button type="button" class="option-btn picture-option-card bg-transparent transition-transform border-2 border-solid border-color-transparent cursor-pointer w-221_3333 h-216 sm:w-auto sm:h-auto border-none rounded-6 ${isSelected}" data-value="${option.value}">
         <img src="${option.imageUrl}" alt="${option.label}" loading="lazy" class="rounded-6">
       </button>
     `;
@@ -1047,7 +1047,10 @@ async function showDobAndGenderModal() {
       </div>
     `;
 
-  await renderModalContent(createModalLayout(innerHtml, true), "w-700");
+  await renderModalContent(
+    createModalLayout(innerHtml, true),
+    "w-700 sm:w-370"
+  );
 
   // Set up custom dropdown functionality
   setupCustomDropdown();
@@ -1090,7 +1093,7 @@ function showSkincareRoutineQuestion() {
     ${optionsHtml}
     ${generateErrorContainerMarkup()}
   `;
-  renderModalContent(createModalLayout(innerHtml), "w-760");
+  renderModalContent(createModalLayout(innerHtml), "w-760 sm:w-370");
 }
 
 function showSkinTypeQuestion() {
@@ -1105,7 +1108,7 @@ function showSkinTypeQuestion() {
     ${optionsHtml}
     ${generateErrorContainerMarkup()}
   `;
-  renderModalContent(createModalLayout(innerHtml), "w-760");
+  renderModalContent(createModalLayout(innerHtml), "w-760 sm:w-370");
 }
 
 function showProperRoutineBasedOnConcernScreen() {
@@ -1205,39 +1208,45 @@ function showProperRoutineBasedOnConcernScreen() {
     ${generateErrorContainerMarkup()}
   `;
 
-  renderModalContent(createModalLayout(innerHtml), "w-760").then(() => {
-    const reactionInputs = modalBody.querySelectorAll(
-      'input[name="skinCare_acneIrritation"]'
-    );
+  renderModalContent(createModalLayout(innerHtml), "w-760 sm:w-370").then(
+    () => {
+      const reactionInputs = modalBody.querySelectorAll(
+        'input[name="skinCare_acneIrritation"]'
+      );
 
-    reactionInputs.forEach((input) => {
-      input.addEventListener("change", (e) => {
+      reactionInputs.forEach((input) => {
+        input.addEventListener("change", (e) => {
+          const additionalQuestions = modalBody.querySelector(
+            "#additional-questions"
+          );
+          if (additionalQuestions) {
+            if (e.target.value === "no_itch_pain") {
+              additionalQuestions.classList.remove("hidden");
+              additionalQuestions.classList.add("flex", "flex-col", "gap-16");
+            } else {
+              additionalQuestions.classList.add("hidden");
+              additionalQuestions.classList.remove(
+                "flex",
+                "flex-col",
+                "gap-16"
+              );
+            }
+          }
+        });
+      });
+
+      const savedReactionAnswer = userAnswers.skincare?.acneIrritation;
+      if (savedReactionAnswer === "no_itch_pain") {
         const additionalQuestions = modalBody.querySelector(
           "#additional-questions"
         );
         if (additionalQuestions) {
-          if (e.target.value === "no_itch_pain") {
-            additionalQuestions.classList.remove("hidden");
-            additionalQuestions.classList.add("flex", "flex-col", "gap-16");
-          } else {
-            additionalQuestions.classList.add("hidden");
-            additionalQuestions.classList.remove("flex", "flex-col", "gap-16");
-          }
+          additionalQuestions.classList.remove("hidden");
+          additionalQuestions.classList.add("flex", "flex-col", "gap-16");
         }
-      });
-    });
-
-    const savedReactionAnswer = userAnswers.skincare?.acneIrritation;
-    if (savedReactionAnswer === "no_itch_pain") {
-      const additionalQuestions = modalBody.querySelector(
-        "#additional-questions"
-      );
-      if (additionalQuestions) {
-        additionalQuestions.classList.remove("hidden");
-        additionalQuestions.classList.add("flex", "flex-col", "gap-16");
       }
     }
-  });
+  );
 }
 
 function showConsultationScreen() {

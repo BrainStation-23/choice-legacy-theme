@@ -1543,6 +1543,9 @@ address {
 .max-w-100pc-32 {
   max-width: calc(100% - 32px);
 }
+.max-w-80pct {
+  max-width: 80%;
+}
 .border-color-brand {
   border-color: rgba(var(--color-primary-brand));
 }
@@ -1733,6 +1736,9 @@ address {
   .sm\:flex-auto {
     flex: auto;
   }
+  .sm\:w-370 {
+    width: 370px;
+  }
   .sm\:w-304 {
     width: 304px;
   }
@@ -1782,6 +1788,9 @@ address {
     display: flex;
   }
 
+  .sm\:h-auto {
+    height: auto;
+  }
   .sm\:h-304 {
     height: 304px;
   }
@@ -2827,6 +2836,9 @@ address {
   }
   .sm\:p-20 {
     padding: calc(20 * var(--space-unit));
+  }
+  .sm\:p-24 {
+    padding: calc(24 * var(--space-unit));
   }
   .sm\:pl-0 {
     padding-left: 0px;
