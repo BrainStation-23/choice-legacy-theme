@@ -28,16 +28,25 @@ function isFinalStep() {
 
   // Special string steps that lead to completion
   if (currentStep === "skin_issues") {
-    const reactionAnswer = userAnswers.skincare?.acneIrritation;
-    // If it's a reaction that leads to consultation, it's final
+    const acneAllergyAnswer = userAnswers.skincare?.skinIssueCondition;
+
+    // If it's not acne-related, it's final (goes to suggestions)
     if (
-      ["itch_red_burn", "itch_sometimes", "painful"].includes(reactionAnswer)
+      acneAllergyAnswer !== "only_acne" &&
+      acneAllergyAnswer !== "both_acne_allergy"
     ) {
       return true;
     }
-    // If no reaction issues, this leads to suggestions (final)
+
+    // If it's acne-related, check reaction
+    const reactionAnswer = userAnswers.skincare?.acneIrritation;
+    if (
+      ["itch_red_burn", "itch_sometimes", "painful"].includes(reactionAnswer)
+    ) {
+      return true; // Goes to consultation
+    }
     if (reactionAnswer === "no_itch_pain") {
-      return true;
+      return true; // Goes to suggestions after additional questions
     }
   }
 
@@ -905,13 +914,30 @@ function handleContinue() {
   } else if (currentStep === "skin_type") {
     showSuggestionsScreen();
   } else if (currentStep === "skin_issues") {
-    const reactionAnswer = userAnswers.skincare?.acneIrritation;
+    const acneAllergyAnswer = userAnswers.skincare?.skinIssueCondition;
+
+    // If not acne-related, go directly to suggestions
     if (
-      ["itch_red_burn", "itch_sometimes", "painful"].includes(reactionAnswer)
+      acneAllergyAnswer !== "only_acne" &&
+      acneAllergyAnswer !== "both_acne_allergy"
     ) {
-      showConsultationScreen();
-    } else if (reactionAnswer === "no_itch_pain") {
       showSuggestionsScreen();
+      return;
+    }
+
+    // If acne-related, check reaction
+    const reactionAnswer = userAnswers.skincare?.acneIrritation;
+
+    // For "only_acne": if "no_itch_pain" -> suggestions, else -> consultation
+    if (acneAllergyAnswer === "only_acne") {
+      if (reactionAnswer === "no_itch_pain") {
+        showSuggestionsScreen();
+      } else {
+        showConsultationScreen();
+      }
+    } else {
+      // For "both_acne_allergy": all reactions go to consultation
+      showConsultationScreen();
     }
   } else {
     currentStep++;
@@ -1221,13 +1247,14 @@ function showProperRoutineBasedOnConcernScreen() {
       ${generateTitleMarkup(acneAllergyQuestion.title)}
       ${acneAllergyHtml}
     </div>
-    
-    <div class="question-section flex flex-col gap-16">
+
+    <!-- Initially hidden sections that will show based on conditions -->
+    <div id="pregnant-question" class="question-section flex flex-col gap-16 hidden">
       ${generateTitleMarkup(pregnantQuestion.title)}
       ${pregnantHtml}
     </div>
     
-    <div class="question-section flex flex-col gap-16">
+    <div id="reaction-question" class="question-section flex flex-col gap-16 hidden">
       ${generateTitleMarkup(reactionQuestion.title)}
       ${reactionHtml}
     </div>
@@ -1253,6 +1280,49 @@ function showProperRoutineBasedOnConcernScreen() {
 
   renderModalContent(createModalLayout(innerHtml), "w-760 sm:w-370").then(
     () => {
+      // Handle acne/allergy condition changes
+      const acneAllergyInputs = modalBody.querySelectorAll(
+        'input[name="skinCare_skinIssueCondition"]'
+      );
+
+      acneAllergyInputs.forEach((input) => {
+        input.addEventListener("change", (e) => {
+          const pregnantQuestion =
+            modalBody.querySelector("#pregnant-question");
+          const reactionQuestion =
+            modalBody.querySelector("#reaction-question");
+
+          if (
+            e.target.value === "only_acne" ||
+            e.target.value === "both_acne_allergy"
+          ) {
+            // Show pregnant and reaction questions for acne-related answers
+            if (pregnantQuestion) {
+              pregnantQuestion.classList.remove("hidden");
+            }
+            if (reactionQuestion) {
+              reactionQuestion.classList.remove("hidden");
+            }
+          } else {
+            // Hide these questions for other answers
+            if (pregnantQuestion) {
+              pregnantQuestion.classList.add("hidden");
+            }
+            if (reactionQuestion) {
+              reactionQuestion.classList.add("hidden");
+            }
+            // Also hide additional questions
+            const additionalQuestions = modalBody.querySelector(
+              "#additional-questions"
+            );
+            if (additionalQuestions) {
+              additionalQuestions.classList.add("hidden");
+            }
+          }
+        });
+      });
+
+      // Handle reaction question changes
       const reactionInputs = modalBody.querySelectorAll(
         'input[name="skinCare_acneIrritation"]'
       );
@@ -1263,7 +1333,17 @@ function showProperRoutineBasedOnConcernScreen() {
             "#additional-questions"
           );
           if (additionalQuestions) {
-            if (e.target.value === "no_itch_pain") {
+            const acneAllergyAnswer =
+              userAnswers.skincare?.skinIssueCondition ||
+              modalBody.querySelector(
+                'input[name="skinCare_skinIssueCondition"]:checked'
+              )?.value;
+
+            // Show additional questions only if "only_acne" AND reaction is NOT "no_itch_pain"
+            if (
+              acneAllergyAnswer === "only_acne" &&
+              e.target.value !== "no_itch_pain"
+            ) {
               additionalQuestions.classList.remove("hidden");
               additionalQuestions.classList.add("flex", "flex-col", "gap-16");
             } else {
@@ -1278,14 +1358,31 @@ function showProperRoutineBasedOnConcernScreen() {
         });
       });
 
-      const savedReactionAnswer = userAnswers.skincare?.acneIrritation;
-      if (savedReactionAnswer === "no_itch_pain") {
-        const additionalQuestions = modalBody.querySelector(
-          "#additional-questions"
-        );
-        if (additionalQuestions) {
-          additionalQuestions.classList.remove("hidden");
-          additionalQuestions.classList.add("flex", "flex-col", "gap-16");
+      // Set initial state based on saved answers
+      const savedAcneAllergyAnswer = userAnswers.skincare?.skinIssueCondition;
+      if (
+        savedAcneAllergyAnswer === "only_acne" ||
+        savedAcneAllergyAnswer === "both_acne_allergy"
+      ) {
+        const pregnantQuestion = modalBody.querySelector("#pregnant-question");
+        const reactionQuestion = modalBody.querySelector("#reaction-question");
+        if (pregnantQuestion) pregnantQuestion.classList.remove("hidden");
+        if (reactionQuestion) reactionQuestion.classList.remove("hidden");
+
+        const savedReactionAnswer = userAnswers.skincare?.acneIrritation;
+        // Show additional questions only if "only_acne" AND reaction is NOT "no_itch_pain"
+        if (
+          savedAcneAllergyAnswer === "only_acne" &&
+          savedReactionAnswer !== "no_itch_pain" &&
+          savedReactionAnswer
+        ) {
+          const additionalQuestions = modalBody.querySelector(
+            "#additional-questions"
+          );
+          if (additionalQuestions) {
+            additionalQuestions.classList.remove("hidden");
+            additionalQuestions.classList.add("flex", "flex-col", "gap-16");
+          }
         }
       }
     }
