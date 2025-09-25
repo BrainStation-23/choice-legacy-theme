@@ -952,9 +952,9 @@ function handleContinue() {
   } else if (currentStep === "skin_issues") {
     const acneAllergyAnswer = userAnswers.skincare?.skinIssueCondition;
 
-    // If not acne/allergy related, go directly to suggestions
+    // If neither acne nor allergy, show routine + suggestions
     if (acneAllergyAnswer === "neither_acne_allergy") {
-      showSuggestionsScreen();
+      showSuggestionsWithRoutineScreen();
       return;
     }
 
@@ -969,7 +969,7 @@ function handleContinue() {
 
     if (acneAllergyAnswer === "only_acne") {
       if (reactionAnswer === "no_itch_pain") {
-        showSuggestionsScreen();
+        showSuggestionsScreen(); // Only suggestions, no routine
       } else {
         showConsultationScreen();
       }
@@ -1345,6 +1345,9 @@ function showProperRoutineBasedOnConcernScreen() {
             acneAdditionalQuestions.classList.add("hidden");
           if (allergyQuestions) allergyQuestions.classList.add("hidden");
 
+          // ADD THIS: Clear saved answers for questions that shouldn't be visible
+          if (!userAnswers.skincare) userAnswers.skincare = {};
+
           if (
             e.target.value === "only_acne" ||
             e.target.value === "both_acne_allergy"
@@ -1355,6 +1358,19 @@ function showProperRoutineBasedOnConcernScreen() {
           } else if (e.target.value === "only_allergy") {
             // Show only allergy-specific questions
             if (allergyQuestions) allergyQuestions.classList.remove("hidden");
+
+            // ADD THIS: Clear acne-specific answers
+            delete userAnswers.skincare.isPregnant;
+            delete userAnswers.skincare.acneIrritation;
+            delete userAnswers.skincare.acneType;
+          } else if (e.target.value === "neither_acne_allergy") {
+            // ADD THIS: Clear all conditional answers for neither case
+            delete userAnswers.skincare.isPregnant;
+            delete userAnswers.skincare.acneIrritation;
+            delete userAnswers.skincare.acneType;
+            delete userAnswers.skincare.usedWhiteningProduct;
+            delete userAnswers.skincare.faceImageUploaded;
+            delete userAnswers.skincare.faceImageUrl;
           }
         });
       });
@@ -1424,6 +1440,7 @@ function showProperRoutineBasedOnConcernScreen() {
       const savedAcneAllergyAnswer = userAnswers.skincare?.skinIssueCondition;
       const savedReactionAnswer = userAnswers.skincare?.acneIrritation;
 
+      // Only show conditional questions if they're relevant to the current acne/allergy answer
       if (
         savedAcneAllergyAnswer === "only_acne" ||
         savedAcneAllergyAnswer === "both_acne_allergy"
@@ -1433,7 +1450,6 @@ function showProperRoutineBasedOnConcernScreen() {
         if (pregnantQuestion) pregnantQuestion.classList.remove("hidden");
         if (reactionQuestion) reactionQuestion.classList.remove("hidden");
 
-        // For only_acne: show additional questions if reaction is answered and not "no_itch_pain"
         if (
           savedAcneAllergyAnswer === "only_acne" &&
           savedReactionAnswer &&
@@ -1454,32 +1470,6 @@ function showProperRoutineBasedOnConcernScreen() {
           }
         }
       } else if (savedAcneAllergyAnswer === "only_allergy") {
-        // For only_allergy: show allergy questions
-        const allergyQuestions = modalBody.querySelector("#allergy-questions");
-        if (allergyQuestions) {
-          allergyQuestions.classList.remove("hidden");
-          allergyQuestions.classList.add("flex", "flex-col", "gap-16");
-        }
-      }
-
-      // Additional check: if any of the conditional questions have saved answers, show their sections
-      const savedBreakoutType = userAnswers.skincare?.acneType;
-      const savedWhiteningProduct = userAnswers.skincare?.usedWhiteningProduct;
-      const savedFaceImage = userAnswers.skincare?.faceImageUploaded;
-
-      // If breakout type is answered, show acne additional questions
-      if (savedBreakoutType) {
-        const acneAdditionalQuestions = modalBody.querySelector(
-          "#acne-additional-questions"
-        );
-        if (acneAdditionalQuestions) {
-          acneAdditionalQuestions.classList.remove("hidden");
-          acneAdditionalQuestions.classList.add("flex", "flex-col", "gap-16");
-        }
-      }
-
-      // If whitening product or face image is answered, show allergy questions
-      if (savedWhiteningProduct !== undefined || savedFaceImage !== undefined) {
         const allergyQuestions = modalBody.querySelector("#allergy-questions");
         if (allergyQuestions) {
           allergyQuestions.classList.remove("hidden");
@@ -1560,6 +1550,59 @@ function showSuggestionsScreen() {
       consultationContent.classList.add("hidden");
     }
 
+    if (suggestionsContent) {
+      suggestionsContent.classList.remove("hidden");
+      suggestionsContent.classList.add("flex", "flex-col", "gap-24");
+
+      // Show suggestions spinner, then hide it after loading
+      toggleSpinner("suggestions-spinner", "suggestions-content", false);
+
+      setTimeout(() => {
+        toggleSpinner("suggestions-spinner", "suggestions-content", true);
+      }, 1000); // Simulate loading time
+    }
+  }
+
+  saveUserProfile();
+}
+
+function showSuggestionsWithRoutineScreen() {
+  currentStep = "suggestions";
+  closeModal();
+
+  const mainContent = document.querySelector(".page-width .flex");
+  if (mainContent) {
+    mainContent.classList.add("hidden");
+  }
+
+  const consultationSection = document.getElementById("consultation-section");
+  if (consultationSection) {
+    consultationSection.classList.remove("hidden");
+    consultationSection.classList.add("flex", "flex-col", "gap-24");
+
+    setActiveTab(currentProfileType);
+
+    const consultationContent = consultationSection.querySelector(
+      '[data-content="consultation"]'
+    );
+    const suggestionsContent = consultationSection.querySelector(
+      '[data-content="suggestions"]'
+    );
+    const routineContent = consultationSection.querySelector(
+      '[data-content="routine"]'
+    );
+
+    if (consultationContent) {
+      consultationContent.classList.add("hidden");
+    }
+
+    // Show routine content first
+    if (routineContent) {
+      routineContent.classList.remove("hidden");
+      routineContent.classList.add("flex", "flex-col", "gap-24");
+    }
+
+    // Then show suggestions content
     if (suggestionsContent) {
       suggestionsContent.classList.remove("hidden");
       suggestionsContent.classList.add("flex", "flex-col", "gap-24");
