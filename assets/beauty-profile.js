@@ -606,7 +606,7 @@ function validateAndSaveAnswers() {
   const q_key_map = {
     routine_or_product: "skinCare_routine_or_product",
     skin_type: "skinCare_skinType",
-    skin_issues: "skinCare_skin_issues_products",
+    skin_issues: "skinCare_skinConcerns",
   };
   const question = isSpecialQuestion
     ? allQuestions.find((q) => q.q_key === q_key_map[currentStep])
@@ -618,7 +618,7 @@ function validateAndSaveAnswers() {
   if (currentStep === "skin_issues") {
     const questionsToValidate = [
       {
-        q_key: "skinCare_skin_issues_products",
+        q_key: "skinCare_skinConcerns",
         type: "multi_choice",
         isRequired: true,
       },
@@ -805,7 +805,7 @@ function saveCurrentAnswer() {
 
   if (currentStep === "skin_issues") {
     const questionsToSave = [
-      { q_key: "skinCare_skin_issues_products", type: "multi_choice" },
+      { q_key: "skinCare_skinConcerns", type: "multi_choice" },
       { q_key: "skinCare_skinType", type: "picture_choice" },
       { q_key: "skinCare_skinIssueCondition", type: "single_choice" },
       { q_key: "skinCare_is_pregnant", type: "single_choice" },
@@ -871,7 +871,7 @@ function saveCurrentAnswer() {
   const q_key_map = {
     routine_or_product: "skinCare_routine_or_product",
     skin_type: "skinCare_skinType",
-    skin_issues: "skinCare_skin_issues_products",
+    skin_issues: "skinCare_skinConcerns",
   };
   const question = isSpecialQuestion
     ? allQuestions.find((q) => q.q_key === q_key_map[currentStep])
@@ -1219,7 +1219,7 @@ function showProperRoutineBasedOnConcernScreen() {
   currentStep = "skin_issues";
 
   const skinIssuesQuestion = allQuestions.find(
-    (q) => q.q_key === "skinCare_skin_issues_products"
+    (q) => q.q_key === "skinCare_skinConcerns"
   );
   const skinTypeQuestion = allQuestions.find(
     (q) => q.q_key === "skinCare_skinType"
@@ -1604,7 +1604,7 @@ function handleProfileSelection(profileType) {
         q.key === profileType &&
         q.q_key !== "skinCare_routine_or_product" &&
         q.q_key !== "skinCare_skinType" &&
-        q.q_key !== "skinCare_skin_issues_products" &&
+        q.q_key !== "skinCare_skinConcerns" &&
         q.q_key !== "skinCare_skinIssueCondition" &&
         q.q_key !== "skinCare_is_pregnant" &&
         q.q_key !== "skinCare_acneIrritation" &&
