@@ -1514,6 +1514,17 @@ function showConsultationScreen() {
   saveUserProfile();
 }
 
+async function fetchSuggestionProducts(profileType) {
+  try {
+    const response = await fetch(`${apiUrl}/suggestionProducts/${profileType}`);
+    const result = await response.json();
+
+    console.log("Suggestion Products Response:", result);
+  } catch (error) {
+    console.error("Error fetching suggestion products:", error);
+  }
+}
+
 function showSuggestionsScreen() {
   currentStep = "suggestions";
   closeModal();
@@ -1545,10 +1556,10 @@ function showSuggestionsScreen() {
       suggestionsContent.classList.remove("hidden");
       suggestionsContent.classList.add("flex", "flex-col", "gap-24");
 
-      // Remove routine class for regular suggestions
-      suggestionsContent.classList.remove("show-routine");
-
       toggleSpinner("suggestions-spinner", "suggestions-content", false);
+
+      // Add API call for suggestion products
+      fetchSuggestionProducts(currentProfileType);
 
       setTimeout(() => {
         toggleSpinner("suggestions-spinner", "suggestions-content", true);
@@ -1747,13 +1758,18 @@ async function fetchExistingProfile() {
         Object.keys(existingProfileData.skincare).forEach((key) => {
           const value = existingProfileData.skincare[key];
           let formattedKey;
-          if (key === "faceImageUrl") {
+
+          // Handle special cases first
+          if (key === "skinIssuesProducts") {
+            formattedKey = "skinConcerns";
+          } else if (key === "faceImageUrl") {
             formattedKey = "faceImageUrl";
           } else if (key === "faceImageUploaded") {
             formattedKey = "faceImageUploaded";
           } else {
             formattedKey = key.charAt(0).toLowerCase() + key.slice(1);
           }
+
           userAnswers.skincare[formattedKey] = value;
         });
       }
