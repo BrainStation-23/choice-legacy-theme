@@ -23,14 +23,11 @@ async function initializeProfile() {
 }
 
 function isFinalStep() {
-  // DOB and gender screen - not final
   if (currentStep === -1) return false;
 
-  // Special string steps that lead to completion
   if (currentStep === "skin_issues") {
     const acneAllergyAnswer = userAnswers.skincare?.skinIssueCondition;
 
-    // If it's not acne-related, it's final (goes to suggestions)
     if (
       acneAllergyAnswer !== "only_acne" &&
       acneAllergyAnswer !== "both_acne_allergy"
@@ -38,21 +35,19 @@ function isFinalStep() {
       return true;
     }
 
-    // If it's acne-related, check reaction
     const reactionAnswer = userAnswers.skincare?.acneIrritation;
     if (
       ["itch_red_burn", "itch_sometimes", "painful"].includes(reactionAnswer)
     ) {
-      return true; // Goes to consultation
+      return true;
     }
     if (reactionAnswer === "no_itch_pain") {
-      return true; // Goes to suggestions after additional questions
+      return true;
     }
   }
 
-  if (currentStep === "skin_type") return true; // leads to suggestions
+  if (currentStep === "skin_type") return true;
 
-  // For regular question flow
   if (typeof currentStep === "number" && currentStep >= 0) {
     return currentStep === currentProfileQuestions.length - 1;
   }
@@ -62,7 +57,6 @@ function isFinalStep() {
 
 let isBeautyProfileInitialized = false;
 
-// document.addEventListener("DOMContentLoaded", async () => {
 const modal = document.getElementById("beauty-profile-modal");
 const modalBody = document.getElementById("beauty-profile-modal-body");
 const closeModalBtn = document.getElementById("beauty-profile-modal-close-btn");
@@ -264,7 +258,6 @@ async function renderModalContent(html, newClasses = "w-full") {
 
   modalBody.innerHTML = html;
   if (currentStep === -1) {
-    // This is DOB and gender screen - remove overflow
     const scrollContainer = modalBody.querySelector(".pt-40.pr-32.pb-40.pl-32");
     if (scrollContainer) {
       scrollContainer.classList.remove(
@@ -642,13 +635,11 @@ function validateAndSaveAnswers() {
       },
     ];
 
-    // Get the current acne/allergy answer
     const currentAcneAllergyAnswer =
       modalBody.querySelector(
         'input[name="skinCare_skinIssueCondition"]:checked'
       )?.value || userAnswers.skincare?.skinIssueCondition;
 
-    // Only add conditional questions if they should be visible
     if (
       currentAcneAllergyAnswer === "only_acne" ||
       currentAcneAllergyAnswer === "both_acne_allergy"
@@ -667,7 +658,6 @@ function validateAndSaveAnswers() {
       );
     }
 
-    // Add additional questions based on visibility
     const acneAdditionalQuestions = document.getElementById(
       "acne-additional-questions"
     );
@@ -942,24 +932,21 @@ function handleContinue() {
   } else if (currentStep === "skin_issues") {
     const acneAllergyAnswer = userAnswers.skincare?.skinIssueCondition;
 
-    // If neither acne nor allergy, show routine + suggestions
     if (acneAllergyAnswer === "neither_acne_allergy") {
       showSuggestionsWithRoutineScreen();
       return;
     }
 
-    // If only allergy, go to consultation
     if (acneAllergyAnswer === "only_allergy") {
       showConsultationScreen();
       return;
     }
 
-    // For acne-related answers, check reaction
     const reactionAnswer = userAnswers.skincare?.acneIrritation;
 
     if (acneAllergyAnswer === "only_acne") {
       if (reactionAnswer === "no_itch_pain") {
-        showSuggestionsScreen(); // Only suggestions, no routine
+        showSuggestionsScreen();
       } else {
         showConsultationScreen();
       }
@@ -1004,12 +991,10 @@ async function saveUserProfile() {
   try {
     const profileData = { ...userAnswers };
 
-    // Clean up irrelevant answers based on current skinIssueCondition
     if (currentProfileType === "skincare" && profileData.skincare) {
       const acneAllergyAnswer = profileData.skincare.skinIssueCondition;
 
       if (acneAllergyAnswer === "neither_acne_allergy") {
-        // For neither: only keep basic answers, remove all conditional ones
         delete profileData.skincare.isPregnant;
         delete profileData.skincare.acneIrritation;
         delete profileData.skincare.acneType;
@@ -1017,22 +1002,18 @@ async function saveUserProfile() {
         delete profileData.skincare.faceImageUploaded;
         delete profileData.skincare.faceImageUrl;
       } else if (acneAllergyAnswer === "only_allergy") {
-        // For only allergy: remove acne-specific answers
         delete profileData.skincare.isPregnant;
         delete profileData.skincare.acneIrritation;
         delete profileData.skincare.acneType;
       } else if (acneAllergyAnswer === "only_acne") {
-        // For only acne: conditionally remove answers based on reaction
         const reactionAnswer = profileData.skincare.acneIrritation;
         if (reactionAnswer === "no_itch_pain") {
-          // If no pain/itching, remove the additional acne questions
           delete profileData.skincare.acneType;
           delete profileData.skincare.usedWhiteningProduct;
           delete profileData.skincare.faceImageUploaded;
           delete profileData.skincare.faceImageUrl;
         }
       } else if (acneAllergyAnswer === "both_acne_allergy") {
-        // For both: remove additional questions (they go straight to consultation)
         delete profileData.skincare.acneType;
         delete profileData.skincare.usedWhiteningProduct;
         delete profileData.skincare.faceImageUploaded;
@@ -1054,7 +1035,6 @@ async function saveUserProfile() {
 
     await response.json();
 
-    // Add these lines to refresh the profile data and UI
     await fetchExistingProfile();
     const productTypeQuestion = allQuestions.find(
       (q) => q.key === "product_type"
@@ -1080,21 +1060,18 @@ function setupCustomDropdown() {
       options.classList.add("hidden");
       arrow.style.transform = "rotate(0deg)";
     } else {
-      // Calculate if dropdown should open upwards
       const dropdownRect = dropdown.getBoundingClientRect();
       const modalBody = dropdown.closest(".beauty-profile-modal-content");
       const modalRect = modalBody.getBoundingClientRect();
 
       const spaceBelow = modalRect.bottom - dropdownRect.bottom;
       const spaceAbove = dropdownRect.top - modalRect.top;
-      const dropdownHeight = 200; // Approximate height of dropdown
+      const dropdownHeight = 200;
 
       if (spaceBelow < dropdownHeight && spaceAbove > dropdownHeight) {
-        // Open upwards
         options.classList.remove("top-full", "mt-4");
         options.classList.add("bottom-full", "mb-4");
       } else {
-        // Open downwards (default)
         options.classList.remove("bottom-full", "mb-4");
         options.classList.add("top-full", "mt-4");
       }
@@ -1104,7 +1081,6 @@ function setupCustomDropdown() {
     }
   });
 
-  // Handle option selection
   options.addEventListener("click", (e) => {
     const option = e.target.closest(".dropdown-option");
     if (!option) return;
@@ -1118,7 +1094,6 @@ function setupCustomDropdown() {
     arrow.style.transform = "rotate(0deg)";
   });
 
-  // Close dropdown when clicking outside
   document.addEventListener("click", (e) => {
     if (!dropdown.contains(e.target) && !options.contains(e.target)) {
       options.classList.add("hidden");
@@ -1186,10 +1161,8 @@ async function showDobAndGenderModal() {
     "w-700 sm:w-370"
   );
 
-  // Set up custom dropdown functionality
   setupCustomDropdown();
 
-  // Rest of your existing code for DOB fields and setting values...
   if (userAnswers.dob) {
     const [yyyy, mm, dd] = userAnswers.dob.split("-");
     modalBody.querySelector("#dob-dd").value = dd;
@@ -1349,7 +1322,6 @@ function showProperRoutineBasedOnConcernScreen() {
 
   renderModalContent(createModalLayout(innerHtml), "w-760 sm:w-370").then(
     () => {
-      // Handle acne/allergy condition changes
       const acneAllergyInputs = modalBody.querySelectorAll(
         'input[name="skinCare_skinIssueCondition"]'
       );
@@ -1366,33 +1338,27 @@ function showProperRoutineBasedOnConcernScreen() {
           const allergyQuestions =
             modalBody.querySelector("#allergy-questions");
 
-          // Hide all conditional sections first
           if (pregnantQuestion) pregnantQuestion.classList.add("hidden");
           if (reactionQuestion) reactionQuestion.classList.add("hidden");
           if (acneAdditionalQuestions)
             acneAdditionalQuestions.classList.add("hidden");
           if (allergyQuestions) allergyQuestions.classList.add("hidden");
 
-          // ADD THIS: Clear saved answers for questions that shouldn't be visible
           if (!userAnswers.skincare) userAnswers.skincare = {};
 
           if (
             e.target.value === "only_acne" ||
             e.target.value === "both_acne_allergy"
           ) {
-            // Show pregnant and reaction questions for acne-related answers
             if (pregnantQuestion) pregnantQuestion.classList.remove("hidden");
             if (reactionQuestion) reactionQuestion.classList.remove("hidden");
           } else if (e.target.value === "only_allergy") {
-            // Show only allergy-specific questions
             if (allergyQuestions) allergyQuestions.classList.remove("hidden");
 
-            // ADD THIS: Clear acne-specific answers
             delete userAnswers.skincare.isPregnant;
             delete userAnswers.skincare.acneIrritation;
             delete userAnswers.skincare.acneType;
           } else if (e.target.value === "neither_acne_allergy") {
-            // ADD THIS: Clear all conditional answers for neither case
             delete userAnswers.skincare.isPregnant;
             delete userAnswers.skincare.acneIrritation;
             delete userAnswers.skincare.acneType;
@@ -1403,7 +1369,6 @@ function showProperRoutineBasedOnConcernScreen() {
         });
       });
 
-      // Handle reaction question changes (KEEP ONLY ONE OF THESE)
       const reactionInputs = modalBody.querySelectorAll(
         'input[name="skinCare_acneIrritation"]'
       );
@@ -1423,9 +1388,9 @@ function showProperRoutineBasedOnConcernScreen() {
                 'input[name="skinCare_skinIssueCondition"]:checked'
               )?.value;
 
-            // Show acne additional questions only if "only_acne" AND reaction is NOT "no_itch_pain"
             if (
-              acneAllergyAnswer === "only_acne" &&
+              (acneAllergyAnswer === "only_acne" ||
+                acneAllergyAnswer === "both_acne_allergy") &&
               e.target.value !== "no_itch_pain"
             ) {
               acneAdditionalQuestions.classList.remove("hidden");
@@ -1435,7 +1400,6 @@ function showProperRoutineBasedOnConcernScreen() {
                 "gap-16"
               );
 
-              // Also need to show the remaining questions (whitening product and photo)
               if (allergyQuestions) {
                 allergyQuestions.classList.remove("hidden");
                 allergyQuestions.classList.add("flex", "flex-col", "gap-16");
@@ -1448,8 +1412,10 @@ function showProperRoutineBasedOnConcernScreen() {
                 "gap-16"
               );
 
-              // Hide allergy questions if reaction is "no_itch_pain" for only_acne
-              if (acneAllergyAnswer === "only_acne") {
+              if (
+                acneAllergyAnswer === "only_acne" ||
+                acneAllergyAnswer === "both_acne_allergy"
+              ) {
                 if (allergyQuestions) {
                   allergyQuestions.classList.add("hidden");
                   allergyQuestions.classList.remove(
@@ -1464,11 +1430,9 @@ function showProperRoutineBasedOnConcernScreen() {
         });
       });
 
-      // ADD THIS: Set initial state based on saved answers
       const savedAcneAllergyAnswer = userAnswers.skincare?.skinIssueCondition;
       const savedReactionAnswer = userAnswers.skincare?.acneIrritation;
 
-      // Only show conditional questions if they're relevant to the current acne/allergy answer
       if (
         savedAcneAllergyAnswer === "only_acne" ||
         savedAcneAllergyAnswer === "both_acne_allergy"
@@ -1535,12 +1499,11 @@ function showConsultationScreen() {
       consultationContent.classList.remove("hidden");
       consultationContent.classList.add("flex", "flex-col", "gap-24");
 
-      // Show consultation spinner, then hide it after loading
       toggleSpinner("consultation-spinner", "consultation-content", false);
 
       setTimeout(() => {
         toggleSpinner("consultation-spinner", "consultation-content", true);
-      }, 1000); // Simulate loading time
+      }, 1000);
     }
 
     if (suggestionsContent) {
@@ -1582,12 +1545,11 @@ function showSuggestionsScreen() {
       suggestionsContent.classList.remove("hidden");
       suggestionsContent.classList.add("flex", "flex-col", "gap-24");
 
-      // Show suggestions spinner, then hide it after loading
       toggleSpinner("suggestions-spinner", "suggestions-content", false);
 
       setTimeout(() => {
         toggleSpinner("suggestions-spinner", "suggestions-content", true);
-      }, 1000); // Simulate loading time
+      }, 1000);
     }
   }
 
@@ -1624,23 +1586,20 @@ function showSuggestionsWithRoutineScreen() {
       consultationContent.classList.add("hidden");
     }
 
-    // Show routine content first
     if (routineContent) {
       routineContent.classList.remove("hidden");
       routineContent.classList.add("flex", "flex-col", "gap-24");
     }
 
-    // Then show suggestions content
     if (suggestionsContent) {
       suggestionsContent.classList.remove("hidden");
       suggestionsContent.classList.add("flex", "flex-col", "gap-24");
 
-      // Show suggestions spinner, then hide it after loading
       toggleSpinner("suggestions-spinner", "suggestions-content", false);
 
       setTimeout(() => {
         toggleSpinner("suggestions-spinner", "suggestions-content", true);
-      }, 1000); // Simulate loading time
+      }, 1000);
     }
   }
 
