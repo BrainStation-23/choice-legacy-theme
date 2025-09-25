@@ -1004,7 +1004,10 @@ async function saveUserProfile() {
         delete profileData.skincare.isPregnant;
         delete profileData.skincare.acneIrritation;
         delete profileData.skincare.acneType;
-      } else if (acneAllergyAnswer === "only_acne") {
+      } else if (
+        acneAllergyAnswer === "only_acne" ||
+        acneAllergyAnswer === "both_acne_allergy"
+      ) {
         const reactionAnswer = profileData.skincare.acneIrritation;
         if (reactionAnswer === "no_itch_pain") {
           delete profileData.skincare.acneType;
@@ -1012,11 +1015,6 @@ async function saveUserProfile() {
           delete profileData.skincare.faceImageUploaded;
           delete profileData.skincare.faceImageUrl;
         }
-      } else if (acneAllergyAnswer === "both_acne_allergy") {
-        delete profileData.skincare.acneType;
-        delete profileData.skincare.usedWhiteningProduct;
-        delete profileData.skincare.faceImageUploaded;
-        delete profileData.skincare.faceImageUrl;
       }
     }
 
