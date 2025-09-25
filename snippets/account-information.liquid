@@ -22,7 +22,7 @@
             style="color: green"
           >
             <span id="saveText">{{ 'customer.account.save' | t }}</span>
-            <spinner-component id="saveSpinner" style="display: none;"></spinner-component>
+            <spinner-component size="small" id="saveSpinner" style="display: none;"></spinner-component>
           </h3>
           <h3
             class="text-brand ff-general-sans fs-14-lh-100pct-ls-0 fw-600 m-0 cursor-pointer"
@@ -123,7 +123,8 @@
             autocomplete: 'email',
             required: false,
             class: 'w-full',
-            value: email_value
+            value: email_value,
+            isDisabled: true
           %}
         </div>
 
@@ -208,14 +209,14 @@
         </div>
 
         <button
-          class="button--solid bg-brand border-none rounded-6 w-full "
+          class="button--solid bg-brand border-none rounded-6 w-full h-44"
           id="sendOtpBtn"
           onclick="sendOTP()"
         >
           <span id="sendOtpText" class="ff-general-sans  fs-14-lh-100pct-ls-0 fw-600">
             {{- 'customer.account.send_otp' | t -}}
           </span>
-          <spinner-component id="sendOtpSpinner" style="display: none;"></spinner-component>
+          <spinner-component size="small" id="sendOtpSpinner" style="display: none;"></spinner-component>
         </button>
       </div>
 
@@ -244,14 +245,14 @@
         </p>
 
         <button
-          class="submit-btn button--solid bg-brand border-none rounded-6 w-full"
+          class="submit-btn button--solid bg-brand border-none rounded-6 w-full h-44"
           id="submitBtn"
           onclick="verifyOTPAndSubmit()"
         >
           <span id="submitText" class="ff-general-sans  fs-16-lh-100pct-ls-0  fw-600">
             {{- 'customer.account.submit' | t -}}
           </span>
-          <spinner-component id="submitSpinner" style="display: none;"></spinner-component>
+          <spinner-component size="small" id="submitSpinner" style="display: none;"></spinner-component>
         </button>
       </div>
     </div>
@@ -263,10 +264,19 @@
     display: flex;
     justify-content: center;
   }
+  .resend-disabled {
+    pointer-events: none;
+    opacity: 0.7 !important;
+    cursor: no-drop !important;
+    color: black !important;
+  }
 </style>
 
 <script>
   let toastManager;
+  let resendTimer;
+  let resendTimeLeft = 0;
+
   document.addEventListener('DOMContentLoaded', function () {
     toastManager = new ToastNotificationManager();
   });
@@ -337,6 +347,8 @@
     document.getElementById('emailModal').style.display = 'flex';
     document.getElementById('emailStep').style.display = 'flex';
     document.getElementById('otpStep').style.display = 'none';
+    // Reset resend timer when opening modal
+    clearResendTimer();
   }
 
   function closeEmailModal() {
@@ -344,6 +356,53 @@
     document.getElementById('emailStep').style.display = 'flex';
     document.getElementById('otpStep').style.display = 'none';
     document.getElementById('newEmailInput').value = '';
+    // Clear timer when closing modal
+    clearResendTimer();
+  }
+
+  function startResendTimer() {
+    resendTimeLeft = 120; // 2 minutes = 120 seconds
+    const resendElement = document.querySelector('.resend-text');
+
+    // Disable resend functionality and immediately show timer
+    resendElement.classList.add('resend-disabled');
+
+    // Immediately display the initial countdown
+    const minutes = Math.floor(resendTimeLeft / 60);
+    const seconds = resendTimeLeft % 60;
+    const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    resendElement.textContent = `Retry in ${timeString}`;
+
+    resendTimer = setInterval(() => {
+      resendTimeLeft--;
+
+      if (resendTimeLeft < 0) {
+        clearResendTimer();
+        return;
+      }
+
+      const minutes = Math.floor(resendTimeLeft / 60);
+      const seconds = resendTimeLeft % 60;
+      const timeString = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+      resendElement.textContent = `Retry in ${timeString}`;
+    }, 1000);
+  }
+  function clearResendTimer() {
+    if (resendTimer) {
+      clearInterval(resendTimer);
+      resendTimer = null;
+    }
+    resendTimeLeft = 0;
+
+    const resendElement = document.querySelector('.resend-text');
+    if (resendElement) {
+      resendElement.style.pointerEvents = 'auto';
+      resendElement.style.opacity = '1';
+      resendElement.style.cursor = 'pointer';
+      resendElement.textContent =
+        document.querySelector('[data-resend-text]')?.getAttribute('data-resend-text') || 'Resend OTP';
+    }
   }
 
   async function sendOTP() {
@@ -376,6 +435,9 @@
         document.getElementById('otpStep').style.display = 'flex';
         document.getElementById('displayEmailInput').value = newEmail;
         initToastManager().show('OTP sent successfully! Please check your SMS.', 'success');
+
+        // Start the countdown timer for resend
+        startResendTimer();
       } else {
         console.error('Error sending OTP:', result.message);
         initToastManager().show(result.message || 'Error sending OTP. Please try again.', 'error');
@@ -392,8 +454,50 @@
   }
 
   async function resendOTP() {
-    initToastManager().show('Resending OTP...', 'info');
-    await sendOTP();
+    // Check if resend is currently disabled
+    if (resendTimeLeft > 0) {
+      initToastManager().show('Please wait before requesting another OTP', 'warning');
+      return;
+    }
+
+    initToastManager().show('New OTP is being sent', 'info');
+
+    const newEmail = document.getElementById('displayEmailInput').value.trim();
+    if (!newEmail) {
+      initToastManager().show('Please enter a valid email address', 'error');
+      return;
+    }
+
+    try {
+      const customerPhone = document
+        .querySelector('#phone-field .ff-general-sans.fs-14-lh-16-ls-0.fw-500')
+        .textContent.trim();
+
+      const response = await fetch(`/apps/${APP_SUB_PATH}/customer/account/email-send-otp`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ phone: customerPhone, newEmail: newEmail }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        initToastManager().show('OTP resent successfully! Please check your SMS.', 'success');
+
+        // Clear existing OTP inputs
+        const otpInputs = document.querySelectorAll('.otp-input input, .otp-digit, [data-otp-input], .digit-input');
+        otpInputs.forEach((input) => (input.value = ''));
+
+        // Start the countdown timer again
+        startResendTimer();
+      } else {
+        console.error('Error resending OTP:', result.message);
+        initToastManager().show(result.message || 'Error resending OTP. Please try again.', 'error');
+      }
+    } catch (error) {
+      console.error('Network error:', error);
+      initToastManager().show('Network error occurred. Please try again.', 'error');
+    }
   }
 
   async function verifyOTPAndSubmit() {

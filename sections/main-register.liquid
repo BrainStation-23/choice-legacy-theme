@@ -66,13 +66,7 @@
           <div class="phone-input-wrapper gap-16 flex-1 ">
             {% render 'input', type: 'tel', id: 'customer-phone', name: 'customer[phone]', label: phoneLabel, placeholder: phonePlaceholder, autocomplete: 'tel', required: true, class: '', invalid: form.errors contains 'phone', value: form.phone %}
           </div>
-          <button
-            type="button"
-            id="send-otp-button"
-            class="button--solid border-none rounded-6 cursor-pointer ff-general-sans fs-14-lh-100pct-ls-0 fw-600"
-          >
-            {{ 'customer.register.send_otp' | t }}
-          </button>
+          {% render 'send-otp-button', class: 'min-w-84' %}
         </div>
         <div id="phone-message" class="field-message ff-general-sans"></div>
 
@@ -124,7 +118,7 @@
       <!-- External Register Button -->
       <button
         id="register-submit-button-external"
-        class="button--solid border-none rounded-6 ff-general-sans fs-14 fw-600 cursor-pointer"
+        class="button--solid border-none rounded-6 ff-general-sans fs-14 fw-600 cursor-pointer h-44 p-0"
       >
         {{ 'customer.register.submit' | t }}
       </button>
@@ -171,6 +165,37 @@
     const { otpContainer, showMessage, clearOtpInputs, getOtpValue } = window.otpUtils;
     const API_BASE_URL = `/apps/${APP_SUB_PATH}/customer/account`;
     let isOtpSent = false;
+
+    // Initialize timer state on page load
+    function initializeTimerState() {
+      const savedState = getTimerState();
+      if (savedState) {
+        const currentPhone = phoneInput.value.trim();
+        const savedPhone = cleanPhoneNumber(savedState.phone);
+        const cleanCurrentPhone = currentPhone ? cleanPhoneNumber(currentPhone) : '';
+
+        // Only restore timer if phone number matches or current phone is empty
+        if (!currentPhone || cleanCurrentPhone === savedPhone) {
+          // Set phone number if it was empty
+          if (!currentPhone && savedState.phone) {
+            phoneInput.value = savedState.phone.replace('+88', '');
+          }
+          
+          isOtpSent = true;
+          otpContainer.classList.add('active');
+          startCountdownTimer(savedState.remainingSeconds);
+        } else {
+          // Phone number changed, clear saved state
+          clearTimerState();
+        }
+      }
+    }
+
+    // Countdown timer variables
+    let countdownTimer = null;
+    let countdownSeconds = 0;
+    const TIMER_STORAGE_KEY = 'otp_countdown_timer';
+    const PHONE_STORAGE_KEY = 'otp_phone_number';
 
     function validatePhoneNumber(phone) {
       let cleaned = phone.replace(/[\s-]/g, '');
@@ -233,10 +258,90 @@
       }
     }
 
-    // Clear error messages when user starts typing (optional)
+    // Timer persistence functions using URL parameters
+    function saveTimerState(seconds, phone) {
+      const url = new URL(window.location);
+      url.searchParams.set('otp_timer', seconds);
+      url.searchParams.set('otp_start', Date.now());
+      url.searchParams.set('otp_phone', encodeURIComponent(phone));
+      window.history.replaceState({}, '', url);
+    }
+
+    function getTimerState() {
+      try {
+        const url = new URL(window.location);
+        const timerSeconds = url.searchParams.get('otp_timer');
+        const startTime = url.searchParams.get('otp_start');
+        const phone = url.searchParams.get('otp_phone');
+
+        if (!timerSeconds || !startTime || !phone) return null;
+
+        const elapsed = Math.floor((Date.now() - parseInt(startTime)) / 1000);
+        const remaining = parseInt(timerSeconds) - elapsed;
+
+        return remaining > 0 ? { 
+          remainingSeconds: remaining, 
+          phone: decodeURIComponent(phone) 
+        } : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function clearTimerState() {
+      const url = new URL(window.location);
+      url.searchParams.delete('otp_timer');
+      url.searchParams.delete('otp_start');
+      url.searchParams.delete('otp_phone');
+      window.history.replaceState({}, '', url);
+    }
+
+    // Countdown timer functions
+    function startCountdownTimer(initialSeconds = 120) {
+      countdownSeconds = initialSeconds;
+      sendOtpButton.disabled = true;
+
+      // Save timer state
+      const currentPhone = cleanPhoneNumber(phoneInput.value.trim());
+      saveTimerState(countdownSeconds, currentPhone);
+
+      countdownTimer = setInterval(() => {
+        const minutes = Math.floor(countdownSeconds / 60);
+        const seconds = countdownSeconds % 60;
+        const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+        sendOtpButton.textContent = `Retry in ${timeString}s`;
+
+        countdownSeconds--;
+
+        // Update saved state
+        if (countdownSeconds >= 0) {
+          const currentPhone = cleanPhoneNumber(phoneInput.value.trim());
+          saveTimerState(countdownSeconds, currentPhone);
+        }
+
+        if (countdownSeconds < 0) {
+          clearInterval(countdownTimer);
+          sendOtpButton.disabled = false;
+          sendOtpButton.textContent = 'Resend OTP';
+          countdownTimer = null;
+          clearTimerState();
+        }
+      }, 1000);
+    }
+
+    function clearCountdownTimer() {
+      if (countdownTimer) {
+        clearInterval(countdownTimer);
+        countdownTimer = null;
+        countdownSeconds = 0;
+        sendOtpButton.disabled = false;
+        clearTimerState();
+      }
+    }
+
     [firstNameInput, lastNameInput, phoneInput, emailInput, passwordInput, confirmPasswordInput].forEach((input) => {
       input.addEventListener('input', () => {
-        // Clear any existing error message for this field when user starts typing
         const messageElement = document.getElementById(input.id.replace('customer-', '') + '-message');
         if (messageElement && messageElement.classList.contains('error-text')) {
           hideFieldMessage(messageElement);
@@ -244,7 +349,36 @@
       });
     });
 
-    // Send OTP
+    // Initialize the timer state when page loads
+    initializeTimerState();
+
+    // Clear countdown when phone number changes
+    phoneInput.addEventListener('input', () => {
+      const currentPhone = phoneInput.value.trim();
+      const savedState = getTimerState();
+      
+      // Check if phone number has actually changed from the saved state
+      if (savedState && currentPhone) {
+        const cleanCurrentPhone = cleanPhoneNumber(currentPhone);
+        const savedPhone = cleanPhoneNumber(savedState.phone);
+        
+        if (cleanCurrentPhone !== savedPhone && countdownTimer) {
+          clearCountdownTimer();
+          sendOtpButton.textContent = 'Send OTP';
+          isOtpSent = false;
+          otpContainer.classList.remove('active');
+          clearOtpInputs();
+        }
+      } else if (countdownTimer && !currentPhone) {
+        // If phone is cleared, stop timer
+        clearCountdownTimer();
+        sendOtpButton.textContent = 'Send OTP';
+        isOtpSent = false;
+        otpContainer.classList.remove('active');
+        clearOtpInputs();
+      }
+    });
+
     sendOtpButton.addEventListener('click', async () => {
       const phoneNumber = phoneInput.value.trim();
       hideFieldMessage(otpMessage);
@@ -256,8 +390,10 @@
 
       hideFieldMessage(phoneMessage);
       const cleaned = cleanPhoneNumber(phoneNumber);
+
+      const originalButtonText = sendOtpButton.textContent;
       sendOtpButton.disabled = true;
-      sendOtpButton.textContent = 'Sending...';
+      sendOtpButton.innerHTML = '<spinner-component size="small" color="white"></spinner-component>';
       clearOtpInputs();
 
       try {
@@ -270,14 +406,14 @@
 
         if (res.ok) {
           otpContainer.classList.add('active');
-
           toastManager.show('OTP sent to your phone.', 'success');
-
-          sendOtpButton.textContent = 'Resend OTP';
           isOtpSent = true;
+
+          // Start the countdown timer
+          startCountdownTimer();
         } else {
-          sendOtpButton.textContent = 'Send OTP';
-          // Handle validation errors from server
+          sendOtpButton.disabled = false;
+          sendOtpButton.textContent = isOtpSent ? 'Resend OTP' : 'Send OTP';
 
           if (data.errors) {
             displayServerErrors(data.errors);
@@ -287,9 +423,9 @@
         }
       } catch {
         toastManager.show('Error while sending OTP.', 'error');
-        sendOtpButton.textContent = 'Send OTP';
-      } finally {
+        // Reset button on error
         sendOtpButton.disabled = false;
+        sendOtpButton.textContent = isOtpSent ? 'Resend OTP' : 'Send OTP';
       }
     });
 
@@ -356,7 +492,7 @@
       if (hasError) return;
 
       registerButton.disabled = true;
-      registerButton.textContent = 'Registering...';
+      registerButton.innerHTML = '<spinner-component size="small" color="white"></spinner-component>';
 
       const formData = {
         first_name: firstNameInput.value.trim(),
@@ -390,9 +526,17 @@
         registerButton.textContent = '{{ "customer.register.submit" | t | default: "Submit" }}';
       }
     });
+
+    // Clean up timer when page unloads - but preserve state for navigation
+    window.addEventListener('beforeunload', () => {
+      // Don't clear timer state on unload - let it persist for when user returns
+      if (countdownTimer) {
+        clearInterval(countdownTimer);
+        countdownTimer = null;
+      }
+    });
   });
 </script>
-
 {% schema %}
 {
   "name": "Register",

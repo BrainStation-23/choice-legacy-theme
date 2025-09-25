@@ -25,11 +25,11 @@
           </button>
           <div
             id="return-status-display"
-            class="ff-general-sans fs-12-lh-14-ls-0 text-primary-70pct gap-8"
+            class="ff-general-sans fs-12-lh-14-ls-0 text-primary-70pct gap-8 uppercase"
             style="display: none;"
           >
             <span class="return-status-dot h-8 w-8 rounded-full "></span>
-            <h2 class="return-status-message m-0 p-0 fs-12-lh-16-ls-0_072 fw-500 ff-general-sans"></h2>
+            <h2 class="return-status-message m-0 p-0 fs-12-lh-16-ls-0_072 fw-500 ff-general-sans uppercase"></h2>
             <!-- Return status will be displayed here -->
           </div>
         </div>
@@ -658,8 +658,6 @@
     align-items: center;
   }
 
-
-
   #return-status-display.return-status-approved .return-status-dot {
     background-color: rgba(40, 167, 69, 0.8); /* Green with opacity */
   }
@@ -685,7 +683,7 @@
   function getReturnStatusClass(returnStatus) {
     if (!returnStatus) return '';
 
-    const normalizedStatus = returnStatus.toLowerCase().replace(/\s+/g, '-');
+    const normalizedStatus = returnStatus?.toLowerCase().replace(/\s+/g, '-');
 
     switch (normalizedStatus) {
       case 'approved':
@@ -693,6 +691,7 @@
         return 'return-status-approved';
       case 'declined':
       case 'decline':
+      case 'canceled':
         return 'return-status-declined';
       case 'return-requested':
       case 'return-requisted':
@@ -704,25 +703,25 @@
   }
 
   // Function to show/hide return button based on delivery status and returnStatus
-  function toggleReturnButton(deliveryStatus, returnStatus) {
+  function toggleReturnButton(deliveryStatus, returnStatus, happenedAt) {
     const returnOrderButton = document.getElementById('return-order');
     const returnStatusDisplay = document.getElementById('return-status-display');
 
     if (returnOrderButton) {
-      const normalizedStatus = deliveryStatus.toLowerCase().replace(/\s+/g, '-');
+      const normalizedStatus = deliveryStatus?.toLowerCase().replace(/\s+/g, '-');
+      // return is possible only if happenedAt 3 days or less
+      const happenedDate = new Date(happenedAt);
+      const currentDate = new Date();
+      const timeDiff = currentDate - happenedDate;
+      const dayDiff = timeDiff / (1000 * 3600 * 24);
 
-      if (normalizedStatus === 'delivered') {
+      if (normalizedStatus === 'delivered' && dayDiff <= 3) {
         returnOrderButton.style.display = 'inline-flex';
 
-        // If returnStatus is present, make button non-clickable and show status
         if (returnStatus) {
-          // Add disabled class and disable button
           returnOrderButton.classList.add('return-button-disabled');
           returnOrderButton.disabled = true;
-
-          // Show return status with appropriate color class
           if (returnStatusDisplay) {
-            // Remove all previous status classes
             returnStatusDisplay.classList.remove(
               'return-status-approved',
               'return-status-declined',
@@ -778,7 +777,8 @@
 
   // Listen for delivery status updates from the order timeline
   document.addEventListener('deliveryStatusUpdated', function (event) {
-    toggleReturnButton(event.detail.status, event.detail.returnStatus);
+    console.log('Delivery status updated:', event.detail);
+    toggleReturnButton(event.detail.status, event.detail.returnStatus, event.detail.happenedAt);
   });
 
   document.addEventListener('DOMContentLoaded', function () {
@@ -800,6 +800,7 @@
             },
             body: JSON.stringify({
               orderId: orderId,
+              customerNote: 'Return from website',
             }),
           });
 
@@ -808,6 +809,39 @@
           if (response.ok) {
             // Success toast
             toastManager.show('Return request submitted successfully', 'success');
+
+            // Update return status display if currentStatus is provided
+            if (data.currentStatus) {
+              const returnStatusDisplay = document.getElementById('return-status-display');
+
+              if (returnStatusDisplay) {
+                // Remove existing status classes
+                returnStatusDisplay.classList.remove(
+                  'return-status-approved',
+                  'return-status-declined',
+                  'return-status-requested'
+                );
+
+                // Add the appropriate status class
+                const statusClass = getReturnStatusClass(data.currentStatus);
+                if (statusClass) {
+                  returnStatusDisplay.classList.add(statusClass);
+                }
+
+                // Update the status message
+                const statusMessageElement = returnStatusDisplay.querySelector('.return-status-message');
+                if (statusMessageElement) {
+                  statusMessageElement.textContent = ` ${data.currentStatus}`;
+                }
+
+                // Show the return status display
+                returnStatusDisplay.style.display = 'flex';
+              }
+
+              // Disable the return button since request has been submitted
+              returnOrderButton.classList.add('return-button-disabled');
+              returnOrderButton.disabled = true;
+            }
           } else {
             // Error toast
             toastManager.show(data.message || 'Failed to process return request', 'error');
@@ -818,7 +852,10 @@
         } finally {
           // Hide loading state
           this.classList.remove('loading');
-          this.disabled = false;
+          // Only re-enable if the button doesn't have the disabled class
+          if (!this.classList.contains('return-button-disabled')) {
+            this.disabled = false;
+          }
         }
       });
     }
