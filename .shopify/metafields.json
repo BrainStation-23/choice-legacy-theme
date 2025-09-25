@@ -1,7 +1,18 @@
 {
   "article": [],
   "blog": [],
-  "collection": [],
+  "collection": [
+    {
+      "key": "featured_collections",
+      "namespace": "custom",
+      "name": "Featured Collections",
+      "description": "Featured products will be shown here",
+      "type": {
+        "name": "list.product_reference",
+        "category": "REFERENCE"
+      }
+    }
+  ],
   "company": [],
   "company_location": [],
   "location": [],
@@ -289,8 +300,159 @@
         "name": "number_integer",
         "category": "NUMBER"
       }
+    },
+    {
+      "key": "nutritional_information",
+      "namespace": "custom",
+      "name": "nutritional_information",
+      "description": "sssss",
+      "type": {
+        "name": "list.product_reference",
+        "category": "REFERENCE"
+      }
+    },
+    {
+      "key": "active-ingredient",
+      "namespace": "shopify",
+      "name": "Active ingredient",
+      "description": "Identifies primary substances in personal care items, e.g. vitamin A, retinol",
+      "type": {
+        "name": "list.metaobject_reference",
+        "category": "REFERENCE"
+      }
+    },
+    {
+      "key": "editor_note",
+      "namespace": "custom",
+      "name": "Editor Note",
+      "description": "Editor Note",
+      "type": {
+        "name": "multi_line_text_field",
+        "category": "TEXT"
+      }
+    },
+    {
+      "key": "key_features",
+      "namespace": "custom",
+      "name": "Key Features",
+      "description": "",
+      "type": {
+        "name": "multi_line_text_field",
+        "category": "TEXT"
+      }
+    },
+    {
+      "key": "ingredients",
+      "namespace": "custom",
+      "name": "Ingredients",
+      "description": "",
+      "type": {
+        "name": "multi_line_text_field",
+        "category": "TEXT"
+      }
+    },
+    {
+      "key": "how_to_use",
+      "namespace": "custom",
+      "name": "How to Use",
+      "description": "",
+      "type": {
+        "name": "rich_text_field",
+        "category": "TEXT"
+      }
+    },
+    {
+      "key": "size_chart",
+      "namespace": "custom",
+      "name": "Size Chart",
+      "description": "Size Chart",
+      "type": {
+        "name": "rich_text_field",
+        "category": "TEXT"
+      }
+    },
+    {
+      "key": "size_chart_image",
+      "namespace": "custom",
+      "name": "Size Chart Image",
+      "description": "Size Chart Image",
+      "type": {
+        "name": "list.file_reference",
+        "category": "REFERENCE"
+      }
+    },
+    {
+      "key": "product_reviews",
+      "namespace": "custom",
+      "name": "Product Reviews",
+      "description": "Choice legacy product reviews app",
+      "type": {
+        "name": "json",
+        "category": "JSON"
+      }
+    },
+    {
+      "key": "product_reviews",
+      "namespace": "product_reviews_app",
+      "name": "Product Reviews App",
+      "description": "Product review app",
+      "type": {
+        "name": "json",
+        "category": "JSON"
+      }
+    },
+    {
+      "key": "offer_image",
+      "namespace": "custom",
+      "name": "Offer Image",
+      "description": "",
+      "type": {
+        "name": "metaobject_reference",
+        "category": "REFERENCE"
+      }
     }
   ],
   "variant": [],
-  "shop": []
+  "shop": [
+    {
+      "key": "nutritional_information",
+      "namespace": "custom",
+      "name": "nutritional_information",
+      "description": "this is test ",
+      "type": {
+        "name": "list.product_reference",
+        "category": "REFERENCE"
+      }
+    },
+    {
+      "key": "offer_image",
+      "namespace": "custom",
+      "name": "Offer Image",
+      "description": "",
+      "type": {
+        "name": "file_reference",
+        "category": "REFERENCE"
+      }
+    },
+    {
+      "key": "offer_image_url",
+      "namespace": "custom",
+      "name": "Offer Image URL",
+      "description": "",
+      "type": {
+        "name": "url",
+        "category": "URL"
+      }
+    },
+    {
+      "key": "beauty_profile_consultation",
+      "namespace": "custom",
+      "name": "Beauty Profile Consultation",
+      "description": "",
+      "type": {
+        "name": "rich_text_field",
+        "category": "TEXT"
+      }
+    }
+  ]
 }
