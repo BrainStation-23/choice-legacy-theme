@@ -932,7 +932,7 @@ function handleContinue() {
     const acneAllergyAnswer = userAnswers.skincare?.skinIssueCondition;
 
     if (acneAllergyAnswer === "neither_acne_allergy") {
-      showSuggestionsWithRoutineScreen();
+      showSuggestionsScreen();
       return;
     }
 
@@ -1545,55 +1545,8 @@ function showSuggestionsScreen() {
       suggestionsContent.classList.remove("hidden");
       suggestionsContent.classList.add("flex", "flex-col", "gap-24");
 
-      toggleSpinner("suggestions-spinner", "suggestions-content", false);
-
-      setTimeout(() => {
-        toggleSpinner("suggestions-spinner", "suggestions-content", true);
-      }, 1000);
-    }
-  }
-
-  saveUserProfile();
-}
-
-function showSuggestionsWithRoutineScreen() {
-  currentStep = "suggestions";
-  closeModal();
-
-  const mainContent = document.querySelector(".page-width .flex");
-  if (mainContent) {
-    mainContent.classList.add("hidden");
-  }
-
-  const consultationSection = document.getElementById("consultation-section");
-  if (consultationSection) {
-    consultationSection.classList.remove("hidden");
-    consultationSection.classList.add("flex", "flex-col", "gap-24");
-
-    setActiveTab(currentProfileType);
-
-    const consultationContent = consultationSection.querySelector(
-      '[data-content="consultation"]'
-    );
-    const suggestionsContent = consultationSection.querySelector(
-      '[data-content="suggestions"]'
-    );
-    const routineContent = consultationSection.querySelector(
-      '[data-content="routine"]'
-    );
-
-    if (consultationContent) {
-      consultationContent.classList.add("hidden");
-    }
-
-    if (routineContent) {
-      routineContent.classList.remove("hidden");
-      routineContent.classList.add("flex", "flex-col", "gap-24");
-    }
-
-    if (suggestionsContent) {
-      suggestionsContent.classList.remove("hidden");
-      suggestionsContent.classList.add("flex", "flex-col", "gap-24");
+      // Remove routine class for regular suggestions
+      suggestionsContent.classList.remove("show-routine");
 
       toggleSpinner("suggestions-spinner", "suggestions-content", false);
 

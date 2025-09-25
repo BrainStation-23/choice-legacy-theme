@@ -1,1 +1,14 @@
-<h1>Product suggestions</h1>
+{%- assign profile_image_files = shop.metafields.custom.beauty_profile_routine.value -%}
+<div class="flex flex-col gap-24">
+  <div class="beauty-routine-gallery flex flex-col gap-16">
+    {%- capture sizes %}{% render 'sizes-attribute', grid: true, min: 1, sm: 1, lg: 1, xl: 1 %}{% endcapture -%}
+
+    {%- for image_file in profile_image_files -%}
+      <div class="media block relative w-full h-896 lg:h-500 md:h-450 sm:h-351">
+        {% render 'image', image: image_file, widths: '895, 895, 895, 895', src_width: 529, sizes: sizes, class: 'img-fit', quality: 1 %}
+      </div>
+    {%- endfor -%}
+  </div>
+
+  <h1>Product suggestions!</h1>
+</div>

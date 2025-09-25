@@ -1214,6 +1214,9 @@ address {
 .h-auto {
   height: auto;
 }
+.h-896 {
+  height: 896px;
+}
 .h-600 {
   height: 600px;
 }
@@ -1719,6 +1722,9 @@ address {
     width: 380px;
   }
 
+  .md\:h-450 {
+    height: 450px;
+  }
   .md\:h-300 {
     height: 300px;
   }
@@ -1794,6 +1800,9 @@ address {
 
   .sm\:h-auto {
     height: auto;
+  }
+  .sm\:h-351 {
+    height: 351px;
   }
   .sm\:h-304 {
     height: 304px;
