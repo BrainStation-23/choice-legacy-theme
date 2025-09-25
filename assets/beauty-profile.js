@@ -937,20 +937,25 @@ function handleContinue() {
     }
 
     if (acneAllergyAnswer === "only_allergy") {
-      showConsultationScreen();
+      showSuggestionsScreen(); // Changed from showConsultationScreen()
       return;
     }
 
     const reactionAnswer = userAnswers.skincare?.acneIrritation;
 
-    if (acneAllergyAnswer === "only_acne") {
-      if (reactionAnswer === "no_itch_pain") {
-        showSuggestionsScreen();
-      } else {
+    if (
+      acneAllergyAnswer === "only_acne" ||
+      acneAllergyAnswer === "both_acne_allergy"
+    ) {
+      // Show consultation only for severe reactions
+      if (
+        ["itch_red_burn", "itch_sometimes", "painful"].includes(reactionAnswer)
+      ) {
         showConsultationScreen();
+      } else {
+        // For "no_itch_pain" or any other reaction, show suggestions
+        showSuggestionsScreen();
       }
-    } else if (acneAllergyAnswer === "both_acne_allergy") {
-      showConsultationScreen();
     }
   } else {
     currentStep++;
