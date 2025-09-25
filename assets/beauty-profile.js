@@ -13,7 +13,6 @@ async function initializeProfile() {
 
     createProfileTypes(productTypeQuestion);
   } catch (error) {
-    console.log(error);
     const spinner = document.getElementById("profile-types-spinner");
     if (spinner) {
       spinner.innerHTML =
@@ -1346,6 +1345,8 @@ function showProperRoutineBasedOnConcernScreen() {
 
           if (!userAnswers.skincare) userAnswers.skincare = {};
 
+          userAnswers.skincare.skinIssueCondition = e.target.value;
+
           if (
             e.target.value === "only_acne" ||
             e.target.value === "both_acne_allergy"
@@ -1443,7 +1444,8 @@ function showProperRoutineBasedOnConcernScreen() {
         if (reactionQuestion) reactionQuestion.classList.remove("hidden");
 
         if (
-          savedAcneAllergyAnswer === "only_acne" &&
+          (savedAcneAllergyAnswer === "only_acne" ||
+            savedAcneAllergyAnswer === "both_acne_allergy") &&
           savedReactionAnswer &&
           savedReactionAnswer !== "no_itch_pain"
         ) {
