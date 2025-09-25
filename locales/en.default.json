@@ -159,6 +159,7 @@
       "title": "My Addresses",
       "address1": "Address 1",
       "address2": "Address 2",
+      "address": "Address",
       "customer_name": "Customer",
       "shipping_address": "Shipping Address",
       "billing_address": "Billing Address",
@@ -168,7 +169,7 @@
       "delete": "Delete ",
       "delete_confirm": "Are you sure you want to delete this address?",
       "no_addresses": "No addresses found.",
-      "first_name": "First Name",
+      "first_name": "First Name (Optional)",
       "last_name": "Last Name",
       "company": "Company",
       "city": "City",
@@ -311,7 +312,6 @@
   "general": {
     "cancel": "Cancel",
     "save": "Save",
-    "saving": "Saving...",
     "continue_shopping": "Continue shopping",
     "pagination": {
       "label": "Pagination",

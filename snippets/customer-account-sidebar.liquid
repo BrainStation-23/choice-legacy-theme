@@ -239,10 +239,7 @@
       const tabName = contentType.replace(/_/g, '-');
 
       if (window.location.pathname === '/account' || window.location.pathname.endsWith('/account')) {
-        const url = new URL(window.location);
-        url.searchParams.set('nav', contentType);
-        history.pushState({ tab: contentType }, '', url);
-
+        // Don't update URL here - let showAccountContent handle it properly
         this.setActiveTab(tabName);
         this.updateMobileSelectedItem(tabName);
         this.closeMobileDropdown();

@@ -54,21 +54,6 @@
         value: address.address1,
       %}
 
-      {%- assign address2Label = 'customer.addresses.address2' | t -%}
-      {%- assign address2Placeholder = 'customer.addresses.address2' | t -%}
-      {%
-        render 'input',
-        type: 'text',
-        id: "AddressAddress2" | append: address.id,
-        name: "address[address2]",
-        label: address2Label,
-        placeholder: address2Placeholder,
-        autocomplete: 'address-line2',
-        required: false,
-        class: '',
-        value: address.address2,
-      %}
-
       {%- assign cityLabel = 'customer.addresses.city' | t -%}
       {%- assign cityPlaceholder = 'customer.addresses.city' | t -%}
       {%

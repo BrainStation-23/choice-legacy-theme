@@ -1457,6 +1457,10 @@ address {
 .w-56 {
   width: 56px;
 }
+.min-w-84 {
+  min-width: 84px;
+}
+
 .w-47 {
   width: 47px;
 }
