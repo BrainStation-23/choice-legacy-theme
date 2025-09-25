@@ -640,33 +640,45 @@ function validateAndSaveAnswers() {
         type: "single_choice",
         isRequired: false,
       },
-      {
-        q_key: "skinCare_is_pregnant",
-        type: "single_choice",
-        isRequired: false,
-      },
-      {
-        q_key: "skinCare_acneIrritation",
-        type: "single_choice",
-        isRequired: true,
-      },
     ];
 
-    const additionalQuestions = document.getElementById("additional-questions");
+    // Get the current acne/allergy answer
+    const currentAcneAllergyAnswer =
+      modalBody.querySelector(
+        'input[name="skinCare_skinIssueCondition"]:checked'
+      )?.value || userAnswers.skincare?.skinIssueCondition;
+
+    // Only add conditional questions if they should be visible
+    if (
+      currentAcneAllergyAnswer === "only_acne" ||
+      currentAcneAllergyAnswer === "both_acne_allergy"
+    ) {
+      questionsToValidate.push(
+        {
+          q_key: "skinCare_is_pregnant",
+          type: "single_choice",
+          isRequired: false,
+        },
+        {
+          q_key: "skinCare_acneIrritation",
+          type: "single_choice",
+          isRequired: true,
+        }
+      );
+    }
+
+    // Add additional questions based on visibility
     const acneAdditionalQuestions = document.getElementById(
       "acne-additional-questions"
     );
     const allergyQuestions = document.getElementById("allergy-questions");
 
-    const areAdditionalQuestionsVisible =
-      additionalQuestions && !additionalQuestions.classList.contains("hidden");
     const areAcneAdditionalQuestionsVisible =
       acneAdditionalQuestions &&
       !acneAdditionalQuestions.classList.contains("hidden");
     const areAllergyQuestionsVisible =
       allergyQuestions && !allergyQuestions.classList.contains("hidden");
 
-    // Add acne-specific questions if visible
     if (areAcneAdditionalQuestionsVisible) {
       questionsToValidate.push({
         q_key: "skinCare_acneType",
@@ -675,30 +687,8 @@ function validateAndSaveAnswers() {
       });
     }
 
-    // Add allergy-specific questions if visible
     if (areAllergyQuestionsVisible) {
       questionsToValidate.push(
-        {
-          q_key: "skinCare_usedWhiteningProduct",
-          type: "single_choice",
-          isRequired: true,
-        },
-        {
-          q_key: "skinCare_faceImageUploaded",
-          type: "single_choice",
-          isRequired: true,
-        }
-      );
-    }
-
-    // Keep the old logic for backward compatibility
-    if (areAdditionalQuestionsVisible) {
-      questionsToValidate.push(
-        {
-          q_key: "skinCare_acneType",
-          type: "single_choice",
-          isRequired: true,
-        },
         {
           q_key: "skinCare_usedWhiteningProduct",
           type: "single_choice",
@@ -1013,9 +1003,47 @@ function handleBack() {
 async function saveUserProfile() {
   try {
     const profileData = { ...userAnswers };
+
+    // Clean up irrelevant answers based on current skinIssueCondition
+    if (currentProfileType === "skincare" && profileData.skincare) {
+      const acneAllergyAnswer = profileData.skincare.skinIssueCondition;
+
+      if (acneAllergyAnswer === "neither_acne_allergy") {
+        // For neither: only keep basic answers, remove all conditional ones
+        delete profileData.skincare.isPregnant;
+        delete profileData.skincare.acneIrritation;
+        delete profileData.skincare.acneType;
+        delete profileData.skincare.usedWhiteningProduct;
+        delete profileData.skincare.faceImageUploaded;
+        delete profileData.skincare.faceImageUrl;
+      } else if (acneAllergyAnswer === "only_allergy") {
+        // For only allergy: remove acne-specific answers
+        delete profileData.skincare.isPregnant;
+        delete profileData.skincare.acneIrritation;
+        delete profileData.skincare.acneType;
+      } else if (acneAllergyAnswer === "only_acne") {
+        // For only acne: conditionally remove answers based on reaction
+        const reactionAnswer = profileData.skincare.acneIrritation;
+        if (reactionAnswer === "no_itch_pain") {
+          // If no pain/itching, remove the additional acne questions
+          delete profileData.skincare.acneType;
+          delete profileData.skincare.usedWhiteningProduct;
+          delete profileData.skincare.faceImageUploaded;
+          delete profileData.skincare.faceImageUrl;
+        }
+      } else if (acneAllergyAnswer === "both_acne_allergy") {
+        // For both: remove additional questions (they go straight to consultation)
+        delete profileData.skincare.acneType;
+        delete profileData.skincare.usedWhiteningProduct;
+        delete profileData.skincare.faceImageUploaded;
+        delete profileData.skincare.faceImageUrl;
+      }
+    }
+
     if (currentProfileType && profileData[currentProfileType]) {
       profileData[currentProfileType].isCompleted = true;
     }
+
     const response = await fetch(`${apiUrl}/create`, {
       method: "POST",
       headers: {
