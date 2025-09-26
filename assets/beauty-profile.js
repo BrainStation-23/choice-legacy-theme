@@ -806,7 +806,7 @@ function validateAndSaveAnswers() {
         isRequired: true,
       },
       {
-        q_key: "skinCare_currentSkinCareProducts",
+        q_key: "skinCare_productTypePreference",
         type: "multi_choice",
         isRequired: true,
       },
@@ -1139,7 +1139,7 @@ async function saveUserProfile() {
       body: JSON.stringify(profileData),
     });
 
-    await response.json();
+    const result = await response.json();
 
     await fetchExistingProfile();
     const productTypeQuestion = allQuestions.find(
@@ -1148,8 +1148,11 @@ async function saveUserProfile() {
     if (productTypeQuestion) {
       createProfileTypes(productTypeQuestion);
     }
+
+    return result; // Return the result so showSuggestionsScreen can await it
   } catch (error) {
     console.error("Error saving profile:", error);
+    throw error; // Re-throw so showSuggestionsScreen can catch it
   }
 }
 
@@ -1331,7 +1334,7 @@ function showSkinTypeWithCurrentProductsQuestion() {
     (q) => q.q_key === "skinCare_skinType"
   );
   const currentProductsQuestion = allQuestions.find(
-    (q) => q.q_key === "skinCare_currentSkinCareProducts"
+    (q) => q.q_key === "skinCare_productTypePreference"
   );
 
   if (!skinTypeQuestion || !currentProductsQuestion) return;
@@ -1668,9 +1671,12 @@ async function fetchSuggestionProducts(profileType) {
   }
 }
 
-function showSuggestionsScreen() {
+async function showSuggestionsScreen() {
   currentStep = "suggestions";
   closeModal();
+
+  // Re-enable body scroll since we're leaving the modal
+  document.body.style.overflow = "";
 
   const mainContent = document.querySelector(".page-width .flex");
   if (mainContent) {
@@ -1701,18 +1707,23 @@ function showSuggestionsScreen() {
 
       toggleSpinner("suggestions-spinner", "suggestions-content", false);
 
-      // Add API call for suggestion products
-      fetchSuggestionProducts(currentProfileType);
+      try {
+        // Wait for the profile to be saved first
+        await saveUserProfile();
 
-      setTimeout(() => {
+        // Then fetch suggestions
+        await fetchSuggestionProducts(currentProfileType);
+
+        setTimeout(() => {
+          toggleSpinner("suggestions-spinner", "suggestions-content", true);
+        }, 500); // Reduced timeout since API calls are done
+      } catch (error) {
+        console.error("Error in suggestions flow:", error);
         toggleSpinner("suggestions-spinner", "suggestions-content", true);
-      }, 1000);
+      }
     }
   }
-
-  saveUserProfile();
 }
-
 function setActiveTab(profileType) {
   const tabButtons = document.querySelectorAll(
     "#consultation-section .tab-button"
