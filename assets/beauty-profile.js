@@ -300,14 +300,26 @@ async function renderModalContent(html, newClasses = "w-full") {
       if (isMultiChoice) {
         option.classList.toggle("is-selected");
 
-        const selectedCount =
-          optionsContainer.querySelectorAll(".is-selected").length;
+        const selectedElements =
+          optionsContainer.querySelectorAll(".is-selected");
+        const selectedCount = selectedElements.length;
         const placeholder = optionsContainer.querySelector(".placeholder");
+
         if (placeholder) {
-          placeholder.textContent =
-            selectedCount > 0
-              ? `${selectedCount} selected`
-              : "you can choose multiple";
+          if (selectedCount === 0) {
+            placeholder.textContent = "you can choose multiple";
+          } else {
+            const selectedLabels = Array.from(selectedElements).map(
+              (el) => el.textContent
+            );
+            if (selectedLabels.length <= 3) {
+              placeholder.textContent = selectedLabels.join(", ");
+            } else {
+              placeholder.textContent = `${selectedLabels
+                .slice(0, 2)
+                .join(", ")} and ${selectedLabels.length - 2} more`;
+            }
+          }
         }
       } else {
         optionsContainer
@@ -507,14 +519,28 @@ function generateMultiChoiceMarkup(question) {
       const isSelected = savedAnswers.includes(option.value)
         ? "is-selected"
         : "";
-      return `<button type="button" class="option-btn w-full text-left bg-bg p-16 border-none border-bottom fw-500 fs-14-lh-20-ls-0_1 ${isSelected}" data-value="${option.value}">${option.label}</button>`;
+      return `<button type="button" class="option-btn cursor-pointer w-full text-left bg-bg p-16 border-none border-bottom fw-500 fs-14-lh-20-ls-0_1 ${isSelected}" data-value="${option.value}">${option.label}</button>`;
     })
     .join("");
 
-  const placeholderText =
-    savedAnswers.length > 0
-      ? `${savedAnswers.length} selected`
-      : "you can choose multiple";
+  const getSelectedLabels = () => {
+    if (savedAnswers.length === 0) return "you can choose multiple";
+
+    const selectedLabels = savedAnswers.map((value) => {
+      const option = question.options.find((opt) => opt.value === value);
+      return option ? option.label : value;
+    });
+
+    if (selectedLabels.length <= 3) {
+      return selectedLabels.join(", ");
+    } else {
+      return `${selectedLabels.slice(0, 2).join(", ")} and ${
+        selectedLabels.length - 2
+      } more`;
+    }
+  };
+
+  const placeholderText = getSelectedLabels();
 
   return `
     <div class="options-container multi-choice multi-select-container relative w-full">
