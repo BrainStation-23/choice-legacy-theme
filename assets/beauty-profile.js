@@ -127,6 +127,8 @@ async function uploadImageFile(file, type = "face") {
 
 async function openModal() {
   if (modal && modalBody) {
+    document.body.style.overflow = "hidden";
+
     modalBody.classList.add("is-transitioning");
     modal.style.display = "flex";
     await delay(20);
@@ -141,6 +143,8 @@ async function closeModal() {
     await delay(animationDuration);
     modal.style.display = "none";
     modalBody.classList.remove("is-transitioning");
+
+    document.body.style.overflow = "";
   }
 }
 
