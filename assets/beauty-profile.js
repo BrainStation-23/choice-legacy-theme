@@ -1,9 +1,13 @@
 async function initializeProfile() {
   try {
-    await fetchExistingProfile();
+    // Execute both API calls in parallel
+    const [profileResult, questionsResponse] = await Promise.all([
+      fetchExistingProfile(),
+      fetch(`${apiUrl}/questions`),
+    ]);
 
-    const response = await fetch(`${apiUrl}/questions`);
-    const { questions } = await response.json();
+    // Process questions response
+    const { questions } = await questionsResponse.json();
     if (!questions || questions.length === 0) return;
 
     allQuestions = questions;
@@ -13,6 +17,7 @@ async function initializeProfile() {
 
     createProfileTypes(productTypeQuestion);
   } catch (error) {
+    console.error(error);
     const spinner = document.getElementById("profile-types-spinner");
     if (spinner) {
       spinner.innerHTML =
