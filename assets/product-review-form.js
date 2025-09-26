@@ -222,19 +222,23 @@
       submitButton.disabled = true;
 
       const imageFormData = new FormData();
-      imageFormData.append("reviewImage", file);
+      imageFormData.append("image", file);
+      imageFormData.append("type", "review");
 
       try {
-        const response = await fetch(`${API_BASE_URL}/image-upload`, {
-          method: "POST",
-          body: imageFormData,
-        });
+        const response = await fetch(
+          `/apps/${APP_SUB_PATH}/customer/image-upload`,
+          {
+            method: "POST",
+            body: imageFormData,
+          }
+        );
         if (!response.ok)
           throw new Error(
             (await response.json()).message || "Image upload failed"
           );
         const result = await response.json();
-        uploadedImageUrl = result.reviewImage;
+        uploadedImageUrl = result.imageUrl;
       } catch (error) {
         showFieldError("reviewImage", error.message);
         uploadedImageUrl = null;

@@ -67,7 +67,8 @@
     {%- sections 'footer-group' -%}
 
     <script>
-      window.APP_SUB_PATH = "choice_legacy_staging";
+      {% comment %} window.APP_SUB_PATH = "choice_legacy_staging"; {% endcomment %}
+      window.APP_SUB_PATH = "choice-legacy-app";
       window.theme = {
         routes: {
           cart: '{{ routes.cart_url }}',

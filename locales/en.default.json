@@ -193,7 +193,7 @@
       "email": "Email",
       "phone": "Contact Number",
       "myaccount": "My Account",
-      "my_beauties_profile": "My Beauties Profile",
+      "beauty_profile": "My Beauty Profile",
       "orders": "My Orders",
       "addresses": "Addresses",
       "rewards": "Rewards Points",
@@ -429,6 +429,23 @@
           "discount_code_placeholder": "Enter Code"
         }
       }
+    }
+  },
+  "beauty_profile": {
+    "banner": {
+      "heading": "personalised beauty suggestions",
+      "subheading": "Reduces acne, dark spots & hyperpigmentation, Regulates oil, and Improves uneven texture."
+    },
+    "routine": {
+      "heading": "My Routine",
+      "tabs": {
+        "skincare": "Skin Care",
+        "haircare": "Hair Care",
+        "makeup": "Makeup"
+      }
+    },
+    "consultation": {
+      "heading": "Please contact with our doctor"
     }
   }
 }
