@@ -1814,15 +1814,21 @@ function createProfileTypes(productTypeQuestion) {
   `;
 
   if (productTypeQuestion && productTypeQuestion.options) {
+    let isCompleted = false;
+    isCompleted = productTypeQuestion.options.find(
+      (option) => existingProfileData?.[option.value]?.isCompleted
+    );
+    console.log(isCompleted);
     container.innerHTML = productTypeQuestion.options
       .map((option) => {
-        const isCompleted = existingProfileData?.[option.value]?.isCompleted;
+        const isCurrentItemCompleted =
+          existingProfileData?.[option.value]?.isCompleted;
         const buttonText = isCompleted ? "Edit" : "Setup Now";
 
         return `
             <div class="profile-type-card flex flex-col items-center gap-12 w-277 lg:w-full md:w-full sm:w-full pt-12 sm:pt-0">
               ${
-                isCompleted
+                isCurrentItemCompleted
                   ? `
                    <div class="flex justify-between items-center gap-6 w-full lg:flex-col md:flex-col sm:flex-col">
                      <button
@@ -1855,7 +1861,9 @@ function createProfileTypes(productTypeQuestion) {
                   : `
                     <button
                       type="button"
-                      class="setup-now-btn button button--outline w-full pt-1 pb-1 lg:pt-19 md:pt-19 sm:pt-19 lg:pb-19 md:pb-19 sm:pb-19 sm:pl-0 sm:pr-0 flex gap-4 justify-center items-center fs-16-lh-100pct-ls-0 sm:fs-14-lh-100pct-ls-0"
+                      class="setup-now-btn button button--outline w-full ${
+                        isCompleted ? "pt-19 pb-19" : "pt-10 pb-10"
+                      } sm:pl-0 sm:pr-0 flex gap-4 justify-center items-center fs-16-lh-100pct-ls-0 sm:fs-14-lh-100pct-ls-0"
                       data-profile-type="${option.value}"
                     >
                       <svg
