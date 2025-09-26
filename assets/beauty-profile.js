@@ -607,6 +607,7 @@ function validateAndSaveAnswers() {
     routine_or_product: "skinCare_routine_or_product",
     skin_type: "skinCare_skinType",
     skin_issues: "skinCare_skinConcerns",
+    skin_type_with_products: "skinCare_skinType",
   };
   const question = isSpecialQuestion
     ? allQuestions.find((q) => q.q_key === q_key_map[currentStep])
@@ -760,6 +761,68 @@ function validateAndSaveAnswers() {
       closeModal();
       window.location.href = "/pages/beauty-profile-consultation";
       return true;
+    }
+    return true;
+  } else if (currentStep === "skin_type_with_products") {
+    const questionsToValidate = [
+      {
+        q_key: "skinCare_skinType",
+        type: "picture_choice",
+        isRequired: true,
+      },
+      {
+        q_key: "skinCare_currentSkinCareProducts",
+        type: "multi_choice",
+        isRequired: true,
+      },
+    ];
+
+    let hasError = false;
+    questionsToValidate.forEach((questionInfo) => {
+      const questionObj = allQuestions.find(
+        (q) => q.q_key === questionInfo.q_key
+      );
+      if (!questionObj) return;
+
+      const groupKey = questionObj.key;
+      const answerKey = questionObj.q_key
+        .replace(new RegExp(`^${questionObj.key}_`, "i"), "")
+        .replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
+
+      let questionAnswers = [];
+      if (questionInfo.type === "multi_choice") {
+        const selectedOptions = modalBody.querySelectorAll(
+          `.multi-choice .is-selected`
+        );
+        questionAnswers = Array.from(selectedOptions).map(
+          (el) => el.dataset.value
+        );
+      } else if (questionInfo.type === "picture_choice") {
+        const selectedButton = modalBody.querySelector(
+          `.picture-options-container .is-selected`
+        );
+        if (selectedButton) questionAnswers.push(selectedButton.dataset.value);
+      }
+
+      if (questionInfo.isRequired && questionAnswers.length === 0) {
+        hasError = true;
+      }
+
+      if (!userAnswers[groupKey]) userAnswers[groupKey] = {};
+      if (questionAnswers.length > 0) {
+        userAnswers[groupKey][answerKey] =
+          questionInfo.type === "multi_choice"
+            ? questionAnswers
+            : questionAnswers[0];
+      }
+    });
+
+    if (hasError) {
+      displayError(
+        errorContainer,
+        "Please answer all required questions to continue."
+      );
+      return false;
     }
     return true;
   } else {
@@ -923,6 +986,8 @@ function handleContinue() {
     const routineAnswer = userAnswers.skincare?.routineOrProduct;
     if (routineAnswer === "proper_routine_based_on_concerns") {
       showProperRoutineBasedOnConcernScreen();
+    } else if (routineAnswer === "one_single_product") {
+      showSkinTypeWithCurrentProductsQuestion();
     } else {
       showSkinTypeQuestion();
     }
@@ -957,6 +1022,8 @@ function handleContinue() {
         showSuggestionsScreen();
       }
     }
+  } else if (currentStep === "skin_type_with_products") {
+    showSuggestionsScreen();
   } else {
     currentStep++;
     renderCurrentQuestion();
@@ -986,6 +1053,8 @@ function handleBack() {
     showSkinTypeQuestion();
   } else if (previousStep === "skin_issues") {
     showProperRoutineBasedOnConcernScreen();
+  } else if (previousStep === "skin_type_with_products") {
+    showSkinTypeWithCurrentProductsQuestion();
   } else {
     renderCurrentQuestion();
   }
@@ -1217,6 +1286,40 @@ function showSkinTypeQuestion() {
     ${optionsHtml}
     ${generateErrorContainerMarkup()}
   `;
+  renderModalContent(createModalLayout(innerHtml), "w-760 sm:w-370");
+}
+
+function showSkinTypeWithCurrentProductsQuestion() {
+  currentStep = "skin_type_with_products";
+
+  const skinTypeQuestion = allQuestions.find(
+    (q) => q.q_key === "skinCare_skinType"
+  );
+  const currentProductsQuestion = allQuestions.find(
+    (q) => q.q_key === "skinCare_currentSkinCareProducts"
+  );
+
+  if (!skinTypeQuestion || !currentProductsQuestion) return;
+
+  const skinTypeHtml = generatePictureChoiceMarkup(skinTypeQuestion);
+  const currentProductsHtml = generateMultiChoiceMarkup(
+    currentProductsQuestion
+  );
+
+  const innerHtml = `
+    <div class="question-section flex flex-col gap-16">
+      ${generateTitleMarkup(skinTypeQuestion.title)}
+      ${skinTypeHtml}
+    </div>
+    
+    <div class="question-section flex flex-col gap-16">
+      ${generateTitleMarkup(currentProductsQuestion.title)}
+      ${currentProductsHtml}
+    </div>
+    
+    ${generateErrorContainerMarkup()}
+  `;
+
   renderModalContent(createModalLayout(innerHtml), "w-760 sm:w-370");
 }
 
