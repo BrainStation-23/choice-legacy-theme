@@ -1764,7 +1764,31 @@ function showHaircareQuestionsScreen() {
     ${generateErrorContainerMarkup()}
   `;
 
-  renderModalContent(createModalLayout(innerHtml, true), "w-760 sm:w-370");
+  renderModalContent(createModalLayout(innerHtml, true), "w-760 sm:w-370").then(
+    () => {
+      const suggestionTypeInputs = modalBody.querySelectorAll(
+        'input[name="hairCare_suggestionType"]'
+      );
+
+      suggestionTypeInputs.forEach((input) => {
+        input.addEventListener("change", (e) => {
+          const continueBtn = modalBody.querySelector(
+            ".beauty-profile-modal-continue-btn"
+          );
+          if (continueBtn) {
+            if (!userAnswers.haircare) userAnswers.haircare = {};
+            userAnswers.haircare.suggestionType = e.target.value;
+
+            if (e.target.value === "suggestion_based_on_specific_concerns") {
+              continueBtn.textContent = "Continue";
+            } else {
+              continueBtn.textContent = "Save";
+            }
+          }
+        });
+      });
+    }
+  );
 }
 
 function showHaircareConcernsScreen() {
