@@ -3,6 +3,13 @@
     transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
   }
 
+  .beauty-profile-modal-input-group input:focus+label, input:not(:placeholder-shown)+label {
+    font-size: calc(12 * var(--font-unit));
+    line-height: calc(16 * var(--font-unit));
+    letter-spacing: calc(.006 * var(--font-unit));
+    font-weight: 400;
+  }
+
   .is-transitioning {
     opacity: 0;
     transform: translateX(-20px);

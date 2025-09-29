@@ -475,12 +475,12 @@ function generateSingleChoiceMarkup(question, flexCol = false) {
         ${
           flexCol
             ? `<div class="flex"><input type="radio" class="hidden" id="${uniqueId}" name="${question.q_key}" value="${option.value}" ${isChecked}>
-        <label for="${uniqueId}" class="radio-option-label flex gap-10 items-center rounded-100 border border-solid border-color cursor-pointer transition-transform pt-18 pr-16 pb-18 pl-16">
+        <label for="${uniqueId}" class="radio-option-label flex gap-10 items-center rounded-100 border border-solid border-divider cursor-pointer transition-transform pt-18 pr-16 pb-18 pl-16">
           <span class="radio-custom relative w-20 h-20 inline-block border border-solid border-2 rounded-full"></span>
           <span class="radio-option-text transition-transform fw-500 fs-13-lh-16-ls-0_2">${option.label}</span>
         </label></div>`
             : `<input type="radio" class="hidden" id="${uniqueId}" name="${question.q_key}" value="${option.value}" ${isChecked}>
-        <label for="${uniqueId}" class="radio-option-label flex gap-10 items-center rounded-100 border border-solid border-color cursor-pointer transition-transform pt-18 pr-16 pb-18 pl-16">
+        <label for="${uniqueId}" class="radio-option-label flex gap-10 items-center rounded-100 border border-solid border-divider cursor-pointer transition-transform pt-18 pr-16 pb-18 pl-16">
           <span class="radio-custom relative w-20 h-20 inline-block border border-solid border-2 rounded-full"></span>
           <span class="radio-option-text transition-transform fw-500 fs-13-lh-16-ls-0_2">${option.label}</span>
         </label>`
@@ -548,13 +548,13 @@ function generateMultiChoiceMarkup(question) {
 
   return `
     <div class="options-container multi-choice multi-select-container relative w-full">
-      <div class="select-display flex justify-between items-center pt-14 pr-18 pb-14 pl-18 border-1 border-solid border-color rounded-12 cursor-pointer bg-bg fw-500 fs-14-lh-20-ls-0_1">
+      <div class="select-display flex justify-between items-center pt-14 pr-18 pb-14 pl-18 border-1 border-solid border-divider rounded-12 cursor-pointer bg-bg fw-500 fs-14-lh-20-ls-0_1">
         <span class="placeholder">${placeholderText}</span>
         <svg width="18" height="11" viewBox="0 0 18 11" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M8.6543 10.3008C8.32227 10.3008 8.0293 10.1738 7.77539 9.91016L0.333984 2.30273C0.119141 2.08789 0.00195312 1.81445 0.00195312 1.50195C0.00195312 0.867188 0.5 0.369141 1.13477 0.369141C1.44727 0.369141 1.73047 0.496094 1.95508 0.710938L8.6543 7.57617L15.3535 0.710938C15.5684 0.496094 15.8613 0.369141 16.1738 0.369141C16.7988 0.369141 17.2969 0.867188 17.2969 1.50195C17.2969 1.82422 17.1895 2.08789 16.9746 2.30273L9.5332 9.91016C9.28906 10.1738 8.98633 10.3008 8.6543 10.3008Z" fill="#90989C"/>
         </svg>
       </div>
-      <div class="dropdown-panel hidden absolute left-0 right-0 bg-bg rounded-12 overflow-y-auto z-10 border-1 border-solid border-color scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover">
+      <div class="dropdown-panel hidden absolute left-0 right-0 bg-bg rounded-12 overflow-y-auto z-10 border-1 border-solid border-divider scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover">
         ${optionsHtml}
       </div>
     </div>
@@ -1237,15 +1237,15 @@ async function showDobAndGenderModal() {
       <div class="beauty-profile-modal-form-field flex flex-col gap-10">
         <label for="dob-dd" class="text-primary-label fw-400 fs-12-lh-16-ls-0_6">Date of Birth</label>
         <div class="beauty-profile-modal-input-group flex gap-16">
-          <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-dd" maxlength="2" inputmode="numeric" /><label for="dob-dd" class="fw-500 fs-14-lh-20-ls-0_1">DD</label></div>
-          <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-mm" maxlength="2" inputmode="numeric"><label for="dob-mm" class="fw-500 fs-14-lh-20-ls-0_1">MM</label></div>
-          <div class="relative w-100 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1" placeholder=" " id="dob-yyyy" maxlength="4" inputmode="numeric"><label for="dob-yyyy" class="fw-500 fs-14-lh-20-ls-0_1">YYYY</label></div>
+          <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1 border-divider" placeholder=" " id="dob-dd" maxlength="2" inputmode="numeric" /><label for="dob-dd" class="fw-500 fs-14-lh-20-ls-0_1">DD</label></div>
+          <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1 border-divider" placeholder=" " id="dob-mm" maxlength="2" inputmode="numeric"><label for="dob-mm" class="fw-500 fs-14-lh-20-ls-0_1">MM</label></div>
+          <div class="relative w-100 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 fs-14-lh-20-ls-0_1 border-divider" placeholder=" " id="dob-yyyy" maxlength="4" inputmode="numeric"><label for="dob-yyyy" class="fw-500 fs-14-lh-20-ls-0_1">YYYY</label></div>
         </div>
         ${generateErrorContainerMarkup()}
       </div>
       <div class="beauty-profile-modal-form-field flex flex-col gap-10">
         <div class="custom-dropdown relative w-256 h-56">
-          <div class="dropdown-selected flex justify-between items-center w-full h-full pl-16 pr-16 pt-10 pb-10 border-1 border-solid border-color rounded-12 cursor-pointer bg-bg" id="gender-dropdown">
+          <div class="dropdown-selected flex justify-between items-center w-full h-full pl-16 pr-16 pt-10 pb-10 border-1 border-solid border-divider rounded-12 cursor-pointer bg-bg" id="gender-dropdown">
             <div class="selected-content flex flex-col">
               <span class="selected-label fw-400 fs-12-lh-16-ls-0_6 text-primary-label">Gender</span>
               <span class="selected-value fw-500 fs-14-lh-20-ls-0_1" id="gender-selected-value">Male</span>
@@ -1254,7 +1254,7 @@ async function showDobAndGenderModal() {
               <path d="M14.6543 19.3008C14.3223 19.3008 14.0293 19.1738 13.7754 18.9102L6.33398 11.3027C6.11914 11.0879 6.00195 10.8145 6.00195 10.502C6.00195 9.86719 6.5 9.36914 7.13477 9.36914C7.44727 9.36914 7.73047 9.49609 7.95508 9.71094L14.6543 16.5762L21.3535 9.71094C21.5684 9.49609 21.8613 9.36914 22.1738 9.36914C22.7988 9.36914 23.2969 9.86719 23.2969 10.502C23.2969 10.8242 23.1895 11.0879 22.9746 11.3027L15.5332 18.9102C15.2891 19.1738 14.9863 19.3008 14.6543 19.3008Z" fill="#90989C"/>
             </svg>
           </div>
-          <div class="dropdown-options absolute left-0 w-full bg-bg border-1 border-solid border-color rounded-12 mt-4 hidden z-10 overflow-hidden top-full" id="gender-options">
+          <div class="dropdown-options absolute left-0 w-full bg-bg border-1 border-solid border-divider rounded-12 mt-4 hidden z-10 overflow-hidden top-full" id="gender-options">
             <div class="dropdown-option pt-10 pr-16 pb-10 pl-16 cursor-pointer hover:bg-secondary transition-colors fw-500 fs-14-lh-20-ls-0_1" data-value="male">Male</div>
             <div class="dropdown-option pt-10 pr-16 pb-10 pl-16 cursor-pointer hover:bg-secondary transition-colors fw-500 fs-14-lh-20-ls-0_1" data-value="female">Female</div>
             <div class="dropdown-option pt-10 pr-16 pb-10 pl-16 cursor-pointer hover:bg-secondary transition-colors fw-500 fs-14-lh-20-ls-0_1" data-value="other">Other</div>
@@ -1851,7 +1851,7 @@ function createProfileTypes(productTypeQuestion) {
                       <span>${buttonText}</span>
                     </button>
                     <div class="flex justify-center gap-4 items-center min-w-118 lg:w-full md:w-full sm:w-full bg-success text-bg rounded-100 pt-2 pr-4 pb-2 pl-12">
-                      <span class="fw-500 fs-14-lh-20-ls-0_1">Completed</span>
+                      <span class="fw-500 fs-14-lh-20-ls-0_1 text-primary-label">Completed</span>
                       <svg width="29" height="28" viewBox="0 0 29 28" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M14.4531 19.8809C11.0781 19.8809 8.3418 17.1445 8.3418 13.7695C8.3418 10.3945 11.0781 7.6582 14.4531 7.6582C17.8281 7.6582 20.5645 10.3945 20.5645 13.7695C20.5645 17.1445 17.8281 19.8809 14.4531 19.8809ZM14.4531 18.5391C17.0898 18.5391 19.2227 16.4062 19.2227 13.7695C19.2227 11.1328 17.0898 9 14.4531 9C11.8164 9 9.68359 11.1328 9.68359 13.7695C9.68359 16.4062 11.8164 18.5391 14.4531 18.5391ZM13.8262 16.5586C13.5977 16.5586 13.416 16.4531 13.252 16.248L11.8984 14.6133C11.793 14.4785 11.7344 14.3438 11.7344 14.1973C11.7344 13.8809 11.9863 13.6348 12.2969 13.6348C12.4785 13.6348 12.625 13.7051 12.7656 13.8867L13.8086 15.1934L16.0352 11.6191C16.1641 11.4082 16.334 11.3027 16.5273 11.3027C16.8262 11.3027 17.1016 11.5137 17.1016 11.8301C17.1016 11.9648 17.0371 12.1113 16.9551 12.2402L14.377 16.2422C14.248 16.4414 14.0488 16.5586 13.8262 16.5586Z" fill="white"/>
                       </svg>

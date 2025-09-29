@@ -3518,6 +3518,9 @@ input[type="checkbox"]:checked::after {
 .border-color {
   border-color: rgb(var(--color-border));
 }
+.border-divider {
+  border-color: #cbd3d7;
+}
 .border-brand {
   border-color: rgb(var(--color-primary-brand));
 }
