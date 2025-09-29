@@ -453,6 +453,86 @@
         "name": "rich_text_field",
         "category": "TEXT"
       }
+    },
+    {
+      "key": "beauty_profile_routine",
+      "namespace": "custom",
+      "name": "Beauty Profile Routine",
+      "description": "",
+      "type": {
+        "name": "list.file_reference",
+        "category": "REFERENCE"
+      }
+    },
+    {
+      "key": "beauty_profile_routines",
+      "namespace": "beauty_profile",
+      "name": "beauty profile routines",
+      "description": "List of routines metafields",
+      "type": {
+        "name": "file_reference",
+        "category": "REFERENCE"
+      }
+    },
+    {
+      "key": "test1",
+      "namespace": "custom",
+      "name": "test",
+      "description": "",
+      "type": {
+        "name": "single_line_text_field",
+        "category": "TEXT"
+      }
+    },
+    {
+      "key": "test2",
+      "namespace": "custom",
+      "name": "test2",
+      "description": "",
+      "type": {
+        "name": "single_line_text_field",
+        "category": "TEXT"
+      }
+    },
+    {
+      "key": "test",
+      "namespace": "custom1",
+      "name": "test",
+      "description": "ok lol",
+      "type": {
+        "name": "single_line_text_field",
+        "category": "TEXT"
+      }
+    },
+    {
+      "key": "test",
+      "namespace": "custom2",
+      "name": "test",
+      "description": "",
+      "type": {
+        "name": "multi_line_text_field",
+        "category": "TEXT"
+      }
+    },
+    {
+      "key": "basic_routine",
+      "namespace": "beauty_profile",
+      "name": "basic_routine",
+      "description": "",
+      "type": {
+        "name": "file_reference",
+        "category": "REFERENCE"
+      }
+    },
+    {
+      "key": "oily_10_17_years_acne",
+      "namespace": "beauty_profile",
+      "name": "oily_10-17_years_acne",
+      "description": "",
+      "type": {
+        "name": "file_reference",
+        "category": "REFERENCE"
+      }
     }
   ]
 }

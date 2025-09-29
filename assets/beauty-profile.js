@@ -52,6 +52,13 @@ function isFinalStep() {
 
   if (currentStep === "skin_type") return true;
 
+  if (currentStep === "haircare_concerns") return true;
+
+  if (currentStep === "haircare_initial") {
+    const suggestionType = userAnswers.haircare?.suggestionType;
+    return suggestionType !== "suggestion_based_on_specific_concerns";
+  }
+
   if (typeof currentStep === "number" && currentStep >= 0) {
     return currentStep === currentProfileQuestions.length - 1;
   }
@@ -151,10 +158,17 @@ async function closeModal() {
 function createModalLayout(innerHtml, removeOverflow = false) {
   const buttonText = isFinalStep() ? "Save" : "Continue";
   const shouldShowHeading =
-    currentProfileType === "skincare" && currentStep !== -1;
+    (currentProfileType === "skincare" || currentProfileType === "haircare") &&
+    currentStep !== -1;
+
+  const headingText =
+    currentProfileType === "skincare"
+      ? "Tell us about beauty skin"
+      : "Tell us about Hair Care";
+
   const headingHtml = shouldShowHeading
     ? `<div class="profile-heading pt-40 pr-24 pl-24 pb-24 sm:pb-0 sm:pt-24">
-       <h1 class="fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct uppercase">Tell us about beauty skin</h1>
+       <h1 class="fw-400 fs-36-lh-40-ls-0 sm:fs-21-lh-24-ls-1_2pct uppercase">${headingText}</h1>
      </div>`
     : "";
   const footerHtml = `
@@ -860,6 +874,85 @@ function validateAndSaveAnswers() {
       return false;
     }
     return true;
+  } else if (currentStep === "haircare_initial") {
+    const questionsToValidate = [
+      {
+        q_key: "hairCare_hairType",
+        type: "single_choice",
+        isRequired: true,
+      },
+      {
+        q_key: "hairCare_suggestionType",
+        type: "single_choice",
+        isRequired: true,
+      },
+    ];
+
+    let hasError = false;
+    questionsToValidate.forEach((questionInfo) => {
+      const questionObj = allQuestions.find(
+        (q) => q.q_key === questionInfo.q_key
+      );
+      if (!questionObj) return;
+
+      const groupKey = questionObj.key;
+      const answerKey = questionObj.q_key
+        .replace(new RegExp(`^${questionObj.key}_`, "i"), "")
+        .replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
+
+      let questionAnswers = [];
+      const checkedRadio = modalBody.querySelector(
+        `input[name="${questionObj.q_key}"]:checked`
+      );
+      if (checkedRadio) questionAnswers.push(checkedRadio.value);
+
+      if (questionInfo.isRequired && questionAnswers.length === 0) {
+        hasError = true;
+      }
+
+      if (!userAnswers[groupKey]) userAnswers[groupKey] = {};
+      if (questionAnswers.length > 0) {
+        userAnswers[groupKey][answerKey] = questionAnswers[0];
+      }
+    });
+
+    if (hasError) {
+      displayError(
+        errorContainer,
+        "Please answer all required questions to continue."
+      );
+      return false;
+    }
+    return true;
+  } else if (currentStep === "haircare_concerns") {
+    const concernQuestion = allQuestions.find(
+      (q) => q.q_key === "hairCare_hairConcerns"
+    );
+
+    if (!concernQuestion) return false;
+
+    const groupKey = concernQuestion.key;
+    const answerKey = concernQuestion.q_key
+      .replace(new RegExp(`^${concernQuestion.key}_`, "i"), "")
+      .replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
+
+    const selectedOptions = modalBody.querySelectorAll(
+      `.multi-choice .is-selected`
+    );
+    const answers = Array.from(selectedOptions).map((el) => el.dataset.value);
+
+    if (answers.length === 0) {
+      displayError(
+        errorContainer,
+        "Please select at least one concern to continue."
+      );
+      return false;
+    }
+
+    if (!userAnswers[groupKey]) userAnswers[groupKey] = {};
+    userAnswers[groupKey][answerKey] = answers;
+
+    return true;
   } else {
     if (question.type === "multi_choice") {
       const selectedOptions = modalBody.querySelectorAll(".is-selected");
@@ -1014,7 +1107,10 @@ function handleContinue() {
   if (currentStep === -1) {
     if (currentProfileType === "skincare") {
       showSkincareRoutineQuestion();
+    } else if (currentProfileType === "haircare") {
+      showHaircareQuestionsScreen(); // Add this
     } else {
+      currentStep = 0;
       renderCurrentQuestion();
     }
   } else if (currentStep === "routine_or_product") {
@@ -1037,7 +1133,7 @@ function handleContinue() {
     }
 
     if (acneAllergyAnswer === "only_allergy") {
-      showSuggestionsScreen(); // Changed from showConsultationScreen()
+      showSuggestionsScreen();
       return;
     }
 
@@ -1047,17 +1143,24 @@ function handleContinue() {
       acneAllergyAnswer === "only_acne" ||
       acneAllergyAnswer === "both_acne_allergy"
     ) {
-      // Show consultation only for severe reactions
       if (
         ["itch_red_burn", "itch_sometimes", "painful"].includes(reactionAnswer)
       ) {
         showConsultationScreen();
       } else {
-        // For "no_itch_pain" or any other reaction, show suggestions
         showSuggestionsScreen();
       }
     }
   } else if (currentStep === "skin_type_with_products") {
+    showSuggestionsScreen();
+  } else if (currentStep === "haircare_initial") {
+    const suggestionType = userAnswers.haircare?.suggestionType;
+    if (suggestionType === "suggestion_based_on_specific_concerns") {
+      showHaircareConcernsScreen();
+    } else {
+      showSuggestionsScreen();
+    }
+  } else if (currentStep === "haircare_concerns") {
     showSuggestionsScreen();
   } else {
     currentStep++;
@@ -1090,6 +1193,10 @@ function handleBack() {
     showProperRoutineBasedOnConcernScreen();
   } else if (previousStep === "skin_type_with_products") {
     showSkinTypeWithCurrentProductsQuestion();
+  } else if (previousStep === "haircare_initial") {
+    showHaircareQuestionsScreen();
+  } else if (previousStep === "haircare_concerns") {
+    showHaircareConcernsScreen();
   } else {
     renderCurrentQuestion();
   }
@@ -1127,10 +1234,20 @@ async function saveUserProfile() {
       }
     }
 
+    if (currentProfileType === "haircare" && profileData.haircare) {
+      delete profileData.haircare.skinConcerns;
+
+      const suggestionType = profileData.haircare.suggestionType;
+
+      if (suggestionType !== "suggestion_based_on_specific_concerns") {
+        delete profileData.haircare.hairConcerns;
+      }
+    }
+
     if (currentProfileType && profileData[currentProfileType]) {
       profileData[currentProfileType].isCompleted = true;
     }
-
+    console.log(profileData);
     const response = await fetch(`${apiUrl}/create`, {
       method: "POST",
       headers: {
@@ -1618,6 +1735,61 @@ function showProperRoutineBasedOnConcernScreen() {
   );
 }
 
+function showHaircareQuestionsScreen() {
+  currentStep = "haircare_initial";
+
+  const hairTypeQuestion = allQuestions.find(
+    (q) => q.q_key === "hairCare_hairType"
+  );
+  const suggestionTypeQuestion = allQuestions.find(
+    (q) => q.q_key === "hairCare_suggestionType"
+  );
+
+  if (!hairTypeQuestion || !suggestionTypeQuestion) return;
+
+  const hairTypeHtml = generateSingleChoiceMarkup(hairTypeQuestion);
+  const suggestionTypeHtml = generateSingleChoiceMarkup(suggestionTypeQuestion);
+
+  const innerHtml = `
+    <div class="question-section flex flex-col gap-16">
+      ${generateTitleMarkup(hairTypeQuestion.title)}
+      ${hairTypeHtml}
+    </div>
+    
+    <div class="question-section flex flex-col gap-16">
+      ${generateTitleMarkup(suggestionTypeQuestion.title)}
+      ${suggestionTypeHtml}
+    </div>
+    
+    ${generateErrorContainerMarkup()}
+  `;
+
+  renderModalContent(createModalLayout(innerHtml, true), "w-760 sm:w-370");
+}
+
+function showHaircareConcernsScreen() {
+  currentStep = "haircare_concerns";
+
+  const concernQuestion = allQuestions.find(
+    (q) => q.q_key === "hairCare_hairConcerns"
+  );
+
+  if (!concernQuestion) return;
+
+  const concernHtml = generateMultiChoiceMarkup(concernQuestion);
+
+  const innerHtml = `
+    <div class="question-section flex flex-col gap-16">
+      ${generateTitleMarkup(concernQuestion.title)}
+      ${concernHtml}
+    </div>
+    
+    ${generateErrorContainerMarkup()}
+  `;
+
+  renderModalContent(createModalLayout(innerHtml, true), "w-760 sm:w-370");
+}
+
 function showConsultationScreen() {
   currentStep = "consultation";
   closeModal();
@@ -1664,8 +1836,6 @@ async function fetchSuggestionProducts(profileType) {
   try {
     const response = await fetch(`${apiUrl}/suggestionProducts/${profileType}`);
     const result = await response.json();
-
-    console.log("Suggestion Products Response:", result);
   } catch (error) {
     console.error("Error fetching suggestion products:", error);
   }
@@ -1796,6 +1966,8 @@ function handleProfileSelection(profileType) {
     userAnswers.gender = existingProfileData.gender;
     if (currentProfileType === "skincare") {
       showSkincareRoutineQuestion();
+    } else if (currentProfileType === "haircare") {
+      showHaircareQuestionsScreen();
     } else {
       currentStep = 0;
       renderCurrentQuestion();
@@ -1936,7 +2108,12 @@ async function fetchExistingProfile() {
         });
       }
       if (existingProfileData.haircare) {
-        userAnswers.haircare = { ...existingProfileData.haircare };
+        userAnswers.haircare = {};
+        Object.keys(existingProfileData.haircare).forEach((key) => {
+          if (key !== "isCompleted") {
+            userAnswers.haircare[key] = existingProfileData.haircare[key];
+          }
+        });
       }
       if (existingProfileData.makeup) {
         userAnswers.makeup = { ...existingProfileData.makeup };
