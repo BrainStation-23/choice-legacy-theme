@@ -1358,7 +1358,7 @@ function showSkinTypeWithCurrentProductsQuestion() {
     ${generateErrorContainerMarkup()}
   `;
 
-  renderModalContent(createModalLayout(innerHtml), "w-760 sm:w-370");
+  renderModalContent(createModalLayout(innerHtml, true), "w-760 sm:w-370");
 }
 
 function showProperRoutineBasedOnConcernScreen() {
