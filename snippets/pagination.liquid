@@ -3,10 +3,10 @@
     <nav role="navigation" aria-label="{{ 'general.pagination.label' | t }}">
       <ul role="list" class="flex gap-8 m-0 p-0 list-style-none ">
         {%- if paginate.previous -%}
-          <li class="pl-12 pr-12 pt-10 pb-10 border border-color border-solid rounded-6">
+          <li class="pl-12 pr-12  border border-color border-solid rounded-6 h-40 w-40 flex items-center justify-center">
             <a
               href="{{ paginate.previous.url }}#{{ section_id | default: 'pagination-section' }}"
-              class="text-primary  flex items-center justify-center h-32 w-32 rounded-6 no-underline text-brand ff-general-sans fw-500 fs-14-lh-20-ls-0_1"
+              class="text-primary  flex items-center justify-center  rounded-6 no-underline text-brand ff-general-sans fw-500 fs-14-lh-20-ls-0_1"
               aria-label="{{ 'general.pagination.previous' | t }}"
             >
               {% render 'icon-left-arrow' %}
@@ -15,11 +15,11 @@
         {%- endif -%}
 
         {%- for part in paginate.parts -%}
-          <li class="pl-12 pr-12 pt-10 pb-10 border border-color border-solid rounded-6">
+          <li class="pl-12 pr-12  border border-color border-solid rounded-6 h-40 w-40 flex items-center justify-center">
             {%- if part.is_link -%}
               <a
                 href="{{ part.url }}#{{ section_id | default: 'pagination-section' }}"
-                class="text-primary  flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-500 fs-14-lh-20-ls-0_1"
+                class="text-primary  flex items-center justify-center  rounded-6 no-underline ff-general-sans fw-500 fs-14-lh-20-ls-0_1"
                 aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
               >
                 {{- part.title -}}
@@ -29,12 +29,12 @@
                 <span
                   aria-current="page"
                   aria-label="{{ 'general.pagination.page' | t: number: part.title }}"
-                  class="text-brand  flex items-center justify-center h-32 w-32  no-underline ff-general-sans fw-500 fs-14-lh-20-ls-0_1"
+                  class="text-brand  flex items-center justify-center  no-underline ff-general-sans fw-500 fs-14-lh-20-ls-0_1"
                 >
                   {{- part.title -}}
                 </span>
               {%- else -%}
-                <span class="flex items-center justify-center h-32 w-32 rounded-6 no-underline ff-general-sans fw-500 fs-14-lh-20-ls-0_1">
+                <span class="flex items-center justify-center  rounded-6 no-underline ff-general-sans fw-500 fs-14-lh-20-ls-0_1">
                   {{- part.title -}}
                 </span>
               {%- endif -%}
@@ -43,10 +43,10 @@
         {%- endfor -%}
 
         {%- if paginate.next -%}
-          <li class="pl-12 pr-12 pt-10 pb-10 border border-color border-solid rounded-6  ">
+          <li class="pl-12 pr-12  border border-color border-solid rounded-6 h-40 w-40 flex items-center justify-center">
             <a
               href="{{ paginate.next.url }}#{{ section_id | default: 'pagination-section' }}"
-              class="flex items-center justify-center h-32 w-32 rounded-6 no-underline  text-brand ff-general-sans fw-500 fs-14-lh-20-ls-0_1"
+              class="flex items-center justify-center  rounded-6 no-underline  text-brand ff-general-sans fw-500 fs-14-lh-20-ls-0_1"
               aria-label="{{ 'general.pagination.next' | t }}"
             >
               {% render 'icon-right-arrow' %}
@@ -65,10 +65,10 @@
       paginationLinks.forEach((link) => {
         link.addEventListener('click', function (e) {
           e.preventDefault();
-          
+
           const url = new URL(this.href);
           const page = url.searchParams.get('page') || '1';
-          
+
           // Load the paginated content via AJAX
           loadPaginatedOrders(page);
         });
@@ -87,8 +87,8 @@
         // Fetch the paginated content
         const response = await fetch(`/account?page=${page}`, {
           headers: {
-            'X-Requested-With': 'XMLHttpRequest'
-          }
+            'X-Requested-With': 'XMLHttpRequest',
+          },
         });
 
         if (!response.ok) {
@@ -98,13 +98,13 @@
         const html = await response.text();
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
-        
+
         // Extract the orders content
         const newOrdersContent = doc.querySelector('#orders-section');
-        
+
         if (newOrdersContent && ordersSection) {
           ordersSection.innerHTML = newOrdersContent.innerHTML;
-          
+
           // Update URL without page refresh (only add page param, don't change nav)
           const currentUrl = new URL(window.location);
           if (page === '1') {
@@ -112,7 +112,7 @@
           } else {
             currentUrl.searchParams.set('page', page);
           }
-          
+
           // Keep the current nav parameter and hash
           if (!currentUrl.searchParams.has('nav') && document.body.dataset.activeTab) {
             const activeTab = document.body.dataset.activeTab.replace(/-/g, '_');
@@ -121,9 +121,9 @@
             }
           }
           currentUrl.hash = '#orders-section';
-          
+
           history.pushState({ page: page, tab: 'orders' }, '', currentUrl);
-          
+
           // Re-initialize pagination listeners for new content
           initializePaginationListeners();
         }
@@ -133,10 +133,9 @@
           ordersSection.style.opacity = '1';
           ordersSection.style.pointerEvents = 'auto';
         }
-
       } catch (error) {
         console.error('Error loading paginated orders:', error);
-        
+
         // Restore normal state on error
         const ordersSection = document.getElementById('orders-section');
         if (ordersSection) {
@@ -148,21 +147,21 @@
 
     function initializePaginationListeners() {
       const paginationLinks = document.querySelectorAll('a[href*="page="]');
-      
+
       paginationLinks.forEach((link) => {
         // Remove existing listeners to avoid duplicates
         link.replaceWith(link.cloneNode(true));
       });
-      
+
       // Re-add listeners to new links
       const newPaginationLinks = document.querySelectorAll('a[href*="page="]');
       newPaginationLinks.forEach((link) => {
         link.addEventListener('click', function (e) {
           e.preventDefault();
-          
+
           const url = new URL(this.href);
           const page = url.searchParams.get('page') || '1';
-          
+
           loadPaginatedOrders(page);
         });
       });
