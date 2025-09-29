@@ -1,69 +1,178 @@
-# Shopify Theme
+# Choice Legacy Theme
 
-A modern, responsive, and customizable Shopify theme designed to help merchants launch and scale their online stores with ease.
+A modern, feature-rich Shopify theme designed for optimal user experience and merchant customization.
 
-## ✨ Features
+## Technology Stack
 
-- 🎨 Fully responsive design (mobile, tablet, desktop)
-- ⚡ Optimized for speed and SEO
-- 🛒 Customizable product pages and collections
-- 📦 Built-in support for Shopify sections and blocks
-- 🌙 Dark/Light mode support (optional)
-- 🧩 Easy integration with Shopify Apps
-- 📑 SEO-friendly meta structure
+- **Frontend**
+  - Liquid (Shopify templating language)
+  - JavaScript (ES6+)
+  - CSS3
+  - HTML5
+- **Build Tools**
+  - Shopify CLI 3.x
+  - Node.js (for local development)
+- **Version Control**
+  - Git
 
-## 📂 Folder Structure
+## Pre-requisites
 
-```
-/theme
-  ├── assets/        # Stylesheets, JavaScript, images
-  ├── config/        # Theme settings (settings_schema.json, settings_data.json)
-  ├── layout/        # theme.liquid
-  ├── locales/       # Translations
-  ├── sections/      # Reusable sections
-  ├── snippets/      # Small reusable code blocks
-  └── templates/     # Page templates (product.liquid, collection.liquid, etc.)
-```
+- Node.js (v16 or higher)
+- npm or yarn package manager
+- Shopify CLI 3.x
+- Shopify Partner account
+- Git
 
-## 🚀 Installation
+## Installation & Setup
 
-1. Clone or download this repository:
+1. **Clone the repository**
 
    ```bash
    git clone https://github.com/BrainStation-23/choice-legacy-theme
+   cd choice-legacy-theme
    ```
 
-2. Install the [Shopify CLI](https://shopify.dev/docs/themes/tools/cli)
-
-3. Navigate to your theme directory:
+2. **Install Shopify CLI**
 
    ```bash
-   cd your-theme
+   npm install -g @shopify/cli @shopify/theme
    ```
 
-4. Authenticate with Shopify:
+3. **Authentication**
 
    ```bash
-   shopify login --store your-store-name.myshopify.com
+   shopify auth login --store your-store-name.myshopify.com
    ```
 
-5. Run the development server:
+4. **Development Commands**
 
    ```bash
+   # Start development server
    shopify theme dev
-   ```
 
-6. Push changes to your store:
-   ```bash
+   # Deploy theme
    shopify theme push
+
+   # Pull theme changes
+   shopify theme pull
+
+   # List themes
+   shopify theme list
    ```
 
-## 📝 Customization
+## Project Structure
 
-- Modify `settings_schema.json` to add new theme settings
-- Add new sections inside `/sections`
-- Use Liquid, HTML, CSS, and JavaScript for customization
+```
+choice-legacy-theme/
+├── assets/           # Static files (JS, CSS, images)
+├── config/           # Theme settings and configurations
+├── layout/          # Main theme templates
+├── locales/         # Translation files
+├── sections/        # Modular, reusable page sections
+├── snippets/        # Reusable code fragments
+└── templates/       # Page templates
+    └── customers/   # Customer account templates
+```
 
-## 📄 License
+## Architecture
 
-This theme is licensed under the [MIT License](LICENSE).
+- **Templates**: Define page structure and layout
+- **Sections**: Modular, customizable components
+- **Snippets**: Reusable code blocks for DRY principle
+- **Assets**: Client-side resources organized by functionality
+- **Config**: Centralized theme settings and configurations
+
+## Coding Standards
+
+### JavaScript
+
+- Use ES6+ features
+- Follow meaningful naming conventions
+- Implement error handling
+- Use async/await for asynchronous operations
+
+### CSS
+
+- Follow BEM methodology
+- Use CSS custom properties for theming
+- Maintain mobile-first approach
+- Organize by components
+
+### Liquid
+
+- Keep logic minimal
+- Use snippets for reusability
+- Follow Shopify's best practices
+
+## Code Review Checklist
+
+- [ ] Code follows style guidelines
+- [ ] Proper error handling implemented
+- [ ] Mobile responsiveness verified
+- [ ] Performance impact considered
+- [ ] Browser compatibility checked
+- [ ] Accessibility standards met
+- [ ] Documentation updated
+- [ ] No console errors
+- [ ] Theme editor settings working
+
+## Git Workflow
+
+### Branching Strategy
+
+```
+main
+├── develop
+│   ├── feature/*
+│   ├── bugfix/*
+│   └── hotfix/*
+└── release/*
+```
+
+### Branch Naming
+
+- `feature/feature-name`
+- `bugfix/bug-description`
+- `hotfix/urgent-fix`
+- `release/version-number`
+
+### Commit Guidelines
+
+- Use conventional commits
+- Format: `type(scope): description`
+- Types: feat, fix, docs, style, refactor, test, chore
+
+## Deployment Guidelines
+
+1. **Development**
+
+   - Work on feature branches
+   - Test locally using `shopify theme dev`
+   - Push to development theme
+
+2. **Staging**
+
+   - Merge to develop branch
+   - Deploy to staging theme
+   - Perform QA testing
+
+3. **Production**
+
+   - Create release branch
+   - Final QA approval
+   - Deploy to production theme
+
+   ```bash
+   shopify theme push -t production
+   ```
+
+4. **Post-deployment**
+   - Monitor for issues
+   - Update documentation
+   - Tag release version
+
+## Support
+
+For issues and feature requests, please use the GitHub issue tracker or contact the development team.
+
+ 
