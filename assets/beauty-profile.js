@@ -512,11 +512,11 @@ function generatePictureChoiceMarkup(question) {
     .replace(new RegExp(`^${question.key}_`, "i"), "")
     .replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
   const savedAnswer = userAnswers[groupKey]?.[answerKey];
-  let optionsHtml = `<div class="options-container picture-options-container flex gap-16">`;
+  let optionsHtml = `<div class="options-container picture-options-container grid grid-cols-3">`;
   question.options.forEach((option) => {
     const isSelected = savedAnswer === option.value ? "is-selected" : "";
     optionsHtml += `
-      <button type="button" class="option-btn picture-option-card bg-transparent transition-transform border-2 border-solid border-color-transparent cursor-pointer w-221_3333 h-216 sm:w-auto sm:h-auto border-none rounded-6 ${isSelected}" data-value="${option.value}">
+      <button type="button" class="option-btn picture-option-card bg-transparent transition-transform border-2 border-solid border-color-transparent cursor-pointer h-216 sm:w-auto sm:h-auto border-none rounded-6 ${isSelected}" data-value="${option.value}">
         <img src="${option.imageUrl}" alt="${option.label}" loading="lazy" class="rounded-6">
       </button>
     `;
