@@ -2703,6 +2703,12 @@ address {
 }
 
 @media screen and (min-width: 1024px) and (max-width: 1439px) {
+  .lg\:pt-10 {
+    padding-top: calc(10 * var(--space-unit));
+  }
+  .lg\:pb-10 {
+    padding-bottom: calc(10 * var(--space-unit));
+  }
   .lg\:pt-19 {
     padding-top: calc(19 * var(--space-unit));
   }
@@ -2712,6 +2718,12 @@ address {
 }
 
 @media screen and (min-width: 769px) and (max-width: 1023px) {
+  .md\:pt-10 {
+    padding-top: calc(10 * var(--space-unit));
+  }
+  .md\:pb-10 {
+    padding-bottom: calc(10 * var(--space-unit));
+  }
   .md\:p-16 {
     padding: 16px;
   }
