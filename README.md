@@ -129,12 +129,14 @@ main
 └── release/*
 ```
 
-### Branch Naming
+### Branch Naming Convention
 
-- `feature/feature-name`
-- `bugfix/bug-description`
-- `hotfix/urgent-fix`
-- `release/version-number`
+```
+feature#TASK-123-brief-description
+bugfix#TASK-124-bug-description
+hotfix#TASK-125-critical-fix
+release#v1.2.3
+```
 
 ### Commit Guidelines
 
@@ -174,5 +176,3 @@ main
 ## Support
 
 For issues and feature requests, please use the GitHub issue tracker or contact the development team.
-
- 
