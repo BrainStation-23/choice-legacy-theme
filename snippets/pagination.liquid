@@ -58,36 +58,118 @@
   </div>
 
   <script>
-    // Handle pagination clicks to stay on specific section
+    // Handle pagination clicks with AJAX to prevent page refresh
     document.addEventListener('DOMContentLoaded', function () {
-      const paginationLinks = document.querySelectorAll('.pagination-link');
+      const paginationLinks = document.querySelectorAll('a[href*="page="]');
 
       paginationLinks.forEach((link) => {
         link.addEventListener('click', function (e) {
           e.preventDefault();
-          const url = this.href;
-
-          window.location.href = url;
-
-          setTimeout(() => {
-            if (window.showAccountContent) {
-              // Extract section from hash or use default
-              const hash = new URL(url).hash.replace('#', '');
-              const section = hash.replace('-section', '') || 'orders';
-              window.showAccountContent(section);
-            }
-          }, 100);
+          
+          const url = new URL(this.href);
+          const page = url.searchParams.get('page') || '1';
+          
+          // Load the paginated content via AJAX
+          loadPaginatedOrders(page);
         });
       });
+    });
 
-      // Check if we came from pagination and show appropriate section
-      const currentHash = window.location.hash.replace('#', '');
-      if (currentHash && currentHash.includes('-section')) {
-        if (window.showAccountContent) {
-          const section = currentHash.replace('-section', '');
-          window.showAccountContent(section);
+    async function loadPaginatedOrders(page) {
+      try {
+        // Show loading state
+        const ordersSection = document.getElementById('orders-section');
+        if (ordersSection) {
+          ordersSection.style.opacity = '0.5';
+          ordersSection.style.pointerEvents = 'none';
+        }
+
+        // Fetch the paginated content
+        const response = await fetch(`/account?page=${page}`, {
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load orders');
+        }
+
+        const html = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+        
+        // Extract the orders content
+        const newOrdersContent = doc.querySelector('#orders-section');
+        
+        if (newOrdersContent && ordersSection) {
+          ordersSection.innerHTML = newOrdersContent.innerHTML;
+          
+          // Update URL without page refresh (only add page param, don't change nav)
+          const currentUrl = new URL(window.location);
+          if (page === '1') {
+            currentUrl.searchParams.delete('page');
+          } else {
+            currentUrl.searchParams.set('page', page);
+          }
+          
+          // Keep the current nav parameter and hash
+          if (!currentUrl.searchParams.has('nav') && document.body.dataset.activeTab) {
+            const activeTab = document.body.dataset.activeTab.replace(/-/g, '_');
+            if (activeTab !== 'my_profile') {
+              currentUrl.searchParams.set('nav', activeTab);
+            }
+          }
+          currentUrl.hash = '#orders-section';
+          
+          history.pushState({ page: page, tab: 'orders' }, '', currentUrl);
+          
+          // Re-initialize pagination listeners for new content
+          initializePaginationListeners();
+        }
+
+        // Restore normal state
+        if (ordersSection) {
+          ordersSection.style.opacity = '1';
+          ordersSection.style.pointerEvents = 'auto';
+        }
+
+      } catch (error) {
+        console.error('Error loading paginated orders:', error);
+        
+        // Restore normal state on error
+        const ordersSection = document.getElementById('orders-section');
+        if (ordersSection) {
+          ordersSection.style.opacity = '1';
+          ordersSection.style.pointerEvents = 'auto';
         }
       }
-    });
+    }
+
+    function initializePaginationListeners() {
+      const paginationLinks = document.querySelectorAll('a[href*="page="]');
+      
+      paginationLinks.forEach((link) => {
+        // Remove existing listeners to avoid duplicates
+        link.replaceWith(link.cloneNode(true));
+      });
+      
+      // Re-add listeners to new links
+      const newPaginationLinks = document.querySelectorAll('a[href*="page="]');
+      newPaginationLinks.forEach((link) => {
+        link.addEventListener('click', function (e) {
+          e.preventDefault();
+          
+          const url = new URL(this.href);
+          const page = url.searchParams.get('page') || '1';
+          
+          loadPaginatedOrders(page);
+        });
+      });
+    }
+
+    // Make functions globally available
+    window.loadPaginatedOrders = loadPaginatedOrders;
+    window.initializePaginationListeners = initializePaginationListeners;
   </script>
 {%- endif -%}

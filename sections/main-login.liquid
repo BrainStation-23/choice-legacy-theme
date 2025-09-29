@@ -125,7 +125,7 @@
         <!-- External Login Button -->
         <button
           id="login-submit-button-external"
-          class="button--solid border-none rounded-6 cursor-pointer h-44 pl-10 pr-10 ff-general-sans fs-14-lh-100pct-ls-0 fw-600"
+          class="button--solid border-none rounded-6 cursor-pointer  ff-general-sans fs-14-lh-100pct-ls-0 fw-600 h-44 p-0"
         >
           {{ 'customer.login.sign_in' | t }}
         </button>
@@ -296,7 +296,6 @@
         try {
           const response = await fetch(`${API_BASE_URL}/login/${cleanedPhone}`);
           const data = await response.json();
-          console.log('data', data);
           if (data.success && data.email) {
             emailInput.value = data.email;
             loginSubmitForm.submit();
@@ -305,8 +304,6 @@
             toastManager.show(data.message, 'error');
           }
         } catch (error) {
-          console.log('Login error:', error);
-
           // Only show generic error if no specific error was already shown
           if (
             !phoneMessage.classList.contains('show') &&

@@ -51,35 +51,28 @@
     let isLoadingMore = false;
     let imageLoadCount = 0;
     let totalImages = 0;
-    const allProducts = {
-      {% for product in collections.all.products limit: 250 %}
-        "{{ product.id }}": {
-          "title": "{{ product.title | escape }}",
-          "handle": "{{ product.handle }}"
-        }{% unless forloop.last %},{% endunless %}
-      {% endfor %}
-    };
+    
     function isMobileOrTablet() {
       return window.innerWidth <= 1023;
     }
-    function truncateTextWithReadMore(text, productHandle, maxLength = 100) {
+    function truncateTextWithReadMore(text, url, maxLength = 100) {
       if (!text) return text;
       if (text.length > maxLength) {
         const truncatedText = text.substring(0, maxLength);
         const lastSpaceIndex = truncatedText.lastIndexOf(' ');
         const finalText = lastSpaceIndex > 0 ? truncatedText.substring(0, lastSpaceIndex) : truncatedText;
-        return `${finalText}... <span class="text-brand no-underline cursor-pointer ff-general-sans fs-14-lh-20-ls-0 fw-500" onclick="window.location.href='/products/${productHandle}'">Read more</span>`;
+        return `${finalText}... <span class="text-brand no-underline cursor-pointer ff-general-sans fs-14-lh-20-ls-0 fw-500" onclick="window.location.href='${url}'">Read more</span>`;
       } else {
-        return `${text} <span class="text-brand no-underline cursor-pointer ff-general-sans fs-14-lh-20-ls-0 fw-500" onclick="window.location.href='/products/${productHandle}'">Read more</span>`;
+        return `${text} <span class="text-brand no-underline cursor-pointer ff-general-sans fs-14-lh-20-ls-0 fw-500" onclick="window.location.href='${url}'">Read more</span>`;
       }
     }
-    function getProductHandle(productId) {
-      const product = allProducts[productId];
-      return product ? product.handle : '';
-    }
-    function getProductTitle(productId) {
+    function getProductTitle(productId, allProducts) {
       const product = allProducts[productId];
       return product ? product.title : 'Title is not available';
+    }
+    function getProductURL(productId, allProducts) {
+      const product = allProducts[productId];
+      return product ? product.url : 'URL is not available';
     }
     function calculateGridHeight(reviewCount) {
       if (reviewCount === 0) return 200;
@@ -147,6 +140,15 @@
     }
     async function fetchReviews(page = 1, append = false) {
       try {
+        const allProducts = {
+          {% for product in collections.all.products %}
+            "{{ product.id }}": {
+              "title": "{{ product.title | escape }}",
+              "handle": "{{ product.handle }}",
+              "url": "{{ product.url }}"
+            }{% unless forloop.last %},{% endunless %}
+          {% endfor %}
+        };
         if (isLoadingMore && append) return;
         if (append) isLoadingMore = true;
         if (!append) {
@@ -172,11 +174,11 @@
           hasMoreReviews = data.pagination ? data.pagination.hasMore : false;
           if (append) {
             displayedReviews = [...displayedReviews, ...data.data];
-            displayReviews(data.data, true);
+            displayReviews(data.data, allProducts, true);
           } else {
             displayedReviews = data.data;
             currentPage = 1;
-            displayReviews(displayedReviews, false);
+            displayReviews(displayedReviews, allProducts, false);
           }
           totalImages = displayedReviews.filter(review => review.reviewImage).length;
           imageLoadCount = 0;
@@ -203,9 +205,9 @@
         if (append) isLoadingMore = false;
       }
     }
-    function displayReviews(reviewsData, isAppending = false) {
+    function displayReviews(reviewsData, allProducts, isAppending = false) {
       const desktopReviewsHtml = displayedReviews.map(review => {
-        const productTitle = getProductTitle(review.productId);
+        const productTitle = getProductTitle(review.productId, allProducts);
         const fullText = review.reviewText;
         const imageHtml = review.reviewImage ? `<img src="${review.reviewImage}" alt="${productTitle}" class="h-full w-full object-cover" loading="lazy" onload="handleImageLoad()">` : `<div class="h-full w-full object-cover" style="background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 0.8rem;">No Image</div>`;
         return `
@@ -226,9 +228,9 @@
         `;
       }).join('');
       const mobileSlidesHtml = reviewsData.map(review => {
-        const productTitle = getProductTitle(review.productId);
-        const productHandle = getProductHandle(review.productId);
-        const truncatedText = truncateTextWithReadMore(review.reviewText, productHandle, 100);
+        const productTitle = getProductTitle(review.productId, allProducts);
+        const url = getProductURL(review.productId, allProducts);
+        const truncatedText = truncateTextWithReadMore(review.reviewText, url, 100);
         const imageHtml = review.reviewImage ? `<img src="${review.reviewImage}" alt="${productTitle}" class="h-full w-full object-cover" loading="lazy">` : `<div class="h-full w-full object-cover" style="background: linear-gradient(45deg, #f0f0f0, #e0e0e0); display: flex; align-items: center; justify-content: center; color: #999; font-size: 0.8rem;">No Image</div>`;
         return `
           <div class="swiper-slide w-220 h-auto flex" style="margin: 0 !important;" >

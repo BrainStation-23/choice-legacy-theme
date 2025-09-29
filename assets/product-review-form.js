@@ -261,13 +261,11 @@
 
         submitButton.disabled = true;
         const currentProductId = reviewModal.dataset.productId;
-        const currentProductHandle = reviewModal.dataset.productHandle;
 
         const reviewData = {
           reviewText: reviewTextInput.value.trim(),
           rating: currentRating,
           productId: currentProductId,
-          productHandle: currentProductHandle,
           reviewImage: uploadedImageUrl,
         };
 

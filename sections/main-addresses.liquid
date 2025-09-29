@@ -309,7 +309,7 @@
 
     handleFormSubmission(submitButton, type) {
       const originalText = submitButton.textContent;
-      submitButton.textContent = 'Saving...';
+      submitButton.innerHTML = '<spinner-component size="small" color="white"></spinner-component>';
       submitButton.disabled = true;
 
       setTimeout(() => {

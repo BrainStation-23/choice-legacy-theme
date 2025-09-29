@@ -19,7 +19,7 @@
 
       <div id="orders-content" class="account-content-section" style="display: none;">
         <div id="orders-section">
-          {% render 'orders-list', orders: customer.orders %}
+          {% render 'orders-list' %}
         </div>
       </div>
 
@@ -31,12 +31,11 @@
         </div>
       {% endcomment %}
 
-        <div id="rewards-content" class="account-content-section" style="display: none;">
-          <div id="rewards-section">
-            {% render 'reward-points', section: section %}
-          </div>
+      <div id="rewards-content" class="account-content-section" style="display: none;">
+        <div id="rewards-section">
+          {% render 'reward-points', section: section %}
         </div>
-    
+      </div>
 
       <div id="wishlist-content" class="account-content-section" style="display: none;">
         <div id="wishlist-section">
@@ -60,17 +59,87 @@
 </div>
 
 <script src="{{ 'pagination.js' | asset_url }}" defer></script>
-<script src="{{ 'wishlist.js' | asset_url }}" defer></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    window.theme = window.theme || {};
+
+    {% if customer %}
+      fetch(`/apps/${APP_SUB_PATH}/customer/account/profile`)
+        .then(response => response.json())
+        .then(data => {
+          if (!data) return;
+          window.theme.rewardPointEnabled = data.rewardPointEnabled;
+          const rewardPointTab = document.querySelector('.customer-account__sidebar-item[data-tab="rewards"]');
+          if (rewardPointTab) {
+            rewardPointTab.style.display = data.rewardPointEnabled ? 'flex' : 'none';
+          }
+        })
+        .catch(error => console.error('Failed to fetch profile:', error));
+    {% endif %}
+
+    const initializeWishlistFromStorage = () => {
+      if (!window.customerLoggedIn) {
+        window.theme.wishlistProductIds = new Set();
+        return;
+      }
+
+      let wishlistData = null;
+      try {
+        const storedJSON = localStorage.getItem('customerWishlist');
+        wishlistData = storedJSON ? JSON.parse(storedJSON) : null;
+      } catch (e) {
+        console.error('Could not parse wishlist from local storage.', e);
+      }
+
+      const productIds = wishlistData?.wishlist?.products.map(p => p.productId) || [];
+      window.theme.wishlistProductIds = new Set(productIds);
+    };
+
+    initializeWishlistFromStorage();
+
+    if (typeof updateAllWishlistButtons === 'function') {
+      updateAllWishlistButtons();
+    }
+  });
+</script>
 
 <script>
   let loadedSections = [];
   let deliveryStatusLoaded = false;
   let unreadMessageInterval = null;
 
+  function updateUrlForTabSwitch(targetContentType) {
+    const currentUrl = new URL(window.location);
+
+    // Clean up URL based on the target tab
+    if (targetContentType === 'orders') {
+      // For orders tab, keep page parameter if it exists, but ensure nav=orders
+      currentUrl.searchParams.set('nav', 'orders');
+      currentUrl.hash = '#orders-section';
+    } else {
+      // For all other tabs, remove page parameter and set appropriate nav
+      currentUrl.searchParams.delete('page');
+      currentUrl.hash = '';
+
+      if (targetContentType === 'my-profile') {
+        // Remove nav parameter for default profile tab
+        currentUrl.searchParams.delete('nav');
+      } else {
+        // Set appropriate nav parameter for other tabs
+        const navValue = targetContentType.replace(/-/g, '_');
+        currentUrl.searchParams.set('nav', navValue);
+      }
+    }
+
+    // Update URL without page refresh
+    history.pushState({ tab: targetContentType }, '', currentUrl);
+  }
+
   async function showAccountContent(contentType) {
     const contentSections = document.querySelectorAll('.account-content-section');
-    contentSections.forEach((section) => section.style.display = 'none');
-    
+    contentSections.forEach((section) => (section.style.display = 'none'));
+
     if (contentType === 'logout') {
       window.location.href = '/account/logout';
       return;
@@ -82,24 +151,52 @@
     if (contentType === 'coming-soon') contentType = 'my_profile';
 
     const contentMapping = {
-      'my-profile': 'my-profile', my_profile: 'my-profile', my_beauties_profile: 'my_beauties_profile',
-      orders: 'orders', addresses: 'addresses', rewards: 'rewards',
-      wishlist: 'wishlist', support: 'support', reviews: 'reviews',
+      'my-profile': 'my-profile',
+      my_profile: 'my-profile',
+      my_beauties_profile: 'my_beauties_profile',
+      orders: 'orders',
+      addresses: 'addresses',
+      rewards: 'rewards',
+      wishlist: 'wishlist',
+      support: 'support',
+      reviews: 'reviews',
     };
-    
+
     const targetContentType = contentMapping[contentType] || 'my-profile';
-    
+
     document.body.dataset.activeTab = targetContentType;
+
+    // Update URL when switching tabs - clean up page parameters for non-orders tabs
+    updateUrlForTabSwitch(targetContentType);
 
     if (targetContentType === 'support') {
       if (typeof window.initializeSupportChat === 'function') {
         window.initializeSupportChat();
       }
     }
-    
+
+    if (targetContentType === 'reviews') {
+      if (typeof window.initializeReviewsTab === 'function') {
+        window.initializeReviewsTab();
+      }
+    }
+
+    if (targetContentType === 'rewards') {
+      if (typeof window.initializeRewardPointsTab === 'function') {
+        window.initializeRewardPointsTab();
+      }
+    }
+
     const targetContent = document.getElementById(targetContentType + '-content');
     if (targetContent) {
       targetContent.style.display = 'block';
+
+      // Initialize pagination listeners when orders tab is shown
+      if (targetContentType === 'orders' && typeof window.initializePaginationListeners === 'function') {
+        setTimeout(() => {
+          window.initializePaginationListeners();
+        }, 100);
+      }
     } else {
       document.getElementById('my-profile-content').style.display = 'block';
     }
@@ -109,12 +206,20 @@
     const currentPath = window.location.pathname;
     const urlParams = new URLSearchParams(window.location.search);
     const navParam = urlParams.get('nav');
+    const pageParam = urlParams.get('page');
+
     if (currentPath.includes('/account/orders')) return 'orders';
     if (currentPath.includes('/account/addresses')) return 'addresses';
     if (currentPath.includes('/account/rewards')) return 'rewards';
+
+    // If nav parameter exists, use it
     if (navParam) return navParam;
+
+    // If page parameter exists but no nav, assume orders
+    if (pageParam) return 'orders';
+
     if (window.location.hash === '#orders-section') return 'orders';
-    if (window.location.search.includes('page=')) return 'orders';
+
     return 'my_profile';
   }
 
@@ -123,34 +228,42 @@
     showAccountContent(initialContentType);
   }
 
-  function handlePopState() {
+  function handlePopState(event) {
     const contentType = getInitialContentType();
     showAccountContent(contentType);
+
+    // Update sidebar active state
+    if (window.sidebarNavigation) {
+      const tabName = contentType.replace(/_/g, '-');
+      window.sidebarNavigation.setActiveTab(tabName);
+      window.sidebarNavigation.updateMobileSelectedItem(tabName);
+    }
   }
 
   window.showAccountContent = showAccountContent;
 
   async function fetchAndStoreUnreadCount() {
     try {
-      const unreadMessagesResponse = await fetch(`/apps/${APP_SUB_PATH}/customer/customer-service-management/unread-messages-count`);
+      const unreadMessagesResponse = await fetch(
+        `/apps/${APP_SUB_PATH}/customer/customer-service-management/unread-messages-count`
+      );
       if (!unreadMessagesResponse.ok) throw new Error('Failed to fetch count');
 
       const unreadMessagesData = await unreadMessagesResponse.json();
-      const unreadCountElement = document.querySelector("#unread-messages-count");
+      const unreadCountElement = document.querySelector('#unread-messages-count');
       let count = 0;
 
       if (unreadMessagesData.success && unreadMessagesData.unreadCount > 0) {
         count = unreadMessagesData.unreadCount;
         if (unreadCountElement) {
           unreadCountElement.textContent = count;
-          unreadCountElement.classList.remove("hidden");
+          unreadCountElement.classList.remove('hidden');
         }
       } else {
-        if (unreadCountElement) unreadCountElement.classList.add("hidden");
+        if (unreadCountElement) unreadCountElement.classList.add('hidden');
       }
-      
-      document.body.dataset.unreadMessages = count;
 
+      document.body.dataset.unreadMessages = count;
     } catch (error) {
       console.error('Error fetching unread messages count:', error);
       if (unreadMessageInterval) clearInterval(unreadMessageInterval);
@@ -165,9 +278,8 @@
     await fetchAndStoreUnreadCount();
     unreadMessageInterval = setInterval(fetchAndStoreUnreadCount, 10000);
 
-    // --- WISHLIST LOGIC RESTORED ---
     const wishlistStorageKey = 'customerWishlist';
-    
+
     try {
       const storedWishlistJSON = localStorage.getItem(wishlistStorageKey);
       let wishlistData = storedWishlistJSON ? JSON.parse(storedWishlistJSON) : null;
@@ -175,20 +287,19 @@
       if (!wishlistData || !wishlistData.wishlist || wishlistData.wishlist.products.length === 0) {
         const response = await fetch(`/apps/${APP_SUB_PATH}/customer/wishlist/fetch`);
         if (!response.ok) throw new Error('API response was not ok.');
-        
+
         wishlistData = await response.json();
         localStorage.setItem(wishlistStorageKey, JSON.stringify(wishlistData));
       }
 
-      const productHandles = wishlistData?.wishlist?.products.map(p => p.productHandle) || [];
-      window.theme.wishlistHandles = new Set(productHandles);
+      const productIds = wishlistData?.wishlist?.products.map((p) => p.productId) || [];
+      window.theme.wishlistProductIds = new Set(productIds);
 
       if (typeof window.initializeWishlistPage === 'function') {
-        window.initializeWishlistPage(Array.from(window.theme.wishlistHandles));
+        window.initializeWishlistPage(Array.from(window.theme.wishlistProductIds));
       } else {
         console.error('Wishlist display function not found. Check if wishlist.js is loaded.');
       }
-
     } catch (error) {
       console.error('Failed to prepare wishlist on account page:', error);
       if (typeof window.initializeWishlistPage === 'function') {
@@ -200,25 +311,6 @@
   window.addEventListener('beforeunload', () => {
     if (unreadMessageInterval) clearInterval(unreadMessageInterval);
   });
-</script>
-
-<script>
-  window.customerPurchasedProducts = [
-    {%- for order in customer.orders -%}
-      {%- for item in order.line_items -%}
-        {
-          "productId": {{ item.product_id }},
-          "productHandle": "{{ item.product.handle | escape }}",
-          "variantId": {{ item.variant_id }},
-          "orderId": {{ order.id }},
-          "orderName": {{ order.name | json }},
-          "orderTotalPrice": {{ order.total_price }},
-          "orderCustomerUrl": "{{ order.customer_url | escape }}"
-        }
-        {%- unless forloop.parentloop.last and forloop.last -%},{%- endunless -%}
-      {%- endfor -%}
-    {%- endfor -%}
-  ];
 </script>
 
 <style>

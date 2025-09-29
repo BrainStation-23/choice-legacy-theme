@@ -8,22 +8,20 @@
 {%- endcomment -%}
 
 {%- liquid
-  assign sort_by = results.sort_by | default: results.default_sort_by
+  assign sort_by = results.sort_by
   assign current_sort_name = 'products.sorting.sort_by_label' | t
 
-  for option in results.sort_options
-    if option.value == sort_by
-      assign current_sort_name = option.name
-      break
-    endif
-  endfor
+  if sort_by and sort_by != blank
+    for option in results.sort_options
+      if option.value == sort_by
+        assign current_sort_name = option.name
+        break
+      endif
+    endfor
+  endif
 -%}
 
 <style>
-  .filter__toggle:hover {
-    border-color: rgba(var(--color-primary-brand));
-  }
-
   .disclosure__panel.has-motion {
     opacity: 0;
     transform: translateY(-16px);
@@ -43,10 +41,6 @@
     transform: rotate(180deg);
   }
 
-  .close-icon:hover {
-    opacity: 0.7;
-  }
-
   .sort__content li label {
     cursor: pointer;
     width: 100%;
@@ -54,14 +48,44 @@
     align-items: center;
   }
 
-  /* Sorting spinner overlay styles */
   .sorting-spinner {
     backdrop-filter: blur(3px);
     transition: all 0.3s ease-in-out;
   }
+
+  @media (max-width: 768px) {
+    .disclosure__panel.has-motion {
+      position: fixed !important;
+      top: 0;
+      right: -100%;
+      width: 100%;
+      height: 100%;
+      background: rgb(var(--color-background));
+      z-index: 9999;
+      transform: translateX(100%);
+      opacity: 1;
+      transition: transform 0.3s ease-in-out;
+      display: flex;
+      flex-direction: column;
+    }
+
+    details[open] ~ .sort-overlay {
+      opacity: 1;
+      pointer-events: all;
+    }
+    details[open] .disclosure__panel.has-motion {
+      transform: translateX(0);
+      right: 0;
+    }
+
+    .sort__content {
+      flex: 1;
+      overflow-y: auto;
+    }
+  }
 </style>
 
-<details-disclosure class="md:hidden no-js-visible">
+<details-disclosure class="md:hidden no-js-visible max-w-180 h-40 m-0 fs-36-lh-40-ls-0 fw-400">
   <details
     class="filter disclosure"
     id="filter-sort"
@@ -72,56 +96,56 @@
   >
     <summary class="filter__toggle list-style-none w-full max-w-200 h-40 border-1 border-solid border-color flex items-center justify-between rounded-6 p-8 cursor-pointer relative ">
       <span class="current-sort-display fw-400 fs-14-lh-16-ls-0 " id="current-sort-text">
-        {{ current_sort_name }}
+        {{- 'products.sorting.sort_by_label' | t -}}
       </span>
+
       <span class="disclosure__toggle">
-        {% render 'icon-arrow-down' %}
+        {% render 'icon-arrow-down', height: '32', width: '32' %}
       </span>
     </summary>
 
-    <div class="disclosure__panel has-motion absolute z-9999 w-full max-w-240 bg-bg rounded-6 pt-8 pb-8 pl-0 pr-0 box-shadow">
-      <div>
-        <div class="sort__content flex flex-col gap-8 p-16">
-          <div class="flex items-center justify-between">
-            <h1 class="p-0 m-0 ff-bebas-neue fw-400  fs-21-lh-24-ls-1_2pct">
-              {{- 'products.sorting.sort_by_label' | t -}}
-            </h1>
-            <span class="cursor-pointer p-0 m-0 close-icon" id="sort-close-btn">
-              {% render 'icon-close', height: 28, width: 28 %}
-            </span>
-          </div>
-          <ul class="p-0 flex gap-8 flex-col list-style-none">
-            {%- for option in results.sort_options -%}
-              {%- unless option.value == 'manual' and section.settings.show_feat_sort_opt == false -%}
-                {%- liquid
-                  assign is_checked = false
-                  if option.value == sort_by
-                    assign is_checked = true
-                  endif
-                -%}
-                <li
-                  class="flex m-0 cursor-pointer pt-2 pb-2 px-2 rounded-6 list-style-none"
-                  data-sort-value="{{ option.value }}"
-                  data-sort-name="{{ option.name }}"
-                >
-                  {%
-                    render 'input-radio',
-                    id: 'filter-sort-' | append: forloop.index,
-                    name: 'sort_by',
-                    value: option.value,
-                    label: option.name,
-                    checked: is_checked,
-                    type: 'radio',
-                    input-class: "radio"
-                  %}
-                </li>
-              {%- endunless -%}
-            {%- endfor -%}
-          </ul>
+    <div class="disclosure__panel has-motion absolute z-9999 max-w-308 w-full bg-bg rounded-6 pl-0 pr-0 box-shadow sm:rounded-0">
+      <div class="sort__content flex flex-col gap-16 p-16">
+        <div class="flex items-center justify-between">
+          <h1 class="p-0 m-0 ff-bebas-neue fw-400 fs-21-lh-24-ls-1_2pct">
+            {{- 'products.sorting.sort_by_label' | t -}}
+          </h1>
+          <span class="cursor-pointer p-0 m-0 close-icon" id="sort-close-btn">
+            {% render 'close-button', id: 'sort-close-btn' %}
+          </span>
         </div>
+        <ul class="p-0 flex gap-8 flex-col list-style-none">
+          {%- for option in results.sort_options -%}
+            {%- unless option.value == 'manual' and section.settings.show_feat_sort_opt == false -%}
+              {%- liquid
+                assign is_checked = false
+                if sort_by and sort_by != blank and option.value == sort_by
+                  assign is_checked = true
+                endif
+              -%}
+              <li
+                class="sort-option-list flex m-0 cursor-pointer pt-2 pb-2 px-2 rounded-6 list-style-none"
+                data-sort-value="{{ option.value }}"
+                data-sort-name="{{ option.name }}"
+              >
+                {%
+                  render 'input-radio',
+                  id: 'filter-sort-' | append: forloop.index,
+                  name: 'sort_by',
+                  value: option.value,
+                  label: option.name,
+                  checked: is_checked,
+                  type: 'radio',
+                  input-class: "radio"
+                %}
+              </li>
+            {%- endunless -%}
+          {%- endfor -%}
+        </ul>
       </div>
     </div>
   </details>
+  <div class="sort-overlay fixed inset-0 z-9998 opacity-0 pointer-events-none bg-overlay transition-opacity-3"></div>
 </details-disclosure>
 
 <script>
@@ -131,87 +155,93 @@
     const currentSortText = document.getElementById('current-sort-text');
     const closeBtn = document.getElementById('sort-close-btn');
     const sortItems = sortDetails?.querySelectorAll('.sort__content li');
+    const overlay = document.querySelector('.sort-overlay');
 
-    // Handle radio button changes
+    if (overlay) {
+      overlay.addEventListener('click', function () {
+        sortDetails.removeAttribute('open');
+      });
+    }
+
+    // Handle radio button changes - apply immediately for both desktop and mobile
     if (radioInputs) {
       radioInputs.forEach(function (radio) {
         radio.addEventListener('change', function () {
           if (this.checked) {
-            handleSortChange(this.value, this.closest('li').dataset.sortName);
+            const sortValue = this.value;
+            const sortName = this.closest('li').dataset.sortName;
+
+            // Apply sort immediately
+            handleSortChange(sortValue, sortName);
+
+            // Close modal immediately after selection
+            setTimeout(function () {
+              sortDetails.removeAttribute('open');
+            }, 150);
           }
         });
       });
     }
 
-    // Handle clicking on list items (makes entire row clickable)
+    // Handle clicking on list items (entire row clickable)
     if (sortItems) {
       sortItems.forEach(function (item) {
         item.addEventListener('click', function (e) {
-          // Don't trigger if clicking directly on radio button (to avoid double trigger)
           if (e.target.type !== 'radio') {
             const radio = this.querySelector('input[type="radio"]');
             if (radio && !radio.checked) {
               radio.checked = true;
-              handleSortChange(radio.value, this.dataset.sortName);
+              radio.dispatchEvent(new Event('change'));
             }
           }
         });
       });
     }
 
-    // Handle close button click - clear sort (reset to default)
+    // Handle close button click - reset sort
     if (closeBtn) {
       closeBtn.addEventListener('click', function (e) {
         e.preventDefault();
         e.stopPropagation();
 
-        // Show spinner immediately
-        const spinner = document.getElementById('sorting-spinner');
-        if (spinner) {
-          spinner.classList.remove('hidden');
-        }
-
-        // Close dropdown
         sortDetails.removeAttribute('open');
-
-        // Clear sort by removing sort_by parameter
-        const urlObj = new URL(window.location.href);
-        urlObj.searchParams.delete('sort_by');
-        window.location.href = urlObj.toString();
+        handleSortReset();
       });
     }
 
-    // Close dropdown when clicking outside
+    // Close dropdown when clicking outside (desktop only)
     document.addEventListener('click', function (e) {
-      if (sortDetails && !sortDetails.contains(e.target) && sortDetails.open) {
+      if (window.innerWidth > 768 && sortDetails && !sortDetails.contains(e.target) && sortDetails.open) {
         sortDetails.removeAttribute('open');
       }
     });
 
     function handleSortChange(value, name) {
-      // Show spinner immediately
-      const spinner = document.getElementById('sorting-spinner');
+      const spinner = document.getElementById('filtering-spinner');
       if (spinner) {
         spinner.classList.remove('hidden');
       }
 
-      // Update display text immediately
-      if (currentSortText && name) {
-        currentSortText.textContent = name;
-      }
+      // Keep the button text as "Sort by" instead of showing selected option
+      // if (currentSortText && name) {
+      //   currentSortText.textContent = name;
+      // }
 
-      // Close the dropdown after selection
-      setTimeout(function () {
-        sortDetails.removeAttribute('open');
-      }, 150);
+      // Check if facet filters component exists (AJAX filtering enabled)
+      const facetFilters = document.querySelector('facet-filters');
+      if (facetFilters) {
+        // Use AJAX approach through facet filters
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('sort_by', value);
+        currentUrl.searchParams.delete('page');
+        currentUrl.searchParams.delete('phcursor');
 
-      // Apply sort
-      setTimeout(function () {
-        const mockEvent = {
-          detail: {
-            selectedValue: value,
-          },
-        };
+        // Call the facet filters applyFilters method
+        const searchParams = currentUrl.searchParams.toString();
+        facetFilters.applyFilters(searchParams, null, true);
+      } else {
+        // Fallback to products toolbar or page refresh
+        const mockEvent = { detail: { selectedValue: value } };
 
         if (window.customElements && customElements.get('products-toolbar')) {
           const ProductsToolbar = customElements.get('products-toolbar');
@@ -219,10 +249,39 @@
         } else {
           const urlObj = new URL(window.location.href);
           urlObj.searchParams.set('sort_by', value);
+          urlObj.searchParams.delete('page');
+          urlObj.searchParams.delete('phcursor');
           urlObj.hash = 'products-toolbar';
           window.location.href = urlObj.toString();
         }
-      }, 200);
+      }
+    }
+
+    function handleSortReset() {
+      const spinner = document.getElementById('filtering-spinner');
+      if (spinner) {
+        spinner.classList.remove('hidden');
+      }
+
+      const facetFilters = document.querySelector('facet-filters');
+      if (facetFilters) {
+        // Use AJAX approach through facet filters
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.delete('sort_by');
+        currentUrl.searchParams.delete('page');
+        currentUrl.searchParams.delete('phcursor');
+
+        // Call the facet filters applyFilters method
+        const searchParams = currentUrl.searchParams.toString();
+        facetFilters.applyFilters(searchParams, null, true);
+      } else {
+        // Fallback to page refresh
+        const urlObj = new URL(window.location.href);
+        urlObj.searchParams.delete('sort_by');
+        urlObj.searchParams.delete('page');
+        urlObj.searchParams.delete('phcursor');
+        window.location.href = urlObj.toString();
+      }
     }
   });
 </script>
