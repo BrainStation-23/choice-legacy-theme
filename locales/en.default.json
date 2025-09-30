@@ -328,7 +328,9 @@
       "collections": "Collections"
     },
     "search": {
-      "title": "Search"
+      "title": "Search",
+      "no_results": "No results found for \"{{ terms }}\".",
+      "search_results": "Search results for \"{{ terms }}\""
     },
     "404": {
       "title": "Page not found"

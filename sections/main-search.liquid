@@ -1,1 +1,204 @@
-<div class="predictive-search-results  w-full bg-bg"></div>
+<script src="{{ 'products-toolbar.js' | asset_url }}" defer="defer"></script>
+
+<div class="" data-num-results="{{ search.results_count }}">
+  <div class="flex flex-col">
+    {%- paginate search.results by section.settings.products_per_page -%}
+      <div class="main-products-grid flex pt-48 pb-88 page-width gap-48 flex-col">
+        <div>
+          <h1 class="m-0 p-0 ff-bebas-neue fs-36-lh-40-ls-0 fw-400">
+            {%- if search.performed -%}
+              {%- if search.results_count > 0 -%}
+                {{ 'general.search.search_results' | t: terms: search.terms }}
+
+              {%- else -%}
+                {{ 'general.search.no_results' | t: terms: search.terms }}
+              {%- endif -%}
+            {%- else -%}
+              {{ 'general.search.title' | t }}
+            {%- endif -%}
+          </h1>
+        </div>
+        <div class="main-products-grid flex  gap-32">
+          {%- if search.filters != empty and section.settings.enable_filtering -%}
+            <div class="main-products-grid__filters block sm:hidden">
+              {% render 'facet-filters', results: search, section: section, unique_id: 'desktop' %}
+            </div>
+          {%- endif -%}
+
+          <div class="flex flex-col gap-32">
+            {% if section.settings.enable_sorting or section.settings.enable_filtering %}
+              <div class="flex justify-between gap-8 ">
+                <div class="w-full max-w-180 sm:max-w-full">
+                  {% if section.settings.enable_sorting %}
+                    {% render 'fact-sort', results: search, section: section %}
+                  {% endif %}
+                </div>
+
+                {%- if search.filters != empty and section.settings.enable_filtering -%}
+                  <div
+                    class="w-full h-40 border-1 border-solid border-color hidden sm:flex items-center justify-between rounded-6 p-8 cursor-pointer relative w-400 fs-14-lh-16-ls-0"
+                    id="filter-button"
+                    data-type="filter"
+                  >
+                    <div class="flex items-center gap-6">
+                      {% render 'icon-filter' %}
+                      Filter
+                    </div>
+                    <span class="arrow-icon-filter">
+                      {% render 'icon-arrow-down', height: '32', width: '32' %}
+                    </span>
+                  </div>
+
+                  <div class="flex flex-col hidden" id="mobile-filter-panel">
+                    <div class="filters-content flex-1 sm:p-16 overflow-y-auto scrollbar-w-8 scrollbar-track-none scrollbar-thumb-brand scrollbar-thumb-brand-hover">
+                      {% render 'facet-filters', results: search, section: section, unique_id: 'mobile' %}
+                    </div>
+                  </div>
+
+                  <div class="filter-overlay"></div>
+                {%- endif -%}
+              </div>
+            {% endif %}
+
+            <div class="main-products-grid__results relative flex-auto" id="filter-results">
+              <div
+                id="filtering-spinner"
+                class="filtering-spinner hidden absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-10"
+              >
+                <spinner-component size="medium" color="primary"></spinner-component>
+              </div>
+
+              {%- if search.performed -%}
+                {%- if search.results.size == 0 -%}
+                  <p>{{ 'sections.collection.empty' | t }}</p>
+                {%- else -%}
+                  <div class="grid grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-16">
+                    {% for item in search.results %}
+                      <div class="js-pagination-result">
+                        {%- case item.object_type -%}
+                          {%- when 'product' -%}
+                            {% render 'product-card',
+                              product: item,
+                              collection: search,
+                              image_ratio: image_ratio,
+                              show_compare: settings.enable_compare
+                            %}
+                        {%- endcase -%}
+                      </div>
+                    {% endfor %}
+                  </div>
+                {%- endif -%}
+              {%- endif -%}
+            </div>
+
+            <div class="pagination-container">
+              {%- if paginate.pages > 1 -%}
+                {% render 'pagination', paginate: paginate, class: 'pt-0 justify-end' %}
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      </div>
+    {%- endpaginate -%}
+  </div>
+</div>
+
+<style>
+  #filter-button {
+    display: none;
+  }
+
+  @media (max-width: 768px) {
+    #filter-button {
+      display: flex;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const filterButton = document.getElementById('filter-button');
+    const filterPanel = document.getElementById('mobile-filter-panel');
+    const filterOverlay = document.querySelector('.filter-overlay');
+    const closeButton = document.getElementById('filter-close-button-mobile');
+
+    function openMobileFilters() {
+      if (filterPanel && filterOverlay) {
+        filterPanel.classList.remove('hidden');
+        filterPanel.classList.add('main-products-grid__filters-mobile', 'open');
+        filterOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeMobileFilters() {
+      if (filterPanel && filterOverlay) {
+        filterPanel.classList.remove('open');
+        filterOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+        setTimeout(() => {
+          filterPanel.classList.add('hidden');
+          filterPanel.classList.remove('main-products-grid__filters-mobile');
+        }, 300);
+      }
+    }
+
+    // Open filters when filter button is clicked
+    if (filterButton) {
+      filterButton.addEventListener('click', openMobileFilters);
+    }
+
+    // Close filters when overlay is clicked
+    if (filterOverlay) {
+      filterOverlay.addEventListener('click', closeMobileFilters);
+    }
+
+    // Close filters when close button is clicked
+    if (closeButton) {
+      closeButton.addEventListener('click', closeMobileFilters);
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Search page",
+  "class": "cc-main-search section section--template mb-0",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8,
+      "max": 50,
+      "step": 1,
+      "label": "Results per page",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Sorting"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_sorting",
+      "label": "Enable sorting",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Filtering"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_filtering",
+      "label": "Enable filtering",
+      "info": "[Customize filters](/admin/menus)",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

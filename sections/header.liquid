@@ -149,12 +149,12 @@
                 {% render 'icon-close', cls: 'svg-primary-optional', height: 14, width: 14 %}
               </button>
 
-              <a
-                class="enter no-underline hidden text-secondary-light  ff-general-sans fs-14-lh-20-ls-0_1 fw-600 absolute top-50pct right-12 translate-y--50 bg-light-gray rounded-6 pt-12 pb-12 pl-16 pr-16 cursor-pointer"
-                href="{{ routes.search_url }}?q={{ ' ' | url_encode }}"
+              <button
+                type="submit"
+                class="enter no-underline hidden text-secondary-light  ff-general-sans fs-14-lh-20-ls-0_1 fw-600 absolute top-50pct right-12 translate-y--50 bg-light-gray rounded-6 pt-12 pb-12 pl-16 pr-16 cursor-pointer border-none "
               >
                 {{- 'sections.header.enter' | t }}
-              </a>
+              </button>
             </form>
           </predictive-search>
         </div>
@@ -240,12 +240,12 @@
               {% render 'icon-close', cls: 'svg-primary-optional', height: 20, width: 20 %}
             </button>
 
-            <a
-              class="enter no-underline hidden text-secondary-light  ff-general-sans fs-14-lh-20-ls-0_1 fw-600 absolute top-50pct right-12 translate-y--50 bg-light-gray rounded-6 pt-12 pb-12 pl-16 pr-16 cursor-pointer"
-              href="{{ routes.search_url }}?q={{ ' ' | url_encode }}"
+            <button
+              type="submit"
+              class="enter no-underline hidden text-secondary-light  ff-general-sans fs-14-lh-20-ls-0_1 fw-600 absolute top-50pct right-12 translate-y--50 bg-light-gray rounded-6 pt-12 pb-12 pl-16 pr-16 cursor-pointer border-none bg-transparent"
             >
               {{- 'sections.header.enter' | t }}
-            </a>
+            </button>
           </form>
         </predictive-search>
       {% endif %}
@@ -397,21 +397,49 @@
         link.addEventListener('click', toggleMobileMenu);
       });
     }, 100);
+
+    // Setup search form submit handlers
+    document.querySelectorAll('.header__search-form').forEach((form) => {
+      form.addEventListener('submit', function () {
+        closeSearchFocus();
+      });
+    });
+
+    // Setup Enter button handlers
+    // Setup Enter button handlers
+    document.querySelectorAll('.enter').forEach((button) => {
+      button.addEventListener('click', function (e) {
+        e.preventDefault(); // Prevent default button behavior
+        const form = this.closest('form');
+        const input = form.querySelector('.header__search-input');
+
+        // Submit the form first (before clearing)
+        if (input.value.trim()) {
+          form.submit();
+          // closeSearchFocus will be called after navigation starts
+          setTimeout(() => closeSearchFocus(), 10);
+        }
+      });
+    });
   });
 
   window.addEventListener('resize', setHeaderHeight);
 
-  // Keyboard shortcuts
   document.addEventListener('keydown', function (event) {
     if (event.key === 'Escape') {
       closeSearchFocus();
     }
 
-    // Prevent Enter key from submitting search forms
+    // Allow Enter key to submit search forms
     if (event.key === 'Enter') {
       const target = event.target;
       if (target && target.classList.contains('header__search-input')) {
-        event.preventDefault();
+        const form = target.closest('form');
+        if (form && target.value.trim()) {
+          event.preventDefault(); // Prevent default to control the flow
+          form.submit(); // Submit first
+          setTimeout(() => closeSearchFocus(), 10); // Then clean up
+        }
       }
     }
   });
