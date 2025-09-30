@@ -766,6 +766,9 @@ address {
 .left-10p-52 {
   left: calc(10% - 52px);
 }
+.right--4 {
+  right: -4px;
+}
 .right-0 {
   right: 0;
 }
@@ -792,6 +795,9 @@ address {
 }
 .right-10p-52 {
   right: calc(10% - 52px);
+}
+.top--8 {
+  top: -8px;
 }
 .top-0 {
   top: 0;

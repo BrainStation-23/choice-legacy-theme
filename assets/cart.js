@@ -1,3 +1,5 @@
+const productFormToast = new ToastNotificationManager();
+
 class CartDiscounts extends HTMLElement {
   constructor() {
     super();
@@ -179,24 +181,38 @@ class ProductForm extends HTMLElement {
     fetch(window.theme.routes.cartAdd, config)
       .then((response) => response.json())
       .then((response) => {
-        this.cart.open();
+        // this.cart.open();
+
+        // if (response.status || response.errors) {
+        //   const errorMessage =
+        //     response.description || response.message || response.errors;
+        //   this.cart.showError(errorMessage);
+        //   this.handleErrorMessage(errorMessage);
+        //   return;
+        // }
 
         if (response.status || response.errors) {
           const errorMessage =
             response.description || response.message || response.errors;
-          this.cart.showError(errorMessage);
+          productFormToast.show(errorMessage, "error", 5000);
           this.handleErrorMessage(errorMessage);
           return;
         }
 
+        productFormToast.show(
+          "Product added to cart successfully!",
+          "success",
+          3000
+        );
         this.updateCartCount();
         this.cart.refresh();
       })
       .catch((e) => {
         console.error("Fetch error:", e);
         const errorMessage = "An error occurred. Please try again.";
-        this.cart.open();
-        this.cart.showError(errorMessage);
+        // this.cart.open();
+        // this.cart.showError(errorMessage);
+        productFormToast.show(errorMessage, "error", 5000);
         this.handleErrorMessage(errorMessage);
       })
       .finally(() => {
