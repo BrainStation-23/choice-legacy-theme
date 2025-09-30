@@ -194,11 +194,13 @@ function createModalLayout(innerHtml, removeOverflow = false) {
 
   return `
     ${headingHtml}
-    <div class="pl-32 pr-32 sm:pl-24 sm:pr-24">
-      ${generateErrorContainerMarkup()}
-    </div>
-    <div class="${scrollClasses}">
-      ${innerHtml}
+    <div>
+      <div class="pl-32 pr-32 sm:pl-24 sm:pr-24">
+        ${generateErrorContainerMarkup()}
+      </div>
+      <div class="${scrollClasses}">
+        ${innerHtml}
+      </div>
     </div>
     ${footerHtml}
   `;
