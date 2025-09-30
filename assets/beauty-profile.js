@@ -59,6 +59,8 @@ function isFinalStep() {
     return suggestionType !== "suggestion_based_on_specific_concerns";
   }
 
+  if (currentStep === "makeup_all") return true;
+
   if (typeof currentStep === "number" && currentStep >= 0) {
     return currentStep === currentProfileQuestions.length - 1;
   }
@@ -158,13 +160,17 @@ async function closeModal() {
 function createModalLayout(innerHtml, removeOverflow = false) {
   const buttonText = isFinalStep() ? "Save" : "Continue";
   const shouldShowHeading =
-    (currentProfileType === "skincare" || currentProfileType === "haircare") &&
+    (currentProfileType === "skincare" ||
+      currentProfileType === "haircare" ||
+      currentProfileType === "makeup") &&
     currentStep !== -1;
 
   const headingText =
     currentProfileType === "skincare"
       ? "Tell us about beauty skin"
-      : "Tell us about Hair Care";
+      : currentProfileType === "haircare"
+      ? "Tell us about Hair Care"
+      : "Tell us about beauty makeup";
 
   const headingHtml = shouldShowHeading
     ? `<div class="profile-heading pt-40 pr-24 pl-24 pb-24 sm:pb-0 sm:pt-24">
@@ -517,7 +523,7 @@ function generatePictureChoiceMarkup(question) {
     const isSelected = savedAnswer === option.value ? "is-selected" : "";
     optionsHtml += `
       <button type="button" class="option-btn picture-option-card bg-transparent transition-transform border-2 border-solid border-color-transparent cursor-pointer h-216 sm:w-auto sm:h-auto border-none rounded-6 ${isSelected}" data-value="${option.value}">
-        <img src="${option.imageUrl}" alt="${option.label}" loading="lazy" class="rounded-6">
+        <img src="${option.imageUrl}" alt="${option.label}" loading="lazy" class="rounded-6 h-full">
       </button>
     `;
   });
@@ -573,6 +579,369 @@ function generateMultiChoiceMarkup(question) {
       </div>
     </div>
   `;
+}
+
+function showMakeupQuestionsScreen() {
+  currentStep = "makeup_all";
+
+  const categoryQuestion = allQuestions.find(
+    (q) => q.q_key === "makeup_categories"
+  );
+  const skinTypeQuestion = allQuestions.find(
+    (q) => q.q_key === "makeup_skinType"
+  );
+  const skinToneQuestion = allQuestions.find(
+    (q) => q.q_key === "makeup_skinTone"
+  );
+  const skinUnderToneQuestion = allQuestions.find(
+    (q) => q.q_key === "makeup_skinUnderTone"
+  );
+
+  if (
+    !categoryQuestion ||
+    !skinTypeQuestion ||
+    !skinToneQuestion ||
+    !skinUnderToneQuestion
+  )
+    return;
+
+  const categoryHtml = generateMakeupCategoryMarkup(categoryQuestion);
+  const skinTypeHtml = generatePictureChoiceMarkup(skinTypeQuestion);
+  const skinToneHtml = generateMakeupSkinToneMarkup(skinToneQuestion);
+  const skinUnderToneHtml = generateSingleChoiceMarkup(skinUnderToneQuestion);
+
+  const innerHtml = `
+    <div class="question-section flex flex-col gap-16">
+      ${generateTitleMarkup(categoryQuestion.title)}
+      ${categoryHtml}
+    </div>
+    
+    <!-- Subcategories section - hidden by default -->
+    <div id="makeup-subcategories" class="question-section flex flex-col gap-11 hidden">
+      <div class="flex flex-col gap-16">
+        <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">Face Makeup Details</h2>
+        <p class="fw-500 fs-16-lh-20-ls-0_1">Sub-Category</p>
+      </div>
+      <div id="subcategories-container"></div>
+      ${generateErrorContainerMarkup()}
+    </div>
+    
+    <div class="question-section flex flex-col gap-16">
+      ${generateTitleMarkup(skinTypeQuestion.title)}
+      ${skinTypeHtml}
+    </div>
+    
+    <div class="question-section flex flex-col gap-16">
+      ${generateTitleMarkup(skinToneQuestion.title)}
+      ${skinToneHtml}
+    </div>
+    
+    <!-- Skin tone subcategories - hidden by default -->
+    <div id="skintone-subcategories" class="question-section flex flex-col gap-16 hidden">
+      <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans max-w-80pct">Select your exact skin tone</h2>
+      <div id="skintone-subcategories-container"></div>
+    </div>
+    
+    <div class="question-section flex flex-col gap-16">
+      ${generateTitleMarkup(skinUnderToneQuestion.title)}
+      ${skinUnderToneHtml}
+    </div>
+    
+    ${generateErrorContainerMarkup()}
+  `;
+
+  renderModalContent(
+    createModalLayout(innerHtml, false),
+    "w-797 sm:w-370"
+  ).then(() => {
+    setupMakeupCategoryListeners();
+    setupMakeupSkinToneListeners();
+  });
+}
+
+function generateMakeupCategoryMarkup(question) {
+  const groupKey = question.key;
+  const answerKey = "categories";
+  const savedAnswer = userAnswers[groupKey]?.[answerKey];
+
+  let optionsHtml = `<div class="options-container flex gap-8 flex-wrap">`;
+
+  question.options.forEach((option) => {
+    const isChecked = savedAnswer === option.value ? "checked" : "";
+    if (isChecked) currentAnswer = option.value;
+
+    const uniqueId = `${question.q_key}_${option.value}`;
+
+    optionsHtml += `
+      <div class="radio-option">
+        <input type="radio" class="hidden makeup-category-radio" id="${uniqueId}" name="${
+      question.q_key
+    }" value="${
+      option.value
+    }" ${isChecked} data-subcategories='${JSON.stringify(
+      option.sub_category || []
+    )}'>
+        <label for="${uniqueId}" class="radio-option-label flex gap-10 items-center rounded-100 border border-solid border-divider cursor-pointer transition-transform pt-18 pr-16 pb-18 pl-16">
+          <span class="radio-custom relative w-20 h-20 inline-block border border-solid border-2 rounded-full"></span>
+          <span class="radio-option-text transition-transform fw-500 fs-13-lh-16-ls-0_2">${
+            option.label
+          }</span>
+        </label>
+      </div>
+    `;
+  });
+
+  optionsHtml += `</div>`;
+  return optionsHtml;
+}
+
+// Generate markup for makeup category with subcategories
+function generateMakeupCategoryMarkup(question) {
+  const groupKey = question.key;
+  const answerKey = "categories";
+  const savedAnswer = userAnswers[groupKey]?.[answerKey];
+
+  let optionsHtml = `<div class="options-container flex gap-8 flex-wrap">`;
+
+  question.options.forEach((option) => {
+    const isChecked = savedAnswer === option.value ? "checked" : "";
+    if (isChecked) currentAnswer = option.value;
+
+    const uniqueId = `${question.q_key}_${option.value}`;
+
+    optionsHtml += `
+      <div class="radio-option">
+        <input type="radio" class="hidden makeup-category-radio" id="${uniqueId}" name="${
+      question.q_key
+    }" value="${
+      option.value
+    }" ${isChecked} data-subcategories='${JSON.stringify(
+      option.sub_category || []
+    )}'>
+        <label for="${uniqueId}" class="radio-option-label flex gap-10 items-center rounded-100 border border-solid border-divider cursor-pointer transition-transform pt-18 pr-16 pb-18 pl-16">
+          <span class="radio-custom relative w-20 h-20 inline-block border border-solid border-2 rounded-full"></span>
+          <span class="radio-option-text transition-transform fw-500 fs-13-lh-16-ls-0_2">${
+            option.label
+          }</span>
+        </label>
+      </div>
+    `;
+  });
+
+  optionsHtml += `</div>`;
+  return optionsHtml;
+}
+
+// Generate markup for skin tone with subcategories
+function generateMakeupSkinToneMarkup(question) {
+  const groupKey = question.key;
+  const answerKey = "skinTone";
+  const savedAnswer = userAnswers[groupKey]?.[answerKey];
+
+  let optionsHtml = `<div class="options-container flex gap-8 flex-wrap">`;
+
+  question.options.forEach((option) => {
+    const isChecked = savedAnswer === option.value ? "checked" : "";
+    if (isChecked) currentAnswer = option.value;
+
+    const uniqueId = `${question.q_key}_${option.value}`;
+
+    optionsHtml += `
+      <div class="radio-option">
+        <input type="radio" class="hidden makeup-skintone-radio" id="${uniqueId}" name="${
+      question.q_key
+    }" value="${
+      option.value
+    }" ${isChecked} data-subcategories='${JSON.stringify(
+      option.sub_category || []
+    )}'>
+        <label for="${uniqueId}" class="radio-option-label flex gap-10 items-center rounded-100 border border-solid border-divider cursor-pointer transition-transform pt-18 pr-16 pb-18 pl-16">
+          <span class="radio-custom relative w-20 h-20 inline-block border border-solid border-2 rounded-full"></span>
+          <span class="radio-option-text transition-transform fw-500 fs-13-lh-16-ls-0_2">${
+            option.label
+          }</span>
+        </label>
+      </div>
+    `;
+  });
+
+  optionsHtml += `</div>`;
+  return optionsHtml;
+}
+
+function setupMakeupCategoryListeners() {
+  const categoryRadios = modalBody.querySelectorAll(".makeup-category-radio");
+  const subcategoriesSection = modalBody.querySelector("#makeup-subcategories");
+  const subcategoriesContainer = modalBody.querySelector(
+    "#subcategories-container"
+  );
+
+  categoryRadios.forEach((radio) => {
+    radio.addEventListener("change", (e) => {
+      const subcategories = JSON.parse(e.target.dataset.subcategories || "[]");
+
+      if (!userAnswers.makeup) userAnswers.makeup = {};
+      userAnswers.makeup.categories = e.target.value;
+
+      if (subcategories.length > 0) {
+        // Show subcategories
+        subcategoriesSection.classList.remove("hidden");
+
+        // Generate subcategory checkboxes
+        const subcategoryHtml = generateSingleSelectSubcategories(
+          subcategories,
+          "makeup_subCategories"
+        );
+        subcategoriesContainer.innerHTML = subcategoryHtml;
+
+        const subcategoryRadios =
+          subcategoriesContainer.querySelectorAll(".subcategory-radio");
+        subcategoryRadios.forEach((subRadio) => {
+          subRadio.addEventListener("change", () => {
+            if (!userAnswers.makeup) userAnswers.makeup = {};
+            userAnswers.makeup.subCategories = subRadio.value;
+          });
+        });
+
+        // Restore saved subcategory
+        if (userAnswers.makeup?.subCategories) {
+          const savedRadio = subcategoriesContainer.querySelector(
+            `input[value="${userAnswers.makeup.subCategories}"]`
+          );
+          if (savedRadio) savedRadio.checked = true;
+        }
+      } else {
+        subcategoriesSection.classList.add("hidden");
+        if (userAnswers.makeup) {
+          delete userAnswers.makeup.subCategories;
+        }
+      }
+    });
+
+    // Trigger change for saved selection
+    if (radio.checked) {
+      radio.dispatchEvent(new Event("change"));
+    }
+  });
+}
+
+function setupMakeupSkinToneListeners() {
+  const skinToneRadios = modalBody.querySelectorAll(".makeup-skintone-radio");
+  const subcategoriesSection = modalBody.querySelector(
+    "#skintone-subcategories"
+  );
+  const subcategoriesContainer = modalBody.querySelector(
+    "#skintone-subcategories-container"
+  );
+
+  skinToneRadios.forEach((radio) => {
+    radio.addEventListener("change", (e) => {
+      const subcategories = JSON.parse(e.target.dataset.subcategories || "[]");
+
+      if (!userAnswers.makeup) userAnswers.makeup = {};
+      userAnswers.makeup.skinToneType = e.target.value;
+
+      if (subcategories.length > 0) {
+        // Show subcategories with images
+        subcategoriesSection.classList.remove("hidden");
+
+        // Generate image-based subcategories
+        const subcategoryHtml =
+          generateSkinToneSubcategoriesMarkup(subcategories);
+        subcategoriesContainer.innerHTML = subcategoryHtml;
+
+        // Add listeners using the same pattern as picture options
+        subcategoriesContainer.addEventListener("click", (e) => {
+          const button = e.target.closest(".skintone-subcategory-btn");
+          if (!button) return;
+
+          // Remove selection from all
+          subcategoriesContainer
+            .querySelectorAll(".skintone-subcategory-btn")
+            .forEach((btn) => btn.classList.remove("is-selected"));
+
+          // Select clicked one
+          button.classList.add("is-selected");
+
+          if (!userAnswers.makeup) userAnswers.makeup = {};
+          userAnswers.makeup.skinToneSubCategory = button.dataset.value;
+        });
+
+        // Restore saved selection
+        if (userAnswers.makeup?.skinToneSubCategory) {
+          const selected = subcategoriesContainer.querySelector(
+            `[data-value="${userAnswers.makeup.skinToneSubCategory}"]`
+          );
+          if (selected) selected.classList.add("is-selected");
+        }
+      } else {
+        subcategoriesSection.classList.add("hidden");
+        if (userAnswers.makeup) {
+          delete userAnswers.makeup.skinToneSubCategory;
+        }
+      }
+    });
+
+    // Trigger change for saved selection
+    if (radio.checked) {
+      radio.dispatchEvent(new Event("change"));
+    }
+  });
+}
+
+function generateSingleSelectSubcategories(subcategories, name) {
+  let html = '<div class="options-container flex gap-8 flex-wrap">';
+
+  subcategories.forEach((sub) => {
+    const uniqueId = `${name}_${sub.value}`;
+    html += `
+      <div class="radio-option">
+        <input type="radio" class="hidden subcategory-radio" id="${uniqueId}" name="${name}" value="${sub.value}">
+        <label for="${uniqueId}" class="radio-option-label flex gap-10 items-center rounded-100 border border-solid border-divider cursor-pointer transition-transform pt-18 pr-16 pb-18 pl-16">
+          <span class="radio-custom relative w-20 h-20 inline-block border border-solid border-2 rounded-full"></span>
+          <span class="radio-option-text transition-transform fw-500 fs-13-lh-16-ls-0_2">${sub.label}</span>
+        </label>
+      </div>
+    `;
+  });
+
+  html += "</div>";
+  return html;
+}
+
+function generateSkinToneSubcategoriesMarkup(subcategories) {
+  let html =
+    '<div class="options-container picture-options-container grid grid-cols-6 gap-8">';
+
+  subcategories.forEach((sub) => {
+    const isSelected =
+      userAnswers.makeup?.skinToneSubCategory === sub.value
+        ? "is-selected"
+        : "";
+    html += `
+      <button type="button" class="option-btn picture-option-card skintone-subcategory-btn bg-transparent transition-transform border-2 border-solid border-color-transparent cursor-pointer w-80 h-80 rounded-6 ${isSelected}" data-value="${sub.value}">
+        <img src="${sub.imageUrl}" alt="Skin tone" loading="lazy" class="rounded-6 w-full h-full object-cover">
+      </button>
+    `;
+  });
+
+  html += "</div>";
+  return html;
+}
+
+function generateImageSubcategories(subcategories, name) {
+  let html = '<div class="skintone-subcategories-grid flex gap-16 flex-wrap">';
+
+  subcategories.forEach((sub) => {
+    html += `
+      <button type="button" class="skintone-subcategory-btn bg-transparent transition-transform border-2 border-solid border-color-transparent cursor-pointer w-80 h-80 rounded-6" data-value="${sub.value}">
+        <img src="${sub.imageUrl}" alt="Skin tone" loading="lazy" class="rounded-6 w-full h-full object-cover">
+      </button>
+    `;
+  });
+
+  html += "</div>";
+  return html;
 }
 
 function renderCurrentQuestion() {
@@ -796,7 +1165,7 @@ function validateAndSaveAnswers() {
     if (hasError) {
       displayError(
         errorContainer,
-        "Please answer all required questions to continue."
+        "Please answer all the questions to continue."
       );
       return false;
     }
@@ -869,7 +1238,7 @@ function validateAndSaveAnswers() {
     if (hasError) {
       displayError(
         errorContainer,
-        "Please answer all required questions to continue."
+        "Please answer all the questions to continue."
       );
       return false;
     }
@@ -919,7 +1288,7 @@ function validateAndSaveAnswers() {
     if (hasError) {
       displayError(
         errorContainer,
-        "Please answer all required questions to continue."
+        "Please answer all the questions to continue."
       );
       return false;
     }
@@ -951,6 +1320,98 @@ function validateAndSaveAnswers() {
 
     if (!userAnswers[groupKey]) userAnswers[groupKey] = {};
     userAnswers[groupKey][answerKey] = answers;
+
+    return true;
+  } else if (currentStep === "makeup_all") {
+    const questionsToValidate = [
+      { q_key: "makeup_categories", type: "single_choice", isRequired: true },
+      { q_key: "makeup_skinType", type: "picture_choice", isRequired: true },
+      { q_key: "makeup_skinTone", type: "single_choice", isRequired: true },
+      {
+        q_key: "makeup_skinUnderTone",
+        type: "single_choice",
+        isRequired: true,
+      },
+    ];
+
+    let hasError = false;
+
+    // Validate category and subcategories
+    const categoryRadio = modalBody.querySelector(
+      'input[name="makeup_categories"]:checked'
+    );
+    if (!categoryRadio) {
+      hasError = true;
+    } else {
+      if (!userAnswers.makeup) userAnswers.makeup = {};
+      userAnswers.makeup.categories = categoryRadio.value;
+
+      // Check if subcategories are required
+      const subcategories = JSON.parse(
+        categoryRadio.dataset.subcategories || "[]"
+      );
+      if (subcategories.length > 0) {
+        const selectedSub = modalBody.querySelector(
+          ".subcategory-radio:checked"
+        );
+        if (!selectedSub) {
+          hasError = true;
+        } else {
+          userAnswers.makeup.subCategories = selectedSub.value;
+        }
+      }
+    }
+
+    // Validate skin type
+    const skinTypeBtn = modalBody.querySelector(
+      ".picture-options-container .is-selected"
+    );
+    if (!skinTypeBtn) {
+      hasError = true;
+    } else {
+      if (!userAnswers.makeup) userAnswers.makeup = {};
+      userAnswers.makeup.skinType = skinTypeBtn.dataset.value;
+    }
+
+    // Validate skin tone and its subcategory
+    const skinToneRadio = modalBody.querySelector(
+      'input[name="makeup_skinTone"]:checked'
+    );
+    if (!skinToneRadio) {
+      hasError = true;
+    } else {
+      if (!userAnswers.makeup) userAnswers.makeup = {};
+      userAnswers.makeup.skinToneType = skinToneRadio.value;
+
+      // Check if skin tone subcategory is selected
+      const skinToneSubBtn = modalBody.querySelector(
+        ".skintone-subcategory-btn.is-selected"
+      );
+      if (!skinToneSubBtn) {
+        hasError = true;
+      } else {
+        userAnswers.makeup.skinToneSubCategory = skinToneSubBtn.dataset.value;
+      }
+    }
+
+    // Validate skin undertone
+    const underToneRadio = modalBody.querySelector(
+      'input[name="makeup_skinUnderTone"]:checked'
+    );
+    if (!underToneRadio) {
+      hasError = true;
+    } else {
+      if (!userAnswers.makeup) userAnswers.makeup = {};
+      userAnswers.makeup.skinUnderTone = underToneRadio.value;
+    }
+
+    if (hasError) {
+      displayError(
+        errorContainer,
+        "Please answer all the questions to continue."
+      );
+      return false;
+    }
 
     return true;
   } else {
@@ -1162,6 +1623,8 @@ function handleContinue() {
     }
   } else if (currentStep === "haircare_concerns") {
     showSuggestionsScreen();
+  } else if (currentStep === "makeup_all") {
+    showSuggestionsScreen();
   } else {
     currentStep++;
     renderCurrentQuestion();
@@ -1197,6 +1660,8 @@ function handleBack() {
     showHaircareQuestionsScreen();
   } else if (previousStep === "haircare_concerns") {
     showHaircareConcernsScreen();
+  } else if (previousStep === "makeup_all") {
+    showMakeupQuestionsScreen();
   } else {
     renderCurrentQuestion();
   }
@@ -1992,9 +2457,8 @@ function handleProfileSelection(profileType) {
       showSkincareRoutineQuestion();
     } else if (currentProfileType === "haircare") {
       showHaircareQuestionsScreen();
-    } else {
-      currentStep = 0;
-      renderCurrentQuestion();
+    } else if (currentProfileType === "makeup") {
+      showMakeupQuestionsScreen();
     }
   }
 }

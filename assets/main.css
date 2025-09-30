@@ -1088,6 +1088,9 @@ address {
 .grid-cols-5 {
   grid-template-columns: repeat(5, 1fr);
 }
+.grid-cols-6 {
+  grid-template-columns: repeat(6, 1fr);
+}
 .grid-cols-fixed-2 {
   grid-template-columns: 1fr 1fr;
 }
@@ -1390,6 +1393,9 @@ address {
 }
 .w-802 {
   width: 802px;
+}
+.w-797 {
+  width: 797px;
 }
 .w-760 {
   width: 760px;
@@ -2009,6 +2015,9 @@ address {
 }
 .gap-10 {
   gap: calc(10 * var(--space-unit));
+}
+.gap-11 {
+  gap: calc(11 * var(--space-unit));
 }
 .gap-12 {
   gap: calc(12 * var(--space-unit));
