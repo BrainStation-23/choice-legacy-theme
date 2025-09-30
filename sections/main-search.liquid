@@ -3,7 +3,7 @@
 <div class="" data-num-results="{{ search.results_count }}">
   <div class="flex flex-col">
     {%- paginate search.results by section.settings.products_per_page -%}
-      <div class="main-products-grid flex pt-48 pb-88 page-width gap-48 flex-col">
+      <div class="main-products-grid flex pt-48 pb-88 page-width gap-48 flex-col sm:gap-16">
         <div>
           <h1 class="m-0 p-0 ff-bebas-neue fs-36-lh-40-ls-0 fw-400">
             {%- if search.performed -%}
