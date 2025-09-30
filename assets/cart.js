@@ -1,3 +1,18 @@
+const productFormToast = new ToastNotificationManager();
+
+function updateCartCount() {
+  fetch("/cart.js")
+    .then((response) => response.json())
+    .then((cart) => {
+      const cartCountElements = document.querySelectorAll("[data-cart-count]");
+      cartCountElements.forEach((element) => {
+        element.textContent = cart.item_count;
+        element.classList.toggle("hidden", cart.item_count === 0);
+      });
+    })
+    .catch((e) => console.error("Error updating cart count:", e));
+}
+
 class CartDiscounts extends HTMLElement {
   constructor() {
     super();
@@ -179,24 +194,38 @@ class ProductForm extends HTMLElement {
     fetch(window.theme.routes.cartAdd, config)
       .then((response) => response.json())
       .then((response) => {
-        this.cart.open();
+        // this.cart.open();
+
+        // if (response.status || response.errors) {
+        //   const errorMessage =
+        //     response.description || response.message || response.errors;
+        //   this.cart.showError(errorMessage);
+        //   this.handleErrorMessage(errorMessage);
+        //   return;
+        // }
 
         if (response.status || response.errors) {
           const errorMessage =
             response.description || response.message || response.errors;
-          this.cart.showError(errorMessage);
+          productFormToast.show(errorMessage, "error", 5000);
           this.handleErrorMessage(errorMessage);
           return;
         }
 
-        this.updateCartCount();
+        productFormToast.show(
+          "Product added to cart successfully!",
+          "success",
+          3000
+        );
+        updateCartCount();
         this.cart.refresh();
       })
       .catch((e) => {
         console.error("Fetch error:", e);
         const errorMessage = "An error occurred. Please try again.";
-        this.cart.open();
-        this.cart.showError(errorMessage);
+        // this.cart.open();
+        // this.cart.showError(errorMessage);
+        productFormToast.show(errorMessage, "error", 5000);
         this.handleErrorMessage(errorMessage);
       })
       .finally(() => {
@@ -204,20 +233,6 @@ class ProductForm extends HTMLElement {
         this.submitButtonText.hidden = false;
         this.spinner.hidden = true;
       });
-  }
-
-  updateCartCount() {
-    fetch("/cart.js")
-      .then((response) => response.json())
-      .then((cart) => {
-        const cartCountElements =
-          document.querySelectorAll("[data-cart-count]");
-        cartCountElements.forEach((element) => {
-          element.textContent = cart.item_count;
-          element.classList.toggle("hidden", cart.item_count === 0);
-        });
-      })
-      .catch((e) => console.error("Error updating cart count:", e));
   }
 
   handleErrorMessage(errorMessage = false) {
@@ -356,7 +371,7 @@ class CartPage extends HTMLElement {
       this.innerHTML = container.innerHTML;
     });
 
-    this.updateCartCount();
+    updateCartCount();
   }
 
   refresh() {
@@ -375,7 +390,7 @@ class CartPage extends HTMLElement {
           }
         }
 
-        this.updateCartCount();
+        updateCartCount();
       })
       .catch((e) => {
         console.error("Error refreshing cart page:", e);
@@ -405,16 +420,6 @@ class CartPage extends HTMLElement {
       .querySelector(selector).innerHTML;
   }
 
-  updateCartCount() {
-    fetch("/cart.js")
-      .then((response) => response.json())
-      .then((cart) => {
-        document.querySelectorAll("[data-cart-count]").forEach((el) => {
-          el.textContent = cart.item_count;
-        });
-      });
-  }
-
   showError(message) {
     const errorContainer = this.querySelector(".cart-page__error");
     if (errorContainer) {
@@ -436,7 +441,7 @@ if (window.CartUtilities) {
   window.CartUtilities.refreshCartPage = function () {
     const cartPage = document.querySelector("cart-page");
     if (cartPage) {
-      cartPage.updateCartCount();
+      updateCartCount();
     }
   };
 
@@ -611,6 +616,8 @@ class CartDrawer extends HTMLElement {
           if (hasError && errorMessage) {
             this.showError(errorMessage);
           }
+
+          updateCartCount();
         }
       })
       .catch((e) => {
@@ -701,6 +708,7 @@ class CartDrawer extends HTMLElement {
 
     this.createErrorContainer();
     this._setupEventListeners();
+    updateCartCount();
   }
 
   getSectionInnerHTML(html, selector) {
@@ -787,6 +795,7 @@ window.CartUtilities = {
     if (cartDrawer) {
       cartDrawer.refresh();
     }
+    updateCartCount();
   },
   showError(message) {
     const cartDrawer = document.querySelector("cart-drawer");

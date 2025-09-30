@@ -176,7 +176,10 @@
           class="header__icon-link flex items-center no-underline bg-transparent border-none w-auto h-auto text-brand cursor-pointer sm:justify-center sm:rounded-full sm:w-36 sm:h-36 gap-4"
           onclick="window.CartUtilities.openDrawer()"
         >
-          {% render 'cart-icon' %}
+          <div class="relative">
+            {% render 'cart-icon' %}
+            <span data-cart-count class="hidden absolute top--8 right--4 bg-brand text-bg fw-400 fs-14-lh-20-ls-0 w-20 h-20 rounded-full flex justify-center items-center"></span>
+          </div>
           <span class="header__icon-link-title block md:hidden sm:hidden ff-general-sans fs-14-lh-100pct-ls-0 fw-600">
             {{- 'sections.header.cart' | t -}}
           </span>
