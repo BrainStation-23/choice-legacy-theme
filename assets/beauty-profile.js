@@ -194,6 +194,9 @@ function createModalLayout(innerHtml, removeOverflow = false) {
 
   return `
     ${headingHtml}
+    <div class="pl-32 pr-32 sm:pl-24 sm:pr-24">
+      ${generateErrorContainerMarkup()}
+    </div>
     <div class="${scrollClasses}">
       ${innerHtml}
     </div>
@@ -623,7 +626,6 @@ function showMakeupQuestionsScreen() {
         <p class="fw-500 fs-16-lh-20-ls-0_1">Sub-Category</p>
       </div>
       <div id="subcategories-container"></div>
-      ${generateErrorContainerMarkup()}
     </div>
     
     <div class="question-section flex flex-col gap-16">
@@ -646,8 +648,6 @@ function showMakeupQuestionsScreen() {
       ${generateTitleMarkup(skinUnderToneQuestion.title)}
       ${skinUnderToneHtml}
     </div>
-    
-    ${generateErrorContainerMarkup()}
   `;
 
   renderModalContent(
@@ -735,7 +735,7 @@ function generateMakeupCategoryMarkup(question) {
 // Generate markup for skin tone with subcategories
 function generateMakeupSkinToneMarkup(question) {
   const groupKey = question.key;
-  const answerKey = "skinTone";
+  const answerKey = "skinToneType";
   const savedAnswer = userAnswers[groupKey]?.[answerKey];
 
   let optionsHtml = `<div class="options-container flex gap-8 flex-wrap">`;
@@ -970,7 +970,6 @@ function renderCurrentQuestion() {
   const innerHtml = `
     ${generateTitleMarkup(question.title)}
     ${optionsHtml}
-    ${generateErrorContainerMarkup()}
   `;
   renderModalContent(createModalLayout(innerHtml));
 }
@@ -1570,6 +1569,8 @@ function handleContinue() {
       showSkincareRoutineQuestion();
     } else if (currentProfileType === "haircare") {
       showHaircareQuestionsScreen(); // Add this
+    } else if (currentProfileType === "makeup") {
+      showMakeupQuestionsScreen(); // This line should be here
     } else {
       currentStep = 0;
       renderCurrentQuestion();
@@ -1712,7 +1713,7 @@ async function saveUserProfile() {
     if (currentProfileType && profileData[currentProfileType]) {
       profileData[currentProfileType].isCompleted = true;
     }
-    console.log(profileData);
+
     const response = await fetch(`${apiUrl}/create`, {
       method: "POST",
       headers: {
@@ -1823,7 +1824,6 @@ async function showDobAndGenderModal() {
           <div class="relative w-63 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 h-full fs-14-lh-20-ls-0_1 border-divider" placeholder=" " id="dob-mm" maxlength="2" inputmode="numeric"><label for="dob-mm" class="fw-500 fs-14-lh-20-ls-0_1">MM</label></div>
           <div class="relative w-100 h-56"><input type="text" class="pt-8 pr-16 pb-0 pl-16 fw-500 h-full fs-14-lh-20-ls-0_1 border-divider" placeholder=" " id="dob-yyyy" maxlength="4" inputmode="numeric"><label for="dob-yyyy" class="fw-500 fs-14-lh-20-ls-0_1">YYYY</label></div>
         </div>
-        ${generateErrorContainerMarkup()}
       </div>
       <div class="beauty-profile-modal-form-field flex flex-col gap-10">
         <div class="custom-dropdown relative w-256 h-56">
@@ -1889,7 +1889,6 @@ function showSkincareRoutineQuestion() {
   const innerHtml = `
     ${generateTitleMarkup(question.title)}
     ${optionsHtml}
-    ${generateErrorContainerMarkup()}
   `;
   renderModalContent(createModalLayout(innerHtml), "w-760 sm:w-370");
 }
@@ -1900,11 +1899,8 @@ function showSkinTypeQuestion() {
   if (!question) return;
   const optionsHtml = generatePictureChoiceMarkup(question);
   const innerHtml = `
-    <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">${
-      question.title
-    }</h2>
+    <h2 class="beauty-profile-modal-body-title fw-400 fs-16-lh-22-ls-0 ff-general-sans">${question.title}</h2>
     ${optionsHtml}
-    ${generateErrorContainerMarkup()}
   `;
   renderModalContent(createModalLayout(innerHtml), "w-760 sm:w-370");
 }
@@ -1936,8 +1932,6 @@ function showSkinTypeWithCurrentProductsQuestion() {
       ${generateTitleMarkup(currentProductsQuestion.title)}
       ${currentProductsHtml}
     </div>
-    
-    ${generateErrorContainerMarkup()}
   `;
 
   renderModalContent(createModalLayout(innerHtml, true), "w-760 sm:w-370");
@@ -2041,8 +2035,6 @@ function showProperRoutineBasedOnConcernScreen() {
       ${facePhotoHtml}
     </div>
   </div>
-  
-  ${generateErrorContainerMarkup()}
 `;
 
   renderModalContent(createModalLayout(innerHtml), "w-760 sm:w-370").then(
@@ -2225,8 +2217,6 @@ function showHaircareQuestionsScreen() {
       ${generateTitleMarkup(suggestionTypeQuestion.title)}
       ${suggestionTypeHtml}
     </div>
-    
-    ${generateErrorContainerMarkup()}
   `;
 
   renderModalContent(createModalLayout(innerHtml, true), "w-760 sm:w-370").then(
@@ -2272,8 +2262,6 @@ function showHaircareConcernsScreen() {
       ${generateTitleMarkup(concernQuestion.title)}
       ${concernHtml}
     </div>
-    
-    ${generateErrorContainerMarkup()}
   `;
 
   renderModalContent(createModalLayout(innerHtml, true), "w-760 sm:w-370");
@@ -2478,7 +2466,7 @@ function createProfileTypes(productTypeQuestion) {
     isCompleted = productTypeQuestion.options.find(
       (option) => existingProfileData?.[option.value]?.isCompleted
     );
-    console.log(isCompleted);
+
     container.innerHTML = productTypeQuestion.options
       .map((option) => {
         const isCurrentItemCompleted =
