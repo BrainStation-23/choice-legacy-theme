@@ -2025,7 +2025,7 @@ function showProperRoutineBasedOnConcernScreen() {
   </div>
 
   <!-- Questions for only_allergy -->
-  <div id="allergy-questions" class="hidden">
+  <div id="allergy-questions" class="hidden flex flex-col gap-16">
     <div class="question-section flex flex-col gap-16">
       ${generateTitleMarkup(whiteningProductQuestion.title)}
       ${whiteningProductHtml}
@@ -2120,8 +2120,9 @@ function showProperRoutineBasedOnConcernScreen() {
               );
 
               if (allergyQuestions) {
-                allergyQuestions.classList.remove("hidden");
-                allergyQuestions.classList.add("flex", "flex-col", "gap-16");
+                if (allergyQuestions) {
+                  allergyQuestions.classList.remove("hidden");
+                }
               }
             } else {
               acneAdditionalQuestions.classList.add("hidden");
@@ -2137,11 +2138,6 @@ function showProperRoutineBasedOnConcernScreen() {
               ) {
                 if (allergyQuestions) {
                   allergyQuestions.classList.add("hidden");
-                  allergyQuestions.classList.remove(
-                    "flex",
-                    "flex-col",
-                    "gap-16"
-                  );
                 }
               }
             }
@@ -2178,14 +2174,12 @@ function showProperRoutineBasedOnConcernScreen() {
           }
           if (allergyQuestions) {
             allergyQuestions.classList.remove("hidden");
-            allergyQuestions.classList.add("flex", "flex-col", "gap-16");
           }
         }
       } else if (savedAcneAllergyAnswer === "only_allergy") {
         const allergyQuestions = modalBody.querySelector("#allergy-questions");
         if (allergyQuestions) {
           allergyQuestions.classList.remove("hidden");
-          allergyQuestions.classList.add("flex", "flex-col", "gap-16");
         }
       }
     }
