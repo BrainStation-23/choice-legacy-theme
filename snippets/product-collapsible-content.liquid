@@ -11,7 +11,7 @@
   {% for file in image_metafield.value %}
     {% if forloop.first %}
       {%- capture first_image_html -%}
-        <div class="metafield-image-wrapper mb-8 media block relative w-165 h-160">
+        <div class="metafield-image-wrapper mb-8 media block relative w-165-priority h-160">
           {% render 'image', image: file, widths: '529, 529, 529, 529', src_width: 529, sizes: sizes, class: 'img-fit', quality: 1 %}
         </div>
       {%- endcapture -%}
