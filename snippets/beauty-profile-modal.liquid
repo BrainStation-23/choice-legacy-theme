@@ -1,0 +1,100 @@
+<style>
+  #beauty-profile-modal-body {
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+  }
+
+  .beauty-profile-modal-input-group input:focus+label, input:not(:placeholder-shown)+label {
+    font-size: calc(12 * var(--font-unit));
+    line-height: calc(16 * var(--font-unit));
+    letter-spacing: calc(.006 * var(--font-unit));
+    font-weight: 400;
+  }
+
+  .is-transitioning {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  .radio-option input + label {
+    position: static;
+    pointer-events: auto;
+  }
+  .radio-option input[type="radio"]:checked + .radio-option-label {
+    border-color: rgb(var(--color-primary-brand));
+    border-width: 2px;
+  }
+  .radio-option input[type="radio"]:checked + .radio-option-label .radio-custom {
+    border-color: rgb(var(--color-primary-brand));
+    border-width: 2px;
+  }
+  .radio-option input[type="radio"]:checked + .radio-option-label .radio-option-text {
+    color: rgb(var(--color-primary-brand));
+  }
+  .radio-custom::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: transparent;
+    transition: background-color 0.2s ease-in-out;
+  }
+  .radio-option input[type="radio"]:checked + .radio-option-label .radio-custom {
+    border-color: rgb(var(--color-primary-brand));
+    border-width: 2px;
+  }
+  .radio-option input[type="radio"]:checked + .radio-option-label .radio-custom::after {
+    background-color: rgb(var(--color-primary-brand));
+  }
+
+  .picture-option-card {
+    border: 2px solid transparent;
+  }
+  .picture-option-card.is-selected {
+    border-color: rgb(var(--color-primary-brand));
+  }
+
+  .dropdown-panel {
+    top: calc(100% + 4px);
+    max-height: 200px;
+  }
+  .dropdown-panel.is-open {
+    display: block;
+  }
+  .dropdown-panel .option-btn.is-selected {
+    color: rgb(var(--color-primary-brand));
+    font-weight: 600;
+  }
+
+  .toggle-switch input:checked + .toggle-slider:before {
+    transform: translateX(26px);
+  }
+  .toggle-slider:before {
+    content: "";
+    position: absolute;
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+  }
+  .toggle-switch input:checked + .toggle-slider {
+    background-color: rgb(var(--color-primary-brand));
+  }
+  .toggle-switch input:checked + .toggle-slider:before {
+    transform: translateX(20px);
+  }
+</style>
+
+<div id="beauty-profile-modal" class="beauty-profile-modal-overlay overlay inset-0 hidden fixed z-9999 items-center justify-center">
+  <div class="beauty-profile-modal-content relative w-full rounded-16 bg-bg">
+    <button id="beauty-profile-modal-close-btn" class="beauty-profile-modal-close-btn absolute top-24 right-24 bg-transparent border-none cursor-pointer w-28 h-28">{% render "icon-close", cls: "w-14 h-14 svg-primary-optional" %}</button>
+    <div id="beauty-profile-modal-body" class="flex flex-col gap-16">
+    </div>
+  </div>
+</div>

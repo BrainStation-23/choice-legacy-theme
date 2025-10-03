@@ -25,9 +25,9 @@
     <!-- Mobile Carousel -->
     <div class="hidden sm:block">
       <slideshow-component
-        data-autoplay="{{  section.settings.autoplay }}"
-        data-autoplay-delay="{{ section.settings.autoplay_delay | default: 5000 }}"
-        data-pause-on-hover="{{ section.settings.pause_on_hover }}"
+        data-autoplay="false"
+        data-autoplay-delay="3000"
+        data-pause-on-hover="false"
         data-enable-carousel="true"
         data-show-progress-bar="false"
         data-number-of-items="2"
@@ -91,32 +91,6 @@
       "step": 1,
       "default": 8,
       "label": "Products to show"
-    },
-    {
-      "type": "header",
-      "content": "Mobile Carousel Settings"
-    },
-    {
-      "type": "checkbox",
-      "id": "autoplay",
-      "default": false,
-      "label": "Auto-play carousel"
-    },
-    {
-      "type": "range",
-      "id": "autoplay_delay",
-      "min": 1000,
-      "max": 9000,
-      "step": 500,
-      "default": 5000,
-      "label": "Auto-play delay (ms)",
-      "info": "Time between slide transitions"
-    },
-    {
-      "type": "checkbox",
-      "id": "pause_on_hover",
-      "default": true,
-      "label": "Pause on hover"
     }
   ],
   "blocks": [
