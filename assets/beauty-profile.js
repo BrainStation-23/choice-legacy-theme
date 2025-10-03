@@ -737,7 +737,7 @@ function generateMakeupCategoryMarkup(question) {
 // Generate markup for skin tone with subcategories
 function generateMakeupSkinToneMarkup(question) {
   const groupKey = question.key;
-  const answerKey = "skinToneType";
+  const answerKey = "skinTone";
   const savedAnswer = userAnswers[groupKey]?.[answerKey];
 
   let optionsHtml = `<div class="options-container flex gap-8 flex-wrap">`;
@@ -841,7 +841,7 @@ function setupMakeupSkinToneListeners() {
       const subcategories = JSON.parse(e.target.dataset.subcategories || "[]");
 
       if (!userAnswers.makeup) userAnswers.makeup = {};
-      userAnswers.makeup.skinToneType = e.target.value;
+      userAnswers.makeup.skinTone = e.target.value;
 
       if (subcategories.length > 0) {
         // Show subcategories with images
@@ -1023,7 +1023,7 @@ function validateAndSaveAnswers() {
 
   const isSpecialQuestion = typeof currentStep === "string";
   const q_key_map = {
-    routine_or_product: "skinCare_routine_or_product",
+    routine_or_product: "skinCare_routineOrProduct",
     skin_type: "skinCare_skinType",
     skin_issues: "skinCare_skinConcerns",
     skin_type_with_products: "skinCare_skinType",
@@ -1065,7 +1065,7 @@ function validateAndSaveAnswers() {
     ) {
       questionsToValidate.push(
         {
-          q_key: "skinCare_is_pregnant",
+          q_key: "skinCare_isPregnant",
           type: "single_choice",
           isRequired: false,
         },
@@ -1382,7 +1382,7 @@ function validateAndSaveAnswers() {
       hasError = true;
     } else {
       if (!userAnswers.makeup) userAnswers.makeup = {};
-      userAnswers.makeup.skinToneType = skinToneRadio.value;
+      userAnswers.makeup.skinTone = skinToneRadio.value;
 
       // Check if skin tone subcategory is selected
       const skinToneSubBtn = modalBody.querySelector(
@@ -1461,7 +1461,7 @@ function saveCurrentAnswer() {
       { q_key: "skinCare_skinConcerns", type: "multi_choice" },
       { q_key: "skinCare_skinType", type: "picture_choice" },
       { q_key: "skinCare_skinIssueCondition", type: "single_choice" },
-      { q_key: "skinCare_is_pregnant", type: "single_choice" },
+      { q_key: "skinCare_isPregnant", type: "single_choice" },
       { q_key: "skinCare_acneIrritation", type: "single_choice" },
     ];
 
@@ -1522,7 +1522,7 @@ function saveCurrentAnswer() {
 
   const isSpecialQuestion = typeof currentStep === "string";
   const q_key_map = {
-    routine_or_product: "skinCare_routine_or_product",
+    routine_or_product: "skinCare_routineOrProduct",
     skin_type: "skinCare_skinType",
     skin_issues: "skinCare_skinConcerns",
   };
@@ -1884,7 +1884,7 @@ async function showDobAndGenderModal() {
 function showSkincareRoutineQuestion() {
   currentStep = "routine_or_product";
   const question = allQuestions.find(
-    (q) => q.q_key === "skinCare_routine_or_product"
+    (q) => q.q_key === "skinCare_routineOrProduct"
   );
   if (!question) return;
   const optionsHtml = generateSingleChoiceMarkup(question);
@@ -1952,7 +1952,7 @@ function showProperRoutineBasedOnConcernScreen() {
     (q) => q.q_key === "skinCare_skinIssueCondition"
   );
   const pregnantQuestion = allQuestions.find(
-    (q) => q.q_key === "skinCare_is_pregnant"
+    (q) => q.q_key === "skinCare_isPregnant"
   );
   const reactionQuestion = allQuestions.find(
     (q) => q.q_key === "skinCare_acneIrritation"
@@ -2410,11 +2410,11 @@ function handleProfileSelection(profileType) {
     .filter(
       (q) =>
         q.key === profileType &&
-        q.q_key !== "skinCare_routine_or_product" &&
+        q.q_key !== "skinCare_routineOrProduct" &&
         q.q_key !== "skinCare_skinType" &&
         q.q_key !== "skinCare_skinConcerns" &&
         q.q_key !== "skinCare_skinIssueCondition" &&
-        q.q_key !== "skinCare_is_pregnant" &&
+        q.q_key !== "skinCare_isPregnant" &&
         q.q_key !== "skinCare_acneIrritation" &&
         q.q_key !== "skinCare_acneType" &&
         q.q_key !== "skinCare_usedWhiteningProduct" &&
