@@ -9,9 +9,6 @@
             {%- if search.performed -%}
               {%- if search.results_count > 0 -%}
                 {{ 'general.search.search_results' | t: terms: search.terms }}
-
-              {%- else -%}
-                {{ 'general.search.no_results' | t: terms: search.terms }}
               {%- endif -%}
             {%- else -%}
               {{ 'general.search.title' | t }}
@@ -19,7 +16,7 @@
           </h1>
         </div>
         <div class="main-products-grid flex  gap-32">
-          {%- if search.filters != empty and section.settings.enable_filtering -%}
+          {%- if search.filters != empty and section.settings.enable_filtering and search.results_count > 0 -%}
             <div class="main-products-grid__filters block sm:hidden">
               {% render 'facet-filters', results: search, section: section, unique_id: 'desktop' %}
             </div>
@@ -29,7 +26,7 @@
             {% if section.settings.enable_sorting or section.settings.enable_filtering %}
               <div class="flex justify-between gap-8 ">
                 <div class="w-full max-w-180 sm:max-w-full">
-                  {% if section.settings.enable_sorting %}
+                  {% if section.settings.enable_sorting and search.results_count > 0 %}
                     {% render 'fact-sort', results: search, section: section %}
                   {% endif %}
                 </div>
@@ -70,7 +67,9 @@
 
               {%- if search.performed -%}
                 {%- if search.results.size == 0 -%}
-                  <p>{{ 'sections.collection.empty' | t }}</p>
+                  <h1 class="m-0 p-0 ff-bebas-neue fs-36-lh-40-ls-0 fw-400">
+                    {{ 'general.search.no_results' | t: terms: search.terms }}
+                  </h1>
                 {%- else -%}
                   <div class="grid grid-cols-4 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-16">
                     {% for item in search.results %}

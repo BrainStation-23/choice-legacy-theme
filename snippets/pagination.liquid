@@ -58,117 +58,96 @@
   </div>
 
   <script>
-    // Handle pagination clicks with AJAX to prevent page refresh
     document.addEventListener('DOMContentLoaded', function () {
-      const paginationLinks = document.querySelectorAll('a[href*="page="]');
+      initializeSearchPagination();
+    });
+
+    function initializeSearchPagination() {
+      const paginationLinks = document.querySelectorAll('.pagination-container a[href*="page="]');
 
       paginationLinks.forEach((link) => {
         link.addEventListener('click', function (e) {
           e.preventDefault();
-
-          const url = new URL(this.href);
-          const page = url.searchParams.get('page') || '1';
-
-          // Load the paginated content via AJAX
-          loadPaginatedOrders(page);
+          const url = this.href;
+          loadSearchResults(url);
         });
       });
-    });
+    }
 
-    async function loadPaginatedOrders(page) {
+    async function loadSearchResults(url) {
       try {
-        // Show loading state
-        const ordersSection = document.getElementById('orders-section');
-        if (ordersSection) {
-          ordersSection.style.opacity = '0.5';
-          ordersSection.style.pointerEvents = 'none';
-        }
+        // Show loading spinner
+        const spinner = document.getElementById('filtering-spinner');
+        const resultsContainer = document.getElementById('filter-results');
 
-        // Fetch the paginated content
-        const response = await fetch(`/account?page=${page}`, {
+        if (spinner) spinner.classList.remove('hidden');
+        if (resultsContainer) resultsContainer.style.opacity = '0.7';
+
+        // Fetch the new page
+        const response = await fetch(url, {
           headers: {
             'X-Requested-With': 'XMLHttpRequest',
           },
         });
 
-        if (!response.ok) {
-          throw new Error('Failed to load orders');
-        }
+        if (!response.ok) throw new Error('Failed to load results');
 
         const html = await response.text();
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
 
-        // Extract the orders content
-        const newOrdersContent = doc.querySelector('#orders-section');
-
-        if (newOrdersContent && ordersSection) {
-          ordersSection.innerHTML = newOrdersContent.innerHTML;
-
-          // Update URL without page refresh (only add page param, don't change nav)
-          const currentUrl = new URL(window.location);
-          if (page === '1') {
-            currentUrl.searchParams.delete('page');
-          } else {
-            currentUrl.searchParams.set('page', page);
-          }
-
-          // Keep the current nav parameter and hash
-          if (!currentUrl.searchParams.has('nav') && document.body.dataset.activeTab) {
-            const activeTab = document.body.dataset.activeTab.replace(/-/g, '_');
-            if (activeTab !== 'my_profile') {
-              currentUrl.searchParams.set('nav', activeTab);
-            }
-          }
-          currentUrl.hash = '#orders-section';
-
-          history.pushState({ page: page, tab: 'orders' }, '', currentUrl);
-
-          // Re-initialize pagination listeners for new content
-          initializePaginationListeners();
+        // Update results
+        const newResults = doc.querySelector('#filter-results');
+        if (newResults && resultsContainer) {
+          resultsContainer.innerHTML = newResults.innerHTML;
         }
 
-        // Restore normal state
-        if (ordersSection) {
-          ordersSection.style.opacity = '1';
-          ordersSection.style.pointerEvents = 'auto';
+        // Update pagination
+        const paginationContainer = document.querySelector('.pagination-container');
+        const newPagination = doc.querySelector('.pagination-container');
+        if (newPagination && paginationContainer) {
+          paginationContainer.innerHTML = newPagination.innerHTML;
         }
+
+        // Update URL without refresh
+        history.pushState({ url: url }, '', url);
+
+        // Scroll to top of results
+        const mainGrid = document.querySelector('.main-products-grid');
+        if (mainGrid) {
+          mainGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Re-initialize pagination listeners
+        initializeSearchPagination();
+
+        // Hide loading spinner
+        if (spinner) spinner.classList.add('hidden');
+        if (resultsContainer) resultsContainer.style.opacity = '1';
       } catch (error) {
-        console.error('Error loading paginated orders:', error);
+        console.error('Error loading search results:', error);
 
-        // Restore normal state on error
-        const ordersSection = document.getElementById('orders-section');
-        if (ordersSection) {
-          ordersSection.style.opacity = '1';
-          ordersSection.style.pointerEvents = 'auto';
-        }
+        // Hide spinner and restore state on error
+        const spinner = document.getElementById('filtering-spinner');
+        const resultsContainer = document.getElementById('filter-results');
+        if (spinner) spinner.classList.add('hidden');
+        if (resultsContainer) resultsContainer.style.opacity = '1';
+
+        // Fallback to normal page load
+        window.location.href = url;
       }
     }
 
-    function initializePaginationListeners() {
-      const paginationLinks = document.querySelectorAll('a[href*="page="]');
+    // Handle browser back/forward buttons
+    window.addEventListener('popstate', function (event) {
+      if (event.state && event.state.url) {
+        loadSearchResults(event.state.url);
+      } else {
+        location.reload();
+      }
+    });
 
-      paginationLinks.forEach((link) => {
-        // Remove existing listeners to avoid duplicates
-        link.replaceWith(link.cloneNode(true));
-      });
-
-      // Re-add listeners to new links
-      const newPaginationLinks = document.querySelectorAll('a[href*="page="]');
-      newPaginationLinks.forEach((link) => {
-        link.addEventListener('click', function (e) {
-          e.preventDefault();
-
-          const url = new URL(this.href);
-          const page = url.searchParams.get('page') || '1';
-
-          loadPaginatedOrders(page);
-        });
-      });
-    }
-
-    // Make functions globally available
-    window.loadPaginatedOrders = loadPaginatedOrders;
-    window.initializePaginationListeners = initializePaginationListeners;
+    // Make function globally available
+    window.initializeSearchPagination = initializeSearchPagination;
   </script>
 {%- endif -%}
